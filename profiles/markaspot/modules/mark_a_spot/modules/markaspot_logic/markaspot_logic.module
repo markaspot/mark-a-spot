@@ -1,0 +1,433 @@
+<?php
+
+/**
+ * This module provides styles, scripts and views for Mark-a-Spot Installation
+ * and implements some server-side validation and geocoding
+ *
+ * @author Holger Kreis - holger@markaspot.org
+ */
+
+
+
+function markaspot_logic_form_alter(&$form, &$form_state, $form_id) {
+  
+  global $user;
+  if ($form_id == 'report_node_form') {
+    $form['twitter'] = null;
+    $form['comment_settings'] = null;
+    $form['field_geo']['und'][0]['address']['#title'] = "Wo befindet sich das Problem";
+    $form['field_image']['und']['#title'] = "Medienupload";
+    $form['field_image']['und']['#file_upload_title'] = "Wählen Sie hier eine Datei aus";
+    $form['#validate'][] = 'markaspot_logic_validate';
+  }
+  if (arg(0) != "home" && ($form_id == 'user_login' || $form_id == 'user_login_block' || $form_id == 'user_register_form')) {
+    if (function_exists('twitter_signin_button')) {
+      $items = array();
+      $items[] = twitter_signin_button();
+      if ($form_id == 'user_login_block'){
+        $form['twitter_signin'] = null;
+      }
+    }
+    
+    $attr = array();
+    if (variable_get('fbconnect_fast_reg', 0) && variable_get('fbconnect_reg_options', 0)) {
+      $attr = array('scope' => 'email');
+    }
+    if (function_exists('fbconnect_render_button')){
+      $ss__facebook_connect = fbconnect_render_button($attr);
+      
+      $form['or'] = array(
+        '#type' => 'item',
+        '#prefix' => '<div>',
+        '#markup' => '<h2>'. t('OR') .'</h2>',
+        '#suffix' => '</div>',
+      );
+      
+      $form['fbconnect_button'] = array(
+        '#type' => 'item',
+        '#title' => t('Facebook login'),
+        '#markup' => $ss__facebook_connect,
+      );
+    }
+  }
+
+}
+
+
+
+function markaspot_logic_validate($node, &$form) {
+    // print_r($form['#node']['field_city']['und'][0]['value'] );
+    // krumo($form);
+    $mail = $form['values']['field_e_mail']['und'][0]['value'] ;
+    if (!valid_email_address($mail)) {
+      form_set_error('field_e_mail', t('Please enter a valid e-mail address.'));
+    }
+    if ($form['values']['field_city']['und'][0]['value'] != variable_get('markaspot_city')) {
+       form_set_error('field_city',t('The string given for "City" is not valid'));
+    }
+}
+
+
+/**
+ * Validates Address on the server's side
+ *
+ */
+
+function markaspot_logic_node_presave($node) {
+
+  // if($node->field_common['und'][0]['value'] == 0) {
+
+  //   // prepare serversice geocoding
+
+  //   $address = $node->field_address['und'][0]['value']." ".
+  //   $node->field_zip['und'][0]['value']." ".$node->field_city['und'][0]['value'];
+
+  //   $geo = markaspot_logic_getLatLng($address);
+  //   $node->field_geo['und'][0]['lat'] = $geo['lat']; 
+  //   $node->field_geo['und'][0]['lng'] = $geo['lng']; 
+      
+  // } else {
+
+  //   // change values
+  //   $node->field_geo['und'][0]['lat']  = variable_get('markaspot_ini_lat');
+  //   $node->field_geo['und'][0]['lng']  = variable_get('markaspot_ini_lng');
+
+  // }
+  
+  // $node->field_geo['und'][0]['lat_sin'] = sin(deg2rad($node->field_geo['und'][0]['lat']));
+  // $node->field_geo['und'][0]['lat_cos'] = cos(deg2rad($node->field_geo['und'][0]['lat']));
+  // $node->field_geo['und'][0]['lng_rad'] = deg2rad($node->field_geo['und'][0]['lng']);
+
+}
+
+
+
+function markaspot_logic_getLatLng($address, $api_key = null) {
+
+    $url = "http://maps.google.com/maps/geo?output=xml&key=$api_key&q=";
+    $result = array('lat'=>'', 'lng'=>'', 'code'=>'');
+
+    // Make the Temporary URL for CURL to execute
+    $tempURL    = $url.urlencode($address);
+
+    // Create the cURL Object here
+    $crl    = curl_init();
+    curl_setopt($crl, CURLOPT_HEADER, 0);
+    curl_setopt($crl, CURLOPT_RETURNTRANSFER, 1);
+    
+    // Here we ask google to give us the lats n longs in XML format
+    curl_setopt($crl, CURLOPT_URL, $tempURL);
+    $gXML = curl_exec($crl);    // Here we get the google result in XML
+
+    // Using SimpleXML (Built-in XML parser in PHP5) to parse google result
+    $goo = simplexml_load_string(utf8_encode($gXML)); 
+
+    $result['code'] = $goo->Response->Status->code;
+    if ($result['code'] != 200) {
+        $result['lat'] = 'error';
+        $result['lng'] = 'error';
+        return $result;
+    }
+    else{
+        $coords = $goo->Response->Placemark->Point->coordinates;
+        list($lng, $lat)  = explode(',', $coords);
+        $result['lat']    = $lat;
+        $result['lng']    = $lng;
+        //$result['address']    = $gooAddress;
+        return $result;
+    }
+}
+
+
+
+
+
+
+
+function markaspot_logic_css_alter(&$css){
+  unset($css['misc/ui/jquery.ui.core.css']);
+}
+
+/**
+ * markaspot implementation.
+ */
+ 
+function markaspot_logic_init() {
+  drupal_add_js(array(
+    'mas' => array(
+      'markaspot_city' => variable_get('markaspot_city'),
+      'markaspot_zip' => variable_get('markaspot_zip'),
+      'markaspot_country' => variable_get('markaspot_country'),
+      'markaspot_ini_lat' => variable_get('markaspot_ini_lat'),
+      'markaspot_ini_lng' => variable_get('markaspot_ini_lng'),
+      'uri' => request_uri(),
+      //'countVotes' => markaspot_logic_getCountVotes(),
+      'params' => $_GET)), 
+    'setting'
+  );
+
+  drupal_add_js(drupal_get_path('module','markaspot_logic'). '/markaspot_logic.js');
+
+
+  // Cloudmade Leaflet
+  
+  // Add some css to show which line is output by which script
+  /*
+
+  */
+ //$variables['styles'] = drupal_get_css(); 
+  if (arg(0) == "list" || arg(0) == "map" || arg(0) == "home" || arg(0) == "node" && arg(1) != "add" && arg(2) != "edit" && arg(1) >=3){
+    if (variable_get('markaspot_map_type') != 1) {
+      drupal_add_js('http://maps.google.com/maps/api/js?sensor=false&amp;region=DE', 'external');
+      drupal_add_js(drupal_get_path('module', 'markaspot_logic') . '/js/markerclusterer.js', null);
+      drupal_add_js(drupal_get_path('module', 'markaspot_logic') . '/js/mapiconmaker_packed.js', null);
+      drupal_add_js(drupal_get_path('module', 'markaspot_logic') . '/js/markers_googlemaps.js', null);
+    } else {
+      drupal_add_css(drupal_get_path('module', 'markaspot_logic') . '/js/leaflet/css/leaflet.css');
+      drupal_add_css(drupal_get_path('module', 'markaspot_logic') . '/js/leaflet/dist/leaflet.css', null);
+      drupal_add_js(drupal_get_path('module', 'markaspot_logic') . '/js/leaflet/dist/leaflet.js', null);
+      drupal_add_js(drupal_get_path('module', 'markaspot_logic') . '/js/markers_leaflet.js', null);
+    }
+  }
+  drupal_add_css(drupal_get_path('module', 'custom') . '/css/custom.css', array(
+    'group' => CSS_DEFAULT, 'every_page' => TRUE));
+  drupal_add_css(drupal_get_path('module', 'markaspot_logic') . '/css/mas-style.css');
+
+  drupal_add_library('system', 'ui.accordion');
+
+
+
+}
+ 
+function markaspot_logic_getCountVotes(){
+  $list_items = db_query("(SELECT COUNT(*)as Votes FROM {votingapi_vote})");
+  foreach ($list_items as $record) {
+     return $record->votes;
+  }
+}
+ 
+
+/**
+ * Implementation of hook_menu()
+ *
+ * - Callback to feedback page accessible for all
+ * - Menu item for system settings page accessible for admins
+ * 
+ */
+function markaspot_logic_menu() {
+  $items = array();
+
+  $items['admin/config/system/mark_a_spot'] = array(
+    'title' => 'Mark-a-Spot',
+    'description' => 'Basic configuration',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('markaspot_logic_admin_settings'),
+    'access callback' => 'user_access',
+    'access arguments' => array('administer site configuration'),
+    
+  );
+  
+  // For translation
+  //t('No account yet?');
+
+  return $items;
+}
+
+
+
+
+
+/**
+ * System settings form on admin settings page,
+ * accessible only by admins via menu access restriction
+ * 
+ * - Set interval lat and lon default value.
+ * 
+ * @return unknown
+ */
+function markaspot_logic_admin_settings() {
+
+  $form = array();
+  $form['general'] = array(
+    '#type' => 'fieldset', 
+    '#title' => t('General'), 
+    '#collapsible' => TRUE);
+  $form['general']['markaspot_address'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Zip'),
+    '#default_value' => variable_get('markaspot_address', _markaspot_logic_defaults('markaspot_address')),
+    '#size' => '128',
+    '#maxlength' => 128,
+    '#description' => t('Insert the zip code'),
+  );
+  $form['general']['markaspot_zip'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Zip'),
+    '#default_value' => variable_get('markaspot_zip', _markaspot_logic_defaults('markaspot_zip')),
+    '#size' => '7',
+    '#maxlength' => 7,
+    '#description' => t('Insert the zip code'),
+  );
+  $form['general']['markaspot_city'] = array(
+    '#type' => 'textfield',
+    '#title' => t('City'),
+    '#default_value' => variable_get('markaspot_city', _markaspot_logic_defaults('markaspot_city')),
+    '#size' => '16',
+    '#maxlength' => 16,
+    '#description' => t('Insert the municipality'),
+  );
+  $form['general']['markaspot_country'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Country'),
+    '#default_value' => variable_get('markaspot_country', _markaspot_logic_defaults('markaspot_country')),
+    '#size' => '16',
+    '#maxlength' => 16,
+    '#description' => t('Insert the country the municipality is located'),
+  );
+  $form['general']['markaspot_ini_lat'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Inital Lat'),
+    '#default_value' => variable_get('markaspot_ini_lat', _markaspot_logic_defaults('markaspot_ini_lat')),
+    '#size' => '16',
+    '#maxlength' => 16,
+    '#description' => t('Insert the initial latitude'),
+  );
+  $form['general']['markaspot_ini_lng'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Inital Lng'),
+    '#default_value' => variable_get('markaspot_ini_lng', _markaspot_logic_defaults('markaspot_ini_lng')),
+    '#size' => '16',
+    '#maxlength' => 16,
+    '#description' => t('Insert the initial longitude'),
+  );
+  
+
+  $form['types']['markaspot_map_type'] = array(
+  '#type' => 'radios', 
+  '#title' => t('Map type'), 
+  '#default_value' => variable_get('markaspot_map_type', 0), 
+  '#options' => array(t('Google Maps'), t('OSM')),
+  );
+
+  return system_settings_form($form);
+}
+
+
+function markaspot_logic_page_alter(&$page) {
+  // Add help text to the user login block.
+  $page['footer']['system_powered-by'] = array(
+    '#weight' => -10, 
+    // please be nice, give attribution
+    '#markup' => '<span>'.t('Built with <a id="mas-link" href="http://mark-a-spot.org">Mark-a-Spot</a>').'</span>',
+  );
+}
+
+
+/**
+ * Default texts for text variables that build the feedback page. 
+ * Texts that can be configured on the settings page.
+ * 
+ * @param string $id
+ * @return string 
+ */
+function _markaspot_logic_defaults($id) {
+  switch ($id) {
+    case 'markaspot_ini_lat':
+      return '50.8212596';
+    case 'markaspot_ini_lng':
+      return '6.8961028'; 
+    case 'markaspot_address':
+      return 'Pingsdorfer Straße 88';
+    case 'markaspot_zip':
+      return '50321';
+    case 'markaspot_city':
+      return 'Brühl';
+    case 'markaspot_country':
+      return 'Deutschland';
+  } 
+}
+
+
+
+/**
+ * Implements hook_block_info().
+ *
+ * This hook declares what blocks are provided by the module.
+ */
+function markaspot_logic_block_info() {
+
+  $blocks['taxonomy_category'] = array(
+    // info: The name of the block.
+    'info' => t('Mark-a-Spot Categories'),
+    'cache' => DRUPAL_CACHE_PER_ROLE, 
+  );
+  $blocks['taxonomy_status'] = array(
+    // info: The name of the block.
+    'info' => t('Mark-a-Spot Status'),
+    'cache' => DRUPAL_CACHE_PER_ROLE, // default
+  );
+  $blocks['markaspot_map'] = array(
+    // info: The name of the block.
+    'info' => t('Mark-a-Spot Reports List (Map View)'),
+    'cache' => DRUPAL_CACHE_PER_ROLE, // default
+  );
+  return $blocks;
+}
+
+
+/**
+ * Implements hook_block_view().
+ *
+ * This hook generates the contents of the blocks themselves.
+ */
+function markaspot_logic_block_view($delta = '') {
+  //The $delta parameter tells us which block is being requested.
+  switch ($delta) {
+    case 'taxonomy_category':
+      $block['subject'] = t('Services');
+      $block['content'] = markaspot_logic_contents($delta);
+    break;
+    case 'taxonomy_status':
+      $block['subject'] = t('Status');
+      $block['content'] = markaspot_logic_contents($delta);
+    break;
+    case 'markaspot_map':
+      $block['subject'] = t('ReportList');
+      $block['content'] = markaspot_logic_contents($delta);
+    break;
+  }
+  return $block;
+}
+
+
+
+/**
+ * A module-defined block content function.
+ */
+function markaspot_logic_contents($which_block) {
+  switch ($which_block) {
+    case 'taxonomy_category': 
+      $list_category = null;
+      $taxonomies = taxonomy_get_tree(2, $parent = 0, $max_depth = 1, $load_entities = TRUE);
+      foreach ($taxonomies as $term) {
+        $list_category .= "\n<div class='markaspot-section-header'>". l($term->name,'taxonomy/term/'.$term->tid, array('attributes' =>array('class' => 'map-menue', 'id' => 'tax-'.$term->tid))).'</div>';
+      }
+      return $list_category;
+    break;
+    case 'taxonomy_status':
+      $list_status = null;
+      $taxonomies = taxonomy_get_tree(3, $parent = 0, $max_depth = 1, $load_entities = TRUE);
+      foreach ($taxonomies as $term) {
+        $list_status .= "\n<div class='markaspot-section-header'>". l($term->name,'taxonomy/term/'.$term->tid, array('attributes' =>array('class' => 'map-menue', 'id' => 'tax-'.$term->tid))).'</div>';
+      }
+      return $list_status;
+    break;    
+    case 'markaspot_map':
+      $list_map = null;
+      $list_map = '<ul id="markersidebar"></ul>';
+      return $list_map;
+
+  }
+}
+
+

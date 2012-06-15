@@ -1,0 +1,11 @@
+name = Better Formats
+description = Enhances the core input format system by managing input format defaults and settings.
+core = 7.x
+configure = admin/config/content/formats
+
+; Information added by drupal.org packaging script on 2011-09-16
+version = "7.x-1.x-dev"
+core = "7.x"
+project = "better_formats"
+datestamp = "1316174599"
+

@@ -1,0 +1,54 @@
+<?php
+
+/**
+ * @file
+ * Install/Update/Uninstall functions for geolocation_field module
+ */
+
+/**
+ * Implements hook_field_schema().
+ */
+function geolocation_field_schema($field) {
+  $columns = array(
+    'lat' => array(
+      'description' => 'Stores the latitude value',
+      'type' => 'float',
+      'size' => 'big',
+      'not null' => TRUE,
+      'default' => 0,
+    ),
+    'lng' => array(
+      'description' => 'Stores the longitude value',
+      'type' => 'float',
+      'size' => 'big',
+      'not null' => TRUE,
+      'default' => 0,
+    ),
+    'lat_sin' => array(
+      'description' => 'Stores the sine of latitude',
+      'type' => 'float',
+      'not null' => TRUE,
+      'default' => 0,
+    ),
+    'lat_cos' => array(
+      'description' => 'Stores the cosine of latitude',
+      'type' => 'float',
+      'not null' => TRUE,
+      'default' => 0,
+    ),
+    'lng_rad' => array(
+      'description' => 'Stores the radian longitude',
+      'type' => 'float',
+      'not null' => TRUE,
+      'default' => 0,
+    ),
+  );
+  $indexes = array(
+    'lat' => array('lat'),
+    'lng' => array('lng'),
+  );
+  return array(
+    'columns' => $columns,
+    'indexes' => $indexes,
+  );
+}

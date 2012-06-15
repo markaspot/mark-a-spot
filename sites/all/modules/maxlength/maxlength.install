@@ -1,0 +1,91 @@
+<?php  
+
+/**
+ * @file
+ * Install, update and uninstall functions for the Maxlength module.
+ */
+
+/**
+ * @todo: Migrate node title
+ * @todo: Should we use maxlength_ for hook_uninstall instead of maxlength_js_
+ */
+
+
+/**
+ * Implements hook_uninstall().
+ */
+function maxlength_uninstall() {
+  db_delete('variable')
+    ->condition('name', db_like('maxlength_js_') . '%', 'LIKE')
+    ->execute();
+}
+
+/**
+ * Implements hook_update_N().
+ *
+ * Migrate from maxlength2 to maxlength3
+ */
+function maxlength_update_7300() {
+  $ret = array();
+  // Migrate node body
+  foreach (node_type_get_names() as $type => $name) {
+    $maxlength = variable_get('maxlength_body_' . $type, 0);
+    variable_del('maxlength_body_' . $type);
+    $label = variable_get('maxlength_body_text_' . $type, 0);
+    variable_del('maxlength_body_text_' . $type);
+
+    if ($maxlength) {
+      $instance = field_read_instance('node', 'body', $type);
+      // Body is a text_textarea_with_summary
+      $instance['widget']['settings']['maxlength_js'] = $maxlength;
+      $instance['widget']['settings']['maxlength_js_label'] = $label;
+      field_update_instance($instance);
+    }
+  }
+}
+
+
+/**
+ * Implements hook_update_N().
+ *
+ * migrate fieldapi fields
+ */
+function maxlength_update_7301() {
+  $ret = array();
+  // The 7.x-2.x seems to support only global settings for fields not per instance
+  // so setup the maxlength for each instance of the field
+  foreach (field_read_fields() as $field) {
+    if (!empty($field['settings']['max_length'])) {
+      $maxlength = $field['settings']['max_length'];
+      $instances = field_read_instances(array('entity_type' => $entity_type, 'field_name' => $field_name, 'bundle' => $bundle));
+      foreach ($instances as $instance) {
+        $instance['widget']['settings']['maxlength_js'] = $maxlength;
+      }
+    }
+  }
+
+  return $ret;
+}
+
+/**
+ * Implements hook_update_N().
+ *
+ * Migrate comment settings.
+ */
+function maxlength_update_7302() {
+  $ret = array();
+  // Migrate node body
+  foreach (node_type_get_names() as $type => $name) {
+    $maxlength = variable_get('maxlength_comment_comment_' . $type, 0);
+    variable_del('maxlength_comment_comment_' . $type);
+    $label = variable_get('maxlength_comment_comment_text_' . $type, 0);
+    variable_del('maxlength_comment_comment_text_' . $type);
+    if ($maxlength) {
+      $instance = field_read_instance('comment', 'comment_body', $type);
+      // Body is a text_textarea_with_summary
+      $instance['widget']['settings']['maxlength_js'] = $maxlength;
+      $instance['widget']['settings']['maxlength_js_label'] = $label;
+      field_update_instance($instance);
+    }
+  }
+}

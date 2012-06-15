@@ -1,0 +1,102 @@
+<?php
+/**
+ * @file
+ * Test maxlength module.
+ */
+
+class MaxlengthTestCase extends DrupalWebTestCase {
+  private $hyphen_type;
+  private $type;
+
+  public static function getInfo() {
+    return array(
+      'name' => 'Test maxlength module',
+      'description' => 'Tests the different features of the maxlength module.',
+      'group' => 'Maxlength',
+    );
+  }
+
+  protected function setUp() {
+    parent::setUp('maxlength');
+
+    $type = $this->drupalCreateContentType();
+    $this->type = $type->type;
+    $this->hyphen_type = str_replace('_', '-', $this->type);
+    $this->admin = $this->drupalCreateUser(array('administer content types', 'bypass node access'));
+  }
+  
+  /**
+   * Test fieldapi field.
+   */
+  function testField() {
+    $this->drupalLogin($this->admin);
+
+    $edit = array(
+      'instance[widget][settings][maxlength_js]' => rand(50, 100),
+      'instance[widget][settings][maxlength_js_label]' => $this->randomString(30),
+    );
+    $this->drupalPost('admin/structure/types/manage/' . $this->hyphen_type . '/fields/body', $edit, t('Save settings'));
+
+    $this->drupalGet('node/add/' . $this->hyphen_type);
+
+    // Check the maxlength html attributes.
+    $elements = $this->xpath('//textarea[@id=:id]', array(':id' => 'edit-body-und-0-value'));
+
+    foreach ($elements[0]->attributes() as $key => $value) {
+      switch ($key) {
+        case 'class':
+          $this->assertTrue(strpos($value, 'maxlength'), 'Take sure the maxlength class is existant');
+          break;
+        case 'maxlength_js':
+          $this->assertTrue($value, 'Take sure that the maxlenght_js attribute is set.');
+          break;
+        case 'maxlength_js_label':
+          $this->assertEqual($edit['instance[widget][settings][maxlength_js_label]'], $value, 'Take sure that the maxlenght_js_label is the defined one.');
+          break;
+        case 'maxlength':
+          $this->assertEqual($edit['instance[widget][settings][maxlength_js]'], $value);
+      }
+    }
+  }
+
+  /**
+   * Test title field.
+   */
+  function testTitle() {
+    $this->drupalLogin($this->admin);
+
+    $edit = array(
+      'maxlength_js' => rand(50, 100),
+      'maxlength_js_label' => $this->randomString(30),
+    );
+
+    $this->drupalPost('admin/structure/types/manage/' . $this->hyphen_type . '/edit', $edit, t('Save content type'));
+
+    $this->drupalGet('node/add/' . $this->hyphen_type);
+
+    // Check the maxlength html attributes.
+    $elements = $this->xpath('//input[@id=:id]', array(':id' => 'edit-title'));
+
+//     foreach ($elements[0]->attributes() as $key => $value) {
+//       switch ($key) {
+//         case 'class':
+//           $this->assertTrue(strpos($value, 'maxlength'), 'Take sure the maxlength class is existant');
+//           break;
+//         case 'maxlength_js':
+//           $this->assertTrue($value, 'Take sure that the maxlenght_js attribute is set.');
+//           break;
+//         case 'maxlength_js_label':
+//           $this->assertEqual($edit['maxlength_js_label'], $value, 'Take sure that the maxlenght_js_label is the defined one.');
+//           break;
+//         case 'maxlength':
+//           $this->assertEqual($edit['maxlenght_js'], $value);
+//           break;
+//       }
+//     }
+  }
+
+   /**
+    * Test general api.
+    */
+
+}

@@ -1,0 +1,5 @@
+name = Mark-a-Spot Logic
+package = "Mark-a-Spot"
+core = 7.x
+description = Provides styles, scripts and views for Mark-a-Spot Installation
+version = "7.x-1.0-dev"

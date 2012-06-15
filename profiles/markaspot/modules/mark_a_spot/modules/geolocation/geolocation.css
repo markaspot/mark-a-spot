@@ -1,0 +1,13 @@
+/**
+ * @file
+ * CSS for Geolocation Field.
+ */
+
+.field-type-geolocation-latlng.field-widget-geolocation-text .fieldset-wrapper {
+  overflow: hidden;
+}
+
+.field-type-geolocation-latlng.field-widget-geolocation-text .form-type-textfield {
+  float: left;
+  margin-right: 1em;
+}

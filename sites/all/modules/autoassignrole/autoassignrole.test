@@ -1,0 +1,678 @@
+<?php
+
+/**
+ * @file
+ * Creates tests for auto assign role module.
+ */
+
+/**
+ * Extend the DrupalWebTestCase.
+ */
+class AutoassignroleAdminAutoTestCase extends DrupalWebTestCase {
+  protected $admin_user;
+
+  public static function getInfo() {
+    return array(
+      'name' => 'Admin auto',
+      'description' => 'Tests the administrative setting for auto assign role automatic assignment',
+      'group' => 'Auto assign role',
+    );
+  }
+
+  function setUp() {
+    parent::setUp('autoassignrole');
+    $this->admin_user = $this->drupalCreateUser(array(
+      'administer autoassignrole',
+      'access administration pages',
+    ));
+    $permissions = array('access content');
+    $this->drupalCreateRole($permissions);
+
+    $this->roles = user_roles(TRUE);
+    unset($this->roles[DRUPAL_AUTHENTICATED_RID]);
+  }
+
+  /**
+   * Validate that the block for this functionality exists on
+   * admin/config.
+   */
+  function testAutoConfigBlock() {
+    // Create a new user who can access the administration settings
+    $this->drupalLogin($this->admin_user);
+
+    // Check that the user can see a link to the auto settings.
+    $this->drupalGet('admin/config/people');
+    $this->assertLink('Auto assign role', 0, 'Auto role assignment link exists on admin/config/people');
+  }
+
+  /**
+   * Validate that the block for this functionality exists on
+   * admin/config/people/autoassignrole.
+   */
+  function testAutoConfigAarBlock() {
+    // Create a new user who can access the administration settings
+    $this->drupalLogin($this->admin_user);
+
+    // Check that the user can see a link to the auto settings.
+    $this->drupalGet('admin/config/people/autoassignrole');
+    $this->assertLink('Automatic', 0, 'Automatic link exists on admin/config/people/autoassignrole');
+  }
+
+  /**
+   * Test admin setting functionality for autoassignrole_auto_active.
+   * @see http://drupal.org/node/937468
+   */
+  function testAutoActiveSettings() {
+    // Create a new user who can access the administration settings
+    $this->drupalLogin($this->admin_user);
+
+    // Check that the user can see the admin settings page.
+    $this->drupalGet('admin/config/people/autoassignrole/auto');
+    $this->assertField(
+     'autoassignrole_auto_active',
+     'The autoassignrole_auto_active field is accessible.'
+    );
+
+    // Enable autoassignrole_auto_active
+    $edit['autoassignrole_auto_active'] = 1;
+    $this->drupalPost(
+      'admin/config/people/autoassignrole/auto',
+      $edit,
+      t('Save configuration')
+    );
+
+    // Verify autoassignrole_auto_active has been enabled
+    $this->assertEqual(
+      variable_get('autoassignrole_auto_active', 0),
+      1,
+      'autoassignrole_auto_active has been enabled'
+    );
+
+    // Disable autoassignrole_auto_active
+    $edit['autoassignrole_auto_active'] = 0;
+    $this->drupalPost(
+      'admin/config/people/autoassignrole/auto',
+      $edit,
+      t('Save configuration')
+    );
+
+    // Verify autoassignrole_auto_active has been disabled
+    $this->assertEqual(
+      variable_get('autoassignrole_auto_active', 1),
+      0,
+      'autoassignrole_auto_active has been disabled'
+    );
+  }
+
+  /**
+   * Test admin setting functionality for autoassignrole_admin_active.
+   * @see http://drupal.org/node/937666
+   */
+  function testAdminActiveSettings() {
+    // Create a new user who can access the administration settings
+    $this->drupalLogin($this->admin_user);
+
+    // Check that the user can see the admin settings page.
+    $this->drupalGet('admin/config/people/autoassignrole/auto');
+    $this->assertField(
+     'autoassignrole_admin_active',
+     'The autoassignrole_admin_active field is accessible.'
+    );
+
+    // Enable autoassignrole_admin_active
+    $edit['autoassignrole_admin_active'] = 1;
+    $this->drupalPost(
+      'admin/config/people/autoassignrole/auto',
+      $edit,
+      t('Save configuration')
+    );
+
+    // Verify autoassignrole_admin_active has been enabled
+    $this->assertEqual(
+      variable_get('autoassignrole_admin_active', 0),
+      1,
+      'autoassignrole_admin_active has been enabled'
+    );
+
+    // Disable autoassignrole_admin_active
+    $edit['autoassignrole_admin_active'] = 0;
+    $this->drupalPost(
+      'admin/config/people/autoassignrole/auto',
+      $edit,
+      t('Save configuration')
+    );
+
+    // Verify autoassignrole_admin_active has been disabled
+    $this->assertEqual(
+      variable_get('autoassignrole_admin_active', 1),
+      0,
+      'autoassignrole_admin_active has been disabled'
+    );
+  }
+
+  /**
+   * Test admin setting functionality for autoassignrole_auto_roles.
+   * @see http://drupal.org/node/937678
+   */
+  function testAutoRolesSettings() {
+    // Create a new user who can access the administration settings
+    $this->drupalLogin($this->admin_user);
+
+    // Check that the user can see the admin settings page.
+    $this->drupalGet('admin/config/people/autoassignrole/auto');
+
+    // Verify that there are roles exposed.
+    $this->assertField(
+     'autoassignrole_auto_roles[3]',
+     'Looking for the autoassignrole_auto_roles checkboxes.'
+    );
+
+    // Verify that a checkbox for each of our valid roles shows on the page.
+    foreach ($this->roles as $rid => $role) {
+      $edit["autoassignrole_auto_roles[$rid]"] = $rid;
+    }
+
+    // Check each of our roles and submit the form.
+    $this->drupalPost(
+      'admin/config/people/autoassignrole/auto',
+      $edit,
+      t('Save configuration')
+    );
+
+    // Verify the checked value was saved for each of our roles.
+    $roles = variable_get("autoassignrole_auto_roles", array());
+    foreach ($this->roles as $rid => $role) {
+      $this->assertEqual(TRUE, array_key_exists($rid, $roles), 'Verifying that role (rid:' . $rid . ') was activated.');
+    }
+  }
+}
+
+/**
+ * Extend the DrupalWebTestCase.
+ */
+class AutoassignroleAdminUserTestCase extends DrupalWebTestCase {
+  protected $admin_user;
+
+  public static function getInfo() {
+    return array(
+      'name' => 'Admin user',
+      'description' => 'Tests the administrative setting for auto assign role user selection',
+      'group' => 'Auto assign role',
+    );
+  }
+
+  function setUp() {
+    parent::setUp('autoassignrole');
+    $this->admin_user = $this->drupalCreateUser(array(
+      'administer autoassignrole',
+      'access administration pages',
+    ));
+    $permissions = array('access content');
+    $this->drupalCreateRole($permissions);
+
+    $this->roles = user_roles(TRUE);
+    unset($this->roles[DRUPAL_AUTHENTICATED_RID]);
+  }
+
+  /**
+   * Validate that the block for this functionality exists on
+   * admin/config.
+   */
+  function testAutoConfigBlock() {
+    // Create a new user who can access the administration settings
+    $this->drupalLogin($this->admin_user);
+
+    // Check that the user can see a link to the auto settings.
+    $this->drupalGet('admin/config/people');
+    $this->assertLink('Auto assign role', 0, 'Auto assign role link exists on admin/config/people');
+  }
+
+  /**
+   * Validate that the block for this functionality exists on
+   * admin/config/people/autoassignrole.
+   */
+  function testAutoConfigAarBlock() {
+    // Create a new user who can access the administration settings
+    $this->drupalLogin($this->admin_user);
+
+    // Check that the user can see a link to the auto settings.
+    $this->drupalGet('admin/config/people/autoassignrole');
+    $this->assertLink('User choice', 0, 'Allow user to choose link exists on admin/config/people/autoassignrole');
+  }
+
+  /**
+   * Test admin setting functionality for autoassignrole_user_active.
+   * @see http://drupal.org/node/944880
+   */
+  function testAdminUserSettings() {
+    // Create a new user who can access the administration settings
+    $this->drupalLogin($this->admin_user);
+
+    // Check that the user can see the admin settings page.
+    $this->drupalGet('admin/config/people/autoassignrole/user');
+    $this->assertField(
+     'autoassignrole_user_active',
+     'The autoassignrole_user_active field is accessible.'
+    );
+
+    // Enable autoassignrole_user_active
+    $edit['autoassignrole_user_active'] = 1;
+    $this->drupalPost(
+      'admin/config/people/autoassignrole/user',
+      $edit,
+      t('Save configuration')
+    );
+
+    // Verify autoassignrole_user_active has been enabled
+    $this->assertEqual(
+      variable_get('autoassignrole_user_active', 0),
+      1,
+      'autoassignrole_user_active has been enabled'
+    );
+
+    // Disable autoassignrole_user_active
+    $edit['autoassignrole_user_active'] = 0;
+    $this->drupalPost(
+      'admin/config/people/autoassignrole/user',
+      $edit,
+      t('Save configuration')
+    );
+
+    // Verify autoassignrole_user_active has been disabled
+    $this->assertEqual(
+      variable_get('autoassignrole_user_active', 1),
+      0,
+      'autoassignrole_user_active has been disabled'
+    );
+  }
+
+  /**
+   * Test admin setting functionality for autoassignrole_user_roles.
+   * @see http://drupal.org/node/944922
+   */
+  function testAdminUserRolesSettings() {
+    // Create a new user who can access the administration settings
+    $this->drupalLogin($this->admin_user);
+
+    // Check that the user can see the admin settings page.
+    $this->drupalGet('admin/config/people/autoassignrole/user');
+
+    // Verify that there are roles exposed.
+    $this->assertField(
+     'autoassignrole_user_roles[3]',
+     'Looking for the autoassignrole_user_roles checkboxes.'
+    );
+
+    // Verify that a checkbox for each of our valid roles shows on the page.
+    foreach ($this->roles as $rid => $role) {
+      $edit["autoassignrole_user_roles[$rid]"] = $rid;
+    }
+
+    // Check each of our roles and submit the form.
+    $this->drupalPost(
+      'admin/config/people/autoassignrole/user',
+      $edit,
+      t('Save configuration')
+    );
+
+    // Verify the checked value was saved for each of our roles.
+    $roles = variable_get("autoassignrole_user_roles", array());
+    foreach ($this->roles as $rid => $role) {
+      $this->assertEqual(TRUE, array_key_exists($rid, $roles), 'Verifying that role (rid:' . $rid . ') was activated.');
+    }
+  }
+
+/**
+ * Test admin setting functionality for autoassignrole_user_multiple.
+ * @see http://drupal.org/node/944944
+ */
+  function testAdminUserMultipleSettings() {
+    // Create a new user who can access the administration settings
+    $this->drupalLogin($this->admin_user);
+
+    // Check that the user can see the admin settings page.
+    $this->drupalGet('admin/config/people/autoassignrole/user');
+    $this->assertField(
+     'autoassignrole_user_multiple',
+     'The autoassignrole_user_multiple field is accessible.'
+    );
+
+    // Enable autoassignrole_user_multiple
+    $edit['autoassignrole_user_multiple'] = 1;
+    $this->drupalPost(
+      'admin/config/people/autoassignrole/user',
+      $edit,
+      t('Save configuration')
+    );
+
+    // Verify autoassignrole_user_multiple has been enabled
+    $this->assertEqual(
+      variable_get('autoassignrole_user_multiple', 0),
+      1,
+      'autoassignrole_user_multiple has been enabled'
+    );
+
+    // Disable autoassignrole_user_multiple
+    $edit['autoassignrole_user_multiple'] = 0;
+    $this->drupalPost(
+      'admin/config/people/autoassignrole/user',
+      $edit,
+      t('Save configuration')
+    );
+
+    // Verify autoassignrole_user_multiple has been disabled
+    $this->assertEqual(
+      variable_get('autoassignrole_user_multiple', 1),
+      0,
+      'autoassignrole_user_multiple has been disabled'
+    );
+  }
+
+/**
+ * Test admin setting functionality for autoassignrole_user_selection.
+ * @see http://drupal.org/node/944974
+ */
+  function testAdminUserSelectionSettings() {
+    // Create a new user who can access the administration settings
+    $this->drupalLogin($this->admin_user);
+
+    // Check that the user can see the admin settings page.
+    $this->drupalGet('admin/config/people/autoassignrole/user');
+    $this->assertField(
+     'autoassignrole_user_selection',
+     'The autoassignrole_user_selection field is accessible.'
+    );
+
+    // Set autoassignrole_user_selection to radio inputs.
+    $edit['autoassignrole_user_selection'] = 0;
+    $this->drupalPost(
+      'admin/config/people/autoassignrole/user',
+      $edit,
+      t('Save configuration')
+    );
+
+    // Verify autoassignrole_user_selection has set to radio
+    $this->assertEqual(
+      variable_get('autoassignrole_user_selection', -1),
+      0,
+      'autoassignrole_user_selection has been set to radio'
+    );
+
+    // Set autoassignrole_user_selection to select box.
+    $edit['autoassignrole_user_selection'] = 1;
+    $this->drupalPost(
+      'admin/config/people/autoassignrole/user',
+      $edit,
+      t('Save configuration')
+    );
+
+    // Verify autoassignrole_user_selection has been set to select box
+    $this->assertEqual(
+      variable_get('autoassignrole_user_selection', -1),
+      1,
+      'autoassignrole_user_selection has been set to select box'
+    );
+
+    // Set autoassignrole_user_selection to check box.
+    $edit['autoassignrole_user_selection'] = 2;
+    $this->drupalPost(
+      'admin/config/people/autoassignrole/user',
+      $edit,
+      t('Save configuration')
+    );
+
+    // Verify autoassignrole_user_selection has been set to check box
+    $this->assertEqual(
+      variable_get('autoassignrole_user_selection', -1),
+      2,
+      'autoassignrole_user_selection has been set to check box'
+    );
+  }
+
+/**
+ * Test admin setting functionality for autoassignrole_user_selection.
+ * @see http://drupal.org/node/944978
+ */
+  function testAdminUserSelectionRequired() {
+    // Create a new user who can access the administration settings
+    $this->drupalLogin($this->admin_user);
+
+    // Check that the user can see the admin settings page.
+    $this->drupalGet('admin/config/people/autoassignrole/user');
+    $this->assertField(
+     'autoassignrole_user_required',
+     'The autoassignrole_user_required field is accessible.'
+    );
+
+    // Set autoassignrole_user_required to no.
+    $edit['autoassignrole_user_required'] = 0;
+    $this->drupalPost(
+      'admin/config/people/autoassignrole/user',
+      $edit,
+      t('Save configuration')
+    );
+
+    // Verify autoassignrole_user_required has set to no.
+    $this->assertEqual(
+      variable_get('autoassignrole_user_required', -1),
+      0,
+      'autoassignrole_user_required has been set to radio'
+    );
+
+    // Set autoassignrole_user_required to yes.
+    $edit['autoassignrole_user_required'] = 1;
+    $this->drupalPost(
+      'admin/config/people/autoassignrole/user',
+      $edit,
+      t('Save configuration')
+    );
+
+    // Verify autoassignrole_user_required has been set to yes.
+    $this->assertEqual(
+      variable_get('autoassignrole_user_required', -1),
+      1,
+      'autoassignrole_user_required has been set to select box'
+    );
+  }
+
+/**
+ * Test admin setting functionality for autoassignrole_user_selection.
+ * @see http://drupal.org/node/944988
+ */
+  function testAdminUserSortSettings() {
+    // Create a new user who can access the administration settings
+    $this->drupalLogin($this->admin_user);
+
+    // Check that the user can see the admin settings page.
+    $this->drupalGet('admin/config/people/autoassignrole/user');
+    $this->assertField(
+     'autoassignrole_user_sort',
+     'The autoassignrole_user_sort field is accessible.'
+    );
+
+    // Set autoassignrole_user_sort to radio SORT_ASC.
+    $edit['autoassignrole_user_sort'] = 'SORT_ASC';
+    $this->drupalPost(
+      'admin/config/people/autoassignrole/user',
+      $edit,
+      t('Save configuration')
+    );
+
+    // Verify autoassignrole_user_sort has set to SORT_ASC
+    $this->assertEqual(
+      variable_get('autoassignrole_user_sort', -1),
+      'SORT_ASC',
+      'autoassignrole_user_selection has been set to SORT_ASC'
+    );
+
+    // Set autoassignrole_user_sort to SORT_DESC.
+    $edit['autoassignrole_user_sort'] = 'SORT_DESC';
+    $this->drupalPost(
+      'admin/config/people/autoassignrole/user',
+      $edit,
+      t('Save configuration')
+    );
+
+    // Verify autoassignrole_user_sort has been set to 'SORT_DESC'
+    $this->assertEqual(
+      variable_get('autoassignrole_user_sort', -1),
+      'SORT_DESC',
+      'autoassignrole_user_sort has been set to SORT_DESC'
+    );
+  }
+
+/**
+ * Test admin setting functionality for autoassignrole_user_description.
+ * @see http://drupal.org/node/945024
+ */
+  function testAdminUserDescriptionSettings() {
+    // Create a new user who can access the administration settings
+    $this->drupalLogin($this->admin_user);
+
+    // Check that the user can see the admin settings page.
+    $this->drupalGet('admin/config/people/autoassignrole/user');
+    $this->assertField(
+     'autoassignrole_user_description',
+     'The autoassignrole_user_description field is accessible.'
+    );
+
+    // Set autoassignrole_user_description to a random string.
+    $random_string = $this->randomName();
+    $edit['autoassignrole_user_description'] = $random_string;
+    $this->drupalPost(
+      'admin/config/people/autoassignrole/user',
+      $edit,
+      t('Save configuration')
+    );
+
+    // Verify autoassignrole_user_fieldset_title has been saved.
+    $this->assertEqual(
+      variable_get('autoassignrole_user_description', -1),
+      $random_string,
+      'autoassignrole_user_description has been set to random string'
+    );
+  }
+
+/**
+ * Test admin setting functionality for autoassignrole_user_selection.
+ * @see http://drupal.org/node/945010
+ */
+  function testAdminUserFieldsetTitleSettings() {
+    // Create a new user who can access the administration settings
+    $this->drupalLogin($this->admin_user);
+
+    // Check that the user can see the admin settings page.
+    $this->drupalGet('admin/config/people/autoassignrole/user');
+    $this->assertField(
+     'autoassignrole_user_fieldset_title',
+     'The autoassignrole_user_fieldset_title field is accessible.'
+    );
+
+    // Set autoassignrole_user_fieldset_title to a random string.
+    $random_string = $this->randomName();
+    $edit['autoassignrole_user_fieldset_title'] = $random_string;
+    $this->drupalPost(
+      'admin/config/people/autoassignrole/user',
+      $edit,
+      t('Save configuration')
+    );
+
+    // Verify autoassignrole_user_fieldset_title has been saved.
+    $this->assertEqual(
+      variable_get('autoassignrole_user_fieldset_title', -1),
+      $random_string,
+      'autoassignrole_user_fieldset_title has been set to random string'
+    );
+  }
+
+/**
+ * Test admin setting functionality for autoassignrole_user_title.
+ * @see http://drupal.org/node/945016
+ */
+  function testAdminUserTitle() {
+    // Create a new user who can access the administration settings
+    $this->drupalLogin($this->admin_user);
+
+    // Check that the user can see the admin settings page.
+    $this->drupalGet('admin/config/people/autoassignrole/user');
+    $this->assertField(
+     'autoassignrole_user_title',
+     'The autoassignrole_user_title field is accessible.'
+    );
+
+    // Set autoassignrole_user_title to a random string.
+    $random_string = $this->randomName();
+    $edit['autoassignrole_user_title'] = $random_string;
+    $this->drupalPost(
+      'admin/config/people/autoassignrole/user',
+      $edit,
+      t('Save configuration')
+    );
+
+    // Verify autoassignrole_user_title has been saved.
+    $this->assertEqual(
+      variable_get('autoassignrole_user_title', -1),
+      $random_string,
+      'autoassignrole_user_title has been set to random string'
+    );
+  }
+}
+
+/**
+ * Extend the DrupalWebTestCase.
+ */
+class AutoassignroleUserCreationTestCase extends DrupalWebTestCase {
+  protected $admin_user;
+
+  public static function getInfo() {
+    return array(
+      'name' => 'User creation',
+      'description' => 'Tests the user creation functionallity for auto assign role automatic assignment',
+      'group' => 'Auto assign role',
+    );
+  }
+
+  function setUp() {
+    parent::setUp('autoassignrole');
+    // Create a random role
+    $this->rid = $this->drupalCreateRole(array(), $this->randomName());
+    $this->roles = user_roles(TRUE);
+    unset($this->roles[DRUPAL_AUTHENTICATED_RID]);
+  }
+
+/**
+ * Test functionality for programmatic user creation.
+ * @see http://drupal.org/node/944864
+ */
+  function testUserCreateAPI() {
+   // Enable auto role assignment
+   variable_set('autoassignrole_auto_active', 1);
+   // Configure to assign our random role.
+   variable_set('autoassignrole_auto_roles', array($this->rid => $this->rid));
+   // Create a test user.
+   $this->test_user = $this->drupalCreateUser();
+   // Verify test user has been assigned role.
+    $this->assertTRUE(
+      array_key_exists($this->rid, $this->test_user->roles),
+      'Programmatic creation of user is automatically assigned role'
+    );
+  }
+
+/**
+ * Test that auto roles are only assigned when they are enabled.
+ * @see http://drupal.org/node/971622
+ */
+  function testUserAutoActiveAPI() {
+   // Enable auto role assignment
+   variable_set('autoassignrole_auto_active', 0);
+   // Configure to assign our random role.
+   variable_set('autoassignrole_auto_roles', array($this->rid => $this->rid));
+   // Create a test user.
+   $this->test_user = $this->drupalCreateUser();
+   // Verify test user has been assigned role.
+    $this->assertFALSE(
+      array_key_exists($this->rid, $this->test_user->roles),
+      'User is not automatically assigned role when autoassignrole_auto_active is set to 0'
+    );
+  }
+}

@@ -1,0 +1,3 @@
+Originaly inspired by functionality found in the ed_classified module.
+
+Since branch 7.x-3.x comes uses the original code from maxlength_js.

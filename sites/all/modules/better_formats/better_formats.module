@@ -1,0 +1,313 @@
+<?php
+/**
+ * @file
+ * Enhances Drupal's core input format settings.
+ */
+
+/**
+ * Implements of hook_perm().
+ */
+function better_formats_permission() {
+  $entities = entity_get_info();
+
+  $perms = array(
+    'show format tips' => array(
+      'title' => t('Show format tips'),
+      'description' => t('Toggle display of format description help.'),
+    ),
+    'show more format tips link' => array(
+      'title' => t('Show more format tips link'),
+      'description' => t('Toggle display of the "More information about text formats" link.'),
+    ),
+  );
+  foreach ($entities as $type => $info) {
+    if ($info['fieldable']) {
+      $perms['show format selection for ' . $type] = array(
+        'title' => t('Show format selection for @entitys', array('@entity' => $type)),
+      );
+    }
+  }
+
+  return $perms;
+}
+
+/**
+ * Implements hook_menu().
+ */
+function better_formats_menu() {
+  $items   = array();
+  $items['admin/config/content/formats/settings'] = array(
+    'title' => 'Settings',
+    'description' => 'Manage input formats',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('better_formats_admin_settings_form'),
+    'access arguments' => array('administer filters'),
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 3,
+    'file' => 'better_formats.admin_settings.inc',
+  );
+  /*
+  $items['admin/config/content/formats/defaults'] = array(
+    'title' => 'Defaults',
+    'description' => 'Manage input formats',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('better_formats_defaults_admin_form'),
+    'access arguments' => array('administer filters'),
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 2,
+    'file' => 'better_formats.admin_defaults.inc',
+  );
+  */
+  return $items;
+}
+
+/**
+ * Implements of hook_element_info_alter().
+ */
+function better_formats_element_info_alter(&$type) {
+  // Change text format processing on elements to our version.
+  if (isset($type['text_format']['#process'])) {
+    foreach ($type['text_format']['#process'] as &$callback) {
+      if ($callback === 'filter_process_format') {
+        $callback = 'better_formats_filter_process_format';
+      }
+    }
+  }
+}
+
+/**
+ * Taken directly from filter_process_format() and modified.
+ * @see filter_process_format()
+ *
+ * Expands an element into a base element with text format selector attached.
+ *
+ * The form element will be expanded into two separate form elements, one
+ * holding the original element, and the other holding the text format selector:
+ * - value: Holds the original element, having its #type changed to the value of
+ *   #base_type or 'textarea' by default.
+ * - format: Holds the text format fieldset and the text format selection, using
+ *   the text format id specified in #format or the user's default format by
+ *   default, if NULL.
+ *
+ * The resulting value for the element will be an array holding the value and the
+ * format.  For example, the value for the body element will be:
+ * @code
+ *   $form_state['values']['body']['value'] = 'foo';
+ *   $form_state['values']['body']['format'] = 'foo';
+ * @endcode
+ *
+ * @param $element
+ *   The form element to process. Properties used:
+ *   - #base_type: The form element #type to use for the 'value' element.
+ *     'textarea' by default.
+ *   - #format: (optional) The text format id to preselect. If NULL or not set,
+ *     the default format for the current user will be used.
+ *
+ * @return
+ *   The expanded element.
+ */
+function better_formats_filter_process_format($element) {
+  global $user;
+
+  $show_selection = TRUE;
+  if (isset($element['#entity_type'])) {
+    $show_selection  = user_access('show format selection for ' . $element['#entity_type']);
+  }
+  $show_tips       = user_access('show format tips');
+  $show_tips_link  = user_access('show more format tips link');
+
+  // Ensure that children appear as subkeys of this element.
+  $element['#tree'] = TRUE;
+  $blacklist = array(
+    // Make form_builder() regenerate child properties.
+    '#parents',
+    '#id',
+    '#name',
+    // Do not copy this #process function to prevent form_builder() from
+    // recursing infinitely.
+    '#process',
+    // Description is handled by theme_text_format_wrapper().
+    '#description',
+    // Ensure proper ordering of children.
+    '#weight',
+    // Properties already processed for the parent element.
+    '#prefix',
+    '#suffix',
+    '#attached',
+    '#processed',
+    '#theme_wrappers',
+  );
+  // Move this element into sub-element 'value'.
+  unset($element['value']);
+  foreach (element_properties($element) as $key) {
+    if (!in_array($key, $blacklist)) {
+      $element['value'][$key] = $element[$key];
+    }
+  }
+
+  $element['value']['#type'] = $element['#base_type'];
+  $element['value'] += element_info($element['#base_type']);
+
+  // Turn original element into a text format wrapper.
+  $path = drupal_get_path('module', 'filter');
+  $element['#attached']['js'][] = $path . '/filter.js';
+  $element['#attached']['css'][] = $path . '/filter.css';
+
+  // Setup child container for the text format widget.
+  $attributes = array('class' => array('filter-wrapper'));
+  if (!$show_selection && !$show_tips && !$show_tips_link) {
+    $attributes['style'] = isset($attributes['style']) ? $attributes['style'] . '; display: none;' : 'display: none;';
+  }
+  $element['format'] = array(
+    '#type' => 'fieldset',
+    '#attributes' => $attributes,
+  );
+
+  // Use the default format for this user if none was selected.
+  if (!isset($element['#format'])) {
+    $element['#format'] = filter_default_format($user);
+  }
+
+  // Prepare text format guidelines.
+  $element['format']['guidelines'] = array(
+    '#type' => 'container',
+    '#attributes' => array('class' => array('filter-guidelines')),
+    '#weight' => 20,
+  );
+  // Get a list of formats that the current user has access to.
+  $formats = filter_formats($user);
+  $options = array();
+  foreach ($formats as $format) {
+    // If not showing selection remove all formats except default.
+    if ($format->format !== $element['#format'] && !$show_selection) {
+      continue;
+    }
+    $options[$format->format] = $format->name;
+    if ($show_tips) {
+      $element['format']['guidelines'][$format->format] = array(
+        '#theme' => 'filter_guidelines',
+        '#format' => $format,
+      );
+    }
+  }
+
+  $element['format']['format'] = array(
+    '#type' => 'select',
+    '#title' => t('Text format'),
+    '#options' => $options,
+    '#default_value' => $element['#format'],
+    '#access' => $show_selection ? count($formats) > 1 : FALSE,
+    '#weight' => 10,
+    '#attributes' => array('class' => array('filter-list')),
+    '#parents' => array_merge($element['#parents'], array('format')),
+  );
+
+  if ($show_tips_link) {
+    $element['format']['help'] = array(
+      '#type' => 'container',
+      '#theme' => 'filter_tips_more_info',
+      '#attributes' => array('class' => array('filter-help')),
+      '#weight' => 0,
+    );
+  }
+
+  // Hide fieldset if not showing selector or tips.
+  if (!$show_selection && !$show_tips && !$show_tips_link) {
+    //$element['format']['#access'] = FALSE;
+  }
+
+  $all_formats = filter_formats();
+  $format_exists = isset($all_formats[$element['#format']]);
+  $user_has_access = isset($formats[$element['#format']]);
+  $user_is_admin = user_access('administer filters');
+
+  // If the stored format does not exist, administrators have to assign a new
+  // format.
+  if (!$format_exists && $user_is_admin) {
+    $element['format']['format']['#required'] = TRUE;
+    $element['format']['format']['#default_value'] = NULL;
+    // Force access to the format selector (it may have been denied above if
+    // the user only has access to a single format).
+    $element['format']['format']['#access'] = TRUE;
+  }
+  // Disable this widget, if the user is not allowed to use the stored format,
+  // or if the stored format does not exist. The 'administer filters' permission
+  // only grants access to the filter administration, not to all formats.
+  elseif (!$user_has_access || !$format_exists) {
+    // Overload default values into #value to make them unalterable.
+    $element['value']['#value'] = $element['value']['#default_value'];
+    $element['format']['format']['#value'] = $element['format']['format']['#default_value'];
+
+    // Prepend #pre_render callback to replace field value with user notice
+    // prior to rendering.
+    $element['value'] += array('#pre_render' => array());
+    array_unshift($element['value']['#pre_render'], 'filter_form_access_denied');
+
+    // Cosmetic adjustments.
+    if (isset($element['value']['#rows'])) {
+      $element['value']['#rows'] = 3;
+    }
+    $element['value']['#disabled'] = TRUE;
+    $element['value']['#resizable'] = FALSE;
+
+    // Hide the text format selector and any other child element (such as text
+    // field's summary).
+    foreach (element_children($element) as $key) {
+      if ($key != 'value') {
+        $element[$key]['#access'] = FALSE;
+      }
+    }
+  }
+
+  return $element;
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function better_formats_form_field_ui_field_edit_form_alter(&$form, &$form_state, $form_id) {
+  // Only alter fields with text processing and if admin has chosen.
+  $text_processing = isset($form['#instance']['settings']['text_processing']) ? $form['#instance']['settings']['text_processing'] : NULL;
+  if ($text_processing == 1 && variable_get('better_formats_per_field_core', 0)) {
+    // Add a submit handler to save default values on empty fields.
+    $form['#submit'][] = 'better_formats_form_field_ui_edit_form_submit';
+  }
+}
+
+/**
+ * Submit handler for field instance edit form.
+ *
+ * Copied and slightly modifed from field_ui_field_edit_form_submit().
+ * @see field_ui_field_edit_form_submit()
+ */
+function better_formats_form_field_ui_edit_form_submit($form, &$form_state) {
+  $instance = $form_state['values']['instance'];
+  $field = $form_state['values']['field'];
+
+  // Only act on fields that have text processing enabled.
+  if ($instance['settings']['text_processing'] == 1) {
+    // Update any field settings that have changed.
+    $field_source = field_info_field($instance['field_name']);
+    $field = array_merge($field_source, $field);
+    field_update_field($field);
+
+    // Handle the default value.
+    if (isset($form['instance']['default_value_widget'])) {
+      $element = $form['instance']['default_value_widget'];
+
+      // Extract field values.
+      $items = array();
+      field_default_extract_form_values(NULL, NULL, $field, $instance, LANGUAGE_NONE, $items, $element, $form_state);
+      // Commenting out the below line to not remove emtpy fields.
+      //field_default_submit(NULL, NULL, $field, $instance, LANGUAGE_NONE, $items, $element, $form_state);
+
+      $instance['default_value'] = $items ? $items : NULL;
+    }
+
+    // Retrieve the stored instance settings to merge with the incoming values.
+    $instance_source = field_read_instance($instance['entity_type'], $instance['field_name'], $instance['bundle']);
+    $instance = array_merge($instance_source, $instance);
+    field_update_instance($instance);
+  }
+  // Messaging and redirect removed as this is added in the default handler.
+}

@@ -1,0 +1,9 @@
+name = Mark-a-Spot Open311 Server
+description = provides resources for an Open 311 endpoint
+package = "Mark-a-Spot"
+
+core = 7.x
+
+files[] = markaspot_open311.inc
+files[] = markaspot_open311.module
+dependencies[] = "services"

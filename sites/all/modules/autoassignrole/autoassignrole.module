@@ -1,0 +1,151 @@
+<?php
+
+/**
+ * @file
+ *
+ * The main autoassignrole.module file
+ *
+ * Designate a role to assign all new users to in addition to providing a
+ * mechanism for new users to select a role or role for their account.
+ */
+
+// Says to use element of type radio for role selection
+define('AUTOASSIGNROLE_ELEMENT_RADIO', 0);
+
+// Says to use element of type select for role selection
+define('AUTOASSIGNROLE_ELEMENT_SELECT', 1);
+
+// Says to use element of type select for checkbox selection
+define('AUTOASSIGNROLE_ELEMENT_CHECKBOX', 2);
+/**
+ * Implements hook_permission().
+ */
+function autoassignrole_permission() {
+  return array(
+    'administer autoassignrole' =>  array(
+      'title' => t('Administer auto assign role'),
+      'description' => t('Perform administration tasks for auto assign role.'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_menu().
+ *
+ * @return array
+ */
+function autoassignrole_menu() {
+  $items = array();
+  $items['admin/config/people/autoassignrole'] = array(
+    'title' => 'Auto assign role',
+    'description' => 'Configure auto role assignment.',
+    'access arguments' => array('administer autoassignrole'),
+    'page callback' => 'autoassignrole_admin_block_page',
+    'file' => 'autoassignrole.admin.inc',
+  );
+  $items['admin/config/people/autoassignrole/auto'] = array(
+    'title' => 'Automatic',
+    'description' => 'Configure which role(s) are automatically assigned on user creation.',
+    'access arguments' => array('administer autoassignrole'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('autoassignrole_auto_settings'),
+    'file' => 'autoassignrole.admin.inc',
+  );
+  $items['admin/config/people/autoassignrole/user'] = array(
+    'title' => 'User choice',
+    'description' => 'Configure the ability for an end user to choose their own roles.',
+    'access arguments' => array('administer autoassignrole'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('autoassignrole_user_settings'),
+    'file' => 'autoassignrole.admin.inc',
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_user_presave().
+ */
+function autoassignrole_user_presave(&$edit, $account, $category) {
+  // Use case http://drupal.org/node/971622
+  // Make sure we only assign roles automatically when enabled to do so.
+  if (variable_get('autoassignrole_auto_active', 0) || variable_get("autoassignrole_user_active", 0)) {
+    // Use case http://drupal.org/node/944864
+    // Only assign roles if this is a new account.
+    if (isset($account->is_new) && !empty($account->is_new)) {
+      // Get the existing user roles with the exception of the anonymous role.
+      $user_roles = user_roles(TRUE);
+      $roles_to_add = array();
+
+      // Add in automatic roles.
+      if (variable_get('autoassignrole_auto_active', 0)) {
+        $roles_to_add += array_intersect_key($user_roles, array_filter(variable_get('autoassignrole_auto_roles', array())));
+      }
+
+      // Add in user selected roles if any.
+      if (variable_get("autoassignrole_user_active", 0) && !empty($edit['user_roles'])) {
+        // Value is a single, convert to array
+        if (!is_array($edit['user_roles'])) {
+          $edit['user_roles'] = array($edit['user_roles'] => $edit['user_roles']);
+        }
+        $roles_to_add += array_intersect_key($user_roles, array_filter($edit['user_roles']));
+      }
+
+      // Make sure the roles key exists.
+      if (!isset($edit['roles'])) {
+        $edit['roles'] = array();
+      }
+
+      // Add in the new roles to override the current roles.
+      $edit['roles'] = $roles_to_add + $edit['roles'];
+    }
+  }
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter() for user_register_form().
+ */
+function autoassignrole_form_user_register_form_alter(&$form, &$form_state) {
+  if (variable_get("autoassignrole_user_active", 0)) {
+
+    // Get a list of valid roles that can be selected.
+    $roles = array_intersect_key(user_roles(TRUE), array_filter(variable_get('autoassignrole_user_roles', array())));
+
+    if ($roles) {
+      $form['autoassignrole_user'] = array(
+        '#type' => 'fieldset',
+        '#title' =>  filter_xss(variable_get('autoassignrole_user_fieldset_title', t('User Roles'))),
+        '#collapsible' => FALSE,
+        '#collapsed' => FALSE,
+      );
+
+      // Sort the roles
+      if (variable_get('autoassignrole_user_sort', 'SORT_ASC') == 'SORT_ASC') {
+        asort($roles);
+      }
+      else {
+        arsort($roles);
+      }
+
+      $multiple = variable_get('autoassignrole_user_multiple', 0);
+      $user_selection = variable_get('autoassignrole_user_selection', AUTOASSIGNROLE_ELEMENT_RADIO);
+      $type = $user_selection == AUTOASSIGNROLE_ELEMENT_RADIO ? 'radios' : ($user_selection == AUTOASSIGNROLE_ELEMENT_CHECKBOX ? 'checkboxes' : 'select');
+
+      // If not multiple + not required + select box, need a none selection.
+      if (!$multiple && !variable_get('autoassignrole_user_required', 0) && $type == 'select') {
+        array_unshift(t('None'), $roles);
+      }
+
+      // Add in the element
+      $form['autoassignrole_user']['user_roles'] = array(
+        '#type' => $type,
+        '#title' => filter_xss(variable_get('autoassignrole_user_title', t('Role'))),
+        '#options' => $roles,
+        '#description' => filter_xss(variable_get('autoassignrole_user_description', t('Select a role'))),
+        '#required' => variable_get('autoassignrole_user_required', 0),
+        '#multiple' => $multiple,
+        '#options' => $roles,
+      );
+    }
+  }
+}

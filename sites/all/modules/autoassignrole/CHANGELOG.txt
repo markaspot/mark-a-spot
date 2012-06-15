@@ -1,0 +1,22 @@
+
+autoassignrole 7.0, xxxx-xx-xx (development version)
+------------------------
+- [#1186328] Move menu to admin/config/people
+- [#971622] Auto Assign Role only assigns roles automatically when auto
+  assignment is enabled.
+- [#944864] User object saved programmatically and assigned roles.
+- [#971472] Split up Simpletests to match main functional areas.
+- [#945016] Administrator sets the user role field title.
+- [#945024] Administrator set roles description exposed when end user selects
+  roles.
+- [#945010] Administrator sets a fieldset title for roles exposed to end user.
+- [#944988] Administrator toggles sort order of roles exposed to an end user.
+- [#944978] Administrator toggles if user selection of roles is required.
+- [#944974] Administrator sets the selection method of roles for an end user.
+- [#944944] Administrator toggles letting user select multiple roles.
+- [#944922] Administrator sets roles that will be visible to the end user.
+- [#944880] Administrator toggles allowing user to select role.
+- [#937678] Use Case - Administrator sets roles for automatic assignment.
+- [#937666] Use Case - Administrator enables/disables automatic assignment of
+  admin created accounts.
+- [#937468] Use Case - Administrator enables/disables automatic assignment.

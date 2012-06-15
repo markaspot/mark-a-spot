@@ -1,0 +1,212 @@
+<?php
+// markaspot_open311.module
+
+
+/** Gets a request object by id.
+ *
+ * @param int $id
+ * @return object
+ */
+function markaspot_open311_get_requests($id) {
+  return db_query('SELECT * FROM {node} WHERE nid=:id', array(':id' => $id))
+           ->fetchAll();
+}
+
+/** Writes a request to the database
+ *
+ * @param object $request
+ * @return void
+ */
+function markaspot_open311_write_request($node) {
+  return node_save($node);
+}
+
+/**
+ * Deletes a request from the database.
+ *
+ * @param int $id
+ * @return void
+ */
+function markaspot_open311_delete_requests($id) {
+  db_query('DELETE FROM {node} WHERE id=:id', array(':id' => $id));
+}
+
+/**
+ * Implementation of hook_services_resources().
+ */
+function markaspot_open311_services_resources() {
+  return array(
+     'discovery' => array(
+      'index' => array(
+        'help' => 'Provides specification for the service discovery mechanism',
+        'file' => array('file' => 'inc', 'module' => 'markaspot_open311'),
+        'callback' => '_markaspot_open311_discovery',
+        'access callback' => '_markaspot_open311_access',
+        'access arguments' => array('view'),
+        'access arguments append' => TRUE,
+        'args' => null
+        ),
+      ),   
+    'requests' => array(
+      'retrieve' => array(
+        'help' => 'Retrieves a request',
+        'file' => array('file' => 'inc', 'module' => 'markaspot_open311'),
+        'callback' => '_markaspot_open311_requests_retrieve',
+        'access callback' => '_markaspot_open311_access',
+        'access arguments' => array('view'),
+        'access arguments append' => TRUE,
+        'args' => array(
+          array(
+            'name' => 'id',
+            'type' => 'int',
+            'description' => 'The id of the request to get',
+            'source' => array('path' => '0'),
+            'optional' => FALSE,
+          ),
+        ),
+      ),
+      'create' => array(
+        'help' => 'Creates a request',
+        'file' => array('file' => 'inc', 'module' => 'markaspot_open311'),
+        'callback' => '_markaspot_open311_requests_create',
+        'access arguments' => array('request resource create'),
+        'access arguments append' => FALSE,
+        'args' => array(
+          array(
+            'name' => 'data',
+            'type' => 'struct',
+            'description' => 'The request object',
+            'source' => 'data',
+            'optional' => FALSE,
+          ),
+        ),
+      ),
+      // 'update' => array(
+      //   'help' => 'Updates a request',
+      //   'file' => array('file' => 'inc', 'module' => 'markaspot_open311'),
+      //   'callback' => '_markaspot_open311_update',
+      //   'access callback' => '_markaspot_open311_access',
+      //   'access arguments' => array('update'),
+      //   'access arguments append' => TRUE,
+      //   'args' => array(
+      //     array(
+      //       'name' => 'id',
+      //       'type' => 'int',
+      //       'description' => 'The id of the node to update',
+      //       'source' => array('path' => '0'),
+      //       'optional' => FALSE,
+      //     ),
+      //     array(
+      //       'name' => 'data',
+      //       'type' => 'struct',
+      //       'description' => 'The request data object',
+      //       'source' => 'data',
+      //       'optional' => FALSE,
+      //     ),
+      //   ),
+      // ),
+      // 'delete' => array(
+      //   'help' => 'Deletes a request',
+      //   'file' => array('file' => 'inc', 'module' => 'markaspot_open311'),
+      //   'callback' => '_markaspot_open311_delete',
+      //   'access callback' => '_markaspot_open311_access',
+      //   'access arguments' => array('delete'),
+      //   'access arguments append' => TRUE,
+      //   'args' => array(
+      //     array(
+      //       'name' => 'nid',
+      //       'type' => 'int',
+      //       'description' => 'The id of the request to delete',
+      //       'source' => array('path' => '0'),
+      //       'optional' => FALSE,
+      //     ),
+      //   ),
+      // ),
+      'index' => array(
+        'help' => 'Retrieves a listing of requests',
+        'file' => array('file' => 'inc', 'module' => 'markaspot_open311'),
+         // Callback in inc.file
+        'callback' => '_markaspot_open311_requests_index',
+        'access callback' => 'user_access',
+        'access arguments' => array('access content'),
+        'access arguments append' => FALSE,
+        'args' => array(
+          array(
+            'name' => 'page',
+            'type' => 'int',
+            'description' => '',
+            'source' => array(
+              'param' => 'page',
+            ),
+            'optional' => TRUE,
+            'default value' => 0,
+          ),
+          array(
+           'name' => 'parameters',
+           'type' => 'array',
+           'description' => '',
+           'source' => 'param',
+           'optional' => TRUE,
+           'default value' => array(),
+          ),
+        ),
+      ),
+    ),
+    'services' => array(
+      'retrieve' => array(
+        'help' => 'Retrieves a service definition by servicecode (not yet implemented)',
+        'file' => array('file' => 'inc', 'module' => 'markaspot_open311'),
+        'callback' => '_markaspot_open311_services_retrieve',
+        'access callback' => '_markaspot_open311_access',
+        'access arguments' => array('view'),
+        'access arguments append' => TRUE,
+        'args' => array(
+          array(
+            'name' => 'service_code',
+            'type' => 'string',
+            'description' => 'The service_code of the service to retrieve',
+            'source' => array('path' => '0'),
+            'optional' => FALSE,
+          ),
+        ),
+      ),
+      'index' => array(
+        'help' => 'Retrieves a listing of available services',
+        'file' => array('file' => 'inc', 'module' => 'markaspot_open311'),
+         // Callback in inc.file
+        'callback' => '_markaspot_open311_services_index',
+        'access callback' => 'user_access',
+        'access arguments' => array('access content'),
+        'access arguments append' => FALSE,
+        'args' => array(
+ 
+          // array(
+          //   'name' => 'fields',
+          //   'optional' => TRUE,
+          //   'type' => 'string',
+          //   'description' => 'The fields to get.',
+          //   'default value' => '*',
+          //   'source' => array('param' => 'fields'),
+          // ),
+          array(
+            'name' => 'parameters',
+            'optional' => TRUE,
+            'type' => 'array',
+            'description' => 'Parameters',
+            'default value' => array(),
+            'source' => array('param' => 'parameters'),
+          ),
+          // array(
+          //   'name' => 'pagesize',
+          //   'optional' => TRUE,
+          //   'type' => 'init',
+          //   'description' => 'Number of records to get per page.',
+          //   'default value' => variable_get('services_taxonomy_term_index_page_size', 20),
+          //   'source' => array('param' => 'pagesize'),
+          // ),
+        ),
+      ),
+    )
+  );
+}
+?>

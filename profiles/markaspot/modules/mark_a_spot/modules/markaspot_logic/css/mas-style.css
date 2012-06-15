@@ -1,0 +1,404 @@
+/**
+ * @file
+ * CSS for Mark-a-Spot theme adoption.
+ */
+ 
+
+#block-mas-logic-mas-map{
+/*    position: absolute;
+    left: 740px;
+    top: 70px;
+    opacity: 0.8em;
+    height: 100px;
+    width: 170px*/
+}
+
+#block-menu-menu-status{
+    top: 210px;
+    height: 80px;
+    opacity: 0.8em;
+    width: 170px
+
+}
+#block-menu-menu-category{
+    top: 330px;
+    height: 80px;
+    width: 170px;
+    opacity: 0.8em;
+}
+
+
+ul#markersidebar {
+    list-style:none;
+    padding: 0;
+    margin: 0;
+    height: 100px;
+    overflow: auto;
+}
+
+ul#markersidebar li a {
+    color: #006088;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+
+
+div#block-menu-menu-category ul,
+div#block-menu-menu-status ul {
+    margin: 0;
+    padding: 0 0 0.25em 0em;
+}
+
+
+ul li.leaf {
+    list-style-image: none;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+
+.field .field-label {
+  display:none;
+}
+
+.field.field-name-field-geo {
+float:left
+}
+
+.geolocation-lat-item, 
+.geolocation-lng-item {
+visibility:hidden;
+}
+
+
+body.page-list div#map {
+    height: 440px;
+    width: 440px;
+}
+
+body.page-map div#map {
+    height: 400px;
+    width: 100%;
+}
+
+
+
+/* 
+ * Galerie Startseite
+ *
+ */
+
+div.pane-views-gallery-block {
+clear:both;
+margin-top: 100px
+}
+ 
+.view-gallery div.views-row {
+    float: left;
+    margin-right: 53px;
+    padding: 10px;
+}
+.view-gallery div.views-row-last {
+    margin: auto;
+}
+.view-gallery div.views-row span {
+    margin: auto;
+    display:block;
+}
+
+/*
+ * Detailansicht
+ *
+ */
+
+#map.detail {
+    height: 196px;
+    width: 320px;
+}
+
+.panel-2col .panel-col-first {
+width: 550px;
+margin: 0 20px 0 0;
+}
+
+.panel-2col .panel-col-last {
+   width: 350px;
+   margin: 0 0 0 20px
+}
+
+.geolocation-help, .geolocation-map {
+    clear: both;
+    margin: 0.3em 0;
+}
+
+.geolocation-address-geocode {
+    width: 100px;
+    display:block;
+    margin: 22px 0 0 420px;
+}
+
+.field-widget-geolocation-googlemap {
+    overflow:hidden;
+}
+
+
+
+#map_wrapper_splash #start {
+    background: none repeat scroll 0 0 #FFFFFF;
+    display: block;
+    height: 233px;
+    left: 0;
+    opacity: 0.1;
+    position: absolute;
+    top: 0;
+    width: 320px;
+    z-index: 40;
+}
+#map_wrapper_splash {
+    background: none repeat scroll 0 0 transparent;
+    left: 0;
+    position: relative;
+    top: 0;
+    width: 320px;
+}
+#map_wrapper_splash #map {
+    height: 233px;
+    width: 320px;
+}
+
+
+
+/*
+ * Boxes
+ */
+
+ div.views-row, #map,.view-gallery div.views-row, div.field-item a img, div#markers-list div.report {
+    background: #F6f6f6;
+    border-radius: 5px 5px 5px 5px;
+    box-shadow: 0 1px 5px #B4B4B4;
+    margin-bottom: 20px;
+    padding: 10px 10px 20px;
+    position: relative;
+}
+
+
+
+
+
+/*
+ * List View
+ *
+ *
+ */
+
+
+
+
+div#markers-list-view-unpublished div.panel-col-first {
+float: left;
+width: 60%;
+}
+
+div#markers-list-view-unpublished div.panel-col-last {
+float: left;
+width: 40%;
+}
+div#markers-list-view-unpublished span.meta-info{
+    margin: 0 0 0 10px
+}
+
+
+div.markers-list-intro {
+  margin: 0 0 60px 0
+
+}
+
+#markers-list-view div.report{
+    min-height: 160px
+
+}
+
+
+div.show-markers,
+div.no-markers {
+    float: left;
+    min-height: 80px;
+    padding: 0;
+    width: 25px;
+}
+
+div.no-markers {
+    float: left;
+    margin: 10px 5px 0 -10px;
+    min-height: 80px;
+    padding: 0;
+    width: 25px;
+}
+
+div.show-markers {
+    background: #fff;
+
+    margin: 5px 30px 0 -10px;
+    border-radius: 0 5px 5px 0;
+    width: 25px;
+    cursor:pointer;
+}
+
+div.show-markers:hover {
+    background: #ccc;
+}
+
+div.show-markers span {
+    display:block;
+    margin-top: 10px;
+    color: #999;
+    font-weight: 700;
+    font-size: 250% ;
+}
+
+
+div.views-field.views-field-field-relevance-1{
+    width: 340px
+}
+
+div.views-field.views-field-view-node{
+    width: 430px;
+    text-align:right
+}
+
+div.cat-stat-wrapper {
+    margin: 3px 0
+}
+
+.marker-status  {
+    border-radius: 5px 5px 5px 5px;
+    font-weight: normal;
+    padding: 1px 5px;
+    text-align: right;
+}
+
+div.marker-status  {
+    float:right;
+}
+span.marker-status  {
+    display:inline-block;
+    width: 135px;
+}
+
+span.marker-category  {
+    display:inline-block;
+    width: 255px;
+    margin: 0 5px 0 15px
+}
+
+#markers-list-view span.meta-info {
+    margin: 0 0 0 15px;
+    font-size: 90%;
+    display:block;
+    color: #999;
+    text-align: right;
+}
+
+h3.list-title  {
+margin: 0 10px 15px 18px;
+}
+
+
+#markers-list-view-unpublished span.marker-category {
+width: 360px;
+margin: 0 5px 0 5px;
+}
+
+#markers-list-view-unpublished h3  {
+width: 445px;
+margin: 0 5px 0 10px;
+}
+
+#markers-list-view-unpublished div#markers-list div.odd, 
+#markers-list-view-unpublished div#markers-list div.even {
+min-height: 40px;
+}
+
+#markers-single-view span.marker-category  {
+    margin: 5px 15px 0 0px
+}
+
+#markers-single-view span.marker-category{
+    width: 325px;
+}
+
+#markers-single-view span.marker-status {
+    width: 155px;
+
+}
+.marker-category {
+    border-radius: 5px 5px 5px 5px;
+    font-weight: normal;
+    margin: 5px 0;
+    padding: 1px 5px;
+    text-align: left;
+    font-weight: bold
+}
+
+
+
+.marker-category.col-ccddaa {
+    background: no-repeat scroll right center #fff;
+    color: #ccddaa;
+}
+.marker-category.col-ff00bb {
+    background: no-repeat scroll right center #fff;
+    color: #ff00bb
+}
+.marker-category.col-660000 {
+    background: no-repeat scroll right center #fff;
+    color: #660000;
+}
+.marker-category.col-287fbd {
+    background: no-repeat scroll right center #fff;
+    color: #287fbd
+}
+
+
+
+
+.marker-status.col-8fe83b,
+.marker-status.col-8fe83b a {
+    background: no-repeat scroll right center #8fe83b;
+    color: dark-green;
+    font-weight: 400
+
+}
+.marker-status.col-cc0000,
+.marker-status.col-cc0000 a {
+    background: no-repeat scroll right center #CC0000;
+    color: #fff;
+    font-weight: 400
+
+
+}
+.marker-status.col-ff6600,
+.marker-status.col-ff6600 a {
+    background: no-repeat scroll right center #ff6600;
+    color: yellow;
+    font-weight: 400
+}
+
+div.views-field.views-field-field-image {
+    float:left;
+    margin: 5px 10px 10px 0;
+}
+
+.panel-2col .panel-col-first {
+float: left;
+width: 47%;
+}
+
+.panel-2col .panel-col-last {
+float: left;
+width: 45%;
+}
+
+
