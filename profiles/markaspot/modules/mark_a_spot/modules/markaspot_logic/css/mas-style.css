@@ -49,7 +49,7 @@ div#block-menu-menu-status ul {
     margin: 0;
     padding: 0 0 0.25em 0em;
 }
-
+/*
 
 ul li.leaf {
     list-style-image: none;
@@ -71,7 +71,7 @@ float:left
 .geolocation-lng-item {
 visibility:hidden;
 }
-
+*/
 
 body.page-list div#map {
     height: 440px;
@@ -362,8 +362,6 @@ min-height: 40px;
 }
 
 
-
-
 .marker-status.col-8fe83b,
 .marker-status.col-8fe83b a {
     background: no-repeat scroll right center #8fe83b;
@@ -400,5 +398,3 @@ width: 47%;
 float: left;
 width: 45%;
 }
-
-
