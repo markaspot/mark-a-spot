@@ -162,8 +162,8 @@ function markaspot_open311_services_resources() {
         'access arguments append' => TRUE,
         'args' => array(
           array(
-            'name' => 'service_code',
-            'type' => 'string',
+            'name' => 'id',
+            'type' => 'int',
             'description' => 'The service_code of the service to retrieve',
             'source' => array('path' => '0'),
             'optional' => FALSE,
