@@ -147,14 +147,12 @@ function _markaspot_open311_requests_index($page, $parameters) {
  * All available services
  */
 
-function _markaspot_open311_services_index($page, $parameters) {
-
+function _markaspot_open311_services_index($args) {
   $taxonomies = taxonomy_get_tree(2, $parent = 0, $max_depth = 1, $load_entities = TRUE);
-
+  
   foreach ($taxonomies as $taxonomy_term) {
     $services['services'][] = _tax_map_service($taxonomy_term);
    }
-
  
   return $services;
 }
@@ -244,16 +242,16 @@ function _node_map_request($node){
 
   // $request['agency_responsible'] = null;
   // $request['service_notice'] = null;
+  // $request['expected_datetime'] = null;
+  // $request['address_id'] = $null;
 
   $request['requested_datetime'] = date('c',$node->created);
   $request['updated_datetime'] = date('c',$node->changed);
 
-  // $request['expected_datetime'] = null;
 
   // Geo Information including address
   $request['address'] = $node->field_address['und'][0]['value'];
 
-  // $request['address_id'] = $null;
   $request['zipcode'] = $node->field_zip['und'][0]['value'];
   $request['lat'] = $node->field_geo['und'][0]['lat'];
   $request['long'] = $node->field_geo['und'][0]['lng'];
