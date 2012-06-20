@@ -45,8 +45,8 @@
 
 function markaspot_log_menu(){
   $items['admin/structure/maslog/manage'] = array(
-    'title' => 'PostIt Admin',
-    'description' => 'Manage PostIT structure',
+    'title' => 'Mark-a-Spot  Log Admin',
+    'description' => 'Manage Log',
     'page callback' => 'markaspot_log_info',
     'access arguments' => array('administer maslogs'),
   );
@@ -64,18 +64,18 @@ function markaspot_log_menu(){
 function markaspot_log_permission(){
     return array(
     'administer maslogs' =>  array(
-      'title' => t('Administer maslogs'),
+      'title' => t('Administer Mark-a-Spot Logs'),
       'restrict access' => TRUE,
     ),
-    'view postsits' => array(
-      'title' => t('View PostIts'),
+    'view maslogs' => array(
+      'title' => t('View Mark-a-Spot Logs'),
     )
   );
 }
 
 
 function markaspot_log_info() {
-  return ('Welcome to the administration page for your Postits!');
+  return ('Welcome to the administration page for your Mark-a-Spot Logs!');
 }
 
 function markaspot_log_page_title($maslog){
@@ -100,7 +100,7 @@ function markaspot_log_field_extra_fields() {
     'form' => array(
       'note' => array(
         'label' => t('Note'),
-        'description' => t('PostIt Note'),
+        'description' => t('Mark-a-Spot Note'),
       ),
     ),
   );
