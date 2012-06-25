@@ -8,3 +8,4 @@ sites/*/private
 sites/*/themes/mas
 sites/*/themes/marinelli
 .DS_Store
+sites/all/modules/devel/

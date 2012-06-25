@@ -155,7 +155,7 @@ var markerLayer, queryString ;
             item.positionLng = 6.89;
             getToggle = 0;
           }
-
+          
           if (item.node.positionLat && item.node.positionLat != mas.markaspot_ini_lat){
             item = item.node;
             var latlon = new google.maps.LatLng(item.positionLat,item.positionLng);
@@ -185,23 +185,35 @@ var markerLayer, queryString ;
                   );
                 break;
                 case 1:
-                  var image = new google.maps.MarkerImage('http://chart.apis.google.com/chart?cht=mm&chs=32x32&chco=ffffff,' + item.categoryHex + ',333333&ext=.png');
-                  var shadow = new google.maps.MarkerImage(
-                   'http://maps.gstatic.com/intl/de_ALL/mapfiles/shadow50.png', 
-                    new google.maps.Size(37, 32),
-                    new google.maps.Point(0,0),
-                    new google.maps.Point(13, 32)
-                  );
+
+                  if (item.statusTitle == "Archive") {
+                    var image = new google.maps.MarkerImage('http://chart.apis.google.com/chart?cht=mm&chs=15x15&chco=ffffff,' + item.categoryHex + ',000000&ext=.png');
+                  } else {
+                    var image = new google.maps.MarkerImage('http://chart.apis.google.com/chart?cht=mm&chs=32x32&chco=ffffff,' + item.categoryHex + ',333333&ext=.png');
+                    var shadow = new google.maps.MarkerImage(
+                      'http://maps.gstatic.com/intl/de_ALL/mapfiles/shadow50.png', 
+                      new google.maps.Size(37, 32),
+                      new google.maps.Point(0,0),
+                      new google.maps.Point(13, 32)
+                    );
+                  }
+                  
                 break;
 
                 case 2:
-                  var image = new google.maps.MarkerImage('http://chart.apis.google.com/chart?cht=mm&chs=32x32&chco=ffffff,' + item.statusHex + ',000000&ext=.png');
-                  var shadow = new google.maps.MarkerImage(
-                   'http://maps.gstatic.com/intl/de_ALL/mapfiles/shadow50.png', 
-                    new google.maps.Size(37, 32),
-                    new google.maps.Point(0,0),
-                    new google.maps.Point(13, 32)
-                  );
+
+                  if (item.statusTitle == "Archive") {
+                    var image = new google.maps.MarkerImage('http://chart.apis.google.com/chart?cht=mm&chs=15x153&chco=000000,' + item.statusHex + ',000000&ext=.png');
+                  } else {
+                    var image = new google.maps.MarkerImage('http://chart.apis.google.com/chart?cht=mm&chs=32x32&chco=ffffff,' + item.statusHex + ',000000&ext=.png');
+                    var shadow = new google.maps.MarkerImage(
+                     'http://maps.gstatic.com/intl/de_ALL/mapfiles/shadow50.png', 
+                      new google.maps.Size(37, 32),
+                      new google.maps.Point(0,0),
+                      new google.maps.Point(13, 32)
+                    );
+                  }
+
                 break;
 
               }
@@ -215,11 +227,10 @@ var markerLayer, queryString ;
               });
 
               fn = bindInfoWindow(GoogleMarker,  Drupal.Geolocation.maps[0], infoWindow, html);
-
-            }
-           mc.addMarker(GoogleMarker);
-           bounds.extend(latlon);
            
+              mc.addMarker(GoogleMarker);
+              bounds.extend(latlon);
+               
 
               if ($("#markersidebar")){
                 var li = document.createElement('li');
@@ -233,7 +244,8 @@ var markerLayer, queryString ;
                   $(this).animate({ backgroundColor: "black" }, 1000);
                   google.maps.event.trigger(GoogleMarker, 'click');
               });
-         }
+          }
+        }
       }); // $.each
       Drupal.Geolocation.maps[0].fitBounds(bounds);
       var listener = google.maps.event.addListener(Drupal.Geolocation.maps[0], "idle", function() { 
