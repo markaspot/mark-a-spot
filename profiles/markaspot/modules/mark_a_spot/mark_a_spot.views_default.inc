@@ -1513,9 +1513,8 @@ function mark_a_spot_views_default_views() {
   $handler->display->display_options['fields']['nothing']['alter']['strip_tags'] = 0;
   $handler->display->display_options['fields']['nothing']['alter']['trim'] = 0;
   $handler->display->display_options['fields']['nothing']['alter']['html'] = 0;
-  $handler->display->display_options['fields']['nothing']['element_type'] = 'div';
   $handler->display->display_options['fields']['nothing']['element_label_colon'] = FALSE;
-  $handler->display->display_options['fields']['nothing']['element_default_classes'] = 0;
+  $handler->display->display_options['fields']['nothing']['element_default_classes'] = 1;
   $handler->display->display_options['fields']['nothing']['hide_empty'] = 0;
   $handler->display->display_options['fields']['nothing']['empty_zero'] = 0;
   $handler->display->display_options['fields']['nothing']['hide_alter_empty'] = 1;
@@ -1538,9 +1537,8 @@ function mark_a_spot_views_default_views() {
   $handler->display->display_options['fields']['nothing_1']['alter']['strip_tags'] = 0;
   $handler->display->display_options['fields']['nothing_1']['alter']['trim'] = 0;
   $handler->display->display_options['fields']['nothing_1']['alter']['html'] = 0;
-  $handler->display->display_options['fields']['nothing_1']['element_type'] = '0';
   $handler->display->display_options['fields']['nothing_1']['element_label_colon'] = FALSE;
-  $handler->display->display_options['fields']['nothing_1']['element_default_classes'] = 0;
+  $handler->display->display_options['fields']['nothing_1']['element_default_classes'] = 1;
   $handler->display->display_options['fields']['nothing_1']['hide_empty'] = 0;
   $handler->display->display_options['fields']['nothing_1']['empty_zero'] = 0;
   $handler->display->display_options['fields']['nothing_1']['hide_alter_empty'] = 1;
@@ -1801,6 +1799,7 @@ function mark_a_spot_views_default_views() {
   $handler->display->display_options['fields']['field_common_1']['field'] = 'field_common';
   $handler->display->display_options['fields']['field_common_1']['ui_name'] = 'Flag Common';
   $handler->display->display_options['fields']['field_common_1']['label'] = '';
+  $handler->display->display_options['fields']['field_common_1']['exclude'] = TRUE;
   $handler->display->display_options['fields']['field_common_1']['alter']['alter_text'] = 0;
   $handler->display->display_options['fields']['field_common_1']['alter']['text'] = 'common yes';
   $handler->display->display_options['fields']['field_common_1']['alter']['make_link'] = 0;
