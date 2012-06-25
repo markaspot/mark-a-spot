@@ -133,10 +133,10 @@ margin: 0 20px 0 0;
     margin: 0.3em 0;
 }
 
-.geolocation-address-geocode {
+#report-node-form .geolocation-address-geocode {
     width: 100px;
     display:block;
-    margin: 22px 0 0 420px;
+    margin: 12px 0 0 220px
 }
 
 .field-widget-geolocation-googlemap {
@@ -389,12 +389,13 @@ div.views-field.views-field-field-image {
     margin: 5px 10px 10px 0;
 }
 
-.panel-2col .panel-col-first {
+#markers-single-view.panel-2col .panel-col-first {
 float: left;
 width: 47%;
 }
 
-.panel-2col .panel-col-last {
+#markers-single-view.panel-2col .panel-col-last {
 float: left;
 width: 45%;
 }
+
