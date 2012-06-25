@@ -168,9 +168,11 @@ function _markaspot_open311_services_index($args) {
  */
 
 function _markaspot_open311_services_retrieve($service_code) {
-  var_dump($service_code);
-  // needs more work
+  //echo $service_code;
 
+  $taxonomy_term =  taxonomy_term_load($service_code);
+  $service['service_definition'][] = _tax_map_service($taxonomy_term);
+  return $service;
 }
 
 /**
