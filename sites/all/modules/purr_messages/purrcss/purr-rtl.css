@@ -1,0 +1,19 @@
+#purr-container {
+  right: auto;
+  left: 20px;
+}
+
+.notice .close {
+  right: auto;
+  left: 22px;
+  text-indent: 9999px;
+}
+
+.notice-body img {
+  margin: 0 0 0 10px;
+  float: right;
+}
+
+.notice-body p {
+  margin: 5px 60px 0 0;
+}

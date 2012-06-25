@@ -1,0 +1,101 @@
+#purr-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+}
+
+.notice {
+  position: relative;
+  width: 324px;
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.notice .close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: block;
+  width: 18px;
+  height: 17px;
+  text-indent: -9999px;
+  background: url(./images/purrClose.png) no-repeat 0 10px;
+}
+
+.notice-body {
+  min-height: 50px;
+  padding: 22px 22px 0 22px;
+  background: url(images/purrTop.png) no-repeat left top;
+  color: #f9f9f9;
+}
+
+.notice-body ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.notice-body img {
+  width: 50px;
+  margin: 0 10px 0 0;
+  float: left;
+}
+
+.notice-body h3	{
+  margin: 0;
+  font-size: 1.1em;
+}
+
+.notice-body p {
+  margin: 5px 0 0 0;
+  font-size: 12px;
+  line-height: 1.4em;
+}
+
+.notice-bottom {
+  height: 22px;
+  background: url(./images/purrBottom.png) no-repeat left top;
+}
+
+.notice.error,
+.notice.status,
+.notice.warning {
+  background: none;
+  border: 0;
+}
+
+.notice.error .notice-body {
+  background: url(./images/purrTop-error.png) no-repeat left top;
+  border: 0;
+}
+
+.notice.error .notice-bottom {
+  background: url(images/purrBottom-error.png) no-repeat left top;
+}
+
+.notice.warning {
+  background: none;
+  border: 0;
+}
+
+.notice.warning .notice-body {
+  background: url(./images/purrTop-error.png) no-repeat left top;
+  border: 0;
+}
+
+.notice.warning .notice-bottom {
+  background: url(./images/purrBottom-error.png) no-repeat left top;
+}
+
+.notice li {
+  margin: 0;
+}
+
+.notice a:link {
+  color: #aaf;
+}
+
+.notice pre {
+  margin: 0;
+}
