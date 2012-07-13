@@ -1520,18 +1520,35 @@ function mark_a_spot_field_default_fields() {
 
   // Exported field: 'taxonomy_term-category-field_category_id'
   $fields['taxonomy_term-category-field_category_id'] = array(
+ 
     'field_config' => array(
       'active' => '1',
       'cardinality' => '1',
       'deleted' => '0',
       'entity_types' => array(),
       'field_name' => 'field_category_id',
-      'foreign keys' => array(),
-      'indexes' => array(),
-      'module' => 'number',
-      'settings' => array(),
+      'field_permissions' => array(
+        'type' => '0',
+      ),
+      'foreign keys' => array(
+        'format' => array(
+          'columns' => array(
+            'format' => 'format',
+          ),
+          'table' => 'filter_format',
+        ),
+      ),
+      'indexes' => array(
+        'format' => array(
+          0 => 'format',
+        ),
+      ),
+      'module' => 'text',
+      'settings' => array(
+        'max_length' => '6',
+      ),
       'translatable' => '0',
-      'type' => 'number_integer',
+      'type' => 'text',
     ),
     'field_instance' => array(
       'bundle' => 'category',
@@ -1540,56 +1557,186 @@ function mark_a_spot_field_default_fields() {
       'description' => '',
       'display' => array(
         'default' => array(
-          'label' => 'above',
+          'label' => 'hidden',
           'settings' => array(),
           'type' => 'hidden',
-          'weight' => '0',
+          'weight' => '1',
         ),
         'full' => array(
           'label' => 'above',
-          'module' => 'number',
-          'settings' => array(
-            'decimal_separator' => '.',
-            'prefix_suffix' => 1,
-            'scale' => 0,
-            'thousand_separator' => ' ',
-          ),
-          'type' => 'number_integer',
-          'weight' => '0',
+          'module' => 'text',
+          'settings' => array(),
+          'type' => 'text_default',
+          'weight' => '1',
         ),
         'token' => array(
-          'label' => 'above',
-          'module' => 'number',
-          'settings' => array(
-            'decimal_separator' => '.',
-            'prefix_suffix' => 1,
-            'scale' => 0,
-            'thousand_separator' => ' ',
-          ),
-          'type' => 'number_integer',
-          'weight' => '0',
+          'label' => 'hidden',
+          'module' => 'text',
+          'settings' => array(),
+          'type' => 'text_default',
+          'weight' => '1',
         ),
       ),
       'entity_type' => 'taxonomy_term',
       'field_name' => 'field_category_id',
-      'label' => 'CategoryId',
-      'required' => 0,
+      'label' => 'categoryId',
+      'required' => 1,
       'settings' => array(
-        'max' => '',
-        'min' => '',
-        'prefix' => '',
-        'suffix' => '',
+        'text_processing' => '0',
         'user_register_form' => FALSE,
       ),
       'widget' => array(
-        'active' => 0,
-        'module' => 'number',
-        'settings' => array(),
-        'type' => 'number',
-        'weight' => '1',
+        'active' => 1,
+        'module' => 'text',
+        'settings' => array(
+          'size' => '6',
+        ),
+        'type' => 'text_textfield',
+        'weight' => '2',
+      ),
+    ),
+
+
+
+    // 'field_config' => array(
+    //   'active' => '1',
+    //   'cardinality' => '1',
+    //   'deleted' => '0',
+    //   'entity_types' => array(),
+    //   'field_name' => 'field_category_id',
+    //   'foreign keys' => array(),
+    //   'indexes' => array(),
+    //   'module' => 'number',
+    //   'settings' => array(),
+    //   'translatable' => '0',
+    //   'type' => 'number_integer',
+    // ),
+    // 'field_instance' => array(
+    //   'bundle' => 'category',
+    //   'default_value' => NULL,
+    //   'deleted' => '0',
+    //   'description' => '',
+    //   'display' => array(
+    //     'default' => array(
+    //       'label' => 'above',
+    //       'settings' => array(),
+    //       'type' => 'hidden',
+    //       'weight' => '0',
+    //     ),
+    //     'full' => array(
+    //       'label' => 'above',
+    //       'module' => 'number',
+    //       'settings' => array(
+    //         'decimal_separator' => '.',
+    //         'prefix_suffix' => 1,
+    //         'scale' => 0,
+    //         'thousand_separator' => ' ',
+    //       ),
+    //       'type' => 'number_integer',
+    //       'weight' => '0',
+    //     ),
+    //     'token' => array(
+    //       'label' => 'above',
+    //       'module' => 'number',
+    //       'settings' => array(
+    //         'decimal_separator' => '.',
+    //         'prefix_suffix' => 1,
+    //         'scale' => 0,
+    //         'thousand_separator' => ' ',
+    //       ),
+    //       'type' => 'number_integer',
+    //       'weight' => '0',
+    //     ),
+    //   ),
+    //   'entity_type' => 'taxonomy_term',
+    //   'field_name' => 'field_category_id',
+    //   'label' => 'CategoryId',
+    //   'required' => 0,
+    //   'settings' => array(
+    //     'max' => '',
+    //     'min' => '',
+    //     'prefix' => '',
+    //     'suffix' => '',
+    //     'user_register_form' => FALSE,
+    //   ),
+    //   'widget' => array(
+    //     'active' => 0,
+    //     'module' => 'number',
+    //     'settings' => array(),
+    //     'type' => 'number',
+    //     'weight' => '1',
+    //   ),
+    // ),
+  );
+
+
+
+  // Exported field: 'taxonomy_term-category-field_hash'
+  $fields['taxonomy_term-category-field_hash'] = array(
+    'field_config' => array(
+      'active' => '1',
+      'cardinality' => '1',
+      'deleted' => '0',
+      'entity_types' => array(),
+      'field_name' => 'field_hash',
+      'field_permissions' => array(
+        'type' => '0',
+      ),
+      'foreign keys' => array(
+        'format' => array(
+          'columns' => array(
+            'format' => 'format',
+          ),
+          'table' => 'filter_format',
+        ),
+      ),
+      'indexes' => array(
+        'format' => array(
+          0 => 'format',
+        ),
+      ),
+      'module' => 'text',
+      'settings' => array(
+        'max_length' => '32',
+      ),
+      'translatable' => '0',
+      'type' => 'text',
+    ),
+    'field_instance' => array(
+      'bundle' => 'category',
+      'default_value' => NULL,
+      'deleted' => '0',
+      'description' => 'This field applies to the tweet311 module. A Twitter-hashtag that citizens may use, applying to a certain service/service code/category',
+      'display' => array(
+        'default' => array(
+          'label' => 'above',
+          'module' => 'text',
+          'settings' => array(),
+          'type' => 'text_default',
+          'weight' => 3,
+        ),
+      ),
+      'entity_type' => 'taxonomy_term',
+      'field_name' => 'field_hash',
+      'label' => 'hash',
+      'required' => 0,
+      'settings' => array(
+        'text_processing' => '0',
+        'user_register_form' => FALSE,
+      ),
+      'widget' => array(
+        'active' => 1,
+        'module' => 'text',
+        'settings' => array(
+          'size' => '60',
+        ),
+        'type' => 'text_textfield',
+        'weight' => '4',
       ),
     ),
   );
+
+
 
   // Exported field: 'taxonomy_term-category-field_tags'
   $fields['taxonomy_term-category-field_tags'] = array(

@@ -44,7 +44,7 @@ function mark_a_spot_node_info() {
       'description' => t('Mark-a-Spot reports '),
       'has_title' => '1',
       'title_label' => t('Concise Title'),
-      'help' => t('Describe the issue with by choosing a concise title'),
+      'help' => t('Describe the issue by choosing a concise title'),
     ),
   );
   return $items;

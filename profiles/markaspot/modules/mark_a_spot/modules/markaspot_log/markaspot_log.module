@@ -43,23 +43,23 @@
 //   return $markaspot_log_info;
 // }
 
-function markaspot_log_menu(){
-  $items['admin/structure/maslog/manage'] = array(
-    'title' => 'Mark-a-Spot  Log Admin',
-    'description' => 'Manage Log',
-    'page callback' => 'markaspot_log_info',
-    'access arguments' => array('administer maslogs'),
-  );
-  $items['maslog/%maslog'] = array(
-    'title callback' => 'markaspot_log_page_title',
-    'title arguments' => array(1),
-    'page callback' => 'markaspot_log_page_view',
-    'page arguments' => array(1),
-    'access arguments' => array('view maslogs'),
-    'type' => MENU_CALLBACK,
-  );
-  return $items;
-}
+// function markaspot_log_menu(){
+//   $items['admin/structure/maslog/manage'] = array(
+//     'title' => 'Mark-a-Spot  Log Admin',
+//     'description' => 'Manage Log',
+//     'page callback' => 'markaspot_log_info',
+//     'access arguments' => array('administer maslogs'),
+//   );
+//   $items['maslog/%maslog'] = array(
+//     'title callback' => 'markaspot_log_page_title',
+//     'title arguments' => array(1),
+//     'page callback' => 'markaspot_log_page_view',
+//     'page arguments' => array(1),
+//     'access arguments' => array('view maslogs'),
+//     'type' => MENU_CALLBACK,
+//   );
+//   return $items;
+// }
 
 function markaspot_log_permission(){
     return array(
@@ -74,9 +74,9 @@ function markaspot_log_permission(){
 }
 
 
-function markaspot_log_info() {
-  return ('Welcome to the administration page for your Mark-a-Spot Logs!');
-}
+// function markaspot_log_info() {
+//   return ('Welcome to the administration page for your Mark-a-Spot Logs!');
+// }
 
 function markaspot_log_page_title($maslog){
   return $maslog->id;
@@ -107,18 +107,6 @@ function markaspot_log_field_extra_fields() {
 
   return $return;
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 /**
@@ -182,8 +170,9 @@ function markaspot_log_block_view($delta = '') {
  * @param obj $node
  * @return void
  */
-function markaspot_log_node_presave($node) {
-
+function markaspot_log_node_insert($node) {
+  // var_dump($node);
+  // die;
   // Preparing Logging to Mas_log table (don't think of watchdog)
   global $user;
 
@@ -208,7 +197,7 @@ function markaspot_log_node_presave($node) {
     in_array('Verwaltung', $user->roles) && $node->type == 'report'){  
 
     if($node->nid) {
-      $data->message = t('The report has been edited by Administration');
+      $data->message = t('The report has been edited/created by Administration');
     } else {
       $data->message = t('The report has been created');    
     }
@@ -337,4 +326,15 @@ function markaspot_log_delete_log($id) {
   db_query("DELETE FROM {markaspot_log} WHERE id=%d", array(
     ':id' => $id,
   ));
+}
+
+
+/**
+ * Implements of hook_views_api().
+ */
+function markaspot_log_views_api() {
+  return array(
+    'api' => 3,
+    'path' => drupal_get_path('module', 'markaspot_log') . '/views',
+  );
 }
