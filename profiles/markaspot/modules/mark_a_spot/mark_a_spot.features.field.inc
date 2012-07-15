@@ -1697,7 +1697,7 @@ function mark_a_spot_field_default_fields() {
       ),
       'module' => 'text',
       'settings' => array(
-        'max_length' => '32',
+        'max_length' => '256',
       ),
       'translatable' => '0',
       'type' => 'text',

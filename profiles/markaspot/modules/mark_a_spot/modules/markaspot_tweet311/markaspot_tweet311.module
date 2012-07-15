@@ -185,12 +185,18 @@ function _markaspot_get_taxonomy($tweet){
         $services[] = '#'.$taxonomy_term->field_category_id['und'][0]['value'];  
     } else {
         if (isset($taxonomy_term->field_hash['und'][0]['value'])) {
-          $services[] = '#'.$taxonomy_term->field_hash['und'][0]['value']; 
+          $service_hashes = explode(',', $taxonomy_term->field_hash['und'][0]['value']);
+          foreach ($service_hashes as $service) {
+            $services[] = '#'.trim($service); 
+          }
         } 
     }
   }
 
   // checking the incoming mentions of citizens for matching available services
+  if (!isset($services)) {
+    return false;
+  }
   foreach ($services as $service) { 
     if (strpos($tweet['text'], $service) !== FALSE) {
       $service_found = substr($service, 1);

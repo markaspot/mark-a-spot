@@ -407,4 +407,6 @@ function markaspot_install() {
   variable_set('markaspot_ini_lat', '50.8212596');
   variable_set('markaspot_ini_lng', '6.8961028');
   variable_set('markaspot_twittername', '@mascity');
+  variable_set('markaspot_tweetSearch', 1);
+
 }
