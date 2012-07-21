@@ -16,6 +16,11 @@ function markaspot_logic_form_alter(&$form, &$form_state, $form_id) {
   if ($form_id == 'report_node_form') {
     $form['twitter'] = null;
     $form['comment_settings'] = null;
+    
+    // Registered users' mail will be prefilled
+    if (isset($user->mail)){
+      $form['field_e_mail']['und'][0]['value']['#default_value'] = $user->mail;
+    }
     $form['field_geo']['und'][0]['address']['#title'] = "Wo befindet sich das Problem";
     $form['field_image']['und']['#title'] = "Medienupload";
     $form['field_image']['und']['#file_upload_title'] = "Wählen Sie hier eine Datei aus";
