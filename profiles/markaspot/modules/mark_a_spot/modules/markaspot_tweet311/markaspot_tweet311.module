@@ -179,17 +179,18 @@ function _markaspot_get_taxonomy($tweet){
 
   // Getting all servicecodes or hashes 
   $taxonomies = taxonomy_get_tree(2, $parent = 0, $max_depth = 1, $load_entities = TRUE);
-  
+
   foreach ($taxonomies as $taxonomy_term) {
     if (variable_get('markaspot_tweetSearch') == 1) {
         $services[] = '#'.$taxonomy_term->field_category_id['und'][0]['value'];  
     } else {
-        if (isset($taxonomy_term->field_hash['und'][0]['value'])) {
-          $service_hashes = explode(',', $taxonomy_term->field_hash['und'][0]['value']);
-          foreach ($service_hashes as $service) {
-            $services[] = '#'.trim($service); 
-          }
-        } 
+      if (isset($taxonomy_term->field_hash['und'][0]['value'])) {
+
+        $service_hashes = explode(',', $taxonomy_term->field_hash['und'][0]['value']);
+        foreach ($service_hashes as $service) {
+          $services[] = '#'.trim($service); 
+        }
+      } 
     }
   }
 
@@ -198,10 +199,12 @@ function _markaspot_get_taxonomy($tweet){
     return false;
   }
   foreach ($services as $service) { 
+    
     if (strpos($tweet['text'], $service) !== FALSE) {
       $service_found = substr($service, 1);
-  
-      // matching now service code with taxonomy term ID (tid)
+
+
+      // matching now service_code or hash-tag with taxonomy term ID (tid)
       $query = new EntityFieldQuery();
 
       $query
@@ -215,16 +218,16 @@ function _markaspot_get_taxonomy($tweet){
         ->fieldCondition('field_category_id', 'value', array($service_found), '=');
       } else {
         $query
-        ->fieldCondition('field_hash', 'value', array($service_found), '=');
+        ->fieldCondition('field_hash', 'value', '%'.$service_found.'%', 'LIKE');
+        // ->fieldCondition('field_hash', 'value', array($service_found), 'LIKE');
       }
-      $taxonomy = $query->execute();
-      $tid = array_keys($taxonomy["taxonomy_term"]);
+      $taxonomy_found = $query->execute();
+      $tid = array_keys($taxonomy_found["taxonomy_term"]);
 
+      // Load term as object from id
       $taxonomy_term_found = taxonomy_term_load($tid[0]);
       return $taxonomy_term_found;
     }
-    // if no matching taxonomy found
-    return;
   }
 }
 
@@ -243,9 +246,10 @@ function _markaspot_tweet311_map_node($tweet, $twitter_user) {
   $node->language = 'und'; // language - neutral
 
 
-  // Loading the taxonomy term by requested service_code
+  // Loading the taxonomy term by requested hashed #service_code or #hash-tag
   $service = _markaspot_get_taxonomy($tweet);
 
+  
   if (isset($service->name)) {
     $node->title = $service->name;
     $node->field_category[$node->language][0]['tid'] = $service->tid;

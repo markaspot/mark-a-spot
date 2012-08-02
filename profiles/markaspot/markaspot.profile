@@ -135,8 +135,8 @@ function _createCategories() {
     $term['name'] = $parent[0];
     $term['description'] = $parent[1];
     $term['field_category_id']['und'][0]['value'] = $parent[2];
-    $term['field_category_hash']['und'][0]['value'] = $parent[3];
     $term['field_category_hex']['und'][0]['value'] = $parent[4];
+    $term['field_hash']['und'][0]['value'] = $parent[3];
 
     // taxonomy_term_save((object)$term);
     // $term = ;
