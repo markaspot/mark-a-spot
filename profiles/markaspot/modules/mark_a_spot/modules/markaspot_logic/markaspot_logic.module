@@ -159,6 +159,8 @@ function markaspot_logic_css_alter(&$css){
  */
  
 function markaspot_logic_init() {
+  $node = menu_get_object();
+  $type = (isset($node)) ? $node->type : null ;
   drupal_add_js(array(
     'mas' => array(
       'markaspot_city' => variable_get('markaspot_city'),
@@ -167,6 +169,7 @@ function markaspot_logic_init() {
       'markaspot_ini_lat' => variable_get('markaspot_ini_lat'),
       'markaspot_ini_lng' => variable_get('markaspot_ini_lng'),
       'uri' => request_uri(),
+      'node_type' => $type,
       //'countVotes' => markaspot_logic_getCountVotes(),
       'params' => $_GET)), 
     'setting'
