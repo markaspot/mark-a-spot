@@ -202,7 +202,7 @@ function mark_a_spot_default_page_manager_handlers() {
     $pane->pid = 'new-6';
     $pane->panel = 'right';
     $pane->type = 'block';
-    $pane->subtype = 'markaspot_log-MaS-Activity';
+    $pane->subtype = 'markaspot_log-markaspot_activity';
     $pane->shown = TRUE;
     $pane->access = array();
     $pane->configuration = array(
@@ -216,7 +216,7 @@ function mark_a_spot_default_page_manager_handlers() {
     $pane->css = array();
     $pane->extras = array();
     $pane->position = 2;
-    $pane->locks = '';
+    $pane->locks = array();
     $display->content['new-6'] = $pane;
     $display->panels['right'][2] = 'new-6';
   $display->hide_title = PANELS_TITLE_FIXED;
