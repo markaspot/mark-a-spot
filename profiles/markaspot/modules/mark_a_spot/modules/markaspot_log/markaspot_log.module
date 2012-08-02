@@ -132,12 +132,12 @@ function markaspot_log_block_view($delta = '') {
   switch ($delta) {
     case 'markaspot_activity':
       $block['subject'] = t('MaS Activity Log');
-    
+      
       if (user_access('access_content')) {
-        if(arg(0) == 'node' && is_numeric(arg(1))) {
-          $result = markaspot_log_get_log(arg(1));
-          // $tax =  taxonomy_node_get_terms(arg(1));
-          // print_r($tax);
+        $node = menu_get_object();
+        // var_dump($node);
+        if(isset($node) && $node->type == "report") {
+          $result = markaspot_log_get_log($node->nid);
         } else {
           return NULL;
         }
