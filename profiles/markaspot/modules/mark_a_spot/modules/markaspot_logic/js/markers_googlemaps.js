@@ -31,7 +31,7 @@ var markerLayer, queryString ;
     }
     
     var mas = Drupal.settings.mas;
-    //console.log(Drupal.settings.basePath);
+
     Drupal.Geolocation = new Object();
     Drupal.Geolocation.maps = new Array();
     Drupal.Geolocation.markers = new Array();
@@ -147,7 +147,8 @@ var markerLayer, queryString ;
   
         var bounds = new google.maps.LatLngBounds(initialLatLng);
         var infoWindow = new google.maps.InfoWindow;
-        if (!data[0]) {
+
+        if (!data[0] && mas.node_type == 'report') {
           // invoke a message box or something less permanent than an alert box later
           alert(Drupal.t('No Reports found for this category/status'));
         }

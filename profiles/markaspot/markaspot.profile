@@ -123,9 +123,9 @@ function _createCategories() {
   $vid = db_query("SELECT vid FROM {taxonomy_vocabulary} WHERE machine_name = 'category'")->fetchField();
 
   // Define the terms.
-  $terms[0] = array('Abandoned Cars', 'abandoned, wrecked, dismantled, or inoperative cars on private property', '10', '235f9b');
-  $terms[1] = array('Litter Basket Complaint','Litter Basket Request or Complaint', '11', 'ff00bb') ;
-  $terms[2] = array('Graffiti Report','Report graffiti on a building you own.', '12', '660000') ;
+  $terms[0] = array('Abandoned Cars', 'abandoned, wrecked, dismantled, or inoperative cars on private property', '010', 'abandonedcar, cars, wreckedcar, car', '235f9b');
+  $terms[1] = array('Litter Basket Complaint','Litter Basket Request or Complaint', '011', 'litter, trash', 'ff00bb') ;
+  $terms[2] = array('Graffiti Report','Report graffiti on a building you own.', '012', 'graffiti, paintings', '660000') ;
 
 
   foreach ($terms as $parent) {
@@ -135,7 +135,8 @@ function _createCategories() {
     $term['name'] = $parent[0];
     $term['description'] = $parent[1];
     $term['field_category_id']['und'][0]['value'] = $parent[2];
-    $term['field_category_hex']['und'][0]['value'] = $parent[3];
+    $term['field_category_hex']['und'][0]['value'] = $parent[4];
+    $term['field_hash']['und'][0]['value'] = $parent[3];
 
     // taxonomy_term_save((object)$term);
     // $term = ;

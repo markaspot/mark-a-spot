@@ -7,6 +7,7 @@
  * @author Holger Kreis - holger@markaspot.org
  */
 
+//define('TWITTER_IMPORT_IMPORTPATH', 'admin/config/content/twitter_import/import');
 
 
 function markaspot_logic_form_alter(&$form, &$form_state, $form_id) {
@@ -15,6 +16,11 @@ function markaspot_logic_form_alter(&$form, &$form_state, $form_id) {
   if ($form_id == 'report_node_form') {
     $form['twitter'] = null;
     $form['comment_settings'] = null;
+    
+    // Registered users' mail will be prefilled
+    if (isset($user->mail)){
+      $form['field_e_mail']['und'][0]['value']['#default_value'] = $user->mail;
+    }
     $form['field_geo']['und'][0]['address']['#title'] = "Wo befindet sich das Problem";
     $form['field_image']['und']['#title'] = "Medienupload";
     $form['field_image']['und']['#file_upload_title'] = "Wählen Sie hier eine Datei aus";
@@ -153,6 +159,8 @@ function markaspot_logic_css_alter(&$css){
  */
  
 function markaspot_logic_init() {
+  $node = menu_get_object();
+  $type = (isset($node)) ? $node->type : null ;
   drupal_add_js(array(
     'mas' => array(
       'markaspot_city' => variable_get('markaspot_city'),
@@ -161,6 +169,7 @@ function markaspot_logic_init() {
       'markaspot_ini_lat' => variable_get('markaspot_ini_lat'),
       'markaspot_ini_lng' => variable_get('markaspot_ini_lng'),
       'uri' => request_uri(),
+      'node_type' => $type,
       //'countVotes' => markaspot_logic_getCountVotes(),
       'params' => $_GET)), 
     'setting'
@@ -226,7 +235,15 @@ function markaspot_logic_menu() {
     'access arguments' => array('administer site configuration'),
     
   );
-  
+   $items['admin/config/system/mark_a_spot/tweets/import'] = array(
+    'title' => 'Manual twitter import',
+    'type' => MENU_LOCAL_TASK,
+    'description' => 'Manual twitter import',
+    'page callback' => '_markaspot_tweet311_import_manual',
+    'access arguments' => array('administer twitter import'),
+    'file' => 'markaspot_tweet311.module',
+    'file path' => drupal_get_path('module', 'markaspot_tweet311')
+  ); 
   // For translation
   //t('No account yet?');
 
@@ -254,7 +271,7 @@ function markaspot_logic_admin_settings() {
     '#collapsible' => TRUE);
   $form['general']['markaspot_address'] = array(
     '#type' => 'textfield',
-    '#title' => t('Zip'),
+    '#title' => t('Address'),
     '#default_value' => variable_get('markaspot_address', _markaspot_logic_defaults('markaspot_address')),
     '#size' => '128',
     '#maxlength' => 128,
@@ -308,6 +325,31 @@ function markaspot_logic_admin_settings() {
   '#default_value' => variable_get('markaspot_map_type', 0), 
   '#options' => array(t('Google Maps'), t('OSM')),
   );
+  if (module_exists('markaspot_tweet311')){
+    $form['twitter'] = array (
+      '#type' => 'fieldset',
+      '#title' => t('Tweet311 Settings'),
+      '#description' => t('Let Twitter-Users sending issues by sending mentions to ').variable_get('markaspot_twittername').'. '.t('Tweet-location should be enabled. ').t('Tweets are applied to category-id by hashtag (#id)')
+    );
+
+    $form['twitter']['markaspot_twittername'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Twitter Name '),
+      '#default_value' => variable_get('markaspot_twittername', _markaspot_logic_defaults('markaspot_twittername')),
+      '#size' => '16',
+      '#maxlength' => 16,
+      '#description' => t('Which Twitter-Username will be searched for mentions'),
+    );
+    $form['twitter']['manual_import'] = array(
+      '#markup' => '<p>' . l(t('Manually import tweets'), 'admin/config/system/mark_a_spot/tweets/import') . '</p>',
+    );
+    $form['twitter']['markaspot_tweetSearch'] = array(
+      '#type' => 'radios', 
+      '#title' => t('Search in tweets for #hashtags or Service Code'), 
+      '#default_value' => variable_get('markaspot_tweetSearch'), 
+      '#options' => array(t('Hash'), t('Service Code')),
+    );
+  }
 
   return system_settings_form($form);
 }
@@ -344,6 +386,11 @@ function _markaspot_logic_defaults($id) {
       return 'Brühl';
     case 'markaspot_country':
       return 'Deutschland';
+    case 'markaspot_twittername':
+      return '@mascity';
+    case 'markaspot_ini_tweetSearch':
+      return '1';
+
   } 
 }
 

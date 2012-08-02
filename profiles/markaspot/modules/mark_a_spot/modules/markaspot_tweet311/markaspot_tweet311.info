@@ -1,0 +1,8 @@
+name = Mark-a-Spot Tweet 311 
+description = provides tweet based crowdsourcing for 311 endpoints
+package = "Mark-a-Spot"
+
+core = 7.x
+
+files[] = markaspot_tweet311.module
+dependencies[] = "services"

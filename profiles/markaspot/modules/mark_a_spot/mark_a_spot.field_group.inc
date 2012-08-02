@@ -23,11 +23,11 @@ function mark_a_spot_field_group_info() {
     'label' => 'Location',
     'weight' => '1',
     'children' => array(
-      0 => 'field_geo',
-      1 => 'field_zip',
-      2 => 'field_city',
-      3 => 'field_common',
-      4 => 'field_address',
+      0 => 'field_address',
+      1 => 'field_city',
+      2 => 'field_common',
+      3 => 'field_geo',
+      4 => 'field_zip',
     ),
     'format_type' => 'fieldset',
     'format_settings' => array(

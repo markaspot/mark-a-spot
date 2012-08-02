@@ -1163,93 +1163,6 @@ function mark_a_spot_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-report-field_relevance'
-  $fields['node-report-field_relevance'] = array(
-    'field_config' => array(
-      'active' => '1',
-      'cardinality' => '1',
-      'deleted' => '0',
-      'entity_types' => array(),
-      'field_name' => 'field_relevance',
-      'field_permissions' => array(
-        'type' => '2',
-      ),
-      'foreign keys' => array(),
-      'indexes' => array(),
-      'module' => 'fivestar',
-      'settings' => array(
-        'axis' => 'vote',
-      ),
-      'translatable' => '0',
-      'type' => 'fivestar',
-    ),
-    'field_instance' => array(
-      'bundle' => 'report',
-      'default_value' => NULL,
-      'deleted' => '0',
-      'description' => '',
-      'display' => array(
-        'default' => array(
-          'label' => 'above',
-          'settings' => array(),
-          'type' => 'hidden',
-          'weight' => '8',
-        ),
-        'full' => array(
-          'label' => 'above',
-          'module' => 'fivestar',
-          'settings' => array(
-            'expose' => 1,
-            'style' => 'average',
-            'text' => 'average',
-            'widget' => array(
-              'fivestar_widget' => 'sites/all/modules/fivestar/widgets/textonly/textonly.css',
-            ),
-          ),
-          'type' => 'fivestar_formatter_default',
-          'weight' => '3',
-        ),
-        'status_list' => array(
-          'label' => 'above',
-          'module' => 'fivestar',
-          'settings' => array(
-            'expose' => 1,
-            'style' => 'dual',
-            'text' => 'dual',
-            'widget' => array(
-              'fivestar_widget' => 'sites/all/modules/fivestar/widgets/textonly/textonly.css',
-            ),
-          ),
-          'type' => 'fivestar_formatter_default',
-          'weight' => '4',
-        ),
-        'teaser' => array(
-          'label' => 'above',
-          'settings' => array(),
-          'type' => 'hidden',
-          'weight' => '5',
-        ),
-      ),
-      'entity_type' => 'node',
-      'field_name' => 'field_relevance',
-      'label' => 'Rating',
-      'required' => 0,
-      'settings' => array(
-        'allow_clear' => 1,
-        'stars' => '2',
-        'target' => 'none',
-        'user_register_form' => FALSE,
-      ),
-      'widget' => array(
-        'active' => 1,
-        'module' => 'fivestar',
-        'settings' => array(),
-        'type' => 'exposed',
-        'weight' => '2',
-      ),
-    ),
-  );
-
   // Exported field: 'node-report-field_status'
   $fields['node-report-field_status'] = array(
     'field_config' => array(
@@ -1526,12 +1439,28 @@ function mark_a_spot_field_default_fields() {
       'deleted' => '0',
       'entity_types' => array(),
       'field_name' => 'field_category_id',
-      'foreign keys' => array(),
-      'indexes' => array(),
-      'module' => 'number',
-      'settings' => array(),
+      'field_permissions' => array(
+        'type' => '0',
+      ),
+      'foreign keys' => array(
+        'format' => array(
+          'columns' => array(
+            'format' => 'format',
+          ),
+          'table' => 'filter_format',
+        ),
+      ),
+      'indexes' => array(
+        'format' => array(
+          0 => 'format',
+        ),
+      ),
+      'module' => 'text',
+      'settings' => array(
+        'max_length' => '6',
+      ),
       'translatable' => '0',
-      'type' => 'number_integer',
+      'type' => 'text',
     ),
     'field_instance' => array(
       'bundle' => 'category',
@@ -1540,53 +1469,107 @@ function mark_a_spot_field_default_fields() {
       'description' => '',
       'display' => array(
         'default' => array(
-          'label' => 'above',
+          'label' => 'hidden',
           'settings' => array(),
           'type' => 'hidden',
-          'weight' => '0',
+          'weight' => '1',
         ),
         'full' => array(
           'label' => 'above',
-          'module' => 'number',
-          'settings' => array(
-            'decimal_separator' => '.',
-            'prefix_suffix' => 1,
-            'scale' => 0,
-            'thousand_separator' => ' ',
-          ),
-          'type' => 'number_integer',
-          'weight' => '0',
+          'module' => 'text',
+          'settings' => array(),
+          'type' => 'text_default',
+          'weight' => '1',
         ),
         'token' => array(
-          'label' => 'above',
-          'module' => 'number',
-          'settings' => array(
-            'decimal_separator' => '.',
-            'prefix_suffix' => 1,
-            'scale' => 0,
-            'thousand_separator' => ' ',
-          ),
-          'type' => 'number_integer',
-          'weight' => '0',
+          'label' => 'hidden',
+          'module' => 'text',
+          'settings' => array(),
+          'type' => 'text_default',
+          'weight' => '1',
         ),
       ),
       'entity_type' => 'taxonomy_term',
       'field_name' => 'field_category_id',
-      'label' => 'CategoryId',
-      'required' => 0,
+      'label' => 'categoryId',
+      'required' => 1,
       'settings' => array(
-        'max' => '',
-        'min' => '',
-        'prefix' => '',
-        'suffix' => '',
+        'text_processing' => '0',
         'user_register_form' => FALSE,
       ),
       'widget' => array(
-        'active' => 0,
-        'module' => 'number',
-        'settings' => array(),
-        'type' => 'number',
-        'weight' => '1',
+        'active' => 1,
+        'module' => 'text',
+        'settings' => array(
+          'size' => '6',
+        ),
+        'type' => 'text_textfield',
+        'weight' => '2',
+      ),
+    ),
+  );
+
+  // Exported field: 'taxonomy_term-category-field_hash'
+  $fields['taxonomy_term-category-field_hash'] = array(
+    'field_config' => array(
+      'active' => '1',
+      'cardinality' => '1',
+      'deleted' => '0',
+      'entity_types' => array(),
+      'field_name' => 'field_hash',
+      'field_permissions' => array(
+        'type' => '0',
+      ),
+      'foreign keys' => array(
+        'format' => array(
+          'columns' => array(
+            'format' => 'format',
+          ),
+          'table' => 'filter_format',
+        ),
+      ),
+      'indexes' => array(
+        'format' => array(
+          0 => 'format',
+        ),
+      ),
+      'module' => 'text',
+      'settings' => array(
+        'max_length' => '255',
+      ),
+      'translatable' => '0',
+      'type' => 'text',
+    ),
+    'field_instance' => array(
+      'bundle' => 'category',
+      'default_value' => NULL,
+      'deleted' => '0',
+      'description' => 'This field applies to the tweet311 module. A Twitter-hashtag that citizens may use, applying to a certain service/service code/category',
+      'display' => array(
+        'default' => array(
+          'label' => 'above',
+          'module' => 'text',
+          'settings' => array(),
+          'type' => 'text_default',
+          'weight' => 3,
+        ),
+      ),
+      'entity_type' => 'taxonomy_term',
+      'field_name' => 'field_hash',
+      'label' => 'hash',
+      'required' => 0,
+      'settings' => array(
+        'text_processing' => '0',
+        'user_register_form' => FALSE,
+      ),
+      'widget' => array(
+        'active' => 1,
+        'module' => 'text',
+        'settings' => array(
+          'size' => '60',
+        ),
+        'type' => 'text_textfield',
+        'weight' => '4',
       ),
     ),
   );
@@ -1776,7 +1759,6 @@ function mark_a_spot_field_default_fields() {
   t('Art');
   t('Attachments and Documents');
   t('Category');
-  t('CategoryId');
   t('City');
   t('Comment');
   t('Description');
@@ -1789,12 +1771,14 @@ function mark_a_spot_field_default_fields() {
   t('Please leave an e-Mail address, so that we can contact you, in case you don\'t want to register');
   t('Post status @twitter');
   t('Provide a more detailed description here');
-  t('Rating');
   t('Status');
   t('StatusId');
+  t('This field applies to the tweet311 module. A Twitter-hashtag that citizens may use, applying to a certain service/service code/category');
   t('This field can be used for attaching official documents');
   t('Zip');
   t('categoryHex');
+  t('categoryId');
+  t('hash');
   t('keywords');
   t('statusHex');
 
