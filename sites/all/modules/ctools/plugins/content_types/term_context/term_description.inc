@@ -27,7 +27,7 @@ function ctools_term_description_content_type_render($subtype, $conf, $panel_arg
       $block->admin_links['update'] = array(
         'title' => t('Edit term'),
         'alt' => t("Edit this term"),
-        'href' => "admin/content/taxonomy/edit/term/$term->tid",
+        'href' => "taxonomy/term/$term->tid/edit",
         'query' => drupal_get_destination(),
       );
     }

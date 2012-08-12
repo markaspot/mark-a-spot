@@ -246,17 +246,10 @@ function ctools_get_plugins($module, $type, $id = NULL) {
     $cache = cache_get("plugins:$module:$type", $info[$module][$type]['cache table']);
 
     if (!empty($cache->data)) {
-      // Verify that the file exists as it may have been moved in a multisite environment
-      if (isset($cache->data['path'])) {
-        // Files to be registered may be in two locations. Check for both of them.
-        if ((is_array($cache->data['path']) && file_exists($cache->data['path']['file'])) ||
-           file_exists($cache->data['path'])) {
-          // Cache load succeeded so use the cached plugin list.
-          $plugins[$module][$type]   = $cache->data;
-          // Set $setup to true so we know things where loaded.
-          $setup[$module][$type]     = TRUE;
-        }
-      }
+      // Cache load succeeded so use the cached plugin list.
+      $plugins[$module][$type]   = $cache->data;
+      // Set $setup to true so we know things where loaded.
+      $setup[$module][$type]     = TRUE;
     }
     else {
       // Cache load failed so store that we need to build and write the cache.

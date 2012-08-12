@@ -247,7 +247,7 @@ function ctools_context_entity_convert_list($plugin) {
 /**
  * Convert a context into a string.
  */
-function ctools_context_entity_convert($context, $type) {
+function ctools_context_entity_convert($context, $type, $options = array()) {
   $entity_type = $context->type[2];
   $entity = entity_get_info($entity_type);
 
@@ -266,7 +266,7 @@ function ctools_context_entity_convert($context, $type) {
 
   $tokens = token_info();
 
-  $values = token_generate($token, array($type => $type), array($token => $context->data));
+  $values = token_generate($token, array($type => $type), array($token => $context->data), $options);
   if (isset($values[$type])) {
     return $values[$type];
   }

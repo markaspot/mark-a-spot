@@ -173,6 +173,9 @@ function ctools_component_features_export($component, $data, &$export, $module_n
  * Master implementation of hook_features_export_render() for all ctools components.
  */
 function ctools_component_features_export_render($component, $module, $data) {
+  // Reset the export display static to prevent clashes.
+  drupal_static_reset('panels_export_display');
+
   ctools_include('export');
   $schema = ctools_export_get_schema($component);
 
@@ -326,6 +329,9 @@ function _ctools_features_export_crud_delete($table, $object) {
  * Implements hook_features_export_render() for page_manager.
  */
 function page_manager_pages_features_export_render($module, $data) {
+  // Reset the export display static to prevent clashes.
+  drupal_static_reset('panels_export_display');
+
   // Ensure that handlers have their code included before exporting.
   page_manager_get_tasks();
   return ctools_component_features_export_render('page_manager_pages', $module, $data);

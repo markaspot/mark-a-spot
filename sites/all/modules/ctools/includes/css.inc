@@ -285,7 +285,8 @@ function ctools_css_disassemble($css) {
   // Remove comments.
   $css = preg_replace("/\/\*(.*)?\*\//Usi", "", $css);
   // Split out each statement
-  $statements = explode("}", $css);
+  $statements = preg_split('/[;}]/', $css);
+
   // If we have any statements, parse them.
   if (!empty($statements)) {
     // Iterate through all of the statements.
@@ -306,7 +307,10 @@ function ctools_css_disassemble($css) {
       }
 
       // Disassemble the declaration, check it and tuck it into an array.
-      $disassembled_css[$selector_str] = _ctools_css_disassemble_declaration($declaration);
+      if (!isset($disassembled_css[$selector_str])) {
+        $disassembled_css[$selector_str] = array();
+      }
+      $disassembled_css[$selector_str] += _ctools_css_disassemble_declaration($declaration);
     }
   }
   return $disassembled_css;

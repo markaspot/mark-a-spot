@@ -84,8 +84,10 @@ function ctools_entity_form_field_content_type_render($subtype, $conf, $panel_ar
   if (empty($field)) {
     return;
   }
+  $block = new stdClass();
 
   if (isset($context->form)) {
+    $block->content = array();
     $block->content[$field_name] = $context->form[$field_name];
     unset($context->form[$field_name]);
   }

@@ -339,7 +339,6 @@ class ctools_export_ui {
   function list_form_submit(&$form, &$form_state) {
     // Filter and re-sort the pages.
     $plugin = $this->plugin;
-    $schema = ctools_export_get_schema($this->plugin['schema']);
 
     $prefix = ctools_export_ui_plugin_base_path($plugin);
 
@@ -350,44 +349,7 @@ class ctools_export_ui {
         continue;
       }
 
-      // Note: Creating this list seems a little clumsy, but can't think of
-      // better ways to do this.
-      $allowed_operations = drupal_map_assoc(array_keys($plugin['allowed operations']));
-      $not_allowed_operations = array('import');
-
-      if ($item->{$schema['export']['export type string']} == t('Normal')) {
-        $not_allowed_operations[] = 'revert';
-      }
-      elseif ($item->{$schema['export']['export type string']} == t('Overridden')) {
-        $not_allowed_operations[] = 'delete';
-      }
-      else {
-        $not_allowed_operations[] = 'revert';
-        $not_allowed_operations[] = 'delete';
-      }
-
-      $not_allowed_operations[] = empty($item->disabled) ? 'enable' : 'disable';
-
-      foreach ($not_allowed_operations as $op) {
-        // Remove the operations that are not allowed for the specific
-        // exportable.
-        unset($allowed_operations[$op]);
-      }
-
-      $operations = array();
-
-      foreach ($allowed_operations as $op) {
-        $operations[$op] = array(
-          'title' => $plugin['allowed operations'][$op]['title'],
-          'href' => ctools_export_ui_plugin_menu_path($plugin, $op, $name),
-        );
-        if (!empty($plugin['allowed operations'][$op]['ajax'])) {
-          $operations[$op]['attributes'] = array('class' => array('use-ajax'));
-        }
-        if (!empty($plugin['allowed operations'][$op]['token'])) {
-          $operations[$op]['query'] = array('token' => drupal_get_token($op));
-        }
-      }
+      $operations = $this->build_operations($item);
 
       $this->list_build_row($item, $form_state, $operations);
     }
@@ -498,6 +460,52 @@ class ctools_export_ui {
    */
   function list_css() {
     ctools_add_css('export-ui-list');
+  }
+
+  /**
+   * Builds the operation links for a specific exportable item.
+   */
+  function build_operations($item) {
+    $plugin = $this->plugin;
+    $schema = ctools_export_get_schema($plugin['schema']);
+    $operations = $plugin['allowed operations'];
+    $operations['import'] = FALSE;
+
+    if ($item->{$schema['export']['export type string']} == t('Normal')) {
+      $operations['revert'] = FALSE;
+    }
+    elseif ($item->{$schema['export']['export type string']} == t('Overridden')) {
+      $operations['delete'] = FALSE;
+    }
+    else {
+      $operations['revert'] = FALSE;
+      $operations['delete'] = FALSE;
+    }
+    if (empty($item->disabled)) {
+      $operations['enable'] = FALSE;
+    }
+    else {
+      $operations['disable'] = FALSE;
+    }
+
+    $allowed_operations = array();
+
+    foreach ($operations as $op => $info) {
+      if (!empty($info)) {
+        $allowed_operations[$op] = array(
+          'title' => $info['title'],
+          'href' => ctools_export_ui_plugin_menu_path($plugin, $op, $item->{$this->plugin['export']['key']}),
+        );
+        if (!empty($info['ajax'])) {
+          $allowed_operations[$op]['attributes'] = array('class' => array('use-ajax'));
+        }
+        if (!empty($info['token'])) {
+          $allowed_operations[$op]['query'] = array('token' => drupal_get_token($op));
+        }
+      }
+    }
+
+    return $allowed_operations;
   }
 
   /**
@@ -1187,14 +1195,23 @@ class ctools_export_ui {
 
     $output = drupal_build_form('ctools_export_ui_delete_confirm_form', $form_state);
     if (!empty($form_state['executed'])) {
-      ctools_export_crud_delete($this->plugin['schema'], $item);
-      $export_key = $this->plugin['export']['key'];
-      $message = str_replace('%title', check_plain($item->{$export_key}), $this->plugin['strings']['confirmation'][$form_state['op']]['success']);
-      drupal_set_message($message);
-      drupal_goto(ctools_export_ui_plugin_base_path($this->plugin));
+      $this->delete_form_submit($form_state);
+      $this->redirect($form_state['op'], $item);
     }
 
     return $output;
+  }
+
+  /**
+   * Deletes exportable items from the database.
+   */
+  function delete_form_submit(&$form_state) {
+    $item = $form_state['item'];
+
+    ctools_export_crud_delete($this->plugin['schema'], $item);
+    $export_key = $this->plugin['export']['key'];
+    $message = str_replace('%title', check_plain($item->{$export_key}), $this->plugin['strings']['confirmation'][$form_state['op']]['success']);
+    drupal_set_message($message);
   }
 
   /**

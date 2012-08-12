@@ -30,8 +30,9 @@ Drupal.behaviors.CToolsAutoSubmit = {
   attach: function(context) {
     // 'this' references the form element
     function triggerSubmit (e) {
-      if (!$(this).hasClass('ctools-ajaxing')) {
-        $(this).find('.ctools-auto-submit-click').click();
+      var $this = $(this);
+      if (!$this.hasClass('ctools-ajaxing')) {
+        $this.find('.ctools-auto-submit-click').click();
       }
     }
 

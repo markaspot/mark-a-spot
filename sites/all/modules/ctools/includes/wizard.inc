@@ -256,16 +256,13 @@ function ctools_wizard_wrapper($form, &$form_state) {
 
     if (!empty($form_info['show trail'])) {
       if (!empty($form_info['free trail'])) {
-        // ctools_wizard_get_path() returns results suitable for #redirect
-        // which can only be directly used in drupal_goto. We have to futz
-        // with it.
+        // ctools_wizard_get_path() returns results suitable for
+        // $form_state['redirect] which can only be directly used in
+        // drupal_goto. We have to futz a bit with it.
         $path = ctools_wizard_get_path($form_info, $id);
         $options = array();
         if (!empty($path[1])) {
-          $options['query'] = $path[1];
-        }
-        if (!empty($path[2])) {
-          $options['fragment'] = $path[2];
+          $options = $path[1];
         }
         $title = l($title, $path[0], $options);
       }

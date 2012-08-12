@@ -140,7 +140,6 @@ function page_manager_menu() {
 
   // Provide menu items for each task.
   foreach ($tasks as $task_id => $task) {
-    $handlers = page_manager_get_task_handler_plugins($task);
     // Allow the task to add its own menu items.
     if ($function = ctools_plugin_get_function($task, 'hook menu')) {
       $function($items, $task);

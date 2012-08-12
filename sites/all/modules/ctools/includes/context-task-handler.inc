@@ -66,9 +66,9 @@ function ctools_context_handler_get_render_handler($task, $subtask, $handlers, $
       // If not, if it's a 'context' type handler, use the default tester.
       if ($plugin['handler type'] == 'context') {
         $test = ctools_context_handler_default_test($handler, $contexts, $args);
-      }
-      if ($test) {
-        return $id;
+        if ($test) {
+          return $id;
+        }
       }
     }
   }
