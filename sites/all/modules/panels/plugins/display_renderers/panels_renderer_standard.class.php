@@ -231,7 +231,15 @@ class panels_renderer_standard {
         }
       }
 
-      $content_type = ctools_get_content_type($pane->type);
+      // If the pane's subtype is unique, get it so that
+      // hook_ctools_content_subtype_alter() and/or
+      // hook_ctools_block_info() will be called.
+      if ($pane->type != $pane->subtype) {
+        $content_type = ctools_content_get_subtype($pane->type, $pane->subtype);
+      }
+      else {
+        $content_type = ctools_get_content_type($pane->type);
+      }
 
       // If this pane wants to render last, add it to the $last array. We allow
       // this because some panes need to be rendered after other panes,

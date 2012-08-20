@@ -100,6 +100,24 @@ function ctools_context_handler_render_handler($task, $subtask, $handler, $conte
     return NULL;
   }
 
+  if ($page) {
+    if ($subtask) {
+      $task_name = page_manager_make_task_name($task['name'], $subtask['name']);
+    }
+    else {
+      $task_name = $task['name'];
+    }
+
+    page_manager_get_current_page(array(
+      'name' => $task_name,
+      'task' => $task,
+      'subtask' => $subtask,
+      'contexts' => $contexts,
+      'arguments' => $args,
+      'handler' => $handler,
+    ));
+  }
+
   $info = $function($handler, $contexts, $args);
   if (!$info) {
     return NULL;
@@ -118,22 +136,6 @@ function ctools_context_handler_render_handler($task, $subtask, $handler, $conte
   if (!$page) {
     return $info;
   }
-
-  if ($subtask) {
-    $task_name = page_manager_make_task_name($task['name'], $subtask['name']);
-  }
-  else {
-    $task_name = $task['name'];
-  }
-
-  page_manager_get_current_page(array(
-    'name' => $task_name,
-    'task' => $task,
-    'subtask' => $subtask,
-    'contexts' => $contexts,
-    'arguments' => $args,
-    'handler' => $handler,
-  ));
 
   if (!empty($info['response code']) && $info['response code'] != 200) {
     switch ($info['response code']) {

@@ -430,6 +430,12 @@ function ctools_wizard_submit(&$form, &$form_state) {
       }
       else if ($type == 'next') {
         $form_state['redirect'] = ctools_wizard_get_path($form_state['form_info'], $form_state['clicked_button']['#next']);
+        if (!empty($_GET['destination'])) {
+          // We don't want drupal_goto redirect this request
+          // back. ctools_wizard_get_path ensures that the destination is
+          // carried over on subsequent pages.
+          unset($_GET['destination']);
+        }
       }
       else if (isset($form_state['form_info']['return path'])) {
         $form_state['redirect'] = $form_state['form_info']['return path'];
@@ -449,11 +455,27 @@ function ctools_wizard_get_path($form_info, $step) {
     foreach ($form_info['path'] as $id => $part) {
       $form_info['path'][$id] = str_replace('%step', $step, $form_info['path'][$id]);
     }
-    return $form_info['path'];
+    $path = $form_info['path'];
   }
   else {
-    return array(str_replace('%step', $step, $form_info['path']));
+    $path = array(str_replace('%step', $step, $form_info['path']));
   }
+
+  // If destination is set, carry it over so it'll take effect when
+  // saving. The submit handler will unset destination to avoid drupal_goto
+  // redirecting us.
+  if (!empty($_GET['destination'])) {
+    // Ensure that options is an array.
+    if (!isset($path[1]) || !is_array($path[1])) {
+      $path[1] = array();
+    }
+    // Ensure that the query part of options is an array.
+    $path[1] += array('query' => array());
+    // Add the destination parameter, if not set already.
+    $path[1]['query'] += drupal_get_destination();
+  }
+
+  return $path;
 }
 
 /**

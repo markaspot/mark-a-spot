@@ -1,7 +1,7 @@
 There are two primary pieces to using plugins. The first is getting the data, and the second is using the data.
 
 <h2>Defining a plugin</h2>
-To define that you offer a plugin that modules can implement, you first must implement hook_ctools_plugin_type() to tell the plugin system about your plugin. 
+To define that you offer a plugin that modules can implement, you first must implement hook_ctools_plugin_type() to tell the plugin system about your plugin.
 
 <pre>
 /**
@@ -49,7 +49,7 @@ The following information can be specified for each plugin type:
 <dd><em>Defaults to:</em> <strong>FALSE</strong></dd>
 <dd>If set to TRUE, the plugin type can automatically have 'child plugins' meaning each plugin can actually provide multiple plugins. This is mostly used for plugins that store some of their information in the database, such as views, blocks or exportable custom versions of plugins.</dd>
 <dd>To implement, each plugin can have a 'get child' and 'get children' callback. Both of these should be implemented for performance reasons, since it is best to avoid getting all children if necessary, but if 'get child' is not implemented, it will fall back to 'get children' if it has to.</dd>
-<dd>Child plugins should be named parent:child, with the : being the separator, so that it knows which parent plugin to ask for teh child. The 'get children' method should at least return the parent plugin as part of the list, unless it wants the parent plugin itself to not be a choosable option, which is not unheard of. </dd>
+<dd>Child plugins should be named parent:child, with the : being the separator, so that it knows which parent plugin to ask for the child. The 'get children' method should at least return the parent plugin as part of the list, unless it wants the parent plugin itself to not be a choosable option, which is not unheard of. </dd>
 <dd>'get children' arguments are ($plugin, $parent) and 'get child' arguments are ($plugin, $parent, $child).
 </dl>
 

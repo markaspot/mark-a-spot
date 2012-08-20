@@ -629,6 +629,8 @@ function panels_panel_context_edit_move($form, &$form_state) {
   $form_state['display'] = &panels_panel_context_get_display($form_state['handler']);
   $form_state['layout'] = $form_state['handler']->conf['temp_layout'];
 
+  $form_state['cache_key'] = 'panel_context:' . $form_state['task_name'] . ':' . $form_state['handler_id'];
+
   ctools_include('common', 'panels');
   ctools_include('display-layout', 'panels');
   ctools_include('plugins', 'panels');

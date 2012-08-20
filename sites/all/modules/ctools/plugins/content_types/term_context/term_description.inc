@@ -20,7 +20,7 @@ function ctools_term_description_content_type_render($subtype, $conf, $panel_arg
 
   $block->title = $term->name;
   if ($term) {
-    $block->content = _filter_autop(filter_xss_admin($term->description));
+    $block->content = check_markup($term->description, $term->format, '', TRUE);
     $block->delta = $term->tid;
 
     if (user_access('administer taxonomy')) {

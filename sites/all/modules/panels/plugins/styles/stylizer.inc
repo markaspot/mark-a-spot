@@ -198,6 +198,10 @@ function panels_stylizer_pane_add_style(&$renderer, $plugin, &$conf, $type, $pid
     return;
   }
 
+  // Reset the $_POST['ajax_html_ids'] values to preserve
+  // proper IDs on form elements when auto-submit is used.
+  $_POST['ajax_html_ids'] = array();
+
   ctools_include('stylizer');
   $js = FALSE;
 

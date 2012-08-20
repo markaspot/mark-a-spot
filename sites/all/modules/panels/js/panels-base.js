@@ -4,7 +4,7 @@
  */
 
 (function ($) {
-  Drupal.Panels = {}
+  Drupal.Panels = Drupal.Panels || {};
 
   Drupal.Panels.changed = function(item) {
     if (!item.is('.changed')) {

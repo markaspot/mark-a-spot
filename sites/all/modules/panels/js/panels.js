@@ -1,6 +1,6 @@
 
 (function ($) {
-  Drupal.Panels = {};
+  Drupal.Panels = Drupal.Panels || {};
 
   Drupal.Panels.autoAttach = function() {
     if ($.browser.msie) {
