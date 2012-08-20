@@ -329,7 +329,10 @@ function _tax_map_service($taxonomy_term) {
   // $result=field_view_field('taxonomy_term',$term,'field_desired_field');
   $service['service_code'] = $taxonomy_term->field_category_id['und'][0]['value'];
   $service['service_name'] = $taxonomy_term->name;
+  $service['metadata'] = "false";
+  $servicd['type'] = 'realtime';
   $service['description'] = $taxonomy_term->description;
+  $service['keywords'] = $taxonomy_term->field_hash['und'][0]['value'];
 
   return $service;
 }
