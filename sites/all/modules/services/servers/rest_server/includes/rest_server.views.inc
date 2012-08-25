@@ -101,20 +101,19 @@ class RESTServerViewBuiltIn extends RESTServerView {
       $assoc = FALSE || empty($data);
       foreach ($data as $key => $value) {
         if (is_numeric($key)) {
-          // print_r($data);
+
           // Mark-a-Spot Integration
           // Instead of "items" geoReport v2 requires an "request" or "service"-element for arrays
-
+          $key = 'item';
           if (array_key_exists('service_code', $data[0])) {
             $key = 'service';
-          } elseif (array_key_exists('zipcode', $data[0])) {
-            $key = 'request';
-          } elseif (in_array('xml', $data)) {
-            $key = 'format';
-          } else {
-            $key = 'item';
           }
-
+          if (array_key_exists('status', $data[0])) {
+            $key = 'request';
+          } 
+          if (in_array('xml', $data)) {
+            $key = 'format';
+          } 
         }
         else {
           $assoc = TRUE;
