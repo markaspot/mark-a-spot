@@ -10,13 +10,13 @@
 function mark_a_spot_menu_default_menu_custom() {
   $menus = array();
 
-  // Exported menu: main-menu
+  // Exported menu: main-menu.
   $menus['main-menu'] = array(
     'menu_name' => 'main-menu',
     'title' => 'Main menu',
     'description' => 'The <em>Main</em> menu is used on many sites to show the major sections of the site, often in a top navigation bar.',
   );
-  // Exported menu: navigation
+  // Exported menu: navigation.
   $menus['navigation'] = array(
     'menu_name' => 'navigation',
     'title' => 'Navigation',

@@ -1216,7 +1216,11 @@ function mark_a_spot_field_default_fields() {
     ),
     'field_instance' => array(
       'bundle' => 'report',
-      'default_value' => NULL,
+      'default_value' => array(
+        0 => array(
+          'tid' => '1',
+        ),
+      ),
       'deleted' => '0',
       'description' => '',
       'display' => array(

@@ -130,13 +130,39 @@ function _markaspot_open311_requests_index($page, $parameters) {
   ->fetchCol();
 
   $nodes = node_load_multiple($nids);
-  foreach ($nodes as $node) {
 
+  // now exploring nodes matching other parameters
+  foreach ($nodes as $node) {
     // mapping node to request
     if ($node->type == 'report') {
+      $found = false;
+
+
+      // Mapping Category to Service-Code (only to filter)
+      $term['category'] = taxonomy_term_load($node->field_category['und'][0]["tid"]);
+      // echo $node->title." ".$node->field_category['und'][0]["tid"];
+      if (isset($parameters['service_code'])){
+
+        // comma separated service_code parameters to array
+        $service_codes_filtered = explode(',', $parameters['service_code']);
+        
+        // get the service of the current node
+        $service = $term['category']->field_category_id['und'][0]['value'];
+        // var_dump($service_codes_filtered);
+        foreach ($service_codes_filtered as $service_code) {
+          if ($service_code == $service) {
+            $found['service_code'] = true;
+          }
+        }
+
+      }
+
+
+      // Mapping Status to Open311 Status (open/closed)
       $term['status'] = taxonomy_term_load($node->field_status['und'][0]["tid"]);
       if (isset($term['status'])) {
-        // declare all taxonomy-ids for status "open" (could be "acknowledged", "edited", "in progress")
+        // declare all taxonomy-ids for status "open" 
+        // (could be "acknowledged", "edited", "in progress")
         $status_open = array(1, 2);
         if (in_array($term['status']->tid, $status_open)) {
           $status = 'open';
@@ -144,11 +170,29 @@ function _markaspot_open311_requests_index($page, $parameters) {
           $status = 'closed';
         }
       }
-
       if ($parameters['status'] == $status) {
-        $requests['service_requests'][] = _node_map_request($node, $parameters, $status);
-      } else if (empty($parameters['status'])){
-        $requests['service_requests'][] = _node_map_request($node, $parameters, $status);
+          $found['status'] = true;
+      }
+
+      // now mapping nodes to request
+      if ($parameters['status'] == true && $parameters['service_code'] == true) {
+        if (isset($found['service_code']) && isset($found['status'])) {
+          $requests['service_requests'][] = _node_map_request($node, $status);
+        }
+      }
+      if ($parameters['status'] == false && $parameters['service_code'] == false) {
+         $requests['service_requests'][] = _node_map_request($node, $status);
+      }
+
+      if ($parameters['status'] == true && $parameters['service_code'] == false) {
+        if (isset($found['status'])) {
+          $requests['service_requests'][] = _node_map_request($node, $status);
+        }
+      }
+      if ($parameters['status'] == false && $parameters['service_code'] == true) {
+        if (isset($found['service_code'])) {
+          $requests['service_requests'][] = _node_map_request($node, $status);
+        }
       }
     }
   }
@@ -240,8 +284,7 @@ function _markaspot_open311_access($op, $args) {
  *  single request
  */
 
-function _node_map_request($node, $parameters, $status){
-  $request['status'] = $status;
+function _node_map_request($node, $status){
 
   $request['service_request_id'] = $node->nid;
  
@@ -251,9 +294,6 @@ function _node_map_request($node, $parameters, $status){
     $request['service_code'] = $term['category']->field_category_id['und'][0]['value'];
     $request['service_name'] = $term['category']->name;
   }
-
-  
-
 
   $request['description'] = $node->body['und'][0]['value'];
 
@@ -272,6 +312,7 @@ function _node_map_request($node, $parameters, $status){
   $request['zipcode'] = $node->field_zip['und'][0]['value'];
   $request['lat'] = $node->field_geo['und'][0]['lat'];
   $request['long'] = $node->field_geo['und'][0]['lng'];
+  $request['status'] = $status;
 
   // Media Url
   if($node->field_image){
@@ -279,14 +320,6 @@ function _node_map_request($node, $parameters, $status){
     $request['media_url'] = $image_uri;
   }
 
-  // if ($parameters['status'] == 'closed' && $request['status'] == 'open') {
-  //   $request = null;
-  //   return;
-  // }
-  // if ($parameters['status'] == 'open' && $request['status'] == 'closed') {
-  //   $request = null;
-  //   return;
-  // }
   return $request;
 }
 
