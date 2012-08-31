@@ -227,7 +227,10 @@ function features_theme() {
  */
 function features_flush_caches() {
   features_rebuild();
-  features_get_modules(NULL, TRUE);
+  // Don't flush the modules cache during installation, for performance reasons.
+  if (variable_get('install_task') != 'done') {
+    features_get_modules(NULL, TRUE);
+  }
   return array();
 }
 
@@ -278,11 +281,18 @@ function features_help($path, $arg) {
  * Implements hook_modules_disabled().
  */
 function features_modules_disabled($modules) {
-  // Find any features modules that were disabled.
-  if ($modules = array_intersect(array_keys(features_get_features()), $modules)) {
-    foreach ($modules as $module) {
-      features_disable_feature($module);
+  // Go through all modules and gather features that can be disabled.
+  $items = array();
+  foreach ($modules as $module) {
+    if ($feature = feature_load($module)) {
+      $items[$module] = array_keys($feature->info['features']);
     }
+  }
+
+  if (!empty($items)) {
+    _features_restore('disable', $items);
+    // Rebuild the list of features includes.
+    features_include(TRUE);
   }
 }
 
@@ -290,14 +300,19 @@ function features_modules_disabled($modules) {
  * Implements hook_modules_enabled().
  */
 function features_modules_enabled($modules) {
-  // Find any features modules that were enabled.
-  if ($modules = array_intersect(array_keys(features_get_features()), $modules)) {
-    foreach ($modules as $module) {
-      features_enable_feature($module);
+  // Go through all modules and gather features that can be enabled.
+  $items = array();
+  foreach ($modules as $module) {
+    if ($feature = feature_load($module)) {
+      $items[$module] = array_keys($feature->info['features']);
     }
   }
-  // Make sure any new files are included now that a new module is enabled.
-  features_include(TRUE);
+
+  if (!empty($items)) {
+    _features_restore('enable', $items);
+    // Rebuild the list of features includes.
+    features_include(TRUE);
+  }
 }
 
 /**
@@ -324,7 +339,7 @@ function features_include($reset = FALSE) {
     }
 
     // Clear static cache, since we've now included new implementers.
-    foreach (features_get_components(NULL, 'file') as $file) {
+    foreach (features_get_components(NULL, 'file', $reset) as $file) {
       if (is_file(DRUPAL_ROOT . '/' . $file)) {
         require_once DRUPAL_ROOT . '/' . $file;
       }
@@ -383,7 +398,39 @@ function features_include_defaults($components = NULL, $reset = FALSE) {
  * Feature object loader.
  */
 function feature_load($name, $reset = FALSE) {
-  return features_get_features($name, $reset);
+  // Use an alternative code path during installation, for better performance.
+  if (variable_get('install_task') != 'done') {
+    static $features;
+
+    if (!isset($features[$name])) {
+      // Set defaults for module info.
+      $defaults = array(
+        'dependencies' => array(),
+        'description' => '',
+        'package' => 'Other',
+        'version' => NULL,
+        'php' => DRUPAL_MINIMUM_PHP,
+        'files' => array(),
+        'bootstrap' => 0,
+      );
+      $info = drupal_parse_info_file(drupal_get_path('module', $name) . '/' . $name . '.info');
+
+      $features[$name] = FALSE;
+      if (!empty($info['features']) && empty($info['hidden'])) {
+        // Build a fake file object with the data needed during installation.
+        $features[$name] = new stdClass;
+        $features[$name]->name = $name;
+        $features[$name]->filename = drupal_get_path('module', $name) . '/' . $name . '.module';
+        $features[$name]->type = 'module';
+        $features[$name]->info = $info + $defaults;
+      }
+    }
+
+    return $features[$name];
+  }
+  else {
+    return features_get_features($name, $reset);
+  }
 }
 
 /**
@@ -540,7 +587,10 @@ function features_get_info($type = 'module', $name = NULL, $reset = FALSE) {
     $cache = cache_get('features_module_info');
   }
   if (empty($cache) || $reset) {
-    $data = array();
+    $data = array(
+      'feature' => array(),
+      'module' => array(),
+    );
     $ignored = variable_get('features_ignored_orphans', array());
     $files = system_rebuild_module_data();
 
@@ -841,24 +891,6 @@ function features_revert($revert = array()) {
  */
 function features_rebuild($rebuild = array()) {
   return _features_restore('rebuild', $rebuild);
-}
-
-/**
- * Wrapper around _features_restore().
- */
-function features_disable_feature($module) {
-  $feature = feature_load($module);
-  $items[$module] = array_keys($feature->info['features']);
-  return _features_restore('disable', $items);
-}
-
-/**
- * Wrapper around _features_restore().
- */
-function features_enable_feature($module) {
-  $feature = feature_load($module);
-  $items[$module] = array_keys($feature->info['features']);
-  return _features_restore('enable', $items);
 }
 
 /**

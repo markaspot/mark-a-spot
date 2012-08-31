@@ -15,8 +15,8 @@ MODULE_NAME="ctools_drush_test"
 
 stamp
 
-echo 'Enabling views module.'
-drush en views ctools --yes
+echo 'Enabling ctools, views, and bulk_export modules.'
+drush en ctools views bulk_export --yes
 
 stamp
 echo 'Reading all export info'
@@ -36,11 +36,23 @@ drush ctools-export-info --tables-only --format=json
 
 stamp
 echo 'Reading all disabled exportables'
-drush ctools-export-info --disabled
+drush ctools-export-info --filter=disabled
 
 stamp
 echo 'Enabling all default views'
 drush ctools-export-enable views_view --yes
+
+stamp
+echo 'Reading all enabled exportables'
+drush ctools-export-info --filter=enabled
+
+stamp
+echo 'Reading all overridden exportables'
+drush ctools-export-info --filter=overridden
+
+stamp
+echo 'Reading all database only exportables'
+drush ctools-export-info --filter=database
 
 stamp
 echo 'View all default views export data'
@@ -69,6 +81,30 @@ drush ctools-export-disable views_view --yes
 stamp
 echo 'Revert all default views'
 drush ctools-export-revert views_view --yes
+
+stamp
+echo 'Enable all node views'
+drush ctools-export-enable views_view --module=node --yes
+
+stamp
+echo 'Disable all node views'
+drush ctools-export-disable views_view --module=node --yes
+
+stamp
+echo 'Revert all node views'
+drush ctools-export-revert views_view --module=node --yes
+
+stamp
+echo 'Revert all exportables'
+drush ctools-export-revert --all --yes
+
+stamp
+echo 'Enable all exportables'
+drush ctools-export-enable --all --yes
+
+stamp
+echo 'Disable all exportables'
+drush ctools-export-disable --all --yes
 
 stamp
 echo 'Bulk export all objects'

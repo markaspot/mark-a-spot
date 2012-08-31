@@ -81,9 +81,9 @@ function _createStatus () {
   $terms[0] = array('Open', 'This is just a description which should be replaced', 'cc0000');
   $terms[1] = array('In progress','This is just a description which should be replaced', 'ff6600') ;
   $terms[3] = array('Solved','This is just a description which should be replaced', '8fe83b') ;
+  $terms[4] = array('Archive','This is just a description which should be replaced', 'cccccc') ;
 
   // You may customize those entries
-  $terms[4] = array('dummy','This is just a description which should be replaced', '8fe83b') ;
   $terms[5] = array('dummy','This is just a description which should be replaced', '8fe83b') ;
   $terms[6] = array('dummy','This is just a description which should be replaced', '8fe83b') ;
   $terms[7] = array('dummy','This is just a description which should be replaced', '8fe83b') ;
@@ -170,7 +170,7 @@ function _createNode(){
 
   $nodes[3] = array('Graffiti on castle wall', 'Lorem Ipsum Lorem ipsum dolor sit amet, consectetur ing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,  quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo', '50.8282131596655','6.90819419823913','Promenade','50321','Brühl','holger@markaspot.org', '12','3', '0');
 
-  $nodes[4] = array('Consectetur ing elit', 'Lorem Ipsum Lorem ipsum dolor sit amet, consectetur ing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,  quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo', '50.8232596','6.8561028','Pingsdorfer Straße 88','50321','Brühl','holger@markaspot.org', '10', '1', '1');
+  $nodes[4] = array('Consectetur ing elit', 'Lorem Ipsum Lorem ipsum dolor sit amet, consectetur ing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,  quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo', '50.8327211', '6.9032226','Friedrichstraße 23','50321','Brühl','holger@markaspot.org', '10', '4', '1');
 
 
   foreach ($nodes as $node_data) {

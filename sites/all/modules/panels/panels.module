@@ -164,7 +164,8 @@ function panels_menu() {
   $items['panels/ajax'] = array(
     'access arguments' => array('access content'),
     'page callback' => 'panels_ajax_router',
-    'theme callback' => 'panels_ajax_theme_callback',
+    'theme callback' => 'ajax_base_page_theme',
+    'delivery callback' => 'ajax_deliver',
     'type' => MENU_CALLBACK,
   );
 
@@ -1219,6 +1220,11 @@ function template_preprocess_panels_pane(&$vars) {
       );
       unset($content->content['#contextual_links']);
 
+      // Add content to $element array
+      if (is_array($content->content)) {
+        $element['#element'] = $content->content;
+      }
+
       $element = contextual_pre_render_links($element);
       $links += $element['#links'];
     }
@@ -1294,18 +1300,6 @@ function template_preprocess_panels_pane(&$vars) {
 }
 
 /**
- * Menu theme callback.
- *
- * This simply ensures that Panels ajax calls are rendered in the same
- * theme as the original page to prevent .css file confusion.
- */
-function panels_ajax_theme_callback() {
-  if (!empty($_POST['ajax_page_state']['theme'])) {
-    return $_POST['ajax_page_state']['theme'];
-  }
-}
-
-/**
  * Route Panels' AJAX calls to the correct object.
  *
  * Panels' AJAX is controlled mostly by renderer objects. This menu callback
@@ -1325,9 +1319,6 @@ function panels_ajax_router() {
   $args = func_get_args();
   if (count($args) < 3) {
     return MENU_NOT_FOUND;
-  }
-  if (!empty($_POST['ajax_page_state']['theme'])) {
-    $GLOBALS['custom_theme'] = $_POST['ajax_page_state']['theme'];
   }
 
   ctools_include('display-edit', 'panels');
@@ -1369,10 +1360,14 @@ function panels_ajax_router() {
   $output = call_user_func_array(array($renderer, $method), $args);
 
   if (empty($output) && !empty($renderer->commands)) {
-    print ajax_render($renderer->commands);
-    ajax_footer();
+    return array(
+      '#type' => 'ajax',
+      '#commands' => $renderer->commands,
+    );
   }
-  return $output;
+  else {
+    return $output;
+  }
 }
 
 // --------------------------------------------------------------------------

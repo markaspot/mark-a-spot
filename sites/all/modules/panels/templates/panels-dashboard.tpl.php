@@ -1,11 +1,11 @@
 <?php
 ?>
-<div class="panels-dashboard">
-  <div class="dashboard-left clear-block">
+<div class="panels-dashboard clearfix">
+  <div class="dashboard-left clearfix">
     <?php print $left; ?>
   </div>
 
-  <div class="dashboard-right clear-block">
+  <div class="dashboard-right clearfix">
     <?php print $right; ?>
   </div>
 </div>

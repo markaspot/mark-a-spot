@@ -10,7 +10,7 @@
 function mark_a_spot_field_default_fields() {
   $fields = array();
 
-  // Exported field: 'comment-comment_node_report-comment_body'
+  // Exported field: 'comment-comment_node_report-comment_body'.
   $fields['comment-comment_node_report-comment_body'] = array(
     'field_config' => array(
       'active' => '1',
@@ -36,6 +36,7 @@ function mark_a_spot_field_default_fields() {
           0 => 'format',
         ),
       ),
+      'locked' => '0',
       'module' => 'text',
       'settings' => array(),
       'translatable' => '0',
@@ -79,7 +80,7 @@ function mark_a_spot_field_default_fields() {
     ),
   );
 
-  // Exported field: 'comment-comment_node_report-field_comment_label'
+  // Exported field: 'comment-comment_node_report-field_comment_label'.
   $fields['comment-comment_node_report-field_comment_label'] = array(
     'field_config' => array(
       'active' => '1',
@@ -96,6 +97,7 @@ function mark_a_spot_field_default_fields() {
           0 => 'value',
         ),
       ),
+      'locked' => '0',
       'module' => 'list',
       'settings' => array(
         'allowed_values' => array(
@@ -140,7 +142,7 @@ function mark_a_spot_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-report-body'
+  // Exported field: 'node-report-body'.
   $fields['node-report-body'] = array(
     'field_config' => array(
       'active' => '1',
@@ -166,6 +168,7 @@ function mark_a_spot_field_default_fields() {
           0 => 'format',
         ),
       ),
+      'locked' => '0',
       'module' => 'text',
       'settings' => array(
         'field_permissions' => NULL,
@@ -245,7 +248,7 @@ function mark_a_spot_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-report-field_address'
+  // Exported field: 'node-report-field_address'.
   $fields['node-report-field_address'] = array(
     'field_config' => array(
       'active' => '1',
@@ -269,6 +272,7 @@ function mark_a_spot_field_default_fields() {
           0 => 'format',
         ),
       ),
+      'locked' => '0',
       'module' => 'text',
       'settings' => array(
         'max_length' => '128',
@@ -328,7 +332,7 @@ function mark_a_spot_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-report-field_attachment'
+  // Exported field: 'node-report-field_attachment'.
   $fields['node-report-field_attachment'] = array(
     'field_config' => array(
       'active' => '1',
@@ -352,6 +356,7 @@ function mark_a_spot_field_default_fields() {
           0 => 'fid',
         ),
       ),
+      'locked' => '0',
       'module' => 'file',
       'settings' => array(
         'display_default' => 1,
@@ -429,7 +434,7 @@ function mark_a_spot_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-report-field_category'
+  // Exported field: 'node-report-field_category'.
   $fields['node-report-field_category'] = array(
     'field_config' => array(
       'active' => '1',
@@ -453,6 +458,7 @@ function mark_a_spot_field_default_fields() {
           0 => 'tid',
         ),
       ),
+      'locked' => '0',
       'module' => 'taxonomy',
       'settings' => array(
         'allowed_values' => array(
@@ -524,7 +530,7 @@ function mark_a_spot_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-report-field_city'
+  // Exported field: 'node-report-field_city'.
   $fields['node-report-field_city'] = array(
     'field_config' => array(
       'active' => '1',
@@ -548,6 +554,7 @@ function mark_a_spot_field_default_fields() {
           0 => 'format',
         ),
       ),
+      'locked' => '0',
       'module' => 'text',
       'settings' => array(
         'field_permissions' => NULL,
@@ -620,7 +627,7 @@ function mark_a_spot_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-report-field_common'
+  // Exported field: 'node-report-field_common'.
   $fields['node-report-field_common'] = array(
     'field_config' => array(
       'active' => '1',
@@ -637,6 +644,7 @@ function mark_a_spot_field_default_fields() {
           0 => 'value',
         ),
       ),
+      'locked' => '0',
       'module' => 'list',
       'settings' => array(
         'allowed_values' => array(
@@ -702,7 +710,7 @@ function mark_a_spot_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-report-field_e_mail'
+  // Exported field: 'node-report-field_e_mail'.
   $fields['node-report-field_e_mail'] = array(
     'field_config' => array(
       'active' => '1',
@@ -726,6 +734,7 @@ function mark_a_spot_field_default_fields() {
           0 => 'format',
         ),
       ),
+      'locked' => '0',
       'module' => 'text',
       'settings' => array(
         'max_length' => '255',
@@ -778,7 +787,7 @@ function mark_a_spot_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-report-field_geo'
+  // Exported field: 'node-report-field_geo'.
   $fields['node-report-field_geo'] = array(
     'field_config' => array(
       'active' => '1',
@@ -798,6 +807,7 @@ function mark_a_spot_field_default_fields() {
           0 => 'lng',
         ),
       ),
+      'locked' => '0',
       'module' => 'geolocation',
       'settings' => array(),
       'translatable' => '0',
@@ -894,7 +904,7 @@ function mark_a_spot_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-report-field_image'
+  // Exported field: 'node-report-field_image'.
   $fields['node-report-field_image'] = array(
     'field_config' => array(
       'active' => '1',
@@ -918,6 +928,7 @@ function mark_a_spot_field_default_fields() {
           0 => 'fid',
         ),
       ),
+      'locked' => '0',
       'module' => 'image',
       'settings' => array(
         'default_image' => 0,
@@ -1011,7 +1022,7 @@ function mark_a_spot_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-report-field_notify_twitter'
+  // Exported field: 'node-report-field_notify_twitter'.
   $fields['node-report-field_notify_twitter'] = array(
     'field_config' => array(
       'active' => '1',
@@ -1028,6 +1039,7 @@ function mark_a_spot_field_default_fields() {
           0 => 'value',
         ),
       ),
+      'locked' => '0',
       'module' => 'list',
       'settings' => array(
         'allowed_values' => array(
@@ -1087,7 +1099,7 @@ function mark_a_spot_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-report-field_notify_user'
+  // Exported field: 'node-report-field_notify_user'.
   $fields['node-report-field_notify_user'] = array(
     'field_config' => array(
       'active' => '1',
@@ -1104,6 +1116,7 @@ function mark_a_spot_field_default_fields() {
           0 => 'value',
         ),
       ),
+      'locked' => '0',
       'module' => 'list',
       'settings' => array(
         'allowed_values' => array(
@@ -1163,7 +1176,7 @@ function mark_a_spot_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-report-field_status'
+  // Exported field: 'node-report-field_status'.
   $fields['node-report-field_status'] = array(
     'field_config' => array(
       'active' => '1',
@@ -1187,6 +1200,7 @@ function mark_a_spot_field_default_fields() {
           0 => 'tid',
         ),
       ),
+      'locked' => '0',
       'module' => 'taxonomy',
       'settings' => array(
         'allowed_values' => array(
@@ -1202,7 +1216,11 @@ function mark_a_spot_field_default_fields() {
     ),
     'field_instance' => array(
       'bundle' => 'report',
-      'default_value' => NULL,
+      'default_value' => array(
+        0 => array(
+          'tid' => '1',
+        ),
+      ),
       'deleted' => '0',
       'description' => '',
       'display' => array(
@@ -1258,7 +1276,7 @@ function mark_a_spot_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-report-field_zip'
+  // Exported field: 'node-report-field_zip'.
   $fields['node-report-field_zip'] = array(
     'field_config' => array(
       'active' => '1',
@@ -1282,6 +1300,7 @@ function mark_a_spot_field_default_fields() {
           0 => 'format',
         ),
       ),
+      'locked' => '0',
       'module' => 'text',
       'settings' => array(
         'field_permissions' => NULL,
@@ -1353,7 +1372,7 @@ function mark_a_spot_field_default_fields() {
     ),
   );
 
-  // Exported field: 'taxonomy_term-category-field_category_hex'
+  // Exported field: 'taxonomy_term-category-field_category_hex'.
   $fields['taxonomy_term-category-field_category_hex'] = array(
     'field_config' => array(
       'active' => '1',
@@ -1377,6 +1396,7 @@ function mark_a_spot_field_default_fields() {
           0 => 'format',
         ),
       ),
+      'locked' => '0',
       'module' => 'text',
       'settings' => array(
         'max_length' => '6',
@@ -1431,7 +1451,7 @@ function mark_a_spot_field_default_fields() {
     ),
   );
 
-  // Exported field: 'taxonomy_term-category-field_category_id'
+  // Exported field: 'taxonomy_term-category-field_category_id'.
   $fields['taxonomy_term-category-field_category_id'] = array(
     'field_config' => array(
       'active' => '1',
@@ -1455,6 +1475,7 @@ function mark_a_spot_field_default_fields() {
           0 => 'format',
         ),
       ),
+      'locked' => '0',
       'module' => 'text',
       'settings' => array(
         'max_length' => '6',
@@ -1509,7 +1530,7 @@ function mark_a_spot_field_default_fields() {
     ),
   );
 
-  // Exported field: 'taxonomy_term-category-field_hash'
+  // Exported field: 'taxonomy_term-category-field_hash'.
   $fields['taxonomy_term-category-field_hash'] = array(
     'field_config' => array(
       'active' => '1',
@@ -1533,6 +1554,7 @@ function mark_a_spot_field_default_fields() {
           0 => 'format',
         ),
       ),
+      'locked' => '0',
       'module' => 'text',
       'settings' => array(
         'max_length' => '255',
@@ -1574,7 +1596,7 @@ function mark_a_spot_field_default_fields() {
     ),
   );
 
-  // Exported field: 'taxonomy_term-category-field_tags'
+  // Exported field: 'taxonomy_term-category-field_tags'.
   $fields['taxonomy_term-category-field_tags'] = array(
     'field_config' => array(
       'active' => '1',
@@ -1598,6 +1620,7 @@ function mark_a_spot_field_default_fields() {
           0 => 'tid',
         ),
       ),
+      'locked' => '0',
       'module' => 'taxonomy',
       'settings' => array(
         'allowed_values' => array(
@@ -1644,7 +1667,7 @@ function mark_a_spot_field_default_fields() {
     ),
   );
 
-  // Exported field: 'taxonomy_term-status-field_status_hex'
+  // Exported field: 'taxonomy_term-status-field_status_hex'.
   $fields['taxonomy_term-status-field_status_hex'] = array(
     'field_config' => array(
       'active' => '1',
@@ -1665,6 +1688,7 @@ function mark_a_spot_field_default_fields() {
           0 => 'format',
         ),
       ),
+      'locked' => '0',
       'module' => 'text',
       'settings' => array(
         'max_length' => '6',
@@ -1705,7 +1729,7 @@ function mark_a_spot_field_default_fields() {
     ),
   );
 
-  // Exported field: 'taxonomy_term-status-field_status_id'
+  // Exported field: 'taxonomy_term-status-field_status_id'.
   $fields['taxonomy_term-status-field_status_id'] = array(
     'field_config' => array(
       'active' => '1',
@@ -1715,6 +1739,7 @@ function mark_a_spot_field_default_fields() {
       'field_name' => 'field_status_id',
       'foreign keys' => array(),
       'indexes' => array(),
+      'locked' => '0',
       'module' => 'number',
       'settings' => array(),
       'translatable' => '0',

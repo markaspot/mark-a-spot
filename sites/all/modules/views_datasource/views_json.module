@@ -26,71 +26,33 @@ function views_json_views_api() {
 /**
  * Implements hook_views_pre_render().
  */
-// function views_json_views_pre_render(&$view) {
-//   if(isset($view->plugin_name) && $view->plugin_name == 'views_json') {
-//     // Support for Video field.
-//     if(!empty($view->result)) {
-//       // Process each View result.
-//       foreach($view->result as $row => $result) {
-//         // Only process the entity fields defined by the View.
-//         foreach($view->field as $field_name => $field) {
-//           if($field instanceof views_handler_field_field) {
-//             if($field->field_info['type'] == 'video') {
+function views_json_views_pre_render(&$view) {
+  if(isset($view->plugin_name) && $view->plugin_name == 'views_json') {
+    // Support for Video field.
+    if(!empty($view->result)) {
+      // Process each View result.
+      foreach($view->result as $row => $result) {
+        // Only process the entity fields defined by the View.
+        foreach($view->field as $field_name => $field) {
+          if($field instanceof views_handler_field_field) {
+            if($field->field_info['type'] == 'video') {
               
-//               // Get the Video URL.
-//               $video = $field->get_value($view->result[$row]);
-//               $url = file_create_url($video[0]['uri']);
-//               $render_array = array(
-//                 '#type' => 'markup',
-//                 '#markup' => filter_xss($url),
-//               );
-//               // Substitute embed code with URL. @todo Add support for escaped embed codes.
-//               $view->result[$row]->{'field_'. $field_name}[0]['rendered'] = $render_array;
-//             }
-//           }
-//         }
-//       }
-//     }
-//   }
-// }
-
-/**
- * Implements hook_field_attach_load().
- */
-// function views_json_field_attach_load($entity_type, $entities, $age, $options) {
-//   // Fix for issue #1613310, empty node fields not being displayed.
-//   // Provide a default value for empty fields.
-//   // When testing remember that these entities are cached.
-//   if($entity_type == 'node' && $age == FIELD_LOAD_CURRENT) {
-//     foreach($entities as $key => $entity) {
-//       foreach($entity as $field_name => $field) {
-//         if(empty($field) && preg_match('/^field_/', $field_name)) {
-          
-//           $render_array = array();
-//           $render_array_item = array(
-//             'value' => '',
-//             'format' => null,
-//             'safe_value' => '',
-//             'formatter' => 'text_default',
-//           );
-          
-//           $field_info = field_info_field($field_name);
-//           if($field_info && $field_info['module'] == 'taxonomy') {
-//             $render_array_item['tid'] = 'autocreate';
-//             $render_array_item['name'] = '';
-//           } else if($field_info && $field_info['module'] == 'link') {
-//             // Same kind of exception with link module fields.
-//             $render_array_item['title'] = '';
-//             $render_array_item['url'] = '';
-//           }
-          
-//           $render_array[] = $render_array_item;
-//           $entities[$key]->{$field_name}[$entity->language] = $render_array;
-//         }
-//       }
-//     }
-//   }
-// }
+              // Get the Video URL.
+              $video = $field->get_value($view->result[$row]);
+              $url = file_create_url($video[0]['uri']);
+              $render_array = array(
+                '#type' => 'markup',
+                '#markup' => filter_xss($url),
+              );
+              // Substitute embed code with URL. @todo Add support for escaped embed codes.
+              $view->result[$row]->{'field_'. $field_name}[0]['rendered'] = $render_array;
+            }
+          }
+        }
+      }
+    }
+  }
+}
 
 /**
  * We almost duplicate the content_handler_field_multiple::render function

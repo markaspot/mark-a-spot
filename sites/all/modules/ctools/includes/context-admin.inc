@@ -636,8 +636,8 @@ function ctools_context_get_defaults($plugin_definition, $object, $type) {
     'name' => $plugin_definition['name'],
   );
 
-  if (isset($plugin['defaults'])) {
-    $defaults = $plugin['defaults'];
+  if (isset($plugin_definition['defaults'])) {
+    $defaults = $plugin_definition['defaults'];
   }
   else if (isset($subtype['defaults'])) {
     $defaults = $subtype['defaults'];

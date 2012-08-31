@@ -10,9 +10,9 @@ files[] = includes/legacy.inc
 files[] = includes/plugins.inc
 files[] = plugins/views/panels_views_plugin_row_fields.inc
 
-; Information added by drupal.org packaging script on 2012-03-18
-version = "7.x-3.2"
+; Information added by drupal.org packaging script on 2012-08-18
+version = "7.x-3.3"
 core = "7.x"
 project = "panels"
-datestamp = "1332079243"
+datestamp = "1345319572"
 

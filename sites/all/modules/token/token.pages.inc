@@ -6,6 +6,37 @@
  */
 
 /**
+ * Theme a link to a token tree either as a regular link or a dialog.
+ */
+function theme_token_tree_link($variables) {
+  if (empty($variables['text'])) {
+    $variables['text'] = t('Browse available tokens.');
+  }
+
+  if (!empty($variables['dialog'])) {
+    drupal_add_library('token', 'dialog');
+    $variables['options']['attributes']['class'][] = 'token-dialog';
+  }
+
+  $info = token_theme();
+  $variables['options']['query']['token_tree'] = array_intersect_key($variables, $info['token_tree']['variables']);
+  $variables['options']['attributes'] + array('target' => '_blank');
+
+  return l($variables['text'], 'token/tree', $variables['options']);
+}
+
+/**
+ * Page callback to output a token tree as an empty page.
+ */
+function token_page_output_tree() {
+  $options = isset($_GET['token_tree']) ? $_GET['token_tree'] : array();
+  $output = theme('token_tree', array('dialog' => FALSE) + $options);
+  print '<html><head><title></title>' . drupal_get_css() . drupal_get_js() . '</head>';
+  print '<body class="token-tree">' . $output . '</body></html>';
+  drupal_exit();
+}
+
+/**
  * Theme a tree table.
  *
  * @ingroup themeable
@@ -32,6 +63,10 @@ function theme_tree_table($variables) {
  * @ingroup themeable
  */
 function theme_token_tree($variables) {
+  if (!empty($variables['dialog'])) {
+    return theme_token_tree_link($variables);
+  }
+
   $token_types = $variables['token_types'];
   $info = token_get_info();
 
@@ -163,7 +198,7 @@ function _token_token_tree_format_row($token, array $token_info, $is_group = FAL
  * @see drupal_clean_css_identifier()
  */
 function _token_clean_css_identifier($id) {
-  static $replacements = array(' ' => '-', '_' => '-', '/' => '-', '[' => '-', ']' => '', ':' => '--', '?' => '');
+  static $replacements = array(' ' => '-', '_' => '-', '/' => '-', '[' => '-', ']' => '', ':' => '--', '?' => '', '<' => '-', '>' => '-');
   return 'token-' . rtrim(strtr(trim($id, '[]'), $replacements), '-');
 }
 

@@ -112,7 +112,7 @@ function mymodule_schema() {
 <dd>Human readable title of the export key. Defaults to 'Name'. Because the schema is cached, do not translate this. It must instead be translated when used.</dd>
 
 <dt>primary key</dt>
-<dd>Objects should contain a primary key which is a database identifier primarily used to determine if an object has been written or not. This is required for the default CRUD save callback to work.</dd>
+<dd>A single field within the table that is to be used as the main identifier to discern whether or not the object has been written. As the schema definition's primary key value will be used by default, it is not usually necessary to define this.</dd>
 
 <dt>object</dt>
 <dd>The class the object should be created as, if 'object factory' is not set. If this is not set either, defaults as stdClass.</dd>

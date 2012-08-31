@@ -39,7 +39,7 @@ function panels_ipe_theme() {
       'variables' => array('output' => NULL, 'pane' => NULL, 'display' => NULL, 'renderer' => NULL),
     ),
     'panels_ipe_region_wrapper' => array(
-      'variables' => array('output' => NULL, 'region_id' => NULL, 'display' => NULL, 'renderer' => NULL),
+      'variables' => array('output' => NULL, 'region_id' => NULL, 'display' => NULL, 'controls' => NULL, 'renderer' => NULL),
     ),
     'panels_ipe_add_pane_button' => array(
       'variables' => array('region_id' => NULL, 'display' => NULL, 'renderer' => NULL),
@@ -89,7 +89,7 @@ function theme_panels_ipe_pane_wrapper($vars) {
       'href' => $renderer->get_url('edit-pane', $pane->pid),
       'html' => TRUE,
       'attributes' => array(
-        'class' => 'ctools-use-modal',
+        'class' => array('ctools-use-modal', 'panels-ipe-hide-bar'),
         'title' => isset($content_type['edit text']) ? $content_type['edit text'] : t('Settings'),
         // 'id' => "pane-edit-panel-pane-$pane->pid",
       ),
@@ -103,7 +103,7 @@ function theme_panels_ipe_pane_wrapper($vars) {
       'href' => $renderer->get_url('style-type', 'pane', $pane->pid),
       'html' => TRUE,
       'attributes' => array(
-        'class' => array('ctools-use-modal'),
+        'class' => array('ctools-use-modal', 'panels-ipe-hide-bar'),
         'title' => t('Style'),
       ),
     );
@@ -139,16 +139,35 @@ function theme_panels_ipe_pane_wrapper($vars) {
 }
 
 function theme_panels_ipe_region_wrapper($vars) {
-  return $vars['output'];
+  return $vars['controls'] . $vars['output'];
 }
 
 function theme_panels_ipe_add_pane_button($vars) {
   $region_id = $vars['region_id'];
   $display = $vars['display'];
   $renderer = $vars['renderer'];
+  $link = '';
 
-  $attributes = array('class' => 'ctools-use-modal');
-  $link = l(t('Add new pane'), $renderer->get_url('select-content', $region_id), array('attributes' => $attributes));
+  // Add option to configure style in IPE
+  if (user_access('administer panels styles')) {
+    $link .= ' ' . l('<span>' . t('Region style') . '</span>', $renderer->get_url('style-type', 'region', $region_id), array(
+      'attributes' => array(
+        'class' => array('ctools-use-modal', 'style', 'panels-ipe-hide-bar'),
+        'title' => t('Region style'),
+      ),
+      'html' => TRUE,
+    ));
+  }
+
+  // Add option to add items in the IPE
+  $link .= ' ' . l('<span>' . t('Add new pane') . '</span>', $renderer->get_url('select-content', $region_id), array(
+      'attributes' => array(
+        'class' => array('ctools-use-modal', 'add', 'panels-ipe-hide-bar'),
+        'title' => t('Add new pane'),
+      ),
+      'html' => TRUE,
+  ));
+
   return '<div class="panels-ipe-newblock panels-ipe-on">' . $link . '</div>';
 }
 

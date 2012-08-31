@@ -74,6 +74,7 @@ div.panels-ipe-handlebar-wrapper ul {
 div.panels-ipe-handlebar-wrapper li {
   background: none;
   list-style-type: none;
+  list-style-image: none;
   margin: 0 .5em 0 0;
   padding: 0;
   float: left;
@@ -154,7 +155,7 @@ div.panels-ipe-newblock {
   -moz-box-shadow: 0px 0 5px 5px #ECFAFF;
   box-shadow: 0px 0 5px 5px #ECFAFF;
   position: absolute;
-  left: 50%;
+  right: 10px;
   top: 50%;
   margin-top: -18px; /* some initial guesses to help center the add button
     panels_ipe.js will evaluate the width and get this pixel-perfect */
@@ -168,7 +169,7 @@ div.panels-ipe-newblock a,
 span.panels-ipe-draghandle-icon {
   display: inline-block;
   border: 1px solid #ccc;
-	padding: 0 13px 1px;
+	padding: 0 8px 1px;
 	font: bold 12px/32px 'Open Sans', 'Lucida Sans', 'Lucida Grande', verdana sans-serif;
 	text-decoration: none;
 	height: 33px;
@@ -199,11 +200,8 @@ span.panels-ipe-draghandle-icon {
   box-shadow: 0px 3px 3px 0px #d2d2d2;
 }
 
-div.panels-ipe-handlebar-wrapper li a {
-  padding: 0 8px  1px;
-}
-
-div.panels-ipe-handlebar-wrapper li a span {
+div.panels-ipe-handlebar-wrapper li a span,
+div.panels-ipe-newblock a span {
   display: block;
   height: 32px;
   width: 18px;
@@ -211,15 +209,23 @@ div.panels-ipe-handlebar-wrapper li a span {
   background-repeat: no-repeat;
   text-align: left;
   text-indent: -9999em;
-  overflow: hidden;
 }
 
 div.panels-ipe-handlebar-wrapper li.edit a span {
   background-image: url(../images/icon-settings.png);
 }
 
-div.panels-ipe-handlebar-wrapper li.style a span {
+div.panels-ipe-handlebar-wrapper li.style a span,
+div.panels-ipe-newblock a.style span {
   background-image: url(../images/icon-style.png);
+}
+
+div.panels-ipe-newblock a.style {
+  margin-right: .5em;
+}
+
+div.panels-ipe-newblock a.add span {
+  background-image: url(../images/icon-add.png);
 }
 
 div.panels-ipe-handlebar-wrapper li.delete a span {

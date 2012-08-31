@@ -166,7 +166,7 @@ function hook_features_export_render($module_name, $data, $export = NULL) {
     $code[] = "  \$mycomponents['{$name}'] = " . features_var_export(mycomponent_load($name)) .";";
   }
   $code[] = "return \$mycomponents;";
-  $code = implode("\n", $mycomponents);
+  $code = implode("\n", $code);
   return array('mycomponent_defaults' => $code);
 }
 
@@ -182,7 +182,7 @@ function hook_features_export_render($module_name, $data, $export = NULL) {
  * @return boolean
  *   TRUE or FALSE for whether the components were successfully reverted.
  */
-function hook_features_export_revert($module_name) {
+function hook_features_revert($module_name) {
   $mycomponents = module_invoke_all($module_name, 'mycomponent_defaults');
   if (!empty($$mycomponents)) {
     foreach ($mycomponents as $mycomponent) {
@@ -208,7 +208,7 @@ function hook_features_export_revert($module_name) {
  * @param string $module_name
  *   The name of the feature module whose components should be rebuilt.
  */
-function hook_features_export_rebuild($module_name) {
+function hook_features_rebuild($module_name) {
   $mycomponents = module_invoke_all($module_name, 'mycomponent_defaults');
   if (!empty($$mycomponents)) {
     foreach ($mycomponents as $mycomponent) {
