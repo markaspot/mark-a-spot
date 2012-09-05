@@ -7,30 +7,3 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: PROJECT VERSION\n"
-"POT-Creation-Date: 2009-06-04 16:11+0200\n"
-"PO-Revision-Date: 2009-06-04 16:28+0100\n"
-"Last-Translator: L.B. Cohn <lichai@999games.nl>\n"
-"Language-Team: German <EMAIL@ADDRESS>\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n!=1);\n"
-
-#: voting_edit.module:23
-msgid "You can not vote PRO and CON at once"
-msgstr "Sie können nicht gleichzeitig Pro und Contra stimmen"
-
-
-#: voting_edit.module:81
-msgid "Add Votes PRO"
-msgstr "Zusätzliche Pro-Stimmen"
-
-#: voting_edit.module:88
-msgid "Add Votes CON"
-msgstr "Zusätzliche Contra-Stimmen"
-
-
-#: voting_edit.module:94
-msgid "Delete all manually set votes from node"
-msgstr "Alle manuell gesetzten Stimmen zurücksetzen"

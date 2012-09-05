@@ -62,24 +62,9 @@ function markaspot_log_views_data() {
     ),
   );
 
-  // $data['markaspot_log']['user'] = array(
-  //   'title' => t('Twitter user'),
-  //   'help' => t('The user from twitter'),
-  //   'field' => array(
-  //     'handler' => 'views_handler_field',
-  //     'click sortable' => TRUE,
-  //   ),
-  //   'sort' => array(
-  //     'handler' => 'views_handler_sort',
-  //   ),
-  //   'filter' => array(
-  //     'handler' => 'views_handler_filter_string',
-  //   ),
-  // );
-
   $data['markaspot_log']['created'] = array(
-    'title' => t('Post date'),
-    'help' => t('The post date from twitter'),
+    'title' => t('Log date'),
+    'help' => t('The Log date'),
     'field' => array(
       'handler' => 'views_handler_field_date',
       'click sortable' => TRUE,
