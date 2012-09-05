@@ -9,58 +9,6 @@
 
 
 
-
-
-// function markaspot_log_entity_info(){
-//   $markaspot_log_info['maslog'] = array(
-//     'label' => t('Mark-a-Spot Activity Logging'),
-//     'controller class' => 'MasLogController',
-//     'base table' => 'markaspot_log',
-//     // view
-//     'uri callback' => 'markaspot_log_uri',
-//     'fieldable' => TRUE,
-//     'entity keys' => array(
-//       'id' => 'id',
-//     ),
-//     'static cache' => TRUE,
-//     'bundles' => array(
-//       'markaspot_log'=> array(
-//         'label' => 'Mas_log',
-//         'admin' => array(
-//           'path' => 'admin/structure/maslog/manage',
-//           'access arguments' => array('administer Activity Logs'),
-//         ),
-//       ),
-//     ),
-//     'view modes' => array(
-//       'full' => array(
-//         'label' => t('Full MasLog'),
-//         'custom settings' =>  FALSE,
-//       ),
-//     )
-//   );
-  
-//   return $markaspot_log_info;
-// }
-
-// function markaspot_log_menu(){
-//   $items['admin/structure/maslog/manage'] = array(
-//     'title' => 'Mark-a-Spot  Log Admin',
-//     'description' => 'Manage Log',
-//     'page callback' => 'markaspot_log_info',
-//     'access arguments' => array('administer maslogs'),
-//   );
-//   $items['maslog/%maslog'] = array(
-//     'title callback' => 'markaspot_log_page_title',
-//     'title arguments' => array(1),
-//     'page callback' => 'markaspot_log_page_view',
-//     'page arguments' => array(1),
-//     'access arguments' => array('view maslogs'),
-//     'type' => MENU_CALLBACK,
-//   );
-//   return $items;
-// }
-
 function markaspot_log_permission(){
     return array(
     'administer maslogs' =>  array(
@@ -73,10 +21,6 @@ function markaspot_log_permission(){
   );
 }
 
-
-// function markaspot_log_info() {
-//   return ('Welcome to the administration page for your Mark-a-Spot Logs!');
-// }
 
 function markaspot_log_page_title($maslog){
   return $maslog->id;
@@ -184,7 +128,7 @@ function markaspot_log_node_insert($node) {
   }
 */
 
-  if (!in_array('Verwaltung', $user->roles) || in_array('administrator', $user->roles) && $node->type == 'report'){
+  if (!in_array('Verwaltung', $user->roles) || !in_array('administrator', $user->roles) && $node->type == 'report'){
 
     if($node->nid) {
       $data->message = t('The report has been edited by Citizen');
