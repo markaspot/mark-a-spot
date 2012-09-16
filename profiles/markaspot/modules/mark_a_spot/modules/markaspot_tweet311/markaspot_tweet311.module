@@ -217,13 +217,11 @@ function _markaspot_get_taxonomy($tweet){
         $query
         ->fieldCondition('field_category_id', 'value', array($service_found), '=');
       } else {
-
         $query
         ->fieldCondition('field_hash', 'value', '%'.$service_found.'%', 'LIKE');
         // ->fieldCondition('field_hash', 'value', array($service_found), 'LIKE');
       }
       $taxonomy_found = $query->execute();
-      var_dump($taxonomy_found);
       $tid = array_keys($taxonomy_found["taxonomy_term"]);
 
       // Load term as object from id
@@ -311,9 +309,9 @@ function _markaspot_tweet311_get_tweet_pic($picurl) {
     drupal_install_mkdir($folderuri, $mask);
   }  
   if (!file_exists($path) || filemtime($path) < (REQUEST_TIME - 604800)) {
-    $data = drupal_http_request($picurl);
+    $data = @file_get_contents($picurl);
     //drupal_mkdir($folderuri);
-    $file = file_save_data($data->data, $uri, FILE_EXISTS_REPLACE);
+    $file = file_save_data($data, $uri, FILE_EXISTS_REPLACE);
     $fid = $file->fid;
   }
   else {
