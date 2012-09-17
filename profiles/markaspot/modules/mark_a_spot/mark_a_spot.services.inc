@@ -20,20 +20,34 @@ function mark_a_spot_default_services_endpoint() {
     'services' => 'services',
   );
   $endpoint->server_settings = array(
+    'formatters' => array(
+      'json' => TRUE,
+      'xml' => TRUE,
+      'bencode' => FALSE,
+      'jsonp' => FALSE,
+      'php' => FALSE,
+      'rss' => FALSE,
+    ),
+    'parsers' => array(
+      'application/json' => TRUE,
+      'application/x-www-form-urlencoded' => TRUE,
+      'application/vnd.php.serialized' => FALSE,
+      'multipart/form-data' => FALSE,
+    ),
     'rest_server' => array(
       'formatters' => array(
         'json' => TRUE,
-        'rss' => TRUE,
         'xml' => TRUE,
         'bencode' => FALSE,
         'jsonp' => FALSE,
         'php' => FALSE,
+        'rss' => FALSE,
         'yaml' => FALSE,
       ),
       'parsers' => array(
-        'application/x-www-form-urlencoded' => TRUE,
-        'application/json' => FALSE,
+        'application/json' => TRUE,
         'application/vnd.php.serialized' => FALSE,
+        'application/x-www-form-urlencoded' => FALSE,
         'application/x-yaml' => FALSE,
         'multipart/form-data' => FALSE,
       ),
