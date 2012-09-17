@@ -63,31 +63,12 @@ class RESTServerViewBuiltIn extends RESTServerView {
     return bencode($data);
   }
 
-  // Mark-a-Spot Integration 
   private function render_xml($data) {
     $doc = new DOMDocument('1.0', 'utf-8');
-
-    // only change root, if there is GeoReport output data
-    if (array_key_exists('services', $data)) {
-      $root = $doc->createElement('services');
-    } elseif (array_key_exists('service_requests', $data)){
-      $root = $doc->createElement('service_requests');
-    } elseif (array_key_exists('discovery', $data)){
-      $root = $doc->createElement('discovery');
-    } else {      
-      $root = $doc->createElement('result');
-    }
+    $root = $doc->createElement('result');
     $doc->appendChild($root);
 
-    // shifting all children to top-level
-    if(!is_array($data)) {
-      $data = (array) $data;
-    }
-    $data = $data[key($data)];
-    // deleting first key
     $this->xml_recurse($doc, $root, $data);
-
-    //unset($data[key($data)]);
 
     return $doc->saveXML();
   }
@@ -101,19 +82,7 @@ class RESTServerViewBuiltIn extends RESTServerView {
       $assoc = FALSE || empty($data);
       foreach ($data as $key => $value) {
         if (is_numeric($key)) {
-
-          // Mark-a-Spot Integration
-          // Instead of "items" geoReport v2 requires an "request" or "service"-element for arrays
           $key = 'item';
-          if (array_key_exists('service_code', $data[0])) {
-            $key = 'service';
-          }
-          if (array_key_exists('status', $data[0])) {
-            $key = 'request';
-          } 
-          if (in_array('xml', $data)) {
-            $key = 'format';
-          } 
         }
         else {
           $assoc = TRUE;
