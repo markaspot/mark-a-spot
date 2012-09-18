@@ -407,30 +407,6 @@ function mark_a_spot_views_default_views() {
     'prefix_suffix' => 1,
   );
   $handler->display->display_options['fields']['field_category_id']['field_api_classes'] = 0;
-  /* Field: city */
-  $handler->display->display_options['fields']['field_city']['id'] = 'field_city';
-  $handler->display->display_options['fields']['field_city']['table'] = 'field_data_field_city';
-  $handler->display->display_options['fields']['field_city']['field'] = 'field_city';
-  $handler->display->display_options['fields']['field_city']['ui_name'] = 'city';
-  $handler->display->display_options['fields']['field_city']['label'] = 'city';
-  $handler->display->display_options['fields']['field_city']['alter']['alter_text'] = 0;
-  $handler->display->display_options['fields']['field_city']['alter']['make_link'] = 0;
-  $handler->display->display_options['fields']['field_city']['alter']['absolute'] = 0;
-  $handler->display->display_options['fields']['field_city']['alter']['external'] = 0;
-  $handler->display->display_options['fields']['field_city']['alter']['replace_spaces'] = 0;
-  $handler->display->display_options['fields']['field_city']['alter']['trim_whitespace'] = 0;
-  $handler->display->display_options['fields']['field_city']['alter']['nl2br'] = 0;
-  $handler->display->display_options['fields']['field_city']['alter']['word_boundary'] = 1;
-  $handler->display->display_options['fields']['field_city']['alter']['ellipsis'] = 1;
-  $handler->display->display_options['fields']['field_city']['alter']['strip_tags'] = 0;
-  $handler->display->display_options['fields']['field_city']['alter']['trim'] = 0;
-  $handler->display->display_options['fields']['field_city']['alter']['html'] = 0;
-  $handler->display->display_options['fields']['field_city']['element_label_colon'] = 1;
-  $handler->display->display_options['fields']['field_city']['element_default_classes'] = 1;
-  $handler->display->display_options['fields']['field_city']['hide_empty'] = 0;
-  $handler->display->display_options['fields']['field_city']['empty_zero'] = 0;
-  $handler->display->display_options['fields']['field_city']['hide_alter_empty'] = 1;
-  $handler->display->display_options['fields']['field_city']['field_api_classes'] = 0;
   /* Field: address */
   $handler->display->display_options['fields']['field_address']['id'] = 'field_address';
   $handler->display->display_options['fields']['field_address']['table'] = 'field_data_field_address';
@@ -455,30 +431,6 @@ function mark_a_spot_views_default_views() {
   $handler->display->display_options['fields']['field_address']['empty_zero'] = 0;
   $handler->display->display_options['fields']['field_address']['hide_alter_empty'] = 1;
   $handler->display->display_options['fields']['field_address']['field_api_classes'] = 0;
-  /* Field: zip */
-  $handler->display->display_options['fields']['field_zip']['id'] = 'field_zip';
-  $handler->display->display_options['fields']['field_zip']['table'] = 'field_data_field_zip';
-  $handler->display->display_options['fields']['field_zip']['field'] = 'field_zip';
-  $handler->display->display_options['fields']['field_zip']['ui_name'] = 'zip';
-  $handler->display->display_options['fields']['field_zip']['label'] = 'zip';
-  $handler->display->display_options['fields']['field_zip']['alter']['alter_text'] = 0;
-  $handler->display->display_options['fields']['field_zip']['alter']['make_link'] = 0;
-  $handler->display->display_options['fields']['field_zip']['alter']['absolute'] = 0;
-  $handler->display->display_options['fields']['field_zip']['alter']['external'] = 0;
-  $handler->display->display_options['fields']['field_zip']['alter']['replace_spaces'] = 0;
-  $handler->display->display_options['fields']['field_zip']['alter']['trim_whitespace'] = 0;
-  $handler->display->display_options['fields']['field_zip']['alter']['nl2br'] = 0;
-  $handler->display->display_options['fields']['field_zip']['alter']['word_boundary'] = 1;
-  $handler->display->display_options['fields']['field_zip']['alter']['ellipsis'] = 1;
-  $handler->display->display_options['fields']['field_zip']['alter']['strip_tags'] = 0;
-  $handler->display->display_options['fields']['field_zip']['alter']['trim'] = 0;
-  $handler->display->display_options['fields']['field_zip']['alter']['html'] = 0;
-  $handler->display->display_options['fields']['field_zip']['element_label_colon'] = 1;
-  $handler->display->display_options['fields']['field_zip']['element_default_classes'] = 1;
-  $handler->display->display_options['fields']['field_zip']['hide_empty'] = 0;
-  $handler->display->display_options['fields']['field_zip']['empty_zero'] = 0;
-  $handler->display->display_options['fields']['field_zip']['hide_alter_empty'] = 1;
-  $handler->display->display_options['fields']['field_zip']['field_api_classes'] = 0;
   /* Field: Path */
   $handler->display->display_options['fields']['path']['id'] = 'path';
   $handler->display->display_options['fields']['path']['table'] = 'node';
@@ -1069,54 +1021,6 @@ function mark_a_spot_views_default_views() {
   $handler->display->display_options['fields']['field_address']['empty_zero'] = 0;
   $handler->display->display_options['fields']['field_address']['hide_alter_empty'] = 1;
   $handler->display->display_options['fields']['field_address']['field_api_classes'] = 0;
-  /* Field: Content: Zip */
-  $handler->display->display_options['fields']['field_zip']['id'] = 'field_zip';
-  $handler->display->display_options['fields']['field_zip']['table'] = 'field_data_field_zip';
-  $handler->display->display_options['fields']['field_zip']['field'] = 'field_zip';
-  $handler->display->display_options['fields']['field_zip']['label'] = '';
-  $handler->display->display_options['fields']['field_zip']['exclude'] = TRUE;
-  $handler->display->display_options['fields']['field_zip']['alter']['alter_text'] = 0;
-  $handler->display->display_options['fields']['field_zip']['alter']['make_link'] = 0;
-  $handler->display->display_options['fields']['field_zip']['alter']['absolute'] = 0;
-  $handler->display->display_options['fields']['field_zip']['alter']['external'] = 0;
-  $handler->display->display_options['fields']['field_zip']['alter']['replace_spaces'] = 0;
-  $handler->display->display_options['fields']['field_zip']['alter']['trim_whitespace'] = 0;
-  $handler->display->display_options['fields']['field_zip']['alter']['nl2br'] = 0;
-  $handler->display->display_options['fields']['field_zip']['alter']['word_boundary'] = 1;
-  $handler->display->display_options['fields']['field_zip']['alter']['ellipsis'] = 1;
-  $handler->display->display_options['fields']['field_zip']['alter']['strip_tags'] = 0;
-  $handler->display->display_options['fields']['field_zip']['alter']['trim'] = 0;
-  $handler->display->display_options['fields']['field_zip']['alter']['html'] = 0;
-  $handler->display->display_options['fields']['field_zip']['element_label_colon'] = FALSE;
-  $handler->display->display_options['fields']['field_zip']['element_default_classes'] = 1;
-  $handler->display->display_options['fields']['field_zip']['hide_empty'] = 0;
-  $handler->display->display_options['fields']['field_zip']['empty_zero'] = 0;
-  $handler->display->display_options['fields']['field_zip']['hide_alter_empty'] = 1;
-  $handler->display->display_options['fields']['field_zip']['field_api_classes'] = 0;
-  /* Field: Content: City */
-  $handler->display->display_options['fields']['field_city']['id'] = 'field_city';
-  $handler->display->display_options['fields']['field_city']['table'] = 'field_data_field_city';
-  $handler->display->display_options['fields']['field_city']['field'] = 'field_city';
-  $handler->display->display_options['fields']['field_city']['label'] = '';
-  $handler->display->display_options['fields']['field_city']['exclude'] = TRUE;
-  $handler->display->display_options['fields']['field_city']['alter']['alter_text'] = 0;
-  $handler->display->display_options['fields']['field_city']['alter']['make_link'] = 0;
-  $handler->display->display_options['fields']['field_city']['alter']['absolute'] = 0;
-  $handler->display->display_options['fields']['field_city']['alter']['external'] = 0;
-  $handler->display->display_options['fields']['field_city']['alter']['replace_spaces'] = 0;
-  $handler->display->display_options['fields']['field_city']['alter']['trim_whitespace'] = 0;
-  $handler->display->display_options['fields']['field_city']['alter']['nl2br'] = 0;
-  $handler->display->display_options['fields']['field_city']['alter']['word_boundary'] = 1;
-  $handler->display->display_options['fields']['field_city']['alter']['ellipsis'] = 1;
-  $handler->display->display_options['fields']['field_city']['alter']['strip_tags'] = 0;
-  $handler->display->display_options['fields']['field_city']['alter']['trim'] = 0;
-  $handler->display->display_options['fields']['field_city']['alter']['html'] = 0;
-  $handler->display->display_options['fields']['field_city']['element_label_colon'] = FALSE;
-  $handler->display->display_options['fields']['field_city']['element_default_classes'] = 1;
-  $handler->display->display_options['fields']['field_city']['hide_empty'] = 0;
-  $handler->display->display_options['fields']['field_city']['empty_zero'] = 0;
-  $handler->display->display_options['fields']['field_city']['hide_alter_empty'] = 1;
-  $handler->display->display_options['fields']['field_city']['field_api_classes'] = 0;
   /* Field: Global: Custom text */
   $handler->display->display_options['fields']['nothing_1']['id'] = 'nothing_1';
   $handler->display->display_options['fields']['nothing_1']['table'] = 'views';
