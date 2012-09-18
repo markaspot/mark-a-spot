@@ -23,11 +23,9 @@ function mark_a_spot_field_group_info() {
     'label' => 'Location',
     'weight' => '1',
     'children' => array(
-      0 => 'field_address',
-      1 => 'field_city',
-      2 => 'field_common',
-      3 => 'field_geo',
-      4 => 'field_zip',
+      0 => 'field_common',
+      1 => 'field_geo',
+      2 => 'field_address',
     ),
     'format_type' => 'fieldset',
     'format_settings' => array(
@@ -56,9 +54,9 @@ function mark_a_spot_field_group_info() {
     'weight' => '0',
     'children' => array(
       0 => 'body',
-      1 => 'field_image',
-      2 => 'field_category',
-      3 => 'field_e_mail',
+      1 => 'field_category',
+      2 => 'field_e_mail',
+      3 => 'field_image',
       4 => 'title',
     ),
     'format_type' => 'fieldset',

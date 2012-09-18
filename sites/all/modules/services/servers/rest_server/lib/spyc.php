@@ -9,7 +9,7 @@
    * @license http://www.opensource.org/licenses/mit-license.php MIT License
    * @package Spyc
    */
-
+ 
 if (!function_exists('spyc_load')) {
   /**
    * Parses YAML to array.
@@ -20,7 +20,7 @@ if (!function_exists('spyc_load')) {
     return Spyc::YAMLLoadString($string);
   }
 }
-
+ 
 if (!function_exists('spyc_load_file')) {
   /**
    * Parses YAML to array.
@@ -31,7 +31,7 @@ if (!function_exists('spyc_load_file')) {
     return Spyc::YAMLLoad($file);
   }
 }
-
+ 
 /**
    * The Simple PHP YAML Class.
    *
@@ -55,11 +55,11 @@ if (!function_exists('spyc_load_file')) {
    * @package Spyc
    */
 class Spyc {
-
+ 
   // SETTINGS
-
+ 
   const REMPTY = "\0\0\0\0\0";
-
+ 
   /**
    * Setting this to true will force YAMLDump to enclose any string value in
    * quotes.  False by default.
@@ -67,16 +67,16 @@ class Spyc {
    * @var bool
    */
   public $setting_dump_force_quotes = false;
-
+ 
   /**
    * Setting this to true will forse YAMLLoad to use syck_load function when
    * possible. False by default.
    * @var bool
    */
   public $setting_use_syck_is_possible = false;
-
-
-
+ 
+ 
+ 
   /**#@+
   * @access private
   * @var mixed
@@ -95,13 +95,13 @@ class Spyc {
    * @var array
    */
   private $delayedPath = array();
-
+ 
   /**#@+
   * @access public
   * @var mixed
   */
   public $_nodeId;
-
+ 
 /**
  * Load a valid YAML string to Spyc.
  * @param string $input
@@ -110,7 +110,7 @@ class Spyc {
   public function load ($input) {
     return $this->__loadString($input);
   }
-
+ 
  /**
  * Load a valid YAML file to Spyc.
  * @param string $file
@@ -119,7 +119,7 @@ class Spyc {
   public function loadFile ($file) {
     return $this->__load($file);
   }
-
+ 
   /**
      * Load YAML into a PHP array statically
      *
@@ -139,7 +139,7 @@ class Spyc {
     $Spyc = new Spyc;
     return $Spyc->__load($input);
   }
-
+ 
   /**
      * Load a string of YAML into a PHP array statically
      *
@@ -163,7 +163,7 @@ class Spyc {
     $Spyc = new Spyc;
     return $Spyc->__loadString($input);
   }
-
+ 
   /**
      * Dump YAML from PHP array statically
      *
@@ -188,8 +188,8 @@ class Spyc {
     $spyc = new Spyc;
     return $spyc->dump($array,$indent,$wordwrap);
   }
-
-
+ 
+ 
   /**
      * Dump PHP array to YAML
      *
@@ -213,23 +213,23 @@ class Spyc {
   public function dump($array,$indent = false,$wordwrap = false) {
     // Dumps to some very clean YAML.  We'll have to add some more features
     // and options soon.  And better support for folding.
-
+ 
     // New features and options.
     if ($indent === false or !is_numeric($indent)) {
       $this->_dumpIndent = 2;
     } else {
       $this->_dumpIndent = $indent;
     }
-
+ 
     if ($wordwrap === false or !is_numeric($wordwrap)) {
       $this->_dumpWordWrap = 40;
     } else {
       $this->_dumpWordWrap = $wordwrap;
     }
-
+ 
     // New YAML document
     $string = "---\n";
-
+ 
     // Start at the base of the array and move through it.
     if ($array) {
       $array = (array)$array; 
@@ -242,7 +242,7 @@ class Spyc {
     }
     return $string;
   }
-
+ 
   /**
      * Attempts to convert a key / value array item to YAML
      * @access private
@@ -268,7 +268,7 @@ class Spyc {
     }
     return $string;
   }
-
+ 
   /**
      * Attempts to convert an array to YAML
      * @access private
@@ -290,7 +290,7 @@ class Spyc {
       return false;
     }
   }
-
+ 
   /**
      * Returns YAML from a key and a value
      * @access private
@@ -310,23 +310,23 @@ class Spyc {
     } else {
       $value  = $this->_doFolding($value,$indent);
     }
-
+ 
     if ($value === array()) $value = '[ ]';
     if (in_array ($value, array ('true', 'TRUE', 'false', 'FALSE', 'y', 'Y', 'n', 'N', 'null', 'NULL'), true)) {
        $value = $this->_doLiteralBlock($value,$indent);
     }
     if (trim ($value) != $value)
        $value = $this->_doLiteralBlock($value,$indent);
-
+ 
     if (is_bool($value)) {
        $value = ($value) ? "true" : "false";
     }
     
     if ($value === null) $value = 'null';
     if ($value === "'" . self::REMPTY . "'") $value = null;
-
+ 
     $spaces = str_repeat(' ',$indent);
-
+ 
     //if (is_int($key) && $key - 1 == $previous_key && $first_key===0) {
     if (is_array ($source_array) && array_keys($source_array) === range(0, count($source_array) - 1)) {
       // It's a sequence
@@ -339,7 +339,7 @@ class Spyc {
     }
     return $string;
   }
-
+ 
   /**
      * Creates a literal block for dumping
      * @access private
@@ -364,7 +364,7 @@ class Spyc {
     }
     return $newValue;
   }
-
+ 
   /**
      * Folds a string of text, if necessary
      * @access private
@@ -373,7 +373,7 @@ class Spyc {
      */
   private function _doFolding($value,$indent) {
     // Don't do anything if wordwrap is set to 0
-
+ 
     if ($this->_dumpWordWrap !== 0 && is_string ($value) && strlen($value) > $this->_dumpWordWrap) {
       $indent += $this->_dumpIndent;
       $indent = str_repeat(' ',$indent);
@@ -383,33 +383,33 @@ class Spyc {
       if ($this->setting_dump_force_quotes && is_string ($value) && $value !== self::REMPTY)
         $value = '"' . $value . '"';
     }
-
-
+ 
+ 
     return $value;
   }
-
+ 
 // LOADING FUNCTIONS
-
+ 
   private function __load($input) {
     $Source = $this->loadFromSource($input);
     return $this->loadWithSource($Source);
   }
-
+ 
   private function __loadString($input) {
     $Source = $this->loadFromString($input);
     return $this->loadWithSource($Source);
   }
-
+ 
   private function loadWithSource($Source) {
     if (empty ($Source)) return array();
     if ($this->setting_use_syck_is_possible && function_exists ('syck_load')) {
       $array = syck_load (implode ('', $Source));
       return is_array($array) ? $array : array();
     }
-
+ 
     $this->path = array();
     $this->result = array();
-
+ 
     $cnt = count($Source);
     for ($i = 0; $i < $cnt; $i++) {
       $line = $Source[$i];
@@ -420,7 +420,7 @@ class Spyc {
       if (self::isComment($line)) continue;
       if (self::isEmpty($line)) continue;
       $this->path = $tempPath;
-
+ 
       $literalBlockStyle = self::startsLiteralBlock($line);
       if ($literalBlockStyle) {
         $line = rtrim ($line, $literalBlockStyle . " \n");
@@ -432,42 +432,42 @@ class Spyc {
         }
         $i--;
       }
-
+ 
       while (++$i < $cnt && self::greedilyNeedNextLine($line)) {
         $line = rtrim ($line, " \n\t\r") . ' ' . ltrim ($Source[$i], " \t");
       }
       $i--;
-
-
-
+ 
+ 
+ 
       if (strpos ($line, '#')) {
         if (strpos ($line, '"') === false && strpos ($line, "'") === false)
           $line = preg_replace('/\s+#(.+)$/','',$line);
       }
-
+ 
       $lineArray = $this->_parseLine($line);
-
+ 
       if ($literalBlockStyle)
         $lineArray = $this->revertLiteralPlaceHolder ($lineArray, $literalBlock);
-
+ 
       $this->addArray($lineArray, $this->indent);
-
+ 
       foreach ($this->delayedPath as $indent => $delayedPath)
         $this->path[$indent] = $delayedPath;
-
+ 
       $this->delayedPath = array();
-
+ 
     }
     return $this->result;
   }
-
+ 
   private function loadFromSource ($input) {
     if (!empty($input) && strpos($input, "\n") === false && file_exists($input))
     return file($input);
-
+ 
     return $this->loadFromString($input);
   }
-
+ 
   private function loadFromString ($input) {
     $lines = explode("\n",$input);
     foreach ($lines as $k => $_) {
@@ -475,7 +475,7 @@ class Spyc {
     }
     return $lines;
   }
-
+ 
   /**
      * Parses YAML code and returns an array for a node
      * @access private
@@ -486,32 +486,32 @@ class Spyc {
     if (!$line) return array();
     $line = trim($line);
     if (!$line) return array();
-
+ 
     $array = array();
-
+ 
     $group = $this->nodeContainsGroup($line);
     if ($group) {
       $this->addGroup($line, $group);
       $line = $this->stripGroup ($line, $group);
     }
-
+ 
     if ($this->startsMappedSequence($line))
       return $this->returnMappedSequence($line);
-
+ 
     if ($this->startsMappedValue($line))
       return $this->returnMappedValue($line);
-
+ 
     if ($this->isArrayElement($line))
      return $this->returnArrayElement($line);
-
+ 
     if ($this->isPlainArray($line))
      return $this->returnPlainArray($line); 
      
      
     return $this->returnKeyValuePair($line);
-
+ 
   }
-
+ 
   /**
      * Finds the type of the passed value, returns the value as the new type.
      * @access private
@@ -522,7 +522,7 @@ class Spyc {
     if ($value === '') return null;
     $first_character = $value[0];
     $last_character = substr($value, -1, 1);
-
+ 
     $is_quoted = false;
     do {
       if (!$value) break;
@@ -530,15 +530,15 @@ class Spyc {
       if ($last_character != '"' && $last_character != "'") break;
       $is_quoted = true;
     } while (0);
-
+ 
     if ($is_quoted)
       return strtr(substr ($value, 1, -1), array ('\\"' => '"', '\'\'' => '\'', '\\\'' => '\''));
     
     if (strpos($value, ' #') !== false && !$is_quoted)
       $value = preg_replace('/\s+#(.+)$/','',$value);
-
+ 
     if (!$is_quoted) $value = str_replace('\n', "\n", $value);
-
+ 
     if ($first_character == '[' && $last_character == ']') {
       // Take out strings sequences and mappings
       $innerValue = trim(substr ($value, 1, -1));
@@ -551,7 +551,7 @@ class Spyc {
       }
       return $value;
     }
-
+ 
     if (strpos($value,': ')!==false && $first_character != '{') {
       $array = explode(': ',$value);
       $key   = trim($array[0]);
@@ -579,28 +579,28 @@ class Spyc {
       }
       return $array;
     }
-
+ 
     if ($value == 'null' || $value == 'NULL' || $value == 'Null' || $value == '' || $value == '~') {
       return null;
     }
-
+ 
     if ( is_numeric($value) && preg_match ('/^(-|)[1-9]+[0-9]*$/', $value) ){
       $intvalue = (int)$value;
       if ($intvalue != PHP_INT_MAX)
         $value = $intvalue;
       return $value;
     }
-
+ 
     if (in_array($value,
                  array('true', 'on', '+', 'yes', 'y', 'True', 'TRUE', 'On', 'ON', 'YES', 'Yes', 'Y'))) {
       return true;
     }
-
+ 
     if (in_array(strtolower($value),
                  array('false', 'off', '-', 'no', 'n'))) {
       return false;
     }
-
+ 
     if (is_numeric($value)) {
       if ($value === '0') return 0;
       if (rtrim ($value, 0) === $value)
@@ -610,7 +610,7 @@ class Spyc {
     
     return $value;
   }
-
+ 
   /**
      * Used in inlines to check for more inlines or quoted strings
      * @access private
@@ -621,11 +621,11 @@ class Spyc {
     // While pure sequences seem to be nesting just fine,
     // pure mappings and mappings with sequences inside can't go very
     // deep.  This needs to be fixed.
-
+ 
     $seqs = array();
     $maps = array();
     $saved_strings = array();
-
+ 
     // Check for strings
     $regex = '/(?:(")|(?:\'))((?(1)[^"]+|[^\']+))(?(1)"|\')/';
     if (preg_match_all($regex,$inline,$strings)) {
@@ -633,31 +633,31 @@ class Spyc {
       $inline  = preg_replace($regex,'YAMLString',$inline);
     }
     unset($regex);
-
+ 
     $i = 0;
     do {
-
+ 
     // Check for sequences
     while (preg_match('/\[([^{}\[\]]+)\]/U',$inline,$matchseqs)) {
       $seqs[] = $matchseqs[0];
       $inline = preg_replace('/\[([^{}\[\]]+)\]/U', ('YAMLSeq' . (count($seqs) - 1) . 's'), $inline, 1);
     }
-
+ 
     // Check for mappings
     while (preg_match('/{([^\[\]{}]+)}/U',$inline,$matchmaps)) {
       $maps[] = $matchmaps[0];
       $inline = preg_replace('/{([^\[\]{}]+)}/U', ('YAMLMap' . (count($maps) - 1) . 's'), $inline, 1);
     }
-
+ 
     if ($i++ >= 10) break;
-
+ 
     } while (strpos ($inline, '[') !== false || strpos ($inline, '{') !== false);
-
+ 
     $explode = explode(', ',$inline);
     $stringi = 0; $i = 0;
-
+ 
     while (1) {
-
+ 
     // Re-add the sequences
     if (!empty($seqs)) {
       foreach ($explode as $key => $value) {
@@ -669,7 +669,7 @@ class Spyc {
         }
       }
     }
-
+ 
     // Re-add the mappings
     if (!empty($maps)) {
       foreach ($explode as $key => $value) {
@@ -681,8 +681,8 @@ class Spyc {
         }
       }
     }
-
-
+ 
+ 
     // Re-add the strings
     if (!empty($saved_strings)) {
       foreach ($explode as $key => $value) {
@@ -694,7 +694,7 @@ class Spyc {
         }
       }
     }
-
+ 
     $finished = true;
     foreach ($explode as $key => $value) {
       if (strpos($value,'YAMLSeq') !== false) {
@@ -708,21 +708,21 @@ class Spyc {
       }
     }
     if ($finished) break;
-
+ 
     $i++;
     if ($i > 10) 
       break; // Prevent infinite loops.
     }
-
+ 
     return $explode;
   }
-
+ 
   private function literalBlockContinues ($line, $lineIndent) {
     if (!trim($line)) return true;
     if (strlen($line) - strlen(ltrim($line)) > $lineIndent) return true;
     return false;
   }
-
+ 
   private function referenceContentsByAlias ($alias) {
     do {
       if (!isset($this->SavedGroups[$alias])) { echo "Bad group name: $alias."; break; }
@@ -734,7 +734,7 @@ class Spyc {
     } while (false);
     return $value;
   }
-
+ 
   private function addArrayInline ($array, $indent) {
       $CommonGroupPath = $this->path;
       if (empty ($array)) return false;
@@ -745,18 +745,18 @@ class Spyc {
       }
       return true;
   }
-
+ 
   private function addArray ($incoming_data, $incoming_indent) {
-
+ 
    // print_r ($incoming_data);
-
+ 
     if (count ($incoming_data) > 1)
       return $this->addArrayInline ($incoming_data, $incoming_indent);
     
     $key = key ($incoming_data);
     $value = isset($incoming_data[$key]) ? $incoming_data[$key] : null;
     if ($key === '__!YAMLZero') $key = '0';
-
+ 
     if ($incoming_indent == 0 && !$this->_containsGroupAlias && !$this->_containsGroupAnchor) { // Shortcut for root-level values.
       if ($key || $key === '' || $key === '0') {
         $this->result[$key] = $value;
@@ -766,8 +766,8 @@ class Spyc {
       $this->path[$incoming_indent] = $key;
       return;
     }
-
-
+ 
+ 
     
     $history = array();
     // Unfolding inner array tree.
@@ -775,17 +775,17 @@ class Spyc {
     foreach ($this->path as $k) {
       $history[] = $_arr = $_arr[$k];
     }
-
+ 
     if ($this->_containsGroupAlias) {
       $value = $this->referenceContentsByAlias($this->_containsGroupAlias);
       $this->_containsGroupAlias = false;
     }
-
-
+ 
+ 
     // Adding string or numeric key to the innermost level or $this->arr.
     if (is_string($key) && $key == '<<') {
       if (!is_array ($_arr)) { $_arr = array (); }
-
+ 
       $_arr = array_merge ($_arr, $value);
     } else if ($key || $key === '' || $key === '0') {
       if (!is_array ($_arr))
@@ -796,7 +796,7 @@ class Spyc {
       if (!is_array ($_arr)) { $_arr = array ($value); $key = 0; }
       else { $_arr[] = $value; end ($_arr); $key = key ($_arr); }
     }
-
+ 
     $reverse_path = array_reverse($this->path);
     $reverse_history = array_reverse ($history);
     $reverse_history[0] = $_arr;
@@ -805,9 +805,9 @@ class Spyc {
       $reverse_history[$i+1][$reverse_path[$i]] = $reverse_history[$i];
     }
     $this->result = $reverse_history[$cnt];
-
+ 
     $this->path[$incoming_indent] = $key;
-
+ 
     if ($this->_containsGroupAnchor) {
       $this->SavedGroups[$this->_containsGroupAnchor] = $this->path;
       if (is_array ($value)) {
@@ -818,9 +818,9 @@ class Spyc {
       }
       $this->_containsGroupAnchor = false;
     }
-
+ 
   }
-
+ 
   private static function startsLiteralBlock ($line) {
     $lastChar = substr (trim($line), -1);
     if ($lastChar != '>' && $lastChar != '|') return false;
@@ -829,7 +829,7 @@ class Spyc {
     if (preg_match ('#<.*?>$#', $line)) return false;
     return $lastChar;
   }
-
+ 
   private static function greedilyNeedNextLine($line) {
     $line = trim ($line);
     if (!strlen($line)) return false;
@@ -838,7 +838,7 @@ class Spyc {
     if (preg_match ('#^[^:]+?:\s*\[#', $line)) return true;
     return false;
   }
-
+ 
   private function addLiteralLine ($literalBlock, $line, $literalBlockStyle, $indent = -1) {
     $line = self::stripIndent($line, $indent);
     if ($literalBlockStyle !== '|') {
@@ -857,7 +857,7 @@ class Spyc {
       $line = trim ($line, "\r\n ") . " ";
     return $literalBlock . $line;
   }
-
+ 
    function revertLiteralPlaceHolder ($lineArray, $literalBlock) {
      foreach ($lineArray as $k => $_) {
       if (is_array($_))
@@ -867,12 +867,12 @@ class Spyc {
      }
      return $lineArray;
    }
-
+ 
   private static function stripIndent ($line, $indent = -1) {
     if ($indent == -1) $indent = strlen($line) - strlen(ltrim($line));
     return substr ($line, $indent);
   }
-
+ 
   private function getParentPathByIndent ($indent) {
     if ($indent == 0) return array();
     $linePath = $this->path;
@@ -882,34 +882,34 @@ class Spyc {
     } while ($indent <= $lastIndentInParentPath);
     return $linePath;
   }
-
-
+ 
+ 
   private function clearBiggerPathValues ($indent) {
-
-
+ 
+ 
     if ($indent == 0) $this->path = array();
     if (empty ($this->path)) return true;
-
+ 
     foreach ($this->path as $k => $_) {
       if ($k > $indent) unset ($this->path[$k]);
     }
-
+ 
     return true;
   }
-
-
+ 
+ 
   private static function isComment ($line) {
     if (!$line) return false;
     if ($line[0] == '#') return true;
     if (trim($line, " \r\n\t") == '---') return true;
     return false;
   }
-
+ 
   private static function isEmpty ($line) {
     return (trim ($line) === '');
   }
-
-
+ 
+ 
   private function isArrayElement ($line) {
     if (!$line) return false;
     if ($line[0] != '-') return false;
@@ -918,18 +918,18 @@ class Spyc {
     
     return true;
   }
-
+ 
   private function isHashElement ($line) {
     return strpos($line, ':');
   }
-
+ 
   private function isLiteral ($line) {
     if ($this->isArrayElement($line)) return false;
     if ($this->isHashElement($line)) return false;
     return true;
   }
-
-
+ 
+ 
   private static function unquote ($value) {
     if (!$value) return $value;
     if (!is_string($value)) return $value;
@@ -937,11 +937,11 @@ class Spyc {
     if ($value[0] == '"') return trim ($value, '"');
     return $value;
   }
-
+ 
   private function startsMappedSequence ($line) {
     return ($line[0] == '-' && substr ($line, -1, 1) == ':');
   }
-
+ 
   private function returnMappedSequence ($line) {
     $array = array();
     $key         = self::unquote(trim(substr($line,1,-1)));
@@ -949,14 +949,14 @@ class Spyc {
     $this->delayedPath = array(strpos ($line, $key) + $this->indent => $key);
     return array($array);
   }
-
+ 
   private function returnMappedValue ($line) {
     $array = array();
     $key         = self::unquote (trim(substr($line,0,-1)));
     $array[$key] = '';
     return $array;
   }
-
+ 
   private function startsMappedValue ($line) {
     return (substr ($line, -1, 1) == ':');
   }
@@ -968,7 +968,7 @@ class Spyc {
   private function returnPlainArray ($line) {
     return $this->_toType($line); 
   }  
-
+ 
   private function returnKeyValuePair ($line) {
     $array = array();
     $key = '';
@@ -993,10 +993,10 @@ class Spyc {
       $array = array ($line);
     }
     return $array;
-
+ 
   }
-
-
+ 
+ 
   private function returnArrayElement ($line) {
      if (strlen($line) <= 1) return array(array()); // Weird %)
      $array = array();
@@ -1005,8 +1005,8 @@ class Spyc {
      $array[] = $value;
      return $array;
   }
-
-
+ 
+ 
   private function nodeContainsGroup ($line) {    
     $symbolsForReference = 'A-z0-9_\-';
     if (strpos($line, '&') === false && strpos($line, '*') === false) return false; // Please die fast ;-)
@@ -1016,26 +1016,26 @@ class Spyc {
     if (preg_match('/(\*['.$symbolsForReference.']+$)/', $line, $matches)) return $matches[1];
     if (preg_match ('#^\s*<<\s*:\s*(\*[^\s]+).*$#', $line, $matches)) return $matches[1];
     return false;
-
+ 
   }
-
+ 
   private function addGroup ($line, $group) {
     if ($group[0] == '&') $this->_containsGroupAnchor = substr ($group, 1);
     if ($group[0] == '*') $this->_containsGroupAlias = substr ($group, 1);
     //print_r ($this->path);
   }
-
+ 
   private function stripGroup ($line, $group) {
     $line = trim(str_replace($group, '', $line));
     return $line;
   }
 }
-
+ 
 // Enable use of Spyc from command line
 // The syntax is the following: php spyc.php spyc.yaml
-
+ 
 define ('SPYC_FROM_COMMAND_LINE', false);
-
+ 
 do {
   if (!SPYC_FROM_COMMAND_LINE) break;
   if (empty ($_SERVER['argc']) || $_SERVER['argc'] < 2) break;

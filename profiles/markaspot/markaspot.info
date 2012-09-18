@@ -3,7 +3,8 @@ description = Install with commonly used features pre-configured.
 version = VERSION
 core = 7.x
 dependencies[] = block
-dependencies[] = mark_a_spot
+dependencies[] = rest_server
+dependencies[] = services
 dependencies[] = color
 dependencies[] = comment
 dependencies[] = contextual
@@ -19,6 +20,7 @@ dependencies[] = toolbar
 dependencies[] = field_ui
 dependencies[] = file
 dependencies[] = taxonomy
+dependencies[] = mark_a_spot
 
 files[] = markaspot.profile
 

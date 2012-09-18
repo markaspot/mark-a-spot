@@ -75,7 +75,7 @@ function _markaspot_open311_requests_create($data) {
 
 function _markaspot_open311_requests_retrieve($nid) {
    $node = node_load($nid);
-   $request['service_requests'][] = _node_map_request($node);
+   $request['service_requests'][] = _node_map_request($node, $status=false);
    return $request;
 
 }
@@ -130,13 +130,13 @@ function _markaspot_open311_requests_index($page, $parameters) {
   ->fetchCol();
 
   $nodes = node_load_multiple($nids);
+  $requests = false;
 
   // now exploring nodes matching other parameters
   foreach ($nodes as $node) {
     // mapping node to request
     if ($node->type == 'report') {
       $found = false;
-
 
       // Mapping Category to Service-Code (only to filter)
       $term['category'] = taxonomy_term_load($node->field_category['und'][0]["tid"]);
@@ -170,29 +170,32 @@ function _markaspot_open311_requests_index($page, $parameters) {
           $status = 'closed';
         }
       }
-      if ($parameters['status'] == $status) {
-          $found['status'] = true;
-      }
+      if (isset($parameters['status'])) {
+        if ($parameters['status'] == $status) {
+            $found['status'] = true;
+        }
 
-      // now mapping nodes to request
-      if ($parameters['status'] == true && $parameters['service_code'] == true) {
-        if (isset($found['service_code']) && isset($found['status'])) {
-          $requests['service_requests'][] = _node_map_request($node, $status);
+        // now mapping nodes to request
+        if ($parameters['status'] == true && $parameters['service_code'] == true) {
+          if (isset($found['service_code']) && isset($found['status'])) {
+            $requests['service_requests'][] = _node_map_request($node, $status);
+          }
         }
-      }
-      if ($parameters['status'] == false && $parameters['service_code'] == false) {
-         $requests['service_requests'][] = _node_map_request($node, $status);
-      }
 
-      if ($parameters['status'] == true && $parameters['service_code'] == false) {
-        if (isset($found['status'])) {
-          $requests['service_requests'][] = _node_map_request($node, $status);
+
+        if ($parameters['status'] == true && $parameters['service_code'] == false) {
+          if (isset($found['status'])) {
+            $requests['service_requests'][] = _node_map_request($node, $status);
+          }
+        }
+        if ($parameters['status'] == false && $parameters['service_code'] == true) {
+          if (isset($found['service_code'])) {
+            $requests['service_requests'][] = _node_map_request($node, $status);
+          }
         }
       }
-      if ($parameters['status'] == false && $parameters['service_code'] == true) {
-        if (isset($found['service_code'])) {
-          $requests['service_requests'][] = _node_map_request($node, $status);
-        }
+      if (!isset($parameters['status']) && !isset($parameters['service_code'])) {
+        $requests['service_requests'][] = _node_map_request($node, $status);
       }
     }
   }
@@ -309,7 +312,6 @@ function _node_map_request($node, $status){
   // Geo Information including address
   $request['address'] = $node->field_address['und'][0]['value'];
 
-  $request['zipcode'] = $node->field_zip['und'][0]['value'];
   $request['lat'] = $node->field_geo['und'][0]['lat'];
   $request['long'] = $node->field_geo['und'][0]['lng'];
   $request['status'] = $status;
