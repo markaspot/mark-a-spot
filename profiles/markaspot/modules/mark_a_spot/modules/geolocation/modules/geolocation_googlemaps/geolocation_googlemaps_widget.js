@@ -32,12 +32,6 @@
       geocoder.geocode({'latLng': latLng}, function(results, status) {
         if (status == google.maps.GeocoderStatus.OK) {
           $('#geolocation-address-' + i + ' input').val(results[0].formatted_address);
-
-          // Mark-a-Spot Integration: Apply address to zip, city and address field
-
-          Drupal.maslogic.applyAddress(results[0].address_components);
-
-
           if (op == 'geocoder') {
             Drupal.geolocation.setZoom(i, results[0].geometry.location_type);
           }
@@ -59,30 +53,13 @@
    *   the index from the maps array we are working on
    */
   Drupal.geolocation.codeAddress = function(i) {
-
-    /**
-     * Mark-a-Spot Integration: Fill input with formatted address again 
-     */
-    mas = Drupal.settings.mas;
-
-    var address = $('#geolocation-address-' + i + ' input').val() + ", " + mas.markaspot_city + ", " + mas.markaspot_country;
-    // Mark-a-Spot End
+    var address = $('#geolocation-address-' + i + ' input').val();
     geocoder.geocode( { 'address': address }, function(results, status) {
       if (status == google.maps.GeocoderStatus.OK) {
         Drupal.geolocation.maps[i].setCenter(results[0].geometry.location);
         Drupal.geolocation.setMapMarker(results[0].geometry.location, i);
         Drupal.geolocation.codeLatLng(results[0].geometry.location, i, 'textinput');
-
-        /**
-         * Mark-a-Spot Integration: Fill input with formatted address again 
-         */
-        $('#geolocation-address-' + i + ' input').val(results[0].formatted_address);
-        Drupal.maslogic.applyAddress(results[0].address_components);
-
-        // then setZoom 15 instead of relying on google maps
-        // Drupal.geolocation.setZoom(i, results[0].geometry.location_type);
-        Drupal.geolocation.setZoom(i, 15);
-
+        Drupal.geolocation.setZoom(i, results[0].geometry.location_type);
       }
       else {
         alert(Drupal.t('Geocode was not successful for the following reason: ') + status);
@@ -230,7 +207,7 @@
           // First use browser geolocation
           if (navigator.geolocation) {
             browserSupportFlag = true;
-            $('#geolocation-help-' + i + ':not(.geolocation-googlemaps-processed)').addClass('geolocation-googlemaps-processed').append(Drupal.t(', or use your browser geolocation system by clicking this link') +' <span id="geolocation-client-location-' + i + '" class="geolocation-client-location">' + Drupal.t('My Location') + '</span>');
+            $('#geolocation-help-' + i + ':not(.geolocation-googlemaps-processed)').addClass('geolocation-googlemaps-processed').append(Drupal.t(', or use your browser geolocation system by clicking this link') +': <span id="geolocation-client-location-' + i + '" class="geolocation-client-location">' + Drupal.t('My Location') + '</span>');
             // Set current user location, if available
             $('#geolocation-client-location-' + i + ':not(.geolocation-googlemaps-processed)').addClass('geolocation-googlemaps-processed').click(function() {
               navigator.geolocation.getCurrentPosition(function(position) {
