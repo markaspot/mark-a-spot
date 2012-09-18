@@ -162,15 +162,15 @@ function _createCategories() {
 function _createNode(){
   $i = 0;
   // now creating initial report
-  $nodes[0] = array('An abandoned car', 'Lorem Ipsum Lorem ipsum dolor sit amet, consectetur ing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,  quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo', '50.8212596','6.8961028','Pingsdorfer Straße 88','50321','Brühl','holger@markaspot.org','10', '1', '0');
+  $nodes[0] = array('An abandoned car', 'Lorem Ipsum Lorem ipsum dolor sit amet, consectetur ing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,  quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo', '50.8212596','6.8961028','Pingsdorfer Straße 88, 50321 Brühl','holger@markaspot.org','10', '1', '0');
 
-  $nodes[1] = array('Ugly graffiti on pavement', 'Lorem Ipsum Lorem ipsum dolor sit amet, consectetur ing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,  quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo', '50.81812812677597','6.8905774494293155','Am Ringofen 21','50321','Brühl','holger@markaspot.org', '12', '1', '0');
+  $nodes[1] = array('Ugly graffiti on pavement', 'Lorem Ipsum Lorem ipsum dolor sit amet, consectetur ing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,  quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo', '50.81812812677597','6.8905774494293155','Am Ringofen 21, 50321 Brühl','holger@markaspot.org', '12', '1', '0');
 
-  $nodes[2] = array('Abandoned fridge', 'Lorem Ipsum Lorem ipsum dolor sit amet, consectetur ing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,  quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo', '50.82435019881909','6.895512714016718','Liblarer Straße 88','50321','Brühl','holger@markaspot.org', '11', '3', '0');
+  $nodes[2] = array('Abandoned fridge', 'Lorem Ipsum Lorem ipsum dolor sit amet, consectetur ing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,  quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo', '50.82435019881909','6.895512714016718','Liblarer Straße 88, 50321, Brühl','holger@markaspot.org', '11', '3', '0');
 
-  $nodes[3] = array('Graffiti on castle wall', 'Lorem Ipsum Lorem ipsum dolor sit amet, consectetur ing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,  quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo', '50.8282131596655','6.90819419823913','Promenade','50321','Brühl','holger@markaspot.org', '12','3', '0');
+  $nodes[3] = array('Graffiti on castle wall', 'Lorem Ipsum Lorem ipsum dolor sit amet, consectetur ing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,  quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo', '50.8282131596655','6.90819419823913','Promenade, 50321 Brühl','holger@markaspot.org', '12','3', '0');
 
-  $nodes[4] = array('Consectetur ing elit', 'Lorem Ipsum Lorem ipsum dolor sit amet, consectetur ing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,  quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo', '50.8327211', '6.9032226','Friedrichstraße 23','50321','Brühl','holger@markaspot.org', '10', '4', '1');
+  $nodes[4] = array('Consectetur ing elit', 'Lorem Ipsum Lorem ipsum dolor sit amet, consectetur ing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,  quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo', '50.8327211', '6.9032226','Friedrichstraße 23 50321 Brühl','holger@markaspot.org', '10', '4', '1');
 
 
   foreach ($nodes as $node_data) {
