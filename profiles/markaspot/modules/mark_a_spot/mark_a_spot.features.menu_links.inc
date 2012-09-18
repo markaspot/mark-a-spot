@@ -24,6 +24,24 @@ function mark_a_spot_menu_default_menu_links() {
     'expanded' => '0',
     'weight' => '-50',
   );
+  // Exported menu link: main-menu:list
+  $menu_links['main-menu:list'] = array(
+    'menu_name' => 'main-menu',
+    'link_path' => 'list',
+    'router_path' => 'list',
+    'link_title' => 'Report List',
+    'options' => array(
+      'attributes' => array(
+        'title' => '',
+      ),
+    ),
+    'module' => 'menu',
+    'hidden' => '0',
+    'external' => '0',
+    'has_children' => '0',
+    'expanded' => '0',
+    'weight' => '-48',
+  );
   // Exported menu link: main-menu:map
   $menu_links['main-menu:map'] = array(
     'menu_name' => 'main-menu',
@@ -54,11 +72,31 @@ function mark_a_spot_menu_default_menu_links() {
     'expanded' => '0',
     'weight' => '-49',
   );
+  // Exported menu link: main-menu:tweet311
+  $menu_links['main-menu:tweet311'] = array(
+    'menu_name' => 'main-menu',
+    'link_path' => 'tweet311',
+    'router_path' => 'tweet311',
+    'link_title' => 'Tweet311',
+    'options' => array(
+      'attributes' => array(
+        'title' => '',
+      ),
+    ),
+    'module' => 'menu',
+    'hidden' => '0',
+    'external' => '0',
+    'has_children' => '0',
+    'expanded' => '0',
+    'weight' => '0',
+  );
   // Translatables
   // Included for use with string extractors like potx.
   t('Home');
   t('Map view');
+  t('Report List');
   t('Report an Issue');
+  t('Tweet311');
 
 
   return $menu_links;
