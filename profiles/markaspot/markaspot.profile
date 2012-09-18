@@ -191,12 +191,10 @@ function _createNode(){
     $node->field_geo[$node->language][0]['lat'] = $node_data[2]; 
     $node->field_geo[$node->language][0]['lng'] = $node_data[3];
     $node->field_address[$node->language][0]['value'] = $node_data[4];
-    $node->field_zip[$node->language][0]['value'] = $node_data[5];
-    $node->field_city[$node->language][0]['value'] = $node_data[6];
-    $node->field_e_mail[$node->language][0]['value'] = $node_data[7];
-    $node->field_category[$node->language][0]['tid'] = $node_data[8]; 
-    $node->field_status[$node->language][0]['tid'] = $node_data[9]; 
-    $node->field_common['und'] = $node_data[10];
+    $node->field_e_mail[$node->language][0]['value'] = $node_data[5];
+    $node->field_category[$node->language][0]['tid'] = $node_data[6]; 
+    $node->field_status[$node->language][0]['tid'] = $node_data[7]; 
+    $node->field_common['und'] = $node_data[8];
     $node->is_new = true;
 
 
