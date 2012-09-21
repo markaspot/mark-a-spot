@@ -32,7 +32,7 @@ class ServicesXMLRPCTestCase extends DrupalWebTestCase {
    */
   function testlistMethods() {
     $result = $this->servicesXMLRPC('system.listMethods', array());
-    $this->assertFalse(in_array('node.index', $result['body']), t('Not able to find not enabled node.index method.'), 'XMLRPC: listMethods');
+    $this->assertTrue(in_array('node.index', $result['body']), t('node.index method found.'), 'XMLRPC: listMethods');
   }
 
   /**
@@ -87,26 +87,24 @@ class ServicesXMLRPCTestCase extends DrupalWebTestCase {
       'services' => 'services',
     );
     $endpoint->server_settings = array(
-      'rest_server' => array(
-        'formatters' => array(
-          'json' => TRUE,
-          'bencode' => TRUE,
-          'rss' => TRUE,
-          'plist' => TRUE,
-          'xmlplist' => TRUE,
-          'php' => TRUE,
-          'yaml' => TRUE,
-          'jsonp' => FALSE,
-          'xml' => FALSE,
-        ),
-        'parsers' => array(
-          'application/x-yaml' => TRUE,
-          'application/json' => TRUE,
-          'application/vnd.php.serialized' => TRUE,
-          'application/plist' => TRUE,
-          'application/plist+xml' => TRUE,
-          'application/x-www-form-urlencoded' => TRUE,
-        ),
+      'formatters' => array(
+        'json' => TRUE,
+        'bencode' => TRUE,
+        'rss' => TRUE,
+        'plist' => TRUE,
+        'xmlplist' => TRUE,
+        'php' => TRUE,
+        'yaml' => TRUE,
+        'jsonp' => FALSE,
+        'xml' => FALSE,
+      ),
+      'parsers' => array(
+        'application/x-yaml' => TRUE,
+        'application/json' => TRUE,
+        'application/vnd.php.serialized' => TRUE,
+        'application/plist' => TRUE,
+        'application/plist+xml' => TRUE,
+        'application/x-www-form-urlencoded' => TRUE,
       ),
     );
     $endpoint->resources = array(

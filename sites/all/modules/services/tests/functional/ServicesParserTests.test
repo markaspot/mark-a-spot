@@ -37,18 +37,16 @@ class ServicesParserTests extends ServicesWebTestCase {
       'services' => 'services',
     );
     $endpoint->server_settings = array(
-      'rest_server' => array(
-        'formatters' => array(
-          'php' => TRUE,
-        ),
-        'parsers' => array(
-          'application/x-yaml' => TRUE,
-          'application/json' => TRUE,
-          'application/vnd.php.serialized' => TRUE,
-          'application/plist' => TRUE,
-          'application/plist+xml' => TRUE,
-          'application/x-www-form-urlencoded' => FALSE,
-        ),
+      'formatters' => array(
+        'php' => TRUE,
+      ),
+      'parsers' => array(
+        'application/x-yaml' => TRUE,
+        'application/json' => TRUE,
+        'application/vnd.php.serialized' => TRUE,
+        'application/plist' => TRUE,
+        'application/plist+xml' => TRUE,
+        'application/x-www-form-urlencoded' => FALSE,
       ),
     );
     $endpoint->resources = array(
@@ -99,4 +97,23 @@ class ServicesParserTests extends ServicesWebTestCase {
       t('Do not accept application/x-www-form-urlencoded if disabled.'), 'Parser');
   }
 
+  /**
+   * Do JSON call. Ensure it is parsed properly.
+   */
+  public function testJSONCall() {
+    $account = $this->drupalCreateUser();
+
+    // Logout first.
+    $this->drupalLogout();
+
+    // Do JSON call to login.
+    $response = $this->servicesPost($this->endpoint->path . '/user/login', array('username' => $account->name, 'password' => $account->pass_raw), array(), 'json');
+
+    $body = $response['body'];
+
+    $proper_answer = isset($body->sessid)
+                  && isset($body->user)
+                  && $body->user->name == $account->name;
+    $this->assertTrue($proper_answer, t('User successfully logged in via JSON call.'), 'JSON Call: Login');
+  }
 }

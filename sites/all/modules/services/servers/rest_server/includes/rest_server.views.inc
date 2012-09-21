@@ -42,6 +42,10 @@ class RESTServerViewBuiltIn extends RESTServerView {
   }
 
   private function render_json($data, $jsonp = FALSE) {
+    // json_encode doesn't give valid json with data that isn't an array/object.
+    if (!is_array($data) && !is_object($data)) {
+      $data = array($data);
+    }
     $json = str_replace('\\/', '/', json_encode($data));
     if ($jsonp && isset($_GET['callback'])) {
       return sprintf('%s(%s);', $_GET['callback'], $json);
@@ -54,7 +58,7 @@ class RESTServerViewBuiltIn extends RESTServerView {
   }
 
   private function render_yaml($data) {
-    module_load_include('php', 'rest_server', 'lib/spyc');
+    include_once _rest_server_get_spyc_location();
     return Spyc::YAMLDump($data, 4, 60);
   }
 

@@ -17,7 +17,7 @@ $plugin = array(
         'load arguments' => array('services_ctools_export_ui'),
         'access arguments' => array('administer services'),
         'type' => MENU_LOCAL_TASK,
-
+        'weight' => -2,
       ),
       'server' => array(
         'path' => 'list/%ctools_export_ui/server',
@@ -27,7 +27,7 @@ $plugin = array(
         'load arguments' => array('services_ctools_export_ui'),
         'access arguments' => array('administer services'),
         'type' => MENU_LOCAL_TASK,
-        'weight' => -1,
+        'weight' => -4,
       ),
       'authentication' => array(
         'path' => 'list/%ctools_export_ui/authentication',
@@ -37,7 +37,7 @@ $plugin = array(
         'load arguments' => array('services_ctools_export_ui'),
         'access arguments' => array('administer services'),
         'type' => MENU_LOCAL_TASK,
-        'weight' => -1,
+        'weight' => -3,
       ),
     ),
   ),
@@ -72,6 +72,16 @@ function services_ctools_export_ui_form(&$form, &$form_state) {
   // Loading runtime include as needed by services_auth_info().
   module_load_include('runtime.inc', 'services');
   $endpoint = $form_state['item'];
+
+  $form['info']['name'] = array_merge($form['info']['name'], array(
+    '#title' => t('Machine-readable name of the endpoint'),
+    '#type' => 'machine_name',
+    '#description' => t('The endpoint name can only consist of lowercase letters, underscores, and numbers.'),
+    '#machine_name' => array(
+      'exists' => 'services_ctools_export_ui_form_machine_name_exists',
+    ),
+  ));
+
   $form['eid'] = array(
     '#type'  => 'value',
     '#value' => isset($endpoint->eid) ? $endpoint->eid : '',
@@ -128,7 +138,7 @@ function services_ctools_export_ui_form(&$form, &$form_state) {
         $default_values[] = $auth_module;
       }
     }
-    
+
     $form['authentication'] = array(
       '#type'          => 'checkboxes',
       '#options'       => $auth_options,
@@ -156,40 +166,32 @@ function services_ctools_export_ui_form(&$form, &$form_state) {
  * Validate submission of the preset edit form.
  */
 function services_ctools_export_ui_form_validate(&$form, &$form_state) {
-  // Test characters of name:
-  if (preg_match("/[^a-z0-9_]/", $form_state['values']['name'])) {
-    form_error($form['info']['name'], t('The endpoint name can only consist of lowercase letters, underscores, and numbers.'));
+  // Validate path.
+  $query = db_select('services_endpoint', 'e');
+  $query->addField('e', 'eid');
+  $query->condition('path', $form_state['values']['path']);
+
+  if (!empty($form_state['values']['eid']) && is_numeric($form_state['values']['eid'])) {
+    $query->condition('eid', $form_state['values']['eid'], '!=');
   }
-  else {
-    //Validate Name
-    $query = db_select('services_endpoint', 'e');
-    $query->addField('e', 'eid');
-    $query->condition('name', $form_state['values']['name']);
 
-    if (!empty($form_state['values']['eid']) && is_numeric($form_state['values']['eid'])) {
-      $query->condition('eid', $form_state['values']['eid'], '!=');
-    }
-
-    $res = $query->execute()->fetchField();
-    if (!empty($res)) {
-      form_error($form['info']['name'], t('Endpoint name must be unique.'));
-    }
-
-    //Validate path
-    $query = db_select('services_endpoint', 'e');
-    $query->addField('e', 'eid');
-    $query->condition('path', $form_state['values']['path']);
-
-    if (!empty($form_state['values']['eid']) && is_numeric($form_state['values']['eid'])) {
-      $query->condition('eid', $form_state['values']['eid'], '!=');
-    }
-
-    $res = $query->execute()->fetchField();
-    if (!empty($res)) {
-      form_error($form['path'], t('Endpoint path must be unique.'));
-    }
+  $res = $query->execute()->fetchField();
+  if (!empty($res)) {
+    form_error($form['path'], t('Endpoint path must be unique.'));
   }
-  //TODO: More validation? Eg. validate path? Transliteration etc?
+}
+
+/**
+ * Endpoint name check whether this machine name already exists.
+ */
+function services_ctools_export_ui_form_machine_name_exists($value) {
+  // Validate Name.
+//  $query = db_select('services_endpoint', 'e');
+//  $query->addField('e', 'eid');
+//  $query->condition('name', $value);
+
+  $result = db_query('SELECT eid FROM {services_endpoint} WHERE name = :name', array(':name' => $value))->fetchField();
+  return !empty($result);
 }
 
 /**
@@ -211,14 +213,14 @@ function services_ctools_export_ui_form_submit(&$form, &$form_state) {
       //if module's checkbox is checked, add to empty
       $auth_module = $form_state['values']['authentication'][$module];
       if ($module === $auth_module) {
-        //If existing settings are set, persist them
-        if (isset($endpoint->authentication[$module]) &&  is_array($endpoint->authentication[$module])) {
+        //If existing settings are set, preserve them
+        if (isset($endpoint->authentication[$module]) && is_array($endpoint->authentication[$module]) && !empty($endpoint->authentication[$module])) {
           $auth[$module] = $endpoint->authentication[$module];
-        } 
+        }
         else {
           $auth[$module] = $auth_module;
         }
-      } 
+      }
       elseif ($auth_module == 0) {
         unset($auth[$module]);
       }
