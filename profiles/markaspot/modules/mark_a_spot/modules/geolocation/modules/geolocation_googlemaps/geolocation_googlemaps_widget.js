@@ -25,7 +25,7 @@
     $('#geolocation-lat-' + i + ' input').attr('value', latLng.lat());
     $('#geolocation-lat-item-' + i + ' .geolocation-lat-item-value').html(latLng.lat());
     $('#geolocation-lng-' + i + ' input').attr('value', latLng.lng());
-    $('#geolocation-lng-item-' + i + ' .geolocation-lat-item-value').html(latLng.lng());
+    $('#geolocation-lng-item-' + i + ' .geolocation-lng-item-value').html(latLng.lng());
  
     // Update the address field
     if ((op == 'marker' || op == 'geocoder') && geocoder) {
@@ -144,7 +144,7 @@
     $('#geolocation-lat-' + i + ' input').attr('value', '');
     $('#geolocation-lat-item-' + i + ' .geolocation-lat-item-value').html('');
     $('#geolocation-lng-' + i + ' input').attr('value', '');
-    $('#geolocation-lng-item-' + i + ' .geolocation-lat-item-value').html('');
+    $('#geolocation-lng-item-' + i + ' .geolocation-lng-item-value').html('');
     $('#geolocation-address-' + i + ' input').attr('value', '');
     Drupal.geolocation.markers[i].setMap();
   }
