@@ -92,7 +92,7 @@ function _markaspot_open311_requests_retrieve($nid) {
 function _markaspot_open311_requests_index($page, $parameters) {
   global $user;
 
-  $query = db_select('node', 'n')->extend('PagerDefault')->extend('TableSort');
+  $query = db_select('node', 'n');
 
   if(count($parameters) >= 2) {
      // limit param
@@ -240,42 +240,6 @@ function _markaspot_open311_services_retrieve($service_code) {
   return $service;
 }
 
-/**
- * Access callback for the request and service resources.
- *
- * @param string $op
- *  The operation that's going to be performed.
- * @param array $args
- *  The arguments that will be passed to the callback.
- * @return bool
- *  Whether access is given or not.
- */
-
-function _markaspot_open311_access($op, $args) {
-  global $user;
-  $access = FALSE;
-
-  switch ($op) {
-    case 'view':
-      $request = markaspot_open311_get_requests($args[0]);
-      $access = user_access('Mark-a-Spot open311 resource view any request');
-      $access = $access || $node->uid == $user->uid && user_access('Mark-a-Spot open311 resource view own nodes');
-      break;
-    // case 'update':
-    //   $request = markaspot_open311_get_requests($args[0]->id);
-    //   $access = user_access('Mark-a-Spot open311 resource edit any request');
-    //   $access = $access || $node->uid == $user->uid && user_access('Mark-a-Spot open311 resource edit own nodes');
-    //   break;
-    // case 'delete':
-    //   $request = markaspot_open311_get_requests($args[0]);
-    //   $access = user_access('Mark-a-Spot open311 resource delete any request');
-    //   $access = $access || $node->uid == $user->uid && user_access('Mark-a-Spot open311 resource delete own nodes');
-    //   break;
-  }
-  $access = TRUE;
-  
-  return $access;
-}
 
 
 /**

@@ -160,10 +160,10 @@ function services_theme() {
  *  An associative array keyed after module name containing information about
  *  the installed server implementations.
  */
-function services_get_servers() {
-  static $servers;
+function services_get_servers($reset = FALSE) {
+  $servers = &drupal_static(__FUNCTION__);
 
-  if (!$servers) {
+  if (!$servers || $reset) {
     $servers = array();
     foreach (module_implements('server_info') as $module) {
       $servers[$module] = call_user_func($module . '_server_info');
@@ -193,7 +193,7 @@ function services_endpoint_callback($endpoint_name) {
       'endpoint'      => $endpoint_name,
       'endpoint_path' => $endpoint->path,
       'debug'         => $endpoint->debug,
-      'settings'      => $endpoint->server_settings[$server],
+      'settings'      => $endpoint->server_settings,
     ));
     if ($endpoint->debug) {
       watchdog('services', 'Calling server: %server', array('%server' => $server . '_server'), WATCHDOG_DEBUG);
@@ -261,7 +261,7 @@ function services_endpoint_save($endpoint) {
   }
 
   // Set a default of an array if the value is not present.
-  foreach (array('server_settings', 'resources', 'authenication') as $endpoint_field) {
+  foreach (array('server_settings', 'resources', 'authentication') as $endpoint_field) {
     if (empty($endpoint->{$endpoint_field})) {
       $endpoint->{$endpoint_field} = array();
     }
@@ -321,6 +321,26 @@ function services_get_resources($endpoint_name = '') {
 }
 
 /**
+ * Returns information about resource API version information.
+ * The resource API is the way modules expose resources to services,
+ * not the API that is exposed to the consumers of your services.
+ *
+ * @return array
+ *  API version information. 'default_version' is the version that's assumed
+ *  if the module doesn't declare an API version. 'versions' is an array
+ *  containing the known API versions. 'current_version' is the current
+ *  version number.
+ */
+function services_resource_api_version_info() {
+  $info = array(
+    'default_version' => 3001,
+    'versions' => array(3002),
+  );
+  $info['current_version'] = max($info['versions']);
+  return $info;
+}
+
+/**
  * Implements hook_services_resources().
  */
 function services_services_resources() {
@@ -351,34 +371,63 @@ function _services_sessions_authenticate_call() {
 }
 
 /**
+ * Get operation class information.
+ *
+ * @return array An array with operation class information keyed by operation machine name.
+ */
+function services_operation_class_info() {
+  return array(
+    'operations' => array(
+      'title' => t('CRUD operations'),
+      'name' => t('CRUD operation'),
+      'class_singular' => 'operation',
+    ),
+    'actions' => array(
+      'title' => t('Actions'),
+      'name' => t('action'),
+      'class_singular' => 'action',
+    ),
+    'relationships' => array(
+      'title' => t('Relationships'),
+      'name' => t('relationship'),
+      'class_singular' => 'relationship',
+    ),
+    'targeted_actions' => array(
+      'title' => t('Targeted actions'),
+      'name' => t('targeted action'),
+      'class_singular' => 'targeted_action',
+    ),
+  );
+}
+
+/**
  * Returns all the controller names for a endpoint.
  *
  * @param string $endpoint
  *  The endpoint that should be used.
  * @return array
- *  Either a non associative array containing all controller names. Or, if
- *  $key_by_resource was set to TRUE, a associative array where the resource
- *  name is the key and the value is a non-associative array containing the
- *  resource's controller names.
+ *  An array containing all controller names.
  */
 function services_controllers_list($endpoint) {
   $controllers = array();
-  $ops = array('actions', 'relationships', 'targeted_actions');
-  $resources = services_get_resources($endpoint);
-  foreach ($resources as $resource_name => $res) {
-    // Get all basic operations
-    foreach (array('create', 'retrieve', 'update', 'delete', 'index') as $op) {
-      if (isset($res[$op])) {
-        $controllers[] = $resource_name . '.' . $op;
-      }
-    }
+  $class_info = services_operation_class_info();
 
-    // Handle extended operatios
-    foreach ($ops as $op) {
-      if (isset($res[$op])) {
-        foreach ($res[$op] as $name => $def) {
-          // Append prefix if it isn't empty
-          $controllers[] = $resource_name . '.' . $name;
+  $resources = services_get_resources($endpoint);
+  foreach ($resources as $resource_name => $resource) {
+    foreach ($class_info as $class_name => $class) {
+      if (empty($resource[$class_name])) {
+        continue;
+      }
+      foreach ($resource[$class_name] as $op_name => $op) {
+        $method = "{$resource_name}.{$op_name}";
+        if (empty($controllers[$method])) {
+          $controllers[$method] = $method;
+        }
+        else {
+          watchdog('services', 'Naming collision when listing controllers as methods. The %class %operation is not included in the listing.', array(
+            '%class' => $class['name'],
+            '%operation' => $op_name,
+          ), WATCHDOG_WARNING);
         }
       }
     }
@@ -397,21 +446,159 @@ function services_controllers_list($endpoint) {
  */
 function services_controller_get($name, $endpoint) {
   list($resource_name, $method) = explode('.', $name);
-  $ops = array('actions', 'relationships', 'targeted_actions');
-  $resources = services_get_resources($endpoint);
 
+  $resources = services_get_resources($endpoint);
   if (isset($resources[$resource_name])) {
     $res = $resources[$resource_name];
-
     if (isset($res[$method])) {
       return $res[$method];
     }
     else {
+      $class_info = services_operation_class_info();
       // Handle extended operatios
-      foreach ($ops as $op) {
-        if (isset($res[$op]) && isset($res[$op][$method])) {
-          return $res[$op][$method];
+      foreach ($class_info as $class => $info) {
+        if (isset($res[$class]) && isset($res[$class][$method])) {
+          return $res[$class][$method];
         }
+      }
+    }
+  }
+}
+/**
+ * Returns an array of available updates versions for a resource.
+ *
+ * @return
+ *   If services has updates, an array of available updates sorted by version.
+ *   Otherwise, array().
+ */
+function services_get_updates() {
+  $updates = &drupal_static(__FUNCTION__, array());
+  if (!isset($updates) || empty($updates)) {
+    $updates = array();
+    module_load_include('resource_build.inc', 'services');
+    // Load the resources for services.
+    _services_core_resources();
+    // Prepare regular expression to match all possible defined
+    // _resource_resource_method_update_N_N().
+    $regexp = '/_(?P<resource>.+)_resource_(?P<method>.+)_update_(?P<major>\d+)_(?P<minor>\d+)$/';
+    $functions = get_defined_functions();
+    // Narrow this down to functions ending with an integer, since all
+    // _resource_resource_method_update_N_N() functions end this way, and there are other
+    // possible functions which match '_update_'. We use preg_grep() here
+    // instead of foreaching through all defined functions, since the loop
+    // through all PHP functions can take significant page execution time.
+    // Luckily this only happens when the cache is cleared for an endpoint
+    // and resources are re-generated.
+    foreach (preg_grep('/_\d+$/', $functions['user']) as $function) {
+      // If this function is a service update function, add it to the list of
+      // services updates.
+      if (preg_match($regexp, $function, $matches)) {
+        extract($matches);
+        $updates[$resource][$method][] = array(
+          'version'  => $major .'_'. $minor,
+          'major'    => $major,
+          'minor'    => $minor,
+          'callback' => $function,
+          'resource' => $resource,
+          'method'   => $method,
+        );
+      }
+    }
+  }
+  return $updates;
+}
+
+/**
+ * Determine if any potential versions exist as valid headers.
+ * returns false if no version is present in the header for the specific call.
+ */
+function _services_version_header_options() {
+  $available_headers = array();
+  $updates = services_get_updates();
+  if(is_array($updates)) {
+    foreach ($updates as $resource => $update) {
+      foreach ($update as $method_name => $method) {
+        $available_headers[] = 'services_'. $resource .'_'.$method_name .'_version';
+      }
+    }
+  }
+  foreach($available_headers as $key => $version_header_option) {
+    if(array_key_exists($version_header_option, $headers = getallheaders())) {
+      $version = $headers[$version_header_option];
+    }
+  }
+  return isset($version) ? $version : FALSE;
+}
+
+/**
+ * Returns currently set api version for an endpoint resource method.
+ *
+ * @param $endpoint
+ *   A fully loadded endpoint.
+ * @param $resource
+ *   A resource name.
+ * @param $method
+ *   A method name.
+ * @return
+ *   an array with the major and minor api versions
+ */
+function services_get_resource_api_version($endpoint, $resource, $method) {
+  if (isset($endpoint->resources[$resource]) ) {
+    $class_info = services_operation_class_info();
+    foreach ($class_info as $class_name => $class) {
+      if (!empty($resource[$class_name])) {
+        if (isset($endpoint->resources[$resource][$class_name][$method]['settings']['services']['resource_api_version'])) {
+          if($version = _services_version_header_options()) {
+            $split = explode('.', $version);
+          } else {
+            $split = explode('.', $endpoint->resources[$resource][$class_name][$method]['settings']['services']['resource_api_version']);
+          }
+          return array(
+            'major' => $split[0],
+            'minor' => $split[1],
+          );
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Apply versions to the controller.
+ *
+ * @param $controller
+ *   A controller array.
+ * @param $options
+ *   A options array filled with verison information.
+ * @return
+ *   An array with the major and minor api versions
+ */
+function services_request_apply_version(&$controller, $options = array()) {
+  if (isset($options)) {
+    extract($options);
+  }
+  if (isset($version) && $version == '1.0') {
+    //do nothing
+    return;
+  }
+  $updates = services_get_updates();
+  if (isset($method) && isset($updates[$resource][$method])) {
+    foreach ($updates[$resource][$method] as $update) {
+      if (!isset($version)) {
+        $endpoint = services_get_server_info('endpoint', '');
+        $endpoint = services_endpoint_load($endpoint);
+        $default_version = services_get_resource_api_version($endpoint, $resource, $method);
+      }
+      else {
+        $default_version = explode('.', $version);
+        $default_version['major'] = $default_version[0];
+        $default_version['minor'] = $default_version[1];
+      }
+
+      // Apply updates until we hit our default update for the site.
+      if ($update['major'] <= $default_version['major'] && $update['minor'] <= $default_version['minor']) {
+        $update_data = call_user_func($update['callback']);
+        $controller = array_merge($controller, $update_data);
       }
     }
   }
@@ -422,51 +609,35 @@ function services_controller_get($name, $endpoint) {
  *
  * @param array $resource
  *   A resource definition.
+ * @param string $resource_name
+ *   The resource name, ie: node.
  *
  * @return array
  *   An array of RPC method definitions
  */
-function services_resources_as_procedures($resource) {
-  static $controllers = array('create', 'retrieve', 'update', 'delete', 'index');
-  static $subcontrollers = array('actions', 'relationships', 'targeted_actions');
-
+function services_resources_as_procedures($resource, $resource_name) {
   $methods = array();
-
-  foreach ($controllers as $name) {
-    if (isset($resource[$name])) {
-      $methods[] = _services_resource_controller_as_procedure($resource['name'], $name, $resource[$name]);
+  $class_info = services_operation_class_info();
+  foreach ($class_info as $class_name => $class) {
+    if (empty($resource[$class_name])) {
+      continue;
     }
-  }
-
-  foreach ($subcontrollers as $name) {
-    if (isset($resource[$name])) {
-      foreach ($resource[$name] as $sc_name => $controller) {
-        $methods[] = _services_resource_controller_as_procedure($resource['name'], $sc_name, $controller);
+    foreach ($resource[$class_name] as $op_name => $op) {
+      $method_name = "{$resource_name}.{$op_name}";
+      if (empty($methods[$method_name])) {
+        $methods[$method_name] = array(
+          'method' => $method_name,
+        ) + $op;
+      }
+      else {
+        watchdog('services', 'Naming collision when listing controllers as methods. The %class %operation wont be available for RPC-style servers.', array(
+          '%class' => $class['name'],
+          '%operation' => $op_name,
+        ), WATCHDOG_WARNING);
       }
     }
   }
-
   return $methods;
-}
-
-/**
- * Helper function for _services_resources_as_procedures() that turns a resource
- * controller into an RPC method.
- *
- * @param $resource
- *   The resource being converted (node, user, etc.)
- * @param $name
- *   The method name (retrieve, create, etc.)
- * @param $controller
- *   Associative array defining the method's properties and callbacks.
- *
- */
-function _services_resource_controller_as_procedure($resource, $name, $controller) {
-  $method = array_merge($controller, array(
-    'method' => $resource .'.'. $name,
-  ));
-
-  return $method;
 }
 
 /**
@@ -499,10 +670,33 @@ function services_resource_build_index_query($query, $page, $fields, $parameters
   }
   if (isset($parameters) && is_array($parameters)) {
     foreach ($parameters as $parameter => $parameter_value) {
-      $query->condition($parameter, explode(',', $parameter_value), 'IN');
+      $query->condition($parameter, services_str_getcsv($parameter_value), 'IN');
     }
   }
 }
+
+
+/**
+ * Emulate str_getcsv on systems where it is not available.
+ *
+ * @ingroup php_wrappers
+ */
+function services_str_getcsv($input, $delimiter = ',', $enclosure = '"', $escape = '\\') {
+  $ret = array();
+
+  if (!function_exists('str_getcsv')) {
+    $temp = fopen("php://memory", "rw");
+    fwrite($temp, $input);
+    fseek($temp, 0);
+    $ret = fgetcsv($temp, 0, $delimiter, $enclosure);
+    fclose($temp);
+  }
+  else {
+    $ret = str_getcsv($input, $delimiter, $enclosure, $escape);
+  }
+  return $ret;
+}
+
 
 /**
  * Helper function to build a list of items satisfying the index query.
@@ -551,7 +745,24 @@ function services_resource_execute_index_query($query) {
   try {
     return $query->execute();
   }
-  catch (Exception $e) {
-    return services_error(t('Invalid query provided, double check that the fields and parameters you defined are correct and exist. ' . $e->message()), 406);
+  catch (PDOException $e) {
+    return services_error(t('Invalid query provided, double check that the fields and parameters you defined are correct and exist. ' . $e->getMessage()), 406);
+  }
+}
+
+/**
+ * If we are running nginx we need to implement getallheaders our self.
+ *
+ * Code is taken from http://php.net/manual/en/function.getallheaders.php
+ */
+if (!function_exists('getallheaders')) {
+  function getallheaders() {
+    foreach ($_SERVER as $name => $value) {
+      if (substr($name, 0, 5) == 'HTTP_') {
+        $headers[str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))))] = $value;
+      }
+    }
+
+    return $headers;
   }
 }

@@ -11,6 +11,13 @@ It's source-code is licensed and made available under the GNU General Public Lic
 * [MaS-City Demo-Site](http://mas-city.com)
 * [Installation Video](https://vimeo.com/43443940)
 
+## Initial configuration
+
+1. Start with changing the field settings of the field_geo field by choosing a starting position.
+http://yourserver/admin/structure/types/manage/report/fields
+2. Copy and paste the lat/lon values into the settings of the Mark-a-Spot configuration screen
+http://masdist.com:8888/admin/config/system/mark_a_spot
+
 ## Open311 GeoReport Resources 
 
 http://yourserver/georeport/services.format (xml/json)

@@ -24,11 +24,22 @@ th.resource_test {
 #resource-form-table tr td {
   background-color: white;
   color: #494949;
+  vertical-align: top;
 }
 #resource-form-table tr.resource-group td {
   background-color: #EDF5FA;
   color: #494949;
 }
+
+#resource-form-table tr.resource-method {
+  border-bottom: 1px solid #494949;
+}
+
+#resource-form-table tr.resource-operation-class {
+  border-bottom: 2px solid #494949;
+  border-top: 2px solid #494949;
+}
+
 
 table#resource-form-table tr.resource-group label {
   display: inline;

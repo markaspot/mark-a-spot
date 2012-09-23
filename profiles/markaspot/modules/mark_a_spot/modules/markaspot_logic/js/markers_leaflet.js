@@ -6,7 +6,7 @@
  *
  * @copyright  2012 Holger Kreis <holger@markaspot.org>
  * @link       http://mark-a-spot.org/
- * @version    2.0  
+ * @version    2.1.2  
  */
 
 var getMarkerId ="";
@@ -30,7 +30,7 @@ var markerLayer, queryString ;
     }
     
     var mas = Drupal.settings.mas;
-    console.log(Drupal);
+
     Drupal.Geolocation = new Object();
     Drupal.Geolocation.maps = new Array();
     Drupal.Geolocation.markers = new Array();
@@ -47,39 +47,36 @@ var markerLayer, queryString ;
      *
      */
      
-     switch (pathId[0]) {
-        case "map":
-        case "home":
-        case "list":
-          readData(1, getMarkerId, "All", "All");
-          getMarkerId = '';
+    switch (pathId[0]) {
+      case "map":
+      case "home":
+      case "list":
+        readData(1, getMarkerId, "All", "All");
+        getMarkerId = '';
+      break;
+      case "node":
+        readData(1, pathId[1], categoryCond, statusCond);
         break;
-        case "node":
-          readData(1, pathId[1], categoryCond, statusCond);
-          break;
-        case "admin":
-        case "overlay":
-          return false;
-        default:
-          return false;
-        break;
+      case "admin":
+      case "overlay":
+        return false;
+      default:
+        return false;
+      break;
     }
     
     var initialLatLng = new L.LatLng(mas.markaspot_ini_lat, mas.markaspot_ini_lng);
 
     Drupal.Geolocation.maps[0] = new L.Map('map');
     var cloudmadeUrl = 'http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/22677/256/{z}/{x}/{y}.png',
-        cloudmadeAttribution = 'Map data &copy; 2011 OpenStreetMap contributors, Imagery &copy; 2011 CloudMade',
+        cloudmadeAttribution = 'Map data &copy; 2012 OpenStreetMap contributors, Imagery &copy; 2012 CloudMade',
         cloudmade = new L.TileLayer(cloudmadeUrl, {maxZoom: 18, attribution: cloudmadeAttribution});
 
     Drupal.Geolocation.maps[0].setView(new L.LatLng(mas.markaspot_ini_lat, mas.markaspot_ini_lng), 13).addLayer(cloudmade);
 
-
-
-    
     $("#markers-list").append("<ul>");
-    
-    
+  
+  
     /**Sidebar Marker-functions*/
      
     $("#block-markaspot-logic-taxonomy-category div div a.map-menue").click(function(e){
@@ -100,20 +97,20 @@ var markerLayer, queryString ;
       id = id.split("-");
       return id[1];
     }
+    
 
     function readData(getToggle,getMarkerId,categoryCond,statusCond) {
       markerLayer = new L.LayerGroup();
-
       uri = mas.uri.split('?');
       
       if (uri[0] == "/node"){
-        url = 'reports/json/' + getMarkerId;
+        url = Drupal.settings.basePath + 'reports/json/' + getMarkerId;
       } else if (uri[0].search('node/') != -1){
-        url = '/reports/json/' + getMarkerId;
+        url = Drupal.settings.basePath + 'reports/json/' + getMarkerId;
       } else if (uri[0].search('map') != -1 || uri[0].search('home') != -1 ){
-        url = '/reports/json?' + 'field_category_tid=' + categoryCond + '&field_status_tid=' + statusCond;
+        url = Drupal.settings.basePath + 'reports/json?' + 'field_category_tid=' + categoryCond + '&field_status_tid=' + statusCond;
       } else {
-        url = '/reports/json?' + uri[1];
+        url = Drupal.settings.basePath + 'reports/json?' + uri[1];
         categoryCond = mas.params.field_category_tid;
         statusCond = mas.params.field_status_tid;
       }
@@ -121,31 +118,25 @@ var markerLayer, queryString ;
  
       $.getJSON(url, function(data){
         data = data.nodes;
-        console.log(data);
+
         points = [];
-  
-
+        var bounds = new L.LatLngBounds(initialLatLng);
         //var infoWindow = new google.maps.InfoWindow;
-  
-        $.each(data, function(markers, item){
 
-          if (getMarkerId && !item.node.positionLat) {
-            // bounds.extend(initialLatLng);  
-            item.positionLat = 50.9;
-            item.positionLng = 6.89;
-            getToggle = 0;
-          }
+        if (!data[0] && mas.node_type == 'report') {
+          // invoke a message box or something less permanent than an alert box later
+          alert(Drupal.t('No Reports found for this category/status'));
+        }
+        $.each(data, function(markers, item){
 
           if (item.node.positionLat && item.node.positionLat != mas.markaspot_ini_lat){
             item = item.node;
             var latlon = new L.LatLng(item.positionLat,item.positionLng);
-            var html = '<div class="marker-title"><h4><a class="infowindow-link" href="' + item.Pfad + "?" + queryString[1] +'">' + item.title + '</a></h4><span class="meta-info date">' + item.created + '</span></div>';
-            if (item.NoiseTypeImage) {
-              html += '<img src="' + item.NoiseTypeImage +'" alt="Thumbnail"/>'
-            }
+            var html = '<div class="marker-title"><h4><a class="infowindow-link" href="' + item.path + '">' + item.title + '</a></h4><span class="meta-info date">' + item.created + '</span></div>';
+
 
             if (item.address){
-              html += '<div class="marker-address"><p>'+ item.address + '</p><p>' + item.zip + ' ' + item.city + '</p></div><div><a class="infowindow-link" href="' + item.path + '">mehr lesen</a></span>';
+              html += '<div class="marker-address"><p>'+ item.address + '</br>' + item.zip + ' ' + item.city + '</p></div><div><a class="infowindow-link" href="' + item.path + '">mehr lesen</a></span>';
             }
             /*
             if (item.Value){
@@ -157,31 +148,53 @@ var markerLayer, queryString ;
 
             if (getToggle != 3) {
               switch (getToggle) {
+                // case 0:
+                //   var image = new google.maps.MarkerImage('https://chart.googleapis.com/chart?chs=150x150&cht=qr&chl=Hello%20world&choe=UTF-8');
+                //   var shadow = new google.maps.MarkerImage(
+                //    'http://maps.gstatic.com/intl/de_ALL/mapfiles/shadow50.png', 
+                //     new google.maps.Size(37, 32),
+                //     new google.maps.Point(0,0),
+                //     new google.maps.Point(13, 32)
+                //   );
+                // break;
                 case 1:
-                  var LeafIcon = L.Icon.extend({iconUrl: '/profiles/markaspot/modules/mark_a_spot/modules/markaspot_logic/img/icons/cartosoft/marker_crts_' + item.categoryHex + '.png',
-                    shadowUrl: '/profiles/markaspot/modules/mark_a_spot/modules/markaspot_logic/img/icons/cartosoft/marker_crts_shadow.png',
-                    iconSize: new L.Point(32, 32),
-                    shadowSize: new L.Point(52, 33),
-                    iconAnchor: new L.Point(30, 14), 
+                  var LeafIcon = L.Icon.extend({
+                    options: {
+                      shadowUrl: '/profiles/markaspot/modules/mark_a_spot/modules/markaspot_logic/img/icons/cartosoft/marker_crts_shadow.png',
+                      iconSize: new L.Point(32, 32),
+                      shadowSize: new L.Point(52, 33),
+                      iconAnchor: new L.Point(30, 14)
+                    }
                   });
+                  var masIcon = new LeafIcon({iconUrl: '/profiles/markaspot/modules/mark_a_spot/modules/markaspot_logic/img/icons/cartosoft/marker_crts_' + item.categoryHex + '.png'});
+
                 break;
                 case 2:
                   var LeafIcon = L.Icon.extend({
-                    iconUrl: '/profiles/markaspot/modules/mark_a_spot/modules/markaspot_logic/img/icons/cartosoft/marker_crts_' + item.statusHex + '.png',
-                    shadowUrl: '/profiles/markaspot/modules/mark_a_spot/modules/markaspot_logic/img/icons/cartosoft/marker_crts_shadow.png',
-                    iconSize: new L.Point(32, 32),
-                    shadowSize: new L.Point(52, 33),
-                    iconAnchor: new L.Point(0, 14),
+                    options: {
+                      shadowUrl: '/profiles/markaspot/modules/mark_a_spot/modules/markaspot_logic/img/icons/cartosoft/marker_crts_shadow.png',
+                      iconSize: new L.Point(32, 32),
+                      shadowSize: new L.Point(52, 33),
+                      iconAnchor: new L.Point(0, 14)
+                    }
                   });
-                break;
-              }
+                  var masIcon = new LeafIcon({iconUrl: '/profiles/markaspot/modules/mark_a_spot/modules/markaspot_logic/img/icons/cartosoft/marker_crts_' + item.statusHex + '.png'});
 
-              var masIcon = new LeafIcon();
+                break;
+
+              }
+              
               var marker = new L.Marker(latlon, {icon: masIcon});
               marker.bindPopup(html)
               markerLayer.addLayer(marker);
+
+              //fn = bindInfoWindow(GoogleMarker,  Drupal.Geolocation.maps[0], infoWindow, html);
+
             }
-            
+   
+            bounds.extend(latlon);
+           
+
             var fn  = markerClickFn(latlon, html);
 
             if ($("#markersidebar")){
@@ -192,18 +205,14 @@ var markerLayer, queryString ;
               $("#markersidebar").append(li);
             }
             $('#marker_'+item.nid).click(fn);
+          } 
+        }); // $.each
+        var bounds = new L.LatLngBounds(points);
 
-         }
-      }); // $.each
-
-      var bounds = new L.LatLngBounds(points);
-
-      Drupal.Geolocation.maps[0].addLayer(markerLayer);
-      Drupal.Geolocation.maps[0].fitBounds(bounds);
-
-
-     });
-    }
+        Drupal.Geolocation.maps[0].addLayer(markerLayer);
+        // Drupal.Geolocation.maps[0].fitBounds(bounds);
+      });
+    } 
   });
 })(jQuery);
 
@@ -234,3 +243,20 @@ function markerClickFn(latlon, html) {
     Drupal.Geolocation.maps[0].openPopup(popup);
   };
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

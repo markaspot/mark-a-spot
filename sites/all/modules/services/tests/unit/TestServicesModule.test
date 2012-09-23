@@ -84,29 +84,44 @@ class ServicesModuleTests extends DrupalWebTestCase {
    */
   public function testEndpointMenu() {
     // Create the endpoint.
-    $endpointSettings = array(
+    $endpoint_settings = array(
        'name'   => 'machine_name',
        'path'   => $this->randomName(10),
        'server' => 'rest_server',
     );
 
-    $this->drupalPost('admin/structure/services/add', $endpointSettings, t('Save'));
-    $this->assertResponse('200', t('Attempting to create Endpoint.'));
+    $this->drupalPost('admin/structure/services/add', $endpoint_settings, t('Save'));
+    $this->assertResponse('200', t('Create Endpoint.'));
+
+    // Enable node resource index method.
+    $resource_settings = array(
+      'resources[node][operations][index][enabled]' => '1',
+    );
+    $this->drupalPost('admin/structure/services/list/' . $endpoint_settings['name'] . '/resources',
+      $resource_settings, t('Save'));
+    $this->assertResponse('200', t('Node resource index method enabled successfully.'));
+
+    // Check path.
+    $this->drupalGet($endpoint_settings['path'] . '/node');
+    $this->assertResponse('200', t('Accessed endpoint menu path node index method.'));
+
+    // After accessing node resource we got logged out. So we login again.
+    $this->drupalLogin($this->privilegedUser);
 
     // Check edit.
-    $this->drupalGet('admin/structure/services/list/' . $endpointSettings['name']
+    $this->drupalGet('admin/structure/services/list/' . $endpoint_settings['name']
      . '/edit');
-    $this->assertResponse('200', t('Failed to access endpoint edit path.')) ;
+    $this->assertResponse('200', t('Access endpoint edit path.')) ;
 
     // Check export.
-    $this->drupalGet('admin/structure/services/list/' . $endpointSettings['name']
+    $this->drupalGet('admin/structure/services/list/' . $endpoint_settings['name']
      . '/export');
-    $this->assertResponse('200', t('Failed to access endpoint export path.')) ;
+    $this->assertResponse('200', t('Access endpoint export path.')) ;
 
     // Check delete.
-    $this->drupalGet('admin/structure/services/list/' . $endpointSettings['name']
+    $this->drupalGet('admin/structure/services/list/' . $endpoint_settings['name']
      . '/delete');
-    $this->assertResponse('200', t('Failed to access endpoint delete path.')) ;
+    $this->assertResponse('200', t('Access endpoint delete path.')) ;
   }
 
   /*

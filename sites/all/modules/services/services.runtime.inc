@@ -28,7 +28,7 @@ class ServicesException extends Exception {
   public function __construct($message, $code = 0, $data = NULL) {
     parent::__construct($message, $code);
 
-    $this->data = $data;
+    $this->data = $message;
   }
 
   /**
@@ -104,21 +104,19 @@ function services_controller_execute($controller, $args = array(), $options = ar
   $old_state = drupal_save_session();
   drupal_save_session(FALSE);
   $user = drupal_anonymous_user();
-
+  $user->timestamp = time();
   services_set_server_info('original_user', $original_user);
+  $endpoint_name = services_get_server_info('endpoint');
+  $endpoint = services_endpoint_load($endpoint_name);
 
   // Check authentication.
   if (!isset($options['skip_authentication']) || !$options['skip_authentication']) {
-    $endpoint_name = services_get_server_info('endpoint');
-    $endpoint = services_endpoint_load($endpoint_name);
-
     foreach ($endpoint->authentication as $auth_module => $settings) {
       if (isset($settings) && $auth_error = services_auth_invoke($auth_module, 'authenticate_call', $settings, $controller, $args)) {
         return services_error($auth_error, 401);
       }
     }
   }
-
   // Load the proper file.
   if (!empty($controller['file']) && $file = $controller['file']) {
     module_load_include($file['type'], $file['module'], (isset($file['name']) ? $file['name'] : NULL));
@@ -148,8 +146,31 @@ function services_controller_execute($controller, $args = array(), $options = ar
       '@user' => isset($user->name) ? $user->name : 'anonymous',
     )), 401);
   }
+  $endpoint_path = services_get_server_info('endpoint_path', '');
+  $endpoint_path_len = drupal_strlen($endpoint_path) + 1;
+  $canonical_path = drupal_substr($_GET['q'], $endpoint_path_len, drupal_strlen($_GET['q']) - $endpoint_path_len);
+  // Extract response format info from the canonical path.
+  $matches = array();
+  $response_format = '';
+  if (preg_match('/^(.+)\.([^\.^\/]+)$/', $canonical_path, $matches)) {
+    $canonical_path = $matches[1];
+    $response_format = $matches[2];
+  }
 
-  drupal_alter('services_request_preprocess', $controller, $args);
+  // Prepare $path array and $resource_name.
+  $path = explode('/', $canonical_path);
+  $resource_name = array_shift($path);
+  $options['version'] = _services_version_header_options() ? _services_version_header_options() : NULL;
+  $options['resource'] = $resource_name;
+  if (isset($path[0])) {
+    $options['method'] = $path[0];
+  }
+
+  if(!empty($options['version'])) {
+    services_request_apply_version($controller, $options);
+  }
+
+  drupal_alter('services_request_preprocess', $controller, $args, $options);
 
   // Log the arguments.
   if ($server_info->debug) {
@@ -158,12 +179,12 @@ function services_controller_execute($controller, $args = array(), $options = ar
 
   // Execute the controller callback.
   $result = call_user_func_array($controller['callback'], $args);
-  
+
   drupal_alter('services_request_postprocess', $controller, $args, $result);
-  
+
   if (drupal_save_session($user) === FALSE) {
     $user = $original_user;
-    drupal_save_session($old_state);  
+    drupal_save_session($old_state);
   }
   if ($server_info->debug) {
     watchdog('services', 'results: <pre>@results</pre>', array('@results' => print_r($result, TRUE)), WATCHDOG_DEBUG);
@@ -307,11 +328,11 @@ function services_get_server_info($key, $default = NULL) {
  *  Returns the server info object.
  */
 function services_server_info_object($reset = FALSE) {
-  static $info;
-  if (!$info) {
-    $info = new stdClass();
+  static $drupal_static_fast;
+  if (!isset($drupal_static_fast) || $reset) {
+    $drupal_static_fast['info'] = &drupal_static(__FUNCTION__, new stdClass());
   }
-  return $info;
+  return $drupal_static_fast['info'];
 }
 
 /**

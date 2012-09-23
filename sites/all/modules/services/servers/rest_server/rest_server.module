@@ -23,7 +23,8 @@ function rest_server_server_info() {
 function rest_server_server() {
   $endpoint_path = services_get_server_info('endpoint_path', 'services/rest');
 
-  $canonical_path = str_replace($endpoint_path . '/', '', $_GET['q']);
+  $endpoint_path_len = drupal_strlen($endpoint_path) + 1;
+  $canonical_path = drupal_substr($_GET['q'], $endpoint_path_len, drupal_strlen($_GET['q']) - $endpoint_path_len);
   if (empty($canonical_path)) {
     return;
   }
@@ -48,11 +49,15 @@ function rest_server_request_parsers() {
   if (!$parsers) {
     $parsers = array(
       'application/x-www-form-urlencoded' => 'RESTServer::parseURLEncoded',
-      'application/x-yaml' => 'RESTServer::parseYAML',
       'application/json' => 'RESTServer::parseJSON',
       'application/vnd.php.serialized' => 'RESTServer::parsePHP',
       'multipart/form-data' => 'RESTServer::parseMultipart',
     );
+
+    if (_rest_server_get_spyc_location() !== false) {
+      $parsers['application/x-yaml'] = 'RESTServer::parseYAML';
+    }
+
     drupal_alter('rest_server_request_parsers', $parsers);
   }
   return $parsers;
@@ -93,11 +98,6 @@ function rest_server_response_formatters() {
         'view' => 'RESTServerViewBuiltIn',
         'view arguments' => array('format' => 'php'),
       ),
-      'yaml' => array(
-        'mime types' => array('text/plain', 'application/x-yaml', 'text/yaml'),
-        'view' => 'RESTServerViewBuiltIn',
-        'view arguments' => array('format' => 'yaml'),
-      ),
       'bencode' => array(
         'mime types' => array('application/x-bencode'),
         'view' => 'RESTServerViewBuiltIn',
@@ -109,6 +109,15 @@ function rest_server_response_formatters() {
         'view' => 'RssFormatView',
       ),
     );
+
+    if(_rest_server_get_spyc_location() !== false) {
+      $formatters['yaml'] = array(
+        'mime types' => array('text/plain', 'application/x-yaml', 'text/yaml'),
+        'view' => 'RESTServerViewBuiltIn',
+        'view arguments' => array('format' => 'yaml'),
+      );
+    }
+
     drupal_alter('rest_server_response_formatters', $formatters);
   }
   return $formatters;
@@ -203,4 +212,22 @@ function rest_server_services_resources_alter(&$resources, $endpoint) {
       );
     }
   }
+}
+
+/**
+ * Return the location of the spyc library, if any.
+ *
+ * @return the location of the spyc library, if it exists; else return false.
+ */
+function _rest_server_get_spyc_location() {
+  if (function_exists('libraries_get_path')) {
+    $libraries_spyc_loc = libraries_get_path('spyc') . '/spyc.php';
+    if (file_exists($libraries_spyc_loc)) {
+      return $libraries_spyc_loc;
+    }
+  }
+
+  // Libraries not in use fall back to straight look up.
+  $services_spyc_loc = dirname(__FILE__) . '/lib/spyc.php';
+  return file_exists($services_spyc_loc) ? $services_spyc_loc : false;
 }

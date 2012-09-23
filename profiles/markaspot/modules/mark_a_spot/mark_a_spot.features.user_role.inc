@@ -11,14 +11,14 @@ function mark_a_spot_user_default_roles() {
   $roles = array();
 
   // Exported role: Bürger.
-  $roles['Bürger'] = array(
-    'name' => 'Bürger',
+  $roles['citizen'] = array(
+    'name' => 'Citizen',
     'weight' => '6',
   );
 
   // Exported role: Verwaltung.
-  $roles['Verwaltung'] = array(
-    'name' => 'Verwaltung',
+  $roles['management'] = array(
+    'name' => 'Management',
     'weight' => '5',
   );
 

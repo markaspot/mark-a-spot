@@ -34,10 +34,11 @@ class ServicesResourceFileTests extends ServicesWebTestCase {
       'save file information',
       'administer services',
       'administer site configuration',
+      'bypass node access',
     ));
     $this->drupalLogin($this->privileged_user);
     // Get a test file.
-    $this->testfiles = $this->drupalGetTestFiles('text');
+    $this->testfiles = $this->drupalGetTestFiles('image');
     $this->testfile = current($this->testfiles);
   }
 
@@ -95,9 +96,11 @@ class ServicesResourceFileTests extends ServicesWebTestCase {
    */
   public function testResourceFileCreate() {
     // Create file argument with data.
+    $filepath = file_default_scheme() . '://' . rand() . '/' . rand() . '/' . $this->testfile->filename;
     $file = array(
       'filesize' => filesize($this->testfile->uri),
       'filename' => $this->testfile->filename,
+      'filepath' => $filepath,
       'file' => base64_encode(file_get_contents($this->testfile->uri)),
       'uid' => $this->privileged_user->uid,
     );
@@ -109,6 +112,7 @@ class ServicesResourceFileTests extends ServicesWebTestCase {
     // Load file and assert that it exists.
     $file_load = file_load($result['body']['fid']);
     $this->assertTrue(is_file($file_load->uri), t('New file saved to disk.'), 'FileResource: Create');
+    $this->assertEqual($file_load->uri, $filepath, t('The path of newly created file placed into directory with random name.'), 'FileResource: Create');
   }
   /**
    * Test create_raw method.
@@ -185,4 +189,73 @@ class ServicesResourceFileTests extends ServicesWebTestCase {
     $this->assertTrue(empty($file_load), t('File deleted.'), 'FileResource: Delete');
   }
 
+  /**
+   * Attach file to the node.
+   */
+  public function testCreateNodeWithFile() {
+    $filepath = file_default_scheme() . '://' . rand() . '/' . rand() . '/' . $this->testfile->filename;
+
+    // Create file that managed by services.
+    $file = array(
+      'filesize' => filesize($this->testfile->uri),
+      'filename' => $this->testfile->filename,
+      'filepath' => $filepath,
+      'file' => base64_encode(file_get_contents($this->testfile->uri)),
+      'uid' => $this->privileged_user->uid,
+    );
+
+    // Create file with call.
+    $result = $this->servicesPost($this->endpoint->path . '/file', $file);
+
+    $fid = $result['body']['fid'];
+    $file_load = file_load($fid);
+
+    // Try to delete the file and ensure that it is not possible.
+    $file_delete_result = file_delete($file_load);
+    $this->assertTrue($file_delete_result !== TRUE, t('It is not possible to delete file managed by services using file_delete().'));
+
+
+    // Create file that is not managed by services.
+    $file = array(
+      'filesize' => filesize($this->testfile->uri),
+      'filename' => $this->testfile->filename,
+      'filepath' => $filepath,
+      'file' => base64_encode(file_get_contents($this->testfile->uri)),
+      'uid' => $this->privileged_user->uid,
+      'status' => 0,
+    );
+
+    // Create file with call.
+    $result = $this->servicesPost($this->endpoint->path . '/file', $file);
+
+    $fid = $result['body']['fid'];
+    $file_load = file_load($fid);
+
+    // Create a node with this file attached.
+    $node = array(
+      'title' => $this->randomString(),
+      'body' => array(LANGUAGE_NONE => array(array('value' => $this->randomString()))),
+      'type' => 'article',
+      'name' => $this->privileged_user->name,
+      'language' => LANGUAGE_NONE,
+      'field_image' => array(LANGUAGE_NONE => array(array('fid' => $fid, 'display' => '1'))),
+    );
+    $response_array = $this->servicesPost($this->endpoint->path . '/node', $node);
+    $nid = $response_array['body']['nid'];
+
+    $node_load = node_load($nid, NULL, TRUE);
+
+    $this->assertEqual($fid, $node_load->field_image[LANGUAGE_NONE][0]['fid'], t('File added to the node successfully.'));
+
+    // Now file should be managed by node. Lets try to delete it and ensure
+    // that it is not possible.
+    $file_delete_result = file_delete($file_load);
+    $this->assertTrue($file_delete_result !== TRUE, t('It is not possible to delete file managed by node using file_delete().'));
+
+    // Delete the node and assert that file can be deleted.
+    node_delete($nid);
+
+    $file_delete_result = file_delete($file_load);
+    $this->assertTrue($file_delete_result === TRUE, t('File can be deleted after node has been removed.'));
+  }
 }

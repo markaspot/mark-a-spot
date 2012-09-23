@@ -87,6 +87,41 @@ class RESTServerViewOpen311 extends RESTServerView {
     }
 }
 
+/**
+* Access callback for open311 requests.
+*
+* @param string $op
+*  The operation that's going to be performed.
+* @param array $args
+*  The arguments that will be passed to the callback.
+* @return bool
+*  Whether access is given or not.
+*/
+
+function _markaspot_open311_access($op, $args) {
+  global $user;
+  $access = FALSE;
+
+  switch ($op) {
+    case 'view':
+      $node = markaspot_open311_get_requests($args[0]);
+      $access = user_access('view open311 requests');
+      $access = $access || $note->uid == $user->uid && 
+      user_access('user can view open311 requests');
+      break;
+    case 'create':
+      //$node = markaspot_open311_get_requests($args[0]);
+      $access = user_access('Report: Create new content');
+      $access = $access || user_access('Report: Create new content');
+      break;
+  }
+  $access = TRUE;
+  
+  return $access;
+}
+
+
+
 
 /** Gets a request object by id.
  *
@@ -152,11 +187,12 @@ function markaspot_open311_services_resources() {
         ),
       ),
       'create' => array(
-        'help' => 'Creates a request',
+        'help' => 'Creates an Open311 request',
         'file' => array('file' => 'inc', 'module' => 'markaspot_open311'),
         'callback' => '_markaspot_open311_requests_create',
-        //'access arguments' => array('request resource create'),
-        //'access arguments append' => FALSE,
+        'access callback' => '_markaspot_open311_access',
+        'access arguments' => array('create'),
+        'access arguments append' => TRUE,
         'args' => array(
           array(
             'source' => 'data',

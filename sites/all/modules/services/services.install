@@ -113,7 +113,7 @@ function services_requirements($phase) {
     if (count($items)) {
       $requirements['services'] = array(
         'description' => $t('Services authentication mechanism has not been enabled for the following endpoints. Requests to these endpoints will always be anonymous.'),
-        'severity' => REQUIREMENT_ERROR,
+        'severity' => REQUIREMENT_WARNING,
         'value' => $endpoints,
         'title' => 'Services Authentication Mechanism',
       );
@@ -154,8 +154,11 @@ function services_uninstall() {
  */
 function services_update_7301() {
   $table = 'services_endpoint';
-  db_add_field($table, 'debug', array('type' => 'int', 'not null' => TRUE, 'default' => 0));
-  db_add_field($table, 'status', array('type' => 'int', 'not null' => TRUE, 'default' => 1));
+  foreach (array('debug' => 0, 'status' => 1) as $field => $value) {
+    if (!db_field_exists($table, $field)) {
+      db_add_field($table, $field, array('type' => 'int', 'not null' => TRUE, 'default' => $value));
+    }
+  }
 }
 
 /**
@@ -163,7 +166,9 @@ function services_update_7301() {
  */
 function services_update_7302() {
   $table = 'services_endpoint';
-  db_drop_field($table, 'status');
+  if (db_field_exists($table, 'status')) {
+    db_drop_field($table, 'status');
+  }
 }
 
 /**
@@ -172,21 +177,23 @@ function services_update_7302() {
  */
 function services_update_7303() {
   // Add the new server settings field.
-  db_add_field('services_endpoint', 'server_settings', array(
-    'description'    => 'The server settings for the endpoint.',
-    'type' => 'blob',
-    'size' => 'big',
-    'not null' => TRUE,
-    'serialize' => TRUE,
-    'initial' => '',
-  ));
+  if (!db_field_exists('services_endpoint', 'server_settings')) {
+    db_add_field('services_endpoint', 'server_settings', array(
+      'description'    => 'The server settings for the endpoint.',
+      'type' => 'blob',
+      'size' => 'big',
+      'not null' => TRUE,
+      'serialize' => TRUE,
+      'initial' => '',
+    ));
+  }
   // Fetch all endpoints that currently exist
   $result = db_select('services_endpoint', 'se')
     ->fields('se')
     ->execute()
     ->fetchAll();
   // Loop through every endpoint and update the authentication section.
-  // Note, this will not removw previous authentication settings, it will 
+  // Note, this will not remove previous authentication settings, it will
   // only add to them.
   foreach($result as $services_endpoint_object) {
     $new_authentication = array(
@@ -204,5 +211,27 @@ function services_update_7303() {
  */
 function services_update_7399() {
   $table = 'services_endpoint';
-  db_drop_field($table, 'title');
+  if (db_field_exists($table, 'title')) {
+    db_drop_field($table, 'title');
+  }
+}
+
+/**
+ * Update 7400 reduces nesting in the way server settings are stored
+ */
+function services_update_7400() {
+  $server_names = array_keys(services_get_servers());
+  foreach (services_endpoint_load_all() as $endpoint) {
+    $settings = $endpoint->server_settings;
+    if (!empty($settings)) {
+      if (in_array(key($settings), $server_names)) {
+        $settings = current($settings);
+      }
+    }
+    else {
+      $settings = array();
+    }
+    $endpoint->server_settings = $settings;
+    services_endpoint_save($endpoint);
+  }
 }

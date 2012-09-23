@@ -914,13 +914,14 @@ function mark_a_spot_default_page_manager_pages() {
     'relationships' => array(),
   );
   $display = new panels_display();
-  $display->layout = 'twocol';
+  $display->layout = 'flexible';
   $display->layout_settings = array();
   $display->panel_settings = array(
     'style_settings' => array(
       'default' => NULL,
       'left' => NULL,
       'right' => NULL,
+      'center' => NULL,
     ),
   );
   $display->cache = array();
@@ -929,7 +930,7 @@ function mark_a_spot_default_page_manager_pages() {
   $display->panels = array();
     $pane = new stdClass();
     $pane->pid = 'new-16';
-    $pane->panel = 'left';
+    $pane->panel = 'center';
     $pane->type = 'custom';
     $pane->subtype = 'custom';
     $pane->shown = TRUE;
@@ -937,27 +938,7 @@ function mark_a_spot_default_page_manager_pages() {
     $pane->configuration = array(
       'admin_title' => '',
       'title' => 'Tweet311',
-      'body' => 'In order to use Tweet311, you’ll need three things:
-
-<ol>
-<li>A smart phone with GPS capability and a camera (like an iPhone or Droid).</li>
-<li>A Twitter account.</li>
-<li>A Twitter client that lets you “geotag” tweets. / The native Twitter Client to include Fotos</li>
-</ol>
-
-To submit a service request directly, send a tweet to @mascity / or in the form of a Twitter @reply.
-<blockquote>
-You may configure your own settings at the <a href="../admin/config/system/mark_a_spot">Mark-a-Spot configuration page</a> and add own hashtags or other services via the <a href="../admin/structure/taxonomy/category">Taxonomy Administration</a>
-</blockquote>
-
-<p>In order to work, a service request tweet must have at least three things:</p>
-
-The latitude and longitude of the location that you are tweeting from.
-A valid hashtag that maps to the specific service type that you want to report.
-
-
-This is just a text, to be replaced with better instructions for production sites. Some of the words have been borrowed from the original <a href="http://www.voiceingov.org/blog/?p=2388">TweetMy311 Service</a>.
-',
+      'body' => '<p>In order to use the Tweet311 function of Mark-a-Spot, you’ll need three things:</p><ol><li>A smart phone with GPS capability and a camera (like an iPhone or Droid).</li><li>A Twitter account.</li><li>A Twitter client that lets you “geotag” tweets. / The native Twitter Client to include Fotos</li></ol><p>To submit a service request directly, send a tweet to @mascity / or in the form of a Twitter @reply.</p><p>You may configure your own settings at the <a href="../admin/config/system/mark_a_spot" rel="nofollow" target="_top">Mark-a-Spot configuration page</a> and add own hashtags or other services via the <a href="../admin/structure/taxonomy/category" rel="nofollow" target="_top">Taxonomy Administration</a></p><p>In order to work, a service request tweet must have at least two things:</p><ul><li>The latitude and longitude of the location that you are tweeting from.</li><li>A valid hashtag that maps to the specific service type that you want to report.<br><br>If you use the official Twitter Client photos will be automatically imported</li></ul><p>This is just a text, to be replaced with better instructions for production sites. Some of the words have been borrowed from the original <a href="http://www.voiceingov.org/blog/?p=2388" class="external-link" rel="nofollow" target="_top">TweetMy311 Service</a>.</p>',
       'format' => 'full_html',
       'substitute' => TRUE,
     );
@@ -970,7 +951,7 @@ This is just a text, to be replaced with better instructions for production site
     $pane->position = 0;
     $pane->locks = array();
     $display->content['new-16'] = $pane;
-    $display->panels['left'][0] = 'new-16';
+    $display->panels['center'][0] = 'new-16';
   $display->hide_title = PANELS_TITLE_FIXED;
   $display->title_pane = '0';
   $handler->conf['display'] = $display;

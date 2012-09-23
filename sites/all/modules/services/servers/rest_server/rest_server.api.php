@@ -41,12 +41,14 @@ function hook_rest_server_response_formatters_alter(&$formatters) {
    * nonsensical but illustrates the proper use of this hook.
    */
 
-  // Add a Yaml response format.
-  $formatters['yaml'] = array(
-    'mime types' => array('text/plain', 'application/x-yaml', 'text/yaml'),
-    'view' => 'RESTServerViewBuiltIn',
-    'view arguments' => array('format' => 'yaml'),
-  );
+  // Add a Yaml response format conditionally.
+  if (_rest_server_get_spyc_location() !== false) {
+    $formatters['yaml'] = array(
+      'mime types' => array('text/plain', 'application/x-yaml', 'text/yaml'),
+      'view' => 'RESTServerViewBuiltIn',
+      'view arguments' => array('format' => 'yaml'),
+    );
+  }
 
   // Add a Rss response format.
   $formatters['rss'] = array(

@@ -170,16 +170,22 @@ function markaspot_logic_init() {
 
   */
  //$variables['styles'] = drupal_get_css(); 
-  if (arg(0) == "list" || arg(0) == "map" || arg(0) == "home" || arg(0) == "node" && arg(1) != "add" && arg(2) != "edit" && arg(1) >=3){
+  if (arg(0) == "list" || arg(0) == "map" || arg(0) == "home" && arg(1) != "add" && arg(2) != "edit" && arg(1) >=3){
     if (variable_get('markaspot_map_type') != 1) {
       drupal_add_js('http://maps.google.com/maps/api/js?sensor=false&amp;region=DE', 'external');
       drupal_add_js(drupal_get_path('module', 'markaspot_logic') . '/js/markerclusterer.js', null);
       drupal_add_js(drupal_get_path('module', 'markaspot_logic') . '/js/mapiconmaker_packed.js', null);
       drupal_add_js(drupal_get_path('module', 'markaspot_logic') . '/js/markers_googlemaps.js', null);
     } else {
-      drupal_add_css(drupal_get_path('module', 'markaspot_logic') . '/js/leaflet/css/leaflet.css');
-      drupal_add_css(drupal_get_path('module', 'markaspot_logic') . '/js/leaflet/dist/leaflet.css', null);
-      drupal_add_js(drupal_get_path('module', 'markaspot_logic') . '/js/leaflet/dist/leaflet.js', null);
+      drupal_add_css('http://cdn.leafletjs.com/leaflet-0.4.4/leaflet.css', 'external');
+      drupal_add_css('http://cdn.leafletjs.com/leaflet-0.4.4/leaflet.ie.css', array(
+        'group' => CSS_THEME,
+        'browsers' => array(
+          'IE' => 'lte IE 8',
+          '!IE' => FALSE
+          )
+      ));
+      drupal_add_js('http://cdn.leafletjs.com/leaflet-0.4.4/leaflet.js', 'external');
       drupal_add_js(drupal_get_path('module', 'markaspot_logic') . '/js/markers_leaflet.js', null);
     }
   }
@@ -188,9 +194,6 @@ function markaspot_logic_init() {
   drupal_add_css(drupal_get_path('module', 'markaspot_logic') . '/css/mas-style.css');
 
   drupal_add_library('system', 'ui.accordion');
-
-
-
 }
  
 function markaspot_logic_getCountVotes(){
@@ -309,6 +312,12 @@ function markaspot_logic_admin_settings() {
   '#title' => t('Map type'), 
   '#default_value' => variable_get('markaspot_map_type', 0), 
   '#options' => array(t('Google Maps'), t('OSM')),
+  );
+  $form['types']['cloudmade_api_key'] = array (
+    '#type' => 'textfield',
+    '#title' => t('Cloudmade API Key'),
+    '#default_value' => variable_get('cloudmade_api_key'),
+    '#description' => t('Insert your API Key here')
   );
   if (module_exists('markaspot_tweet311')){
     $form['twitter'] = array (

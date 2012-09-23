@@ -6,6 +6,10 @@
  *
  */
 
+define("SERVICES_NODE_TYPE_INCLUDE", 1);
+define("SERVICES_NODE_TYPE_EMPTY", 2);
+define("SERVICES_NODE_TYPE_REMOVED", 3);
+
 /**
  * Run test cases for the endpoint with no authentication turned on.
  *
@@ -265,6 +269,79 @@ class ServicesResourceNodetests extends ServicesWebTestCase {
   }
 
   /**
+   * Testing targeted_action attach_file.
+   */
+  public function testAttachFileTargetedAction() {
+    // We will do test on the article node type.
+    // Create and log in our privileged user.
+    $account = $this->drupalCreateUser(array(
+      'bypass node access',
+    ));
+    $this->drupalLogin($account);
+
+    // Create article node.
+    $settings = array('type' => 'article');
+    $node = $this->drupalCreateNode($settings);
+
+    // Get a test file.
+    $testfiles = $this->drupalGetTestFiles('image');
+    $testfile1 = array_pop($testfiles);
+    $testfile2 = array_pop($testfiles);
+
+    // Attach one file.
+    $result = $this->servicesPostFile($this->endpoint->path . '/node/' . $node->nid . '/attach_file', array($testfile1->uri), array(), array('field_name' => 'field_image'));
+    $node = node_load($node->nid, TRUE);
+    $this->assertEqual($testfile1->filename, $node->field_image[LANGUAGE_NONE][0]['filename'], t('One file has been attached.'));
+
+    // Replace the file on the article node.
+    $result = $this->servicesPostFile($this->endpoint->path . '/node/' . $node->nid . '/attach_file', array($testfile2->uri), array(), array('field_name' => 'field_image', 'attach' => FALSE));
+    $node = node_load($node->nid, TRUE);
+    $this->assertEqual($testfile2->filename, $node->field_image[LANGUAGE_NONE][0]['filename'], t('File has been replaced.'));
+
+    // Add another file to the article node. Get validation error.
+    $result = $this->servicesPostFile($this->endpoint->path . '/node/' . $node->nid . '/attach_file', array($testfile1->uri), array(), array('field_name' => 'field_image'));
+    $this->assertEqual($result['body'], t('You cannot upload so many files.'), t('Validation on cardinality works.'));
+
+    // Update field info. Set cardinality 2.
+    $field_info = field_read_field('field_image');
+    $field_info['cardinality'] = 2;
+    field_update_field($field_info);
+
+    // Upload multiple files.
+    $result = $this->servicesPostFile($this->endpoint->path . '/node/' . $node->nid . '/attach_file', array($testfile1->uri, $testfile2->uri), array(), array('field_name' => 'field_image', 'attach' => FALSE));
+    $node = node_load($node->nid, TRUE);
+    $this->assertTrue(($testfile1->filename == $node->field_image[LANGUAGE_NONE][0]['filename']) &&
+                      ($testfile2->filename == $node->field_image[LANGUAGE_NONE][1]['filename']), t('Multiple files uploaded.'));
+  }
+
+  /**
+   *  Helper function to perform node updates.
+   *
+   *  @parm $exclude_type
+   *    Integer how should the type value be treated.
+   */
+  function update_node($exclude_type) {
+    $node = $this->drupalCreateNode();
+    $node_update = (array) $node;
+    $node_update['title'] = $this->randomName();
+    $node_update['body'][LANGUAGE_NONE][0]['value'] = $this->randomName();
+
+    if ($exclude_type == SERVICES_NODE_TYPE_EMPTY) {
+      $node_update['type'] = '';
+    }
+    elseif($exclude_type == SERVICES_NODE_TYPE_REMOVED) {
+      unset($node_update['type']);
+    }
+
+    $responseArray = $this->servicesPut($this->endpoint->path . '/node/' . $node->nid, $node_update);
+    // Load node not from cache.
+    $nodeAfterUpdate = node_load($responseArray['body']['nid'], NULL, TRUE);
+    $this->assertTrue(isset($nodeAfterUpdate->nid), t('Node was successfully updated'), 'NodeResource: Updated');
+    $this->assertEqual($nodeAfterUpdate->title, $node_update['title'], t('Title is the same'), 'NodeResource: Update');
+    $this->assertEqual($nodeAfterUpdate->body[LANGUAGE_NONE][0]['value'], $node_update['body'][LANGUAGE_NONE][0]['value'], t('Body is the same'), 'NodeResource: Update');
+  }
+
+  /**
    * Testing node_resource Update.
    */
   public function testEndpointResourceNodeUpdate() {
@@ -274,25 +351,10 @@ class ServicesResourceNodetests extends ServicesWebTestCase {
       'bypass node access',
     ));
     $this->drupalLogin($this->privilegedUser);
-    $node = $this->drupalCreateNode();
 
-    $node_update = (array) $node;
-    $node_update['title'] = $this->randomName();
-    $node_update['body'][LANGUAGE_NONE][0]['value'] = $this->randomName();
-
-    $responseArray = $this->servicesPut($this->endpoint->path . '/node/' . $node->nid, $node_update);
-    // Load node not from cache.
-    $nodeAfterUpdate = node_load($responseArray['body']['nid'], NULL, TRUE);
-    $this->assertTrue(isset($nodeAfterUpdate->nid), t('Node was successfully updated'), 'NodeResource: Updated');
-    $this->assertEqual($nodeAfterUpdate->title, $node_update['title'], t('Title is the same'), 'NodeResource: Update');
-    $this->assertEqual($nodeAfterUpdate->body[LANGUAGE_NONE][0]['value'], $node_update['body'][LANGUAGE_NONE][0]['value'], t('Body is the same'), 'NodeResource: Update');
-
-    // Try to update the node without node type.
-    $node_update_no_type = $node_update;
-    unset($node_update_no_type['type']);
-    $node_update_no_type['title'] = $this->randomName();
-    $responseArray = $this->servicesPut($this->endpoint->path . '/node/' . $node->nid, $node_update_no_type);
-    $this->assertNotEqual($responseArray['code'], 200, t('Can\'t update node without specifying node type'), 'NodeResource: Update');
+    $this->update_node(SERVICES_NODE_TYPE_INCLUDE);
+    $this->update_node(SERVICES_NODE_TYPE_EMPTY);
+    $this->update_node(SERVICES_NODE_TYPE_REMOVED);
   }
 
   /**

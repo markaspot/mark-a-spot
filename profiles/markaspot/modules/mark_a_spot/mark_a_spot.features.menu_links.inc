@@ -31,14 +31,16 @@ function mark_a_spot_menu_default_menu_links() {
     'router_path' => 'list',
     'link_title' => 'Report List',
     'options' => array(
-      'attributes' => array(),
+      'attributes' => array(
+        'title' => '',
+      ),
     ),
     'module' => 'menu',
     'hidden' => '0',
     'external' => '0',
     'has_children' => '0',
     'expanded' => '0',
-    'weight' => '-47',
+    'weight' => '-48',
   );
   // Exported menu link: main-menu:map
   $menu_links['main-menu:map'] = array(
@@ -52,7 +54,7 @@ function mark_a_spot_menu_default_menu_links() {
     'external' => '0',
     'has_children' => '0',
     'expanded' => '0',
-    'weight' => '0',
+    'weight' => '-47',
   );
   // Exported menu link: main-menu:node/add/report
   $menu_links['main-menu:node/add/report'] = array(

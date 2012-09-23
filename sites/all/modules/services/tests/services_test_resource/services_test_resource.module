@@ -66,6 +66,60 @@ function _services_test_resource_retrieve($arg1) {
   return 'CRUD Retrieve ' . $arg1;
 }
 
+//Change type to string.
+//Add an additional argument
+function _services_test_resource_retrieve_update_1_1() {
+  $new_set = array(
+    'help' => 'retrieve an item for yourself',
+    'args' => array(
+      array(
+        'name' => 'arg1',
+        'optional' => FALSE,
+        'source' => array('path' => 0),
+        'type' => 'string',
+        'description' => 'Test argument 1.',
+      ),
+      array(
+        'name' => 'arg2',
+        'optional' => FALSE,
+        'source' => array('param' => 'arg2'),
+        'type' => 'string',
+        'description' => 'Test argument 2.',
+      ),
+    ),
+  );
+  return $new_set;
+}
+//Make arg 2 optional.
+//Update callback so the argument can be returned/used in some fashion.
+function _services_test_resource_retrieve_update_1_2() {
+  $new_set = array(
+    'callback' => '_services_test_resource_retrieve_callback_1_2',
+    'help' => 'retrieve an item for yourself',
+    'args' => array(
+      array(
+        'name' => 'arg1',
+        'optional' => FALSE,
+        'source' => array('path' => 0),
+        'type' => 'string',
+        'description' => 'Test argument 1.',
+      ),
+      array(
+        'name' => 'arg2',
+        'optional' => TRUE,
+        'source' => array('param' => 'arg2'),
+        'type' => 'string',
+        'description' => 'Test argument 2.',
+        'default value' => 0,
+      ),
+    ),
+  );
+  return $new_set;
+}
+//Update to retrieve callback
+function _services_test_resource_retrieve_callback_1_2($arg1, $arg2) {
+  return $arg1 .':'. $arg2;
+}
 /**
  * Action retrieve callback.
  */

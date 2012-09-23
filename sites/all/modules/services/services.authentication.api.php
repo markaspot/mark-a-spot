@@ -25,12 +25,16 @@
   *     to perform the actual authentication. <details of params/return>
   *   - security_settings: A callback function which returns an associative
   *     array of Form API elements for a settings form.
+  *   - default_security_settings: A callback funtion which returns an array
+  *     with the default settings for the auth module.
   *   - _services_security_settings_validate: The name of a standard form
   *     validation callback for the form defined in 'security_settings'.
   *   - _services_security_settings_submit: The name of a standard form
   *     submit callback for the form defined in 'security_settings'.
-  *   - alter_methods: The name of a callback function which will alter a
+  *   - alter_controllers: The name of a callback function which will alter a
   *     services method signature in order to add required arguments.
+  *   - controller_settings: A callback function which returns an associative
+  *     array of Form API elements for a controller settings form.
   *   - file: An include file which contains the authentication callbacks.
   */
 function hook_services_authentication_info() {

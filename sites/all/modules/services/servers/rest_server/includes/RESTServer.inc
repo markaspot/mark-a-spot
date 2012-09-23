@@ -27,36 +27,31 @@ class RESTServer {
     if ($method == 'POST' && (isset($_GET['_method']) && $_GET['_method'])) {
       $method = $_GET['_method'];
     }
-    $path = explode('/', $canonical_path);
-    $leaf = array_pop($path);
-    $resource_name = array_shift($path);
-    // Extract response format info from the path
+    if (isset($_GET['_method'])) {
+      unset($_GET['_method']);
+    }
+    // Extract response format info from the canonical path.
     $matches = array();
-    if ($leaf && preg_match('/^(.+)\.([^\.]+)$/', $leaf, $matches)) {
-      $leaf = $matches[1];
+    $response_format = '';
+    if (preg_match('/^(.+)\.([^\.^\/]+)$/', $canonical_path, $matches)) {
+      $canonical_path = $matches[1];
       $response_format = $matches[2];
     }
+
+    // Prepare $path array and $resource_name.
+    $path = explode('/', $canonical_path);
+    $resource_name = array_shift($path);
+
     // Response will vary with accept headers
     // if no format was supplied as path suffix
     if (empty($response_format)) {
       drupal_add_http_header('Vary', 'Accept');
     }
-
-    // Return the leaf to the path array if it's not the resource name
-    if (isset($leaf)) {
-      if (!$resource_name) {
-        $resource_name = $leaf;
-      }
-      else {
-        array_push($path, $leaf);
-      }
-    }
-
     $endpoint = services_get_server_info('endpoint', '');
     $endpoint_definition = services_endpoint_load($endpoint);
-
+    $this->endpoint = $endpoint_definition;
     // Get the server settings from the endpoint.
-    $this->settings = !empty($endpoint_definition->server_settings['rest_server']) ? $endpoint_definition->server_settings['rest_server'] : array();
+    $this->settings = !empty($endpoint_definition->server_settings) ? $endpoint_definition->server_settings : array();
     // Normalize the settings so that we get the expected structure
     // and sensible defaults.
     $this->settings = rest_server_setup_settings($this->settings);
@@ -67,7 +62,7 @@ class RESTServer {
       $resource = $resources[$resource_name];
 
       // Get the operation and fill with default values
-      $controller = $this->resolveController($resource, $method, $path);
+      $controller = $this->resolveController($resource, $method, $path, $endpoint_definition, $resource_name);
     }
     else {
       //This will stop the 404 from happening when you request just the endpoint.
@@ -82,15 +77,16 @@ class RESTServer {
     if (!$controller) {
       return services_error(t('Could not find the controller.'), 404);
     }
+    $options = array();
+
 
     // Parse the request data
-    $data = array();
-    $arguments = $this->getControllerArguments($controller, $path, $method, $data);
+    $arguments = $this->getControllerArguments($controller, $path, $method);
 
     $formats = $this->responseFormatters();
 
     // Negotiate response format based on accept-headers if we
-    // don't have a response format
+    // don't have a response format.
     if (empty($response_format)) {
       $mime_candidates = array();
       $mime_map = array();
@@ -151,7 +147,7 @@ class RESTServer {
     }
 
     try {
-      $result = services_controller_execute($controller, $arguments);
+      $result = services_controller_execute($controller, $arguments, $options);
     }
     catch (ServicesException $e) {
       $errors = $this->handleException($e);
@@ -184,33 +180,24 @@ class RESTServer {
    *
    * @param array $controller
    *  The controller definition
-   * @param string $path
+   * @param array $path
    * @param string $method
    *  The method used to make the request
-   * @param array $sources
-   *  An array of the sources used for getting the arguments for the call
    * @return void
    */
-  private function getControllerArguments($controller, $path, $method, &$sources = array()) {
-    // Get argument sources
-    $parameters = $_GET;
-    if (isset($parameters['_method'])) {
-      unset($parameters['_method']);
-    }
-
+  private function getControllerArguments($controller, $path, $method) {
     $data = $this->parseRequest($method, $controller);
     drupal_alter('rest_server_request_parsed', $data, $controller);
 
-    $defaults = array(
+    $headers = $this->parseRequestHeaders();
+    drupal_alter('rest_server_headers_parsed', $headers);
+
+    $sources = array(
       'path' => $path,
-      'param' => $parameters,
+      'param' => $_GET,
       'data' => $data,
+      'headers' => $headers,
     );
-    foreach ($defaults as $key => $data) {
-      if (!isset($sources[$key])) {
-        $sources[$key] = $data;
-      }
-    }
     // Map source data to arguments.
     $arguments = array();
     if (isset($controller['args'])) {
@@ -237,26 +224,32 @@ class RESTServer {
         // When argument isn't set, insert default value if provided or
         // throw a exception if the argument isn't optional.
         if (!isset($arguments[$i])) {
-          if (isset($info['default value'])) {
-            $arguments[$i] = $info['default value'];
-          }
-          elseif (!isset($info['optional']) || !$info['optional']) {
+          if (!isset($info['optional']) || !$info['optional']) {
             return services_error(t('Missing required argument @arg', array('@arg' => $info['name'])), 401);
           }
-          else {
-            $arguments[$i] = NULL;
-          }
+          // Set default value or NULL if default value is not set.
+         $arguments[$i] = isset($info['default value']) ? $info['default value'] : NULL;
         }
       }
     }
     return $arguments;
   }
 
+  private function parseRequestHeaders() {
+    $headers = array();
+    if (!empty($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
+      $headers['IF_MODIFIED_SINCE'] = strtotime(preg_replace('/;.*$/', '', $_SERVER['HTTP_IF_MODIFIED_SINCE']));
+    }
+    return $headers;
+  }
+
   private function parseRequest($method, $controller) {
     switch ($method) {
       case 'POST':
       case 'PUT':
-        $type = self::parseContentHeader($_SERVER['CONTENT_TYPE']);
+        if (isset($_SERVER['CONTENT_TYPE'])) {
+          $type = self::parseContentHeader($_SERVER['CONTENT_TYPE']);
+        }
 
         // Get the mime type for the request, default to form-urlencoded
         if (isset($type['value'])) {
@@ -482,7 +475,7 @@ class RESTServer {
   }
 
   public static function parseYAML($handle) {
-    module_load_include('php', 'rest_server', 'lib/spyc');
+    include_once _rest_server_get_spyc_location();
     return Spyc::YAMLLoadString(self::contentFromStream($handle));
   }
 
@@ -515,11 +508,15 @@ class RESTServer {
     }
   }
 
-  private function resolveController($resource, $method, $path) {
+  private function resolveController($resource, $method, $path, $endpoint, $resource_name) {
     $pc = count($path);
-    // Use the index handler for all empty path request, except on POST
-    if (!$pc && $method!='POST') {
-      return isset($resource['index']) ? $resource['index'] : NULL;
+    $class = NULL;
+    $operation = NULL;
+
+    // Use the index handler for all empty path GET-requests
+    if (!$pc && $method == 'GET') {
+      $class = 'operations';
+      $operation = 'index';
     }
     // Detect the standard crud operations
     elseif (($pc == 1 && ($method == 'GET' || $method == 'PUT' || $method == 'DELETE')) || ($pc == 0 && $method == 'POST')) {
@@ -529,57 +526,65 @@ class RESTServer {
         'PUT' => 'update',
         'DELETE' => 'delete',
       );
-      if (isset($resource[$action_mapping[$method]])) {
-        $controller = $resource[$action_mapping[$method]];
-        if (isset($resource['file'])) {
-          $controller['file'] = $resource['file'];
-        }
-        return $controller;
-      }
+      $class = 'operations';
+      $operation = $action_mapping[$method];
     }
     // Detect relationship requests
     elseif ($pc >= 2 && $method == 'GET') {
-      if (isset($resource['relationships']) && $resource['relationships'][$path[1]]) {
-        $relationship = $resource['relationships'][$path[1]];
-        return $relationship;
-      }
+      $class = 'relationships';
+      $operation = $path[1];
     }
     // Detect action requests
     elseif ($pc == 1 && $method == 'POST') {
-      return $resource['actions'][$path[0]];
+      $class = 'actions';
+      $operation = $path[0];
     }
     // Detect action requests targeted at specific resources
     elseif ($pc >= 2 && $method == 'POST') {
-      $action = $resource['targeted_actions'][$path[1]];
-      return $action;
+      $class = 'targeted_actions';
+      $operation = $path[1];
     }
+
+    $controller = FALSE;
+    if (!empty($class) && !empty($operation) && !empty($resource[$class][$operation])) {
+      $controller = $resource[$class][$operation];
+      if (isset($resource['file']) && empty($controller['file'])) {
+        $controller['file'] = $resource['file'];
+      }
+    }
+    services_request_apply_version($controller, array('method' => $operation, 'resource' => $resource_name));
+    return $controller;
   }
+
   function handleException($exception){
     $code = $exception->getCode();
     switch ($code) {
       case 204:
-        drupal_add_http_header('HTTP/1.0 204 No Content', $exception->getMessage());
+        drupal_add_http_header('Status', '204 No Content: ' . $exception->getMessage());
         break;
       case 304:
-        drupal_add_http_header('HTTP/1.0 304 Not Modified', $exception->getMessage());
+        drupal_add_http_header('Status', '304 Not Modified: ' . $exception->getMessage());
         break;
       case 401:
-        drupal_add_http_header('HTTP/1.0 401 Unauthorized', $exception->getMessage());
+        drupal_add_http_header('Status', '401 Unauthorized: ' . $exception->getMessage());
         break;
       case 404:
-        drupal_add_http_header('HTTP/1.0 404 Not found', $exception->getMessage());
+        drupal_add_http_header('Status', '404 Not found: ' . $exception->getMessage());
         break;
       case 406:
-        drupal_add_http_header('HTTP/1.0 406 Not Acceptable', $exception->getMessage());
+        drupal_add_http_header('Status', '406 Not Acceptable: ' . $exception->getMessage());
         break;
       default:
         if ($code >= 400 && $code < 600) {
-          drupal_add_http_header('HTTP/1.0 ' . $code, $exception->getMessage());
+          drupal_add_http_header('Status', $code . ':' . $exception->getMessage());
         }
         else {
-          drupal_add_http_header('HTTP/1.0 500 An error occurred: (' . $code . ')',  $exception->getMessage());
+          drupal_add_http_header('Status', '500 Internal Server Error: '. 'An error occurred (' . $code . '):' . $exception->getMessage());
         }
         break;
+    }
+    if($this->endpoint->debug) {
+      debug($exception);
     }
     if(method_exists($exception,'getData')){
       return $exception->getData();
