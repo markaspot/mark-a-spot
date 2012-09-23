@@ -92,7 +92,7 @@ function _markaspot_open311_requests_retrieve($nid) {
 function _markaspot_open311_requests_index($page, $parameters) {
   global $user;
 
-  $query = db_select('node', 'n')->extend('PagerDefault')->extend('TableSort');
+  $query = db_select('node', 'n');
 
   if(count($parameters) >= 2) {
      // limit param
