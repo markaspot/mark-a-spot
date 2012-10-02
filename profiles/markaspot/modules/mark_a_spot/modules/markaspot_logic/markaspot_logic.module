@@ -13,7 +13,10 @@ function markaspot_logic_form_alter(&$form, &$form_state, $form_id) {
   
   global $user;
   if ($form_id == 'report_node_form') {
-
+  //   $form['resetbutton'] = array(
+  //   '#markup' => '<button type="reset"/>',
+  //   '#weight' => 1000
+  // );
     $form['twitter'] = null;
     $form['comment_settings'] = null;
     $form['field_address']['und'][0]['value']['#type'] = "hidden";
@@ -127,6 +130,10 @@ function markaspot_logic_getLatLng($address, $api_key = null) {
 
 
 
+
+
+
+
 function markaspot_logic_css_alter(&$css){
   unset($css['misc/ui/jquery.ui.core.css']);
 }
@@ -146,6 +153,8 @@ function markaspot_logic_init() {
   drupal_add_js(array(
     'mas' => array(
       'markaspot_address' => variable_get('markaspot_address'),
+      // 'markaspot_zip' => variable_get('markaspot_zip'),
+      // 'markaspot_country' => variable_get('markaspot_country'),
       'markaspot_ini_lat' => variable_get('markaspot_ini_lat'),
       'markaspot_ini_lng' => variable_get('markaspot_ini_lng'),
       'uri' => request_uri(),
@@ -286,7 +295,7 @@ function markaspot_logic_admin_settings() {
     '#title' => t('Inital Lat'),
     '#default_value' => variable_get('markaspot_ini_lat', _markaspot_logic_defaults('markaspot_ini_lat')),
     '#size' => '16',
-    '#maxlength' => 16,
+    '#maxlength' => 32,
     '#description' => t('Insert the initial latitude'),
   );
   $form['general']['markaspot_ini_lng'] = array(
@@ -294,7 +303,7 @@ function markaspot_logic_admin_settings() {
     '#title' => t('Inital Lng'),
     '#default_value' => variable_get('markaspot_ini_lng', _markaspot_logic_defaults('markaspot_ini_lng')),
     '#size' => '16',
-    '#maxlength' => 16,
+    '#maxlength' => 32,
     '#description' => t('Insert the initial longitude'),
   );
   
@@ -366,6 +375,12 @@ function _markaspot_logic_defaults($id) {
       return '6.8961028'; 
     case 'markaspot_address':
       return 'Pingsdorfer Straße 88, 50321 Brühl, Deutschland';
+    // case 'markaspot_zip':
+    //   return '50321';
+    // case 'markaspot_city':
+    //   return 'Brühl';
+    // case 'markaspot_country':
+    //   return 'Deutschland';
     case 'markaspot_twittername':
       return '@mascity';
     case 'markaspot_ini_tweetSearch':

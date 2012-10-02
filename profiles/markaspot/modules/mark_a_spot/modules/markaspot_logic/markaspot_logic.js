@@ -12,8 +12,6 @@ jQuery(document).ready(function(){
 
   $('#edit-field-common-und').click(function() {
     if ($('#edit-field-common-und:checked')) {
-      alert(1);
-
       $('#edit-field-geo-und-0-latitem > span').html(Drupal.settings.mas.markaspot_ini_lat);
       $('#edit-field-geo-und-0-lngitem > span').html(Drupal.settings.mas.markaspot_ini_lng);
       $('#edit-field-geo-und-0-address-field').val(Drupal.settings.mas.markaspot_address);
