@@ -93,8 +93,10 @@ function _markaspot_open311_requests_index($page, $parameters) {
   global $user;
 
   $query = db_select('node', 'n');
+  $query = $query->extend('PagerDefault')->extend('TableSort');
 
-  if(count($parameters) >= 2) {
+  if(count($parameters) >= 1) {
+     // var_dump($parameters);
      // limit param
     $limit = $parameters['limit'];
     if ($limit) {
@@ -103,10 +105,10 @@ function _markaspot_open311_requests_index($page, $parameters) {
       $query->limit(50);
     }
     // start_date param or travel back to 1970
-    $start_timestamp = ($parameters['start_date'] || $parameters['start_date'] != '') ? strtotime($parameters['start_date']) : strtotime('01-01-1970');
+    $start_timestamp = (isset($parameters['start_date']) && $parameters['start_date'] != '') ? strtotime($parameters['start_date']) : strtotime('01-01-1970');
 
     // end_date param or create a timestamp now
-    $end_timestamp = ($parameters['end_date'] || $parameters['end_date'] != '') ? strtotime($parameters['end_date']) : time();
+    $end_timestamp = (isset($parameters['end_date']) && $parameters['end_date'] != '') ? strtotime($parameters['end_date']) : time();
 
     // create conditions with AND
     $anded = db_and();
