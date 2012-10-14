@@ -314,7 +314,9 @@ function _request_map_node($request) {
   
   // applying it to title and it's taxonomyId to field_category
   $node->title = $service_code->name;
-  $node->field_category[$node->language][0]['tid'] = $service_code->tid;
+  
+  // mapping the requested service code to taxonomy id
+  $node->field_category[$node->language][0]['tid'] = _service_map_tax($request->service_code);
 
   // All incoming requests get status "open"
   $node->field_status[$node->language][0]['tid'] = "1";
@@ -361,4 +363,30 @@ function _tax_map_service($taxonomy_term) {
 
   return $service;
 }
+
+/**
+ * Mapping requested service_code to drupal taxonomy.
+ *
+ * @param string $service_code
+ *  Open311 Service code (can be Code0001).
+ * @return int $tid
+ *  The TaxonomyId
+ */
+
+function _service_map_tax($service_code) {
+
+  $query = new EntityFieldQuery();
+
+  $query->entityCondition('entity_type', 'taxonomy_term')
+    ->entityCondition('bundle', 'category')
+    ->fieldCondition('field_category_id', 'value', $service_code, '=')
+    ->addMetaData('account', user_load(1)); // Run the query as user 1.
+
+  $result = $query->execute();
+  foreach ($result['taxonomy_term'] as $term) {
+    $tid = $term->tid;
+  }
+  return $tid;
+}
+
 ?>
