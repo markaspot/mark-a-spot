@@ -50,9 +50,11 @@ var markerLayer, queryString ;
      
     switch (pathId[0]) {
       case "map":
+        readData(1, getMarkerId, "All", "All");
+        getMarkerId = '';
       case "home":
       case "list":
-        readData(1, getMarkerId, "All", "All");
+        readData(2, getMarkerId, "All", "All");
         getMarkerId = '';
       break;
       case "node":
@@ -90,7 +92,7 @@ var markerLayer, queryString ;
     //var mcOptions = {gridSize: 50, maxZoom: 15, styles:style};
     
     Drupal.Geolocation.maps[0] = new google.maps.Map(document.getElementById("map"), myOptions);
-    var mc = new MarkerClusterer(Drupal.Geolocation.maps[0], [],{maxZoom: 12, gridSize:10,styles:styles[0]});
+    var mc = new MarkerClusterer(Drupal.Geolocation.maps[0], [],{maxZoom: 10, gridSize:5,styles:styles[0]});
     
     
     $("#markers-list").append("<ul>");
@@ -111,7 +113,21 @@ var markerLayer, queryString ;
       readData(2, getMarkerId, "All", getTaxId(this.id));
       return false;
     });
-    
+
+    $("a.map-all.category").click(function(e){
+      e.preventDefault();
+      hideMarkers();
+      readData(1, getMarkerId, "All", "All");
+      return false;
+    });
+
+    $("a.map-all.status").click(function(e){
+      e.preventDefault();
+      hideMarkers();
+      readData(2, getMarkerId, "All", "All");
+      return false;
+    });
+
     function getTaxId(id){
       id = id.split("-");
       return id[1];
@@ -125,14 +141,14 @@ var markerLayer, queryString ;
     };
 
     function readData(getToggle,getMarkerId,categoryCond,statusCond) {
+
       uri = mas.uri.split('?');
-      
-      if (uri[0] == "/node"){
+      if (mas.params.q.indexOf("node") != -1){
         url = Drupal.settings.basePath + 'reports/json/' + getMarkerId;
       } else if (uri[0].search('node/') != -1){
         url = Drupal.settings.basePath + 'reports/json/' + getMarkerId;
       } else if (uri[0].search('map') != -1 || uri[0].search('home') != -1 ){
-        url = Drupal.settings.basePath + 'reports/json?' + 'field_category_tid=' + categoryCond + '&field_status_tid=' + statusCond;
+        url = Drupal.settings.basePath + 'reports/json/map/?' + 'field_category_tid=' + categoryCond + '&field_status_tid=' + statusCond;
       } else {
         url = Drupal.settings.basePath + 'reports/json?' + uri[1];
         categoryCond = mas.params.field_category_tid;
@@ -141,8 +157,8 @@ var markerLayer, queryString ;
       $("#markersidebar >*").remove();
  
       $.getJSON(url, function(data){
-        data = data.nodes;
 
+        data = data.nodes;
         points = [];
   
         var bounds = new google.maps.LatLngBounds(initialLatLng);
@@ -151,9 +167,11 @@ var markerLayer, queryString ;
         if (!data[0] && mas.node_type == 'report') {
           // invoke a message box or something less permanent than an alert box later
           alert(Drupal.t('No Reports found for this category/status'));
+        } else if (!data[0] && mas.params.q.indexOf("map") != -1){
+          alert(Drupal.t('No Reports found for this category/status'));
         }
         $.each(data, function(markers, item){
-
+          // console.log(item.node.positionLat, mas.markaspot_ini_lat);
           if (item.node.positionLat && item.node.positionLat != mas.markaspot_ini_lat){
             item = item.node;
             var latlon = new google.maps.LatLng(item.positionLat,item.positionLng);
@@ -161,7 +179,7 @@ var markerLayer, queryString ;
 
 
             if (item.address){
-              html += '<div class="marker-address"><p>'+ item.address + '</br>' + item.zip + ' ' + item.city + '</p></div><div><a class="infowindow-link" href="' + item.path + '">mehr lesen</a></span>';
+              html += '<div class="marker-address"><p>'+ item.address + '</br>'  + '</p></div><div><a class="infowindow-link" href="' + item.path + '">mehr lesen</a></span>';
             }
             /*
             if (item.Value){
@@ -169,10 +187,27 @@ var markerLayer, queryString ;
               console.log(circleRadius);
             }
             */
-            var hex = (categoryCond != "All" && statusCond == "All") ? item.categoryHex : item.statusHex;
+            
+            // var hex = (categoryCond != "All" || (categoryCond == "All" && statusCond == "All") && url.search('map') != -1) ? item.categoryHex : item.statusHex;
+            
+            if (getToggle == 1) {
+              var hex = item.categoryHex;
+            }
+            if (getToggle == 2) {
+              var hex = item.statusHex;
+            } 
 
-            if (getToggle != 3) {
-              switch (getToggle) {
+            //console.log(url, url.search('map'),categoryCond, statusCond, hex);
+            var image = new google.maps.MarkerImage('http://chart.apis.google.com/chart?cht=mm&chs=32x32&chco=ffffff,' + hex + ',333333&ext=.png');
+            var shadow = new google.maps.MarkerImage(
+             'http://maps.gstatic.com/intl/de_ALL/mapfiles/shadow50.png', 
+              new google.maps.Size(37, 32),
+              new google.maps.Point(0,0),
+              new google.maps.Point(13, 32)
+            );
+            
+            //if (getToggle != 3) {
+            /*  switch (getToggle) {
                 case 0:
                   var image = new google.maps.MarkerImage('https://chart.googleapis.com/chart?chs=150x150&cht=qr&chl=Hello%20world&choe=UTF-8');
                   var shadow = new google.maps.MarkerImage(
@@ -202,7 +237,7 @@ var markerLayer, queryString ;
                   );
                 break;
 
-              }
+              }*/
               
               var GoogleMarker = new google.maps.Marker({
                 position: latlon,
@@ -214,7 +249,7 @@ var markerLayer, queryString ;
 
               fn = bindInfoWindow(GoogleMarker,  Drupal.Geolocation.maps[0], infoWindow, html);
 
-            }
+            //}
             mc.addMarker(GoogleMarker);
             bounds.extend(latlon);
            
@@ -226,7 +261,7 @@ var markerLayer, queryString ;
               li.style.cursor = 'pointer';
               $("#markersidebar").append(li);
             }
-            $('#marker_'+item.nid).click(function(){
+            $('#marker_'+item.nid).hover(function(){
                 $(this).css('background-color', '#ccddee')
                 $(this).animate({ backgroundColor: "black" }, 1000);
                 google.maps.event.trigger(GoogleMarker, 'click');
@@ -255,8 +290,9 @@ function hideMarkers(){
 function bindInfoWindow(marker, map, infoWindow, html) {
   google.maps.event.addListener(marker, 'click', function() {
     Drupal.Geolocation.maps[0].setCenter(marker.getPosition());
-    Drupal.Geolocation.maps[0].setZoom(15);
     infoWindow.setContent(html);
     infoWindow.open(map, marker);
+    //Drupal.Geolocation.maps[0].setZoom(15);
+    
   });
 }

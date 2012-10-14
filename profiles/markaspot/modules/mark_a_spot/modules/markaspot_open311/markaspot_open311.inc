@@ -93,8 +93,10 @@ function _markaspot_open311_requests_index($page, $parameters) {
   global $user;
 
   $query = db_select('node', 'n');
+  $query = $query->extend('PagerDefault')->extend('TableSort');
 
-  if(count($parameters) >= 2) {
+  if(count($parameters) >= 1) {
+     // var_dump($parameters);
      // limit param
     $limit = $parameters['limit'];
     if ($limit) {
@@ -103,10 +105,10 @@ function _markaspot_open311_requests_index($page, $parameters) {
       $query->limit(50);
     }
     // start_date param or travel back to 1970
-    $start_timestamp = ($parameters['start_date'] || $parameters['start_date'] != '') ? strtotime($parameters['start_date']) : strtotime('01-01-1970');
+    $start_timestamp = (isset($parameters['start_date']) && $parameters['start_date'] != '') ? strtotime($parameters['start_date']) : strtotime('01-01-1970');
 
     // end_date param or create a timestamp now
-    $end_timestamp = ($parameters['end_date'] || $parameters['end_date'] != '') ? strtotime($parameters['end_date']) : time();
+    $end_timestamp = (isset($parameters['end_date']) && $parameters['end_date'] != '') ? strtotime($parameters['end_date']) : time();
 
     // create conditions with AND
     $anded = db_and();
@@ -312,7 +314,9 @@ function _request_map_node($request) {
   
   // applying it to title and it's taxonomyId to field_category
   $node->title = $service_code->name;
-  $node->field_category[$node->language][0]['tid'] = $service_code->tid;
+  
+  // mapping the requested service code to taxonomy id
+  $node->field_category[$node->language][0]['tid'] = _service_map_tax($request->service_code);
 
   // All incoming requests get status "open"
   $node->field_status[$node->language][0]['tid'] = "1";
@@ -359,4 +363,30 @@ function _tax_map_service($taxonomy_term) {
 
   return $service;
 }
+
+/**
+ * Mapping requested service_code to drupal taxonomy.
+ *
+ * @param string $service_code
+ *  Open311 Service code (can be Code0001).
+ * @return int $tid
+ *  The TaxonomyId
+ */
+
+function _service_map_tax($service_code) {
+
+  $query = new EntityFieldQuery();
+
+  $query->entityCondition('entity_type', 'taxonomy_term')
+    ->entityCondition('bundle', 'category')
+    ->fieldCondition('field_category_id', 'value', $service_code, '=')
+    ->addMetaData('account', user_load(1)); // Run the query as user 1.
+
+  $result = $query->execute();
+  foreach ($result['taxonomy_term'] as $term) {
+    $tid = $term->tid;
+  }
+  return $tid;
+}
+
 ?>

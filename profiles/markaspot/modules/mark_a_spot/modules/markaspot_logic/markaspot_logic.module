@@ -13,9 +13,13 @@ function markaspot_logic_form_alter(&$form, &$form_state, $form_id) {
   
   global $user;
   if ($form_id == 'report_node_form') {
+  //   $form['resetbutton'] = array(
+  //   '#markup' => '<button type="reset"/>',
+  //   '#weight' => 1000
+  // );
     $form['twitter'] = null;
     $form['comment_settings'] = null;
-    
+    $form['field_address']['und'][0]['value']['#type'] = "hidden";
     // Registered users' mail will be prefilled
     if (isset($user->mail)){
       $form['field_e_mail']['und'][0]['value']['#default_value'] = $user->mail;
@@ -66,7 +70,7 @@ function markaspot_logic_validate($node, &$form) {
       form_set_error('field_e_mail', t('Please enter a valid e-mail address.'));
     }
     if (!strstr($form['values']['field_geo']['und'][0]['address']['field'], variable_get('markaspot_city'))) {
-      form_set_error('field_city',t('The string given for "City" is not valid'));
+      form_set_error('field_geo',t('The string given for "City" is not valid'));
     } else {
       $form['values']['field_address']['und'][0]['value'] = $form['values']['field_geo']['und'][0]['address']['field'];
     }
@@ -148,9 +152,9 @@ function markaspot_logic_init() {
   $type = (isset($node)) ? $node->type : null ;
   drupal_add_js(array(
     'mas' => array(
-      'markaspot_city' => variable_get('markaspot_city'),
-      'markaspot_zip' => variable_get('markaspot_zip'),
-      'markaspot_country' => variable_get('markaspot_country'),
+      'markaspot_address' => variable_get('markaspot_address'),
+      // 'markaspot_zip' => variable_get('markaspot_zip'),
+      // 'markaspot_country' => variable_get('markaspot_country'),
       'markaspot_ini_lat' => variable_get('markaspot_ini_lat'),
       'markaspot_ini_lng' => variable_get('markaspot_ini_lng'),
       'uri' => request_uri(),
@@ -163,15 +167,12 @@ function markaspot_logic_init() {
   drupal_add_js(drupal_get_path('module','markaspot_logic'). '/markaspot_logic.js');
 
 
-  // Cloudmade Leaflet
-  
-  // Add some css to show which line is output by which script
-  /*
 
-  */
- //$variables['styles'] = drupal_get_css(); 
-  if (arg(0) == "list" || arg(0) == "map" || arg(0) == "home" && arg(1) != "add" && arg(2) != "edit" && arg(1) >=3){
+  // Add some css to show which line is output by which script
+  if (arg(1)!= 'add' && arg(1) != 'edit'){
+
     if (variable_get('markaspot_map_type') != 1) {
+
       drupal_add_js('http://maps.google.com/maps/api/js?sensor=false&amp;region=DE', 'external');
       drupal_add_js(drupal_get_path('module', 'markaspot_logic') . '/js/markerclusterer.js', null);
       drupal_add_js(drupal_get_path('module', 'markaspot_logic') . '/js/mapiconmaker_packed.js', null);
@@ -263,38 +264,38 @@ function markaspot_logic_admin_settings() {
     '#default_value' => variable_get('markaspot_address', _markaspot_logic_defaults('markaspot_address')),
     '#size' => '128',
     '#maxlength' => 128,
-    '#description' => t('Insert the zip code'),
+    '#description' => t('Insert the initial address'),
   );
-  $form['general']['markaspot_zip'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Zip'),
-    '#default_value' => variable_get('markaspot_zip', _markaspot_logic_defaults('markaspot_zip')),
-    '#size' => '7',
-    '#maxlength' => 7,
-    '#description' => t('Insert the zip code'),
-  );
-  $form['general']['markaspot_city'] = array(
-    '#type' => 'textfield',
-    '#title' => t('City'),
-    '#default_value' => variable_get('markaspot_city', _markaspot_logic_defaults('markaspot_city')),
-    '#size' => '16',
-    '#maxlength' => 16,
-    '#description' => t('Insert the municipality'),
-  );
-  $form['general']['markaspot_country'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Country'),
-    '#default_value' => variable_get('markaspot_country', _markaspot_logic_defaults('markaspot_country')),
-    '#size' => '16',
-    '#maxlength' => 16,
-    '#description' => t('Insert the country the municipality is located'),
-  );
+  // $form['general']['markaspot_zip'] = array(
+  //   '#type' => 'textfield',
+  //   '#title' => t('Zip'),
+  //   '#default_value' => variable_get('markaspot_zip', _markaspot_logic_defaults('markaspot_zip')),
+  //   '#size' => '7',
+  //   '#maxlength' => 7,
+  //   '#description' => t('Insert the zip code'),
+  // );
+  // $form['general']['markaspot_city'] = array(
+  //   '#type' => 'textfield',
+  //   '#title' => t('City'),
+  //   '#default_value' => variable_get('markaspot_city', _markaspot_logic_defaults('markaspot_city')),
+  //   '#size' => '16',
+  //   '#maxlength' => 16,
+  //   '#description' => t('Insert the municipality'),
+  // );
+  // $form['general']['markaspot_country'] = array(
+  //   '#type' => 'textfield',
+  //   '#title' => t('Country'),
+  //   '#default_value' => variable_get('markaspot_country', _markaspot_logic_defaults('markaspot_country')),
+  //   '#size' => '16',
+  //   '#maxlength' => 16,
+  //   '#description' => t('Insert the country the municipality is located'),
+  // );
   $form['general']['markaspot_ini_lat'] = array(
     '#type' => 'textfield',
     '#title' => t('Inital Lat'),
     '#default_value' => variable_get('markaspot_ini_lat', _markaspot_logic_defaults('markaspot_ini_lat')),
     '#size' => '16',
-    '#maxlength' => 16,
+    '#maxlength' => 32,
     '#description' => t('Insert the initial latitude'),
   );
   $form['general']['markaspot_ini_lng'] = array(
@@ -302,7 +303,7 @@ function markaspot_logic_admin_settings() {
     '#title' => t('Inital Lng'),
     '#default_value' => variable_get('markaspot_ini_lng', _markaspot_logic_defaults('markaspot_ini_lng')),
     '#size' => '16',
-    '#maxlength' => 16,
+    '#maxlength' => 32,
     '#description' => t('Insert the initial longitude'),
   );
   
@@ -373,13 +374,13 @@ function _markaspot_logic_defaults($id) {
     case 'markaspot_ini_lng':
       return '6.8961028'; 
     case 'markaspot_address':
-      return 'Pingsdorfer Straße 88';
-    case 'markaspot_zip':
-      return '50321';
-    case 'markaspot_city':
-      return 'Brühl';
-    case 'markaspot_country':
-      return 'Deutschland';
+      return 'Pingsdorfer Straße 88, 50321 Brühl, Deutschland';
+    // case 'markaspot_zip':
+    //   return '50321';
+    // case 'markaspot_city':
+    //   return 'Brühl';
+    // case 'markaspot_country':
+    //   return 'Deutschland';
     case 'markaspot_twittername':
       return '@mascity';
     case 'markaspot_ini_tweetSearch':
@@ -449,17 +450,32 @@ function markaspot_logic_contents($which_block) {
   switch ($which_block) {
     case 'taxonomy_category': 
       $list_category = null;
+      $list_category .= "\n<div class='marker-category-wrapper-all'>". l(t('All'), '', array('attributes' => array('class' => 'map-all category'))).'</div>';
+
+      $alter['html'] = TRUE;
+      $alter['max_length'] = 25;
+      $alter['word_boundary'] = true;
+      $alter['ellipsis'] = true;
+
+
       $taxonomies = taxonomy_get_tree(2, $parent = 0, $max_depth = 1, $load_entities = TRUE);
       foreach ($taxonomies as $term) {
-        $list_category .= "\n<div class='markaspot-section-header'>". l($term->name,'taxonomy/term/'.$term->tid, array('attributes' =>array('class' => 'map-menue', 'id' => 'tax-'.$term->tid))).'</div>';
+        $list_category .= "\n<div class='marker-category-wrapper'>". l(views_trim_text($alter, $term->name),'taxonomy/term/'.$term->tid, array('attributes' => array('class' => 'map-menue marker-category col-'.$term->field_category_hex['und'][0]['value'], 'id' => 'tax-'.$term->tid))).'</div>';
       }
       return $list_category;
     break;
     case 'taxonomy_status':
       $list_status = null;
+      $list_status .= "\n<div class='marker-status-wrapper-all'>". l(t('All'), '', array('attributes' => array('class' => 'map-all status'))).'</div>';
+
+      $alter['html'] = TRUE;
+      $alter['max_length'] = 25;
+      $alter['word_boundary'] = true;
+      $alter['ellipsis'] = true;
+      //views_trim_text($alter, $output);      
       $taxonomies = taxonomy_get_tree(3, $parent = 0, $max_depth = 1, $load_entities = TRUE);
       foreach ($taxonomies as $term) {
-        $list_status .= "\n<div class='markaspot-section-header'>". l($term->name,'taxonomy/term/'.$term->tid, array('attributes' =>array('class' => 'map-menue', 'id' => 'tax-'.$term->tid))).'</div>';
+        $list_status .= "\n<div class='marker-status-wrapper'>". l(views_trim_text($alter, $term->name),'taxonomy/term/'.$term->tid, array('attributes' => array('class' => 'map-menue marker-status col-'.$term->field_status_hex['und'][0]['value'], 'id' => 'tax-'.$term->tid))).'</div>';
       }
       return $list_status;
     break;    
@@ -470,5 +486,8 @@ function markaspot_logic_contents($which_block) {
 
   }
 }
+
+
+
 
 
