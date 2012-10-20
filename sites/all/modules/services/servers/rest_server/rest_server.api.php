@@ -42,7 +42,7 @@ function hook_rest_server_response_formatters_alter(&$formatters) {
    */
 
   // Add a Yaml response format conditionally.
-  if (_rest_server_get_spyc_location() !== false) {
+  if (($library = libraries_load('spyc')) && !empty($library['loaded'])) {
     $formatters['yaml'] = array(
       'mime types' => array('text/plain', 'application/x-yaml', 'text/yaml'),
       'view' => 'RESTServerViewBuiltIn',

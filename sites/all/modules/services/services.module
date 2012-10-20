@@ -166,7 +166,9 @@ function services_get_servers($reset = FALSE) {
   if (!$servers || $reset) {
     $servers = array();
     foreach (module_implements('server_info') as $module) {
-      $servers[$module] = call_user_func($module . '_server_info');
+      if ($module != 'sqlsrv') {
+        $servers[$module] = call_user_func($module . '_server_info');
+      }
     }
   }
 
@@ -350,7 +352,7 @@ function services_services_resources() {
 }
 
 /**
- * Implementation of hook_services_authentication().
+ * Implementation of hook_services_authentication_info().
  */
 function services_services_authentication_info() {
   return array(
@@ -366,8 +368,24 @@ function services_services_authentication_info() {
  * @return void
  */
 function _services_sessions_authenticate_call() {
+  $arg = func_get_args();
   global $user;
-  $user = services_get_server_info('original_user');
+  $original_user = services_get_server_info('original_user');
+  //If the user is logged in already and the callback contains the string login
+  //we need to set it to the original user so that the already logged in as @user message
+  //is displayed
+  if (strpos($arg[1]['callback'], 'login') !== FALSE) {
+    if($original_user->uid != 0) {
+      $user = $original_user;
+    }
+  }
+  //For every callback that has nothing to do with login we need to
+  //set it to the original user so that they are no longer anonymous
+  
+  if (strpos($arg[1]['callback'], 'login') === FALSE) {
+    // The account should be restored to the session's user.
+    $user = $original_user;
+  }
 }
 
 /**

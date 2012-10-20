@@ -6,7 +6,7 @@
  */
 
 class RESTServer {
-  private $endpoint;
+  protected $endpoint;
 
   /**
    * Handles the call to the REST server
@@ -57,6 +57,8 @@ class RESTServer {
     $this->settings = rest_server_setup_settings($this->settings);
 
     $resources = services_get_resources($endpoint);
+    module_load_include('resource_build.inc', 'services');
+    _services_apply_endpoint($resources, $endpoint_definition, TRUE);
     $controller = FALSE;
     if (!empty($resource_name) && isset($resources[$resource_name])) {
       $resource = $resources[$resource_name];
@@ -185,7 +187,7 @@ class RESTServer {
    *  The method used to make the request
    * @return void
    */
-  private function getControllerArguments($controller, $path, $method) {
+  protected function getControllerArguments($controller, $path, $method) {
     $data = $this->parseRequest($method, $controller);
     drupal_alter('rest_server_request_parsed', $data, $controller);
 
@@ -235,7 +237,7 @@ class RESTServer {
     return $arguments;
   }
 
-  private function parseRequestHeaders() {
+  protected function parseRequestHeaders() {
     $headers = array();
     if (!empty($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
       $headers['IF_MODIFIED_SINCE'] = strtotime(preg_replace('/;.*$/', '', $_SERVER['HTTP_IF_MODIFIED_SINCE']));
@@ -243,7 +245,7 @@ class RESTServer {
     return $headers;
   }
 
-  private function parseRequest($method, $controller) {
+  protected function parseRequest($method, $controller) {
     switch ($method) {
       case 'POST':
       case 'PUT':
@@ -382,7 +384,7 @@ class RESTServer {
     }
   }
 
-  private function renderFormatterView($controller, $formatter, $result) {
+  protected function renderFormatterView($controller, $formatter, $result) {
     // Wrap the results in a model class if required by the formatter
     if (isset($formatter['model'])) {
       $cm = $controller['models'][$formatter['model']];
@@ -401,7 +403,7 @@ class RESTServer {
   /**
    * Get best match parser for $controller based on $mime type.
    */
-  private function requestParser($mime, $controller = NULL) {
+  protected function requestParser($mime, $controller = NULL) {
     // Check if the controller has declared support for parsing the mime type.
     if ($controller && !empty($controller['rest request parsers'])) {
       $parser = $this->matchParser($mime, $controller['rest request parsers']);
@@ -427,7 +429,7 @@ class RESTServer {
    *
    * @return Mimeparse
    */
-  private function mimeParse() {
+  protected function mimeParse() {
     static $mimeparse;
     if (!$mimeparse) {
       module_load_include('php', 'rest_server', 'lib/mimeparse');
@@ -446,7 +448,7 @@ class RESTServer {
    * @return mixed
    *  Returns a parser callback or FALSE if no match was found.
    */
-  private function matchParser($mime, $parsers) {
+  protected function matchParser($mime, $parsers) {
     $mimeparse = $this->mimeParse();
     $mime_type = $mimeparse->best_match(array_keys($parsers), $mime);
 
@@ -462,6 +464,74 @@ class RESTServer {
     return unserialize(self::contentFromStream($handle));
   }
 
+  public static function parseXML($handle) {
+	// get/hold the old error state
+    $old_error_state = libxml_use_internal_errors(1);
+
+	// clear all libxml errors
+    libxml_clear_errors();
+
+	// get a now SimpleXmlElement object from the XML string
+    $xml_data = simplexml_load_string(self::contentFromStream($handle));
+
+	// if $xml_data is Null then we expect errors
+    if (!$xml_data) {
+	  // build an error message string
+      $message = '';
+      $errors = libxml_get_errors();
+      foreach ($errors as $error) {
+        $message .= t('Line @line, Col @column: @message', array('@line' => $error->line, '@column' => $error->column, '@message' => $error->message)) . "\n\n";
+      }
+
+	  // clear all libxml errors and restore the old error state
+      libxml_clear_errors();
+      libxml_use_internal_errors($old_error_state);
+
+	  // throw an error
+      services_error($message, 406);
+    }
+	// whew, no errors, restore the old error state
+    libxml_use_internal_errors($old_error_state);
+
+	// unmarshal the SimpleXmlElement, and return the resulting array
+	$php_array = self::unmarshalXML($xml_data, NULL);
+    return (array) $php_array;
+  }
+
+  /**
+   * A recusive function that unmarshals an XML string, into a php array.
+   */
+  protected static function unmarshalXML($node, $array) {
+	// For all child XML elements
+	foreach ($node->children() as $child) {
+	  if (count($child->children()) > 0) {
+		// if the child has children
+		$att = 'is_array';
+		if ($child->attributes()->$att) {
+			$new_array = array();
+			// recursive through <item>
+			foreach($child->children() as $item){
+				$new_array[] = self::unmarshalXML($item, $array[$item->getName()]);
+			}
+		}
+		else {
+		  // else, simply create an array where the key is name of the element		
+		  $new_array = self::unmarshalXML($child, $array[$child->getName()]);
+		}
+		// add $new_array to $array
+		$array[$child->getName()] = $new_array;
+	  }
+	  else {
+		if ($child->attributes()->is_raw) {
+			return (string) $child;
+		}
+		$array[$child->getName()] = (string) $child;
+	  }
+	}
+	// return the resulting array
+	return $array;
+  }
+
   public static function parseJSON($handle) {
     return json_decode(self::contentFromStream($handle), TRUE);
   }
@@ -475,11 +545,16 @@ class RESTServer {
   }
 
   public static function parseYAML($handle) {
-    include_once _rest_server_get_spyc_location();
-    return Spyc::YAMLLoadString(self::contentFromStream($handle));
+    if (($library = libraries_load('spyc')) && !empty($library['loaded'])) {
+      return Spyc::YAMLLoadString(self::contentFromStream($handle));
+    }
+    else {
+      watchdog('REST Server', 'Spyc library not found!', array(), WATCHDOG_ERROR);
+      return array();
+    }
   }
 
-  private function responseFormatters($format = NULL) {
+  protected function responseFormatters($format = NULL) {
     $formatters = rest_server_response_formatters();
 
     // Remove formatters that have been disabled for this endpoint.
@@ -496,7 +571,7 @@ class RESTServer {
     return $formatters;
   }
 
-  private function supportedControllerModel($controller, $format) {
+  protected function supportedControllerModel($controller, $format) {
     if (
       // The format uses models
       isset($format['model']) &&
@@ -508,39 +583,68 @@ class RESTServer {
     }
   }
 
-  private function resolveController($resource, $method, $path, $endpoint, $resource_name) {
+  protected function resolveController($resource, $method, $path, $endpoint, $resource_name) {
     $pc = count($path);
     $class = NULL;
     $operation = NULL;
 
-    // Use the index handler for all empty path GET-requests
-    if (!$pc && $method == 'GET') {
+    // We do not group "if" conditions on purpose for better readability.
+
+    // 'index' method.
+    if ($method == 'GET' && isset($resource['operations']['index']) && $this->checkNumberOfArguments($pc, $resource['operations']['index'])) {
       $class = 'operations';
       $operation = 'index';
     }
-    // Detect the standard crud operations
-    elseif (($pc == 1 && ($method == 'GET' || $method == 'PUT' || $method == 'DELETE')) || ($pc == 0 && $method == 'POST')) {
-      $action_mapping = array(
-        'GET' => 'retrieve',
-        'POST' => 'create',
-        'PUT' => 'update',
-        'DELETE' => 'delete',
-      );
+
+    // 'retrieve' method.
+    // First path element should be not empty.
+    if ($method == 'GET' && isset($resource['operations']['retrieve']) && $this->checkNumberOfArguments($pc, $resource['operations']['retrieve']) && !empty($path[0]) && $pc >= 1) {
       $class = 'operations';
-      $operation = $action_mapping[$method];
+      $operation = 'retrieve';
     }
-    // Detect relationship requests
-    elseif ($pc >= 2 && $method == 'GET') {
+
+    // 'relationships'
+    // First path element should be not empty,
+    // second should be name of targeted action.
+    if ($method == 'GET' && $pc >= 2 && isset($resource['relationships'][$path[1]])
+         && $this->checkNumberOfArguments($pc, $resource['relationships'][$path[1]], 1) && is_numeric($path[0])) {
       $class = 'relationships';
       $operation = $path[1];
     }
-    // Detect action requests
-    elseif ($pc == 1 && $method == 'POST') {
+
+    // 'update'
+    // First path element should be not empty.
+    if ($method == 'PUT' && isset($resource['operations']['update']) && $this->checkNumberOfArguments($pc, $resource['operations']['update']) && !empty($path[0]) && $pc >= 1) {
+      $class = 'operations';
+      $operation = 'update';
+    }
+
+    // 'delete'
+    // First path element should be not empty.
+    if ($method == 'DELETE' && isset($resource['operations']['delete']) && $this->checkNumberOfArguments($pc, $resource['operations']['delete']) && !empty($path[0]) && $pc >= 1) {
+      $class = 'operations';
+      $operation = 'delete';
+    }
+
+    // 'create' method.
+    // First path element should be not empty.
+    if ($method == 'POST' && isset($resource['operations']['create']) && $this->checkNumberOfArguments($pc, $resource['operations']['create'])) {
+      $class = 'operations';
+      $operation = 'create';
+    }
+
+    // 'actions'
+    // Forst path element should be action name
+    if ($method == 'POST' && $pc >= 1 && isset($resource['actions'][$path[0]]) && $this->checkNumberOfArguments($pc, $resource['actions'][$path[0]], 1)) {
       $class = 'actions';
       $operation = $path[0];
     }
-    // Detect action requests targeted at specific resources
-    elseif ($pc >= 2 && $method == 'POST') {
+
+    // 'targeted_actions'
+    // First path element should be not empty,
+    // second should be name of targeted action.
+    if ($method == 'POST' && $pc >= 2 && isset($resource['targeted_actions'][$path[1]])
+         && $this->checkNumberOfArguments($pc, $resource['targeted_actions'][$path[1]], 1) && !empty($path[0])) {
       $class = 'targeted_actions';
       $operation = $path[1];
     }
@@ -554,6 +658,28 @@ class RESTServer {
     }
     services_request_apply_version($controller, array('method' => $operation, 'resource' => $resource_name));
     return $controller;
+  }
+
+  /**
+   * Count possible numbers of 'path' arguments of the method.
+   */
+  private function checkNumberOfArguments($args_number, $resource_operation, $required_args = 0) {
+    $not_required_args = 0;
+
+    if (isset($resource_operation['args'])) {
+      foreach ($resource_operation['args'] as $argument) {
+        if (is_array($argument['source']) && isset($argument['source']['path'])) {
+          if (!empty($argument['optional'])) {
+            $not_required_args++;
+          }
+          else {
+            $required_args++;
+          }
+        }
+      }
+    }
+
+    return $args_number >= $required_args && $args_number <= $required_args + $not_required_args;
   }
 
   function handleException($exception){

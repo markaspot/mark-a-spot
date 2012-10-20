@@ -392,10 +392,10 @@ function _node_resource_update($nid, $node) {
 /**
  * Delete a node given its nid.
  *
- * @param $nid
+ * @param int $nid
  *   Node ID of the node we're deleting.
- * @return
- *   The node's nid.
+ * @return bool
+ *   Always returns true.
  */
 function _node_resource_delete($nid) {
   node_delete($nid);

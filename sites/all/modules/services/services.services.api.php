@@ -9,98 +9,98 @@
  * @addtogroup hooks
  */
 
- /**
-  * Defines function signatures for resources available to services.
-  *
-  * Functionally this is very similar to the way hook_menu() works, and in many
-  * ways Services can be seen as an abstraction layer on top of hook_menu().
-  *
-  * @return
-  *   An associative array which defines available resources.
-  *
-  *   The associative array which defines services has five possible top
-  *   level keys. The operations array has five possible keys representing
-  *   the CRUD operations.
-  *
-  *     - #api_version
-  *     - operations
-  *       - create
-  *       - retrieve
-  *       - update
-  *       - delete
-  *       - index
-  *     - actions
-  *     - targeted_actions
-  *     - relationships
-  *
-  *   The #api_version is the services resource API that the resource is written
-  *   for. This makes it possible for services to upgrade resource declarations
-  *   if the format changes. See services_resource_api_version_info(). If no
-  *   version is given then 3001 is assumed. Which is the format used before the
-  *   versioning was introduced.
-  *
-  *   The CRUD functions in 'operations' are pretty self-explanatory. Index is
-  *   an extra CRUD-type function that allows you to create pageable lists.
-  *
-  *   Actions are performed directly on the resource type, not a individual
-  *   resource. The following example is hypothetical (but plausible). Say
-  *   that you want to expose a API for the apachesolr module. One of the
-  *   things that could be exposed is the functionality to reindex the whole
-  *   site at apachesolr/reindex.
-  *
-  *   Targeted actions acts on a individual resource. A good, but again -
-  *   hypothetical, example would be the publishing and unpublishing of nodes
-  *   at node/123/publish.
-  *
-  *   Relationship requests are convenience methods (sugar) to get something
-  *   thats related to a individual resource. A real example would be the
-  *   ability to get the files for a node at node/123/files.
-  *
-  *   The first five (the CRUD functions + index) define the indvidual service
-  *   callbacks for each function. However 'actions', 'targeted_actions',
-  *   and 'relationships' can contain multiple callbacks.
-  *
-  *   For those familiar with Services 2.x, these callbacks are created
-  *   similarly, but the keys have changed around a bit. The following keys
-  *   are used to describe a callback.
-  *
-  *   - help: Text describing what this callback does.
-  *   - callback: The name of a function to call when this resource is
-  *     requested.
-  *   - file: an array describing the file which contains the callback
-  *     function
-  *   - access callback: The name of a function to call to check whether
-  *     the requesting user has permission to access this resource. If not
-  *     specified, this defaults to 'user_access'.
-  *   - access callback file: an array describing the file which contains the
-  *     access callback function.  This attribute only needs to be supplied if
-  *     the method callback and the access callback are defined in different
-  *     files, for example when a method callback is overridden using
-  *     hook_services_resources_alter but the access callback is not
-  *   - access arguments: The arguments to pass to the access callback.
-  *   - access arguments append: A boolean indicating whether the resource's
-  *     arguments should be appended to the access arguments. This can be useful
-  *     in situations where an access callback is specific to the particular
-  *     item ('edit all nodes' vs 'edit my nodes'). Defaults to FALSE.
-  *   - args: an array describing the arguments which should be passed to this
-  *     resource when it is called. Each element in the array is an associative
-  *     array containing the following keys:
-  *
-  *     - name: The name of this argument.
-  *     - type: The data type of this argument (int, string, array)
-  *     - description: Text describing this argument's usage.
-  *     - optional: A boolean indicating whether or not this argument is optional.
-  *     - source: Where this argument should be retrieved from. This can be
-  *       'data' (indicating the POST data), 'param' (indicating the query
-  *       string) or 'path' (indicating the url path). In the case of path,
-  *       an additional parameter must be passed indicating the index to be used.
-  *     - default value: this is a value that will be passed to the method for
-  *       this particular argument if no argument value is passed
-  *
-  *   A detailed example of creating a new resource can be found at
-  *   http://drupal.org/node/783460 and more information about how
-  *   REST resources are managed can be found at http://drupal.org/node/783254.
-  */
+/**
+ * Defines function signatures for resources available to services.
+ *
+ * Functionally this is very similar to the way hook_menu() works, and in many
+ * ways Services can be seen as an abstraction layer on top of hook_menu().
+ *
+ * @return
+ *   An associative array which defines available resources.
+ *
+ *   The associative array which defines services has five possible top
+ *   level keys. The operations array has five possible keys representing
+ *   the CRUD operations.
+ *
+ *     - #api_version
+ *     - operations
+ *       - create
+ *       - retrieve
+ *       - update
+ *       - delete
+ *       - index
+ *     - actions
+ *     - targeted_actions
+ *     - relationships
+ *
+ *   The #api_version is the services resource API that the resource is written
+ *   for. This makes it possible for services to upgrade resource declarations
+ *   if the format changes. See services_resource_api_version_info(). If no
+ *   version is given then 3001 is assumed. Which is the format used before the
+ *   versioning was introduced.
+ *
+ *   The CRUD functions in 'operations' are pretty self-explanatory. Index is
+ *   an extra CRUD-type function that allows you to create pageable lists.
+ *
+ *   Actions are performed directly on the resource type, not a individual
+ *   resource. The following example is hypothetical (but plausible). Say
+ *   that you want to expose a API for the apachesolr module. One of the
+ *   things that could be exposed is the functionality to reindex the whole
+ *   site at apachesolr/reindex.
+ *
+ *   Targeted actions acts on a individual resource. A good, but again -
+ *   hypothetical, example would be the publishing and unpublishing of nodes
+ *   at node/123/publish.
+ *
+ *   Relationship requests are convenience methods (sugar) to get something
+ *   thats related to a individual resource. A real example would be the
+ *   ability to get the files for a node at node/123/files.
+ *
+ *   The first five (the CRUD functions + index) define the indvidual service
+ *   callbacks for each function. However 'actions', 'targeted_actions',
+ *   and 'relationships' can contain multiple callbacks.
+ *
+ *   For those familiar with Services 2.x, these callbacks are created
+ *   similarly, but the keys have changed around a bit. The following keys
+ *   are used to describe a callback.
+ *
+ *   - help: Text describing what this callback does.
+ *   - callback: The name of a function to call when this resource is
+ *     requested.
+ *   - file: an array describing the file which contains the callback
+ *     function
+ *   - access callback: The name of a function to call to check whether
+ *     the requesting user has permission to access this resource. If not
+ *     specified, this defaults to 'user_access'.
+ *   - access callback file: an array describing the file which contains the
+ *     access callback function.  This attribute only needs to be supplied if
+ *     the method callback and the access callback are defined in different
+ *     files, for example when a method callback is overridden using
+ *     hook_services_resources_alter but the access callback is not
+ *   - access arguments: The arguments to pass to the access callback.
+ *   - access arguments append: A boolean indicating whether the resource's
+ *     arguments should be appended to the access arguments. This can be useful
+ *     in situations where an access callback is specific to the particular
+ *     item ('edit all nodes' vs 'edit my nodes'). Defaults to FALSE.
+ *   - args: an array describing the arguments which should be passed to this
+ *     resource when it is called. Each element in the array is an associative
+ *     array containing the following keys:
+ *
+ *     - name: The name of this argument.
+ *     - type: The data type of this argument (int, string, array)
+ *     - description: Text describing this argument's usage.
+ *     - optional: A boolean indicating whether or not this argument is optional.
+ *     - source: Where this argument should be retrieved from. This can be
+ *       'data' (indicating the POST data), 'param' (indicating the query
+ *       string) or 'path' (indicating the url path). In the case of path,
+ *       an additional parameter must be passed indicating the index to be used.
+ *     - default value: this is a value that will be passed to the method for
+ *       this particular argument if no argument value is passed
+ *
+ *   A detailed example of creating a new resource can be found at
+ *   http://drupal.org/node/783460 and more information about how
+ *   REST resources are managed can be found at http://drupal.org/node/783254.
+ */
 function hook_services_resources() {
   $node_resource = array(
     'node' => array(

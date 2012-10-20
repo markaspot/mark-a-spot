@@ -64,7 +64,6 @@ function services_schema() {
       'debug' => array(
        'description' => 'Set the endpoint in debug mode.',
          'type'        => 'int',
-         'length'      => 2,
          'not null'    => TRUE,
          'default'     => 0
       ),
