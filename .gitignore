@@ -3,9 +3,4 @@ sites/*/settings*.php
 
 # Ignore paths that contain user-generated content.
 sites/*/files
-sites/*/backup
 sites/*/private
-sites/*/themes/mas
-sites/*/themes/marinelli
-.DS_Store
-sites/all/modules/devel/

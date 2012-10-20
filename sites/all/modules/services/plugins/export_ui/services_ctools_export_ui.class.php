@@ -365,6 +365,9 @@ function services_edit_form_endpoint_resources($form, &$form_state, $endpoint) {
             );
           }
           foreach ($endpoint->authentication as $module => $settings) {
+            if (isset($endpoint->resources[$resource_key][$class][$op_name]['settings'][$module])) {
+              $settings = $endpoint->resources[$resource_key][$class][$op_name]['settings'][$module];
+            }
             $auth_settings = services_auth_invoke($module, 'controller_settings', $settings, $op, $endpoint->authentication[$module], $class, $op_name);
             if (is_array($auth_settings)) {
               $auth_settings = array(

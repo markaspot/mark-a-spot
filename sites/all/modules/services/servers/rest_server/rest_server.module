@@ -52,9 +52,11 @@ function rest_server_request_parsers() {
       'application/json' => 'RESTServer::parseJSON',
       'application/vnd.php.serialized' => 'RESTServer::parsePHP',
       'multipart/form-data' => 'RESTServer::parseMultipart',
+      'application/xml' => 'RESTServer::parseXML',
+      'text/xml' => 'RESTServer::parseXML',
     );
 
-    if (_rest_server_get_spyc_location() !== false) {
+    if (($library = libraries_load('spyc')) && !empty($library['loaded'])) {
       $parsers['application/x-yaml'] = 'RESTServer::parseYAML';
     }
 
@@ -110,7 +112,7 @@ function rest_server_response_formatters() {
       ),
     );
 
-    if(_rest_server_get_spyc_location() !== false) {
+    if(($library = libraries_load('spyc')) && !empty($library['loaded'])) {
       $formatters['yaml'] = array(
         'mime types' => array('text/plain', 'application/x-yaml', 'text/yaml'),
         'view' => 'RESTServerViewBuiltIn',
@@ -215,19 +217,22 @@ function rest_server_services_resources_alter(&$resources, $endpoint) {
 }
 
 /**
- * Return the location of the spyc library, if any.
- *
- * @return the location of the spyc library, if it exists; else return false.
+ * Implements hook_libraries_info().
+ * @note : Libraries 2.x
  */
-function _rest_server_get_spyc_location() {
-  if (function_exists('libraries_get_path')) {
-    $libraries_spyc_loc = libraries_get_path('spyc') . '/spyc.php';
-    if (file_exists($libraries_spyc_loc)) {
-      return $libraries_spyc_loc;
-    }
-  }
-
-  // Libraries not in use fall back to straight look up.
-  $services_spyc_loc = dirname(__FILE__) . '/lib/spyc.php';
-  return file_exists($services_spyc_loc) ? $services_spyc_loc : false;
+function rest_server_libraries_info() {
+  $libraries['spyc'] = array(
+    'name' => 'Spyc (A simple YAML loader/dumper class for PHP)',
+    'vendor url' => 'https://code.google.com/p/spyc/',
+    'download url' => 'https://code.google.com/p/spyc/downloads/list',
+    'version arguments' => array(
+      'file' => 'spyc.php',
+      'pattern' => '@version\s+([0-9a-zA-Z\.-]+)@',
+      'lines' => 4
+    ),
+    'files' => array(
+      'php' => array('spyc.php'),
+    ),
+  );
+  return $libraries;
 }

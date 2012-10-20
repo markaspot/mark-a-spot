@@ -167,7 +167,7 @@ function drush_votingapi_recalculate($entity_type = 'node', $entity_id = NULL) {
   }
 
   foreach ($votes as $vote) {
-    votingapi_recalculate_results($entity_type, $entity_id, TRUE);
+    votingapi_recalculate_results($vote['entity_type'], $vote['entity_id'], TRUE);
   }
 
   drush_log($message, 'success');

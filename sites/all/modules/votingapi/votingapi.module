@@ -77,6 +77,8 @@ function votingapi_cron() {
 
     variable_set('votingapi_last_cron', $time);
   }
+
+  _votingapi_cron_delete_orphaned();
 }
 
 /**
@@ -584,5 +586,69 @@ function _votingapi_prep_vote(&$vote) {
       'vote_source' => ip_address(),
       'prepped' => TRUE
     );
+  }
+}
+
+/**
+ * Implements hook_entity_delete().
+ *
+ * Delete all votes and cache entries for the deleted entities
+ */
+function votingapi_entity_delete($entity, $type) {
+  $ids = entity_extract_ids($type, $entity);
+  $id = array($ids[0]);
+  _votingapi_delete_cache_by_entity($id, $type);
+  _votingapi_delete_votes_by_entity($id, $type);
+}
+
+/**
+ * Helper function to delete all cache entries on given entities.
+ *
+ * @param array entity ids
+ * @param string entity type
+ */
+function _votingapi_delete_cache_by_entity($entity_ids, $type) {
+  $result = db_select('votingapi_cache', 'v')
+    ->fields('v', array('vote_cache_id'))
+    ->condition('entity_type', $type)
+    ->condition('entity_id', $entity_ids)
+    ->execute();
+  $votes = array();
+  foreach ($result as $row) {
+    $votes[]['vote_cache_id'] = $row->vote_cache_id;
+  }
+  votingapi_delete_results($votes);
+}
+
+/**
+ * Helper function to delete all votes on given entities.
+ *
+ * @param array entity ids
+ * @param string entity type
+ */
+function _votingapi_delete_votes_by_entity($entity_ids, $type) {
+  $result = db_select('votingapi_vote', 'v')
+    ->fields('v', array('vote_id'))
+    ->condition('entity_type', $type)
+    ->condition('entity_id', $entity_ids)
+    ->execute();
+  $votes = array();
+  foreach ($result as $row) {
+    $votes[]['vote_id'] = $row->vote_id;
+  }
+  votingapi_delete_votes($votes);
+}
+
+/**
+ * Delete votes and cache entries for a number of entities in the queue.
+ */
+function _votingapi_cron_delete_orphaned() {
+  $queue = DrupalQueue::get('VotingAPIOrphaned');
+  $limit = variable_get('votingapi_cron_orphaned_max', 50);
+  $done = 0;
+  while (($item = $queue->claimItem()) && $done++ < $limit) {
+    _votingapi_delete_cache_by_entity(array($item->data['entity_id']), $item->data['entity_type']);
+    _votingapi_delete_votes_by_entity(array($item->data['entity_id']), $item->data['entity_type']);
+    $queue->deleteItem($item);
   }
 }

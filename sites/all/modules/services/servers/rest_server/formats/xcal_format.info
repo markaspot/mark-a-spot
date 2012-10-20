@@ -3,9 +3,9 @@ description = Provides xCal and iCal formatters for the REST server.
 package = Services
 core = 6.x
 php = 5.x
-; Information added by drupal.org packaging script on 2012-08-14
-version = "7.x-3.1+72-dev"
+; Information added by drupal.org packaging script on 2012-10-09
+version = "7.x-3.2"
 core = "7.x"
 project = "services"
-datestamp = "1344949466"
+datestamp = "1349822238"
 

@@ -346,6 +346,11 @@ class ServicesWebTestCase extends DrupalWebTestCase {
             'enabled' => 1,
           ),
         ),
+        'targeted_actions' => array(
+          'attach_file' => array(
+            'enabled' => 1,
+          ),
+        ),
       ),
       'system' => array(
         'actions' => array(
@@ -434,7 +439,12 @@ class ServicesWebTestCase extends DrupalWebTestCase {
             'enabled' => 1,
           ),
           'logout' => array(
-            'enabled' => 1,
+            'enabled' => '1',
+            'settings' => array(
+              'services' => array(
+                'resource_api_version' => '1.1',
+              ),
+            ),
           ),
           'register' => array(
             'enabled' => 1,

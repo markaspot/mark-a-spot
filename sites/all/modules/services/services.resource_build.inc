@@ -152,6 +152,9 @@ function _services_apply_endpoint(&$resources, $endpoint, $strict = TRUE) {
   $classes = array_keys(services_operation_class_info());
   foreach ($resources as $name => &$resource) {
     $cres = ($endpoint && isset($endpoint->resources[$name])) ? $endpoint->resources[$name] : array();
+    if (isset($resource['key']) && $resource['key'] !== $name && $endpoint && isset($endpoint->resources[$resource['key']])) {
+      $cres = $endpoint->resources[$resource['key']];
+    }
     $resource['endpoint'] = $cres;
     if ($strict && empty($cres)) {
       unset($resources[$name]);

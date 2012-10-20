@@ -58,8 +58,13 @@ class RESTServerViewBuiltIn extends RESTServerView {
   }
 
   private function render_yaml($data) {
-    include_once _rest_server_get_spyc_location();
-    return Spyc::YAMLDump($data, 4, 60);
+    if (($library = libraries_load('spyc')) && !empty($library['loaded'])) {
+      return Spyc::YAMLDump($data, 4, 60);
+    }
+    else {
+      watchdog('REST Server', 'Spyc library not found!', array(), WATCHDOG_ERROR);
+      return array();
+    }
   }
 
   private function render_bencode($data) {
