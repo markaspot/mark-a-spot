@@ -283,7 +283,7 @@ function _node_map_request($node, $status){
   $request['status'] = $status;
 
   // Media Url
-  if($node->field_image){
+  if(isset($node->field_image)){
     $image_uri = image_style_url("thumbnail", file_build_uri($node->field_image['und'][0]['filename']));
     $request['media_url'] = $image_uri;
   }
@@ -336,15 +336,16 @@ function _request_map_node($request) {
   
   $node->field_e_mail[$node->language][0]['value'] = $request->email;
 
-
   // File Handling 
-  $managed = TRUE; // Whether or not to create a Drupal file record
-  // define('FILE_EXISTS_REPLACE', 1)
-  $file = system_retrieve_file($request->media_url, 'public://', $managed, FILE_EXISTS_REPLACE);
-  $node->field_image[$node->language] = array(
-    0 => array('fid' => $file->fid, 'display' => 1, 'description' => $service_code->name)
-  );
 
+  if ($request->media_url != ""){
+    $managed = TRUE; // Whether or not to create a Drupal file record
+    // define('FILE_EXISTS_REPLACE', 1)
+    $file = system_retrieve_file($request->media_url, 'public://', $managed, FILE_EXISTS_REPLACE);
+    $node->field_image[$node->language] = array(
+      0 => array('fid' => $file->fid, 'display' => 1, 'description' => $service_code->name)
+    );
+  }
 
 
   $node->is_new = true;
