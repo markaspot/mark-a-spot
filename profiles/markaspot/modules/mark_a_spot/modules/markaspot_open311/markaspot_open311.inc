@@ -73,9 +73,11 @@ function _markaspot_open311_requests_create($data) {
  * 
  */
 
-function _markaspot_open311_requests_retrieve($nid) {
+function _markaspot_open311_requests_retrieve($nid, $parameters) {
+   // added optional parameters achiving this:
+   // http://lists.open311.org/groups/discuss/messages/topic/AaxmrRLUHToO7jCQdjAXy
    $node = node_load($nid);
-   $request['service_requests'][] = _node_map_request($node, $status=false);
+   $request['service_requests'][] = _node_map_request($node, $status=false, $parameters);
    return $request;
 
 }
@@ -159,19 +161,19 @@ function _markaspot_open311_requests_index($page, $parameters) {
 
       }
 
-
+      $term['status'] = _tax_map_status($node->field_status['und'][0]["tid"]);
       // Mapping Status to Open311 Status (open/closed)
-      $term['status'] = taxonomy_term_load($node->field_status['und'][0]["tid"]);
-      if (isset($term['status'])) {
-        // declare all taxonomy-ids for status "open" 
-        // (could be "acknowledged", "edited", "in progress")
-        $status_open = array(1, 2);
-        if (in_array($term['status']->tid, $status_open)) {
-          $status = 'open';
-        } else {
-          $status = 'closed';
-        }
-      }
+      // $term['status'] = taxonomy_term_load();
+      // if (isset($term['status'])) {
+      //   // declare all taxonomy-ids for status "open" 
+      //   // (could be "acknowledged", "edited", "in progress")
+      //   $status_open = array(1, 2);
+      //   if (in_array($term['status']->tid, $status_open)) {
+      //     $status = 'open';
+      //   } else {
+      //     $status = 'closed';
+      //   }
+      // }
       if (isset($parameters['status'])) {
         if ($parameters['status'] == $status) {
             $found['status'] = true;
@@ -235,8 +237,6 @@ function _markaspot_open311_services_index($args) {
  */
 
 function _markaspot_open311_services_retrieve($service_code) {
-  //echo $service_code;
-
   $taxonomy_term =  taxonomy_term_load($service_code);
   $service['service_definition'][] = _tax_map_service($taxonomy_term);
   return $service;
@@ -246,6 +246,7 @@ function _markaspot_open311_services_retrieve($service_code) {
 
 /**
  * Mapping node to georeport request.
+ * (needed when creating via Method GET)
  *
  * @param object $node
  *  The node object.
@@ -253,11 +254,14 @@ function _markaspot_open311_services_retrieve($service_code) {
  *  single request
  */
 
-function _node_map_request($node, $status){
+function _node_map_request($node, $status, $parameters){
 
   $request['service_request_id'] = $node->nid;
  
   $term['category'] = taxonomy_term_load($node->field_category['und'][0]["tid"]);
+  
+  // defining content of the status-field
+  $status = _tax_map_status($node->field_status['und'][0]["tid"]);
 
   if (isset($term['category'])) {
     $request['service_code'] = $term['category']->field_category_id['und'][0]['value'];
@@ -288,11 +292,20 @@ function _node_map_request($node, $status){
     $request['media_url'] = $image_uri;
   }
 
+  // Non Open311 compliant fields can be added here
+  if(isset($parameters['extension'])) {
+    $request['status_code'] = $node->field_status['und'][0]["tid"];
+    $term['status_sub'] = taxonomy_term_load($node->field_status['und'][0]["tid"]);
+    $request['status_sub'] = $term['status_sub']->name;
+
+  }
+
   return $request;
 }
 
 /**
  * Mapping a georeport service request to drupal node.
+ * needed when importing via method POST
  *
  * @param object $request
  *  The request object.
@@ -374,6 +387,30 @@ function _tax_map_service($taxonomy_term) {
   $service['keywords'] = $taxonomy_term->field_hash['und'][0]['value'];
 
   return $service;
+}
+
+
+/**
+* Mapping taxonomy to status
+* geoReport v2 has only open and closed status
+*
+*/
+function _tax_map_status($taxonomyId) {
+  // Mapping Status to Open311 Status (open/closed)
+  $term['status'] = taxonomy_term_load($taxonomyId);
+  if (isset($term['status'])) {
+    // declare all taxonomy-ids for status "open" 
+    // (could be "acknowledged", "edited", "in progress")
+    $status_open = array(1, 2);
+
+    if (in_array($term['status']->tid, $status_open)) {
+      $status = 'open';
+    } else {
+      $status = 'closed';
+    }
+  }
+  //print_r($status);
+  return $status;
 }
 
 /**
