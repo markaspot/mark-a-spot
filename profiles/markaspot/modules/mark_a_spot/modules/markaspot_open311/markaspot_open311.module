@@ -184,6 +184,14 @@ function markaspot_open311_services_resources() {
             'source' => array('path' => '0'),
             'optional' => FALSE,
           ),
+          array(
+           'name' => 'parameters',
+           'type' => 'array',
+           'description' => '',
+           'source' => 'param',
+           'optional' => TRUE,
+           'default value' => array(),
+          ),
         ),
       ),
       'create' => array(

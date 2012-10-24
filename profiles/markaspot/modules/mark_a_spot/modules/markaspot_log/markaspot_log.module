@@ -77,7 +77,7 @@ function markaspot_log_block_view($delta = '') {
     case 'markaspot_activity':
       $block['subject'] = t('MaS Activity Log');
       
-      if (user_access('access_content')) {
+      if (user_access('view maslogs')) {
         $node = menu_get_object();
         // var_dump($node);
         if(isset($node) && $node->type == "report") {
@@ -157,6 +157,51 @@ function markaspot_log_node_insert($node) {
   markaspot_log_write_log($data);
 }
 
+
+/**
+ * Creates Log entry according to role.
+ *
+ * @param obj $node
+ * @return void
+ */
+function markaspot_log_node_update($node) {
+  // var_dump($node);
+  // die;
+  // Preparing Logging to Mas_log table (don't think of watchdog)
+  global $user;
+
+/*
+  if (!in_array('Bürger', $user->roles) && 
+    !(in_array('Verwaltung', $user->roles) || in_array('administrator', $user->roles))){
+    markaspot_log_add_role_to_user('Bürger', $user->uid);
+    $data->message = t('The User is now Bürger');
+  }
+*/
+
+  if (!in_array('Verwaltung', $user->roles) || !in_array('administrator', $user->roles) && $node->type == 'report'){
+
+    if($node->nid) {
+      $data->message = t('The report has been edited by Citizen');
+    } 
+  }
+  
+  if (in_array('administrator', $user->roles) || 
+    in_array('Verwaltung', $user->roles) && $node->type == 'report'){  
+
+    if($node->nid) {
+      $data->message = t('The report has been edited/created by Administration');
+    } 
+  }
+
+  unset($data->nid);
+  
+  $data->uid = $user->uid;
+  $data->nid = $node->nid;
+
+  $data->created = time();
+  $data->modified = time();
+  markaspot_log_write_log($data);
+}
 
 function markaspot_log_comment_presave($comment) {
 
