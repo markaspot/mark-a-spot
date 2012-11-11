@@ -24,7 +24,6 @@ function _markaspot_open311_discovery(){
   return $discovery;
 }
 
-
 /**
  * Callback for creating request resources.
  *
@@ -171,17 +170,17 @@ function _markaspot_open311_requests_index($page, $parameters) {
         // now mapping nodes to request
         if (isset($parameters['service_code'])) {
           if (isset($found['service_code']) && isset($found['status'])) {
-            $requests['service_requests'][] = _node_map_request($node, $status, $parameters);
+            $requests[] = _node_map_request($node, $status, $parameters);
           }
         }
         if (!isset($parameters['service_code'])) {
           if (isset($found['status'])) {
-            $requests['service_requests'][] = _node_map_request($node, $status, $parameters);
+            $requests[] = _node_map_request($node, $status, $parameters);
           }
         }
       }
       if (!isset($parameters['status']) && !isset($parameters['service_code'])) {
-        $requests['service_requests'][] = _node_map_request($node, $status, $parameters);
+        $requests[] = _node_map_request($node, $status, $parameters);
       }
     }
   }
@@ -202,7 +201,7 @@ function _markaspot_open311_services_index($args) {
   $taxonomies = taxonomy_get_tree(2, $parent = 0, $max_depth = 1, $load_entities = TRUE);
   
   foreach ($taxonomies as $taxonomy_term) {
-    $services['services'][] = _tax_map_service($taxonomy_term);
+    $services[] = _tax_map_service($taxonomy_term);
    }
  
   return $services;
@@ -270,7 +269,6 @@ function _node_map_request($node, $status, $parameters){
 
   // Media Url
   if(isset($node->field_image['und'])){
-    var_dump($node->field_image);
     $image_uri = image_style_url("thumbnail", file_build_uri($node->field_image['und'][0]['filename']));
     $request['media_url'] = $image_uri;
   }
@@ -365,7 +363,7 @@ function _tax_map_service($taxonomy_term) {
   $service['service_code'] = $taxonomy_term->field_category_id['und'][0]['value'];
   $service['service_name'] = $taxonomy_term->name;
   $service['metadata'] = "false";
-  $servicd['type'] = 'realtime';
+  $service['type'] = 'realtime';
   $service['description'] = $taxonomy_term->description;
   $service['keywords'] = $taxonomy_term->field_hash['und'][0]['value'];
 
@@ -420,5 +418,4 @@ function _service_map_tax($service_code) {
   }
   return $tid;
 }
-
 ?>

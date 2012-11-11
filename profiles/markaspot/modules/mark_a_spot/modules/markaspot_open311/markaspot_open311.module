@@ -7,37 +7,38 @@
  * http://drupal.org/node/1588044
  */
 
+// header("Content-Type: text/html");
+// header("HTTP/1.1 404 Not Found"); 
+
 function markaspot_open311_rest_server_response_formatters_alter(&$formatters) {
     $formatters['xml']['view'] = 'RESTServerViewOpen311';
+    $formatters['xml']['mime types'][0] = 'text/xml';
+    $formatters['json']['mime types'][0] = 'application/json';
+
 }
 
 class RESTServerViewOpen311 extends RESTServerView {
+
   public function render() {
     return $this->render_xml($this->model);
   }
 
   public function render_xml($data) {
-    // var_dump($data);
+    // var_dump(array_keys($data[0]));
     $doc = new DOMDocument('1.0', 'utf-8');
-
+  
     // only change root, if there is GeoReport output data
-    if (array_key_exists('services', $data)) {
+    if (array_key_exists('service_code', $data[0])) {
       $root = $doc->createElement('services');
-    } elseif (array_key_exists('service_requests', $data)){
+    } 
+    if (array_key_exists('service_request_id', $data[0])){
       $root = $doc->createElement('service_requests');
-    } elseif (array_key_exists('discovery', $data)){
+    } 
+    if (array_key_exists('discovery', $data[0])){
       $root = $doc->createElement('discovery');
-    } else {      
-      $root = $doc->createElement('result');
-    }
-    $doc->appendChild($root);
+    } 
 
-    // shifting all children to top-level
-    if(!is_array($data)) {
-      $data = (array) $data;
-    }
-    $data = $data[key($data)];
-    // deleting first key
+    $doc->appendChild($root);
     $this->xml_recurse($doc, $root, $data);
 
     //unset($data[key($data)]);
