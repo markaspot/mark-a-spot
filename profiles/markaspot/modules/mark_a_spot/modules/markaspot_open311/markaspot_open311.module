@@ -24,20 +24,23 @@ class RESTServerViewOpen311 extends RESTServerView {
   }
 
   public function render_xml($data) {
-    // var_dump(array_keys($data[0]));
-    $doc = new DOMDocument('1.0', 'utf-8');
   
+    $doc = new DOMDocument('1.0', 'utf-8');
     // only change root, if there is GeoReport output data
-    if (array_key_exists('service_code', $data[0])) {
-      $root = $doc->createElement('services');
-    } 
-    if (array_key_exists('service_request_id', $data[0])){
-      $root = $doc->createElement('service_requests');
-    } 
-    if (array_key_exists('discovery', $data[0])){
+    if (array_key_exists('endpoints', $data)) {
       $root = $doc->createElement('discovery');
     } 
-
+    if (isset($data[0])){
+      if (array_key_exists('service_code', $data[0])) {
+        $root = $doc->createElement('services');
+      } 
+      if (array_key_exists('service_request_id', $data[0])){
+        $root = $doc->createElement('service_requests');
+      } 
+      if (array_key_exists('discovery', $data[0])){
+        $root = $doc->createElement('discovery');
+      } 
+    }
     $doc->appendChild($root);
     $this->xml_recurse($doc, $root, $data);
 
@@ -107,8 +110,7 @@ function _markaspot_open311_access($op, $args) {
     case 'view':
       $node = markaspot_open311_get_requests($args[0]);
       $access = user_access('view open311 requests');
-      $access = $access || $note->uid == $user->uid && 
-      user_access('user can view open311 requests');
+      $access = $access || user_access('user can view open311 requests');
       break;
     case 'create':
       //$node = markaspot_open311_get_requests($args[0]);
@@ -163,10 +165,10 @@ function markaspot_open311_services_resources() {
         'help' => 'Provides specification for the service discovery mechanism',
         'file' => array('file' => 'inc', 'module' => 'markaspot_open311'),
         'callback' => '_markaspot_open311_discovery',
-        'access callback' => '_markaspot_open311_access',
-        'access arguments' => array('view'),
-        'access arguments append' => TRUE,
-        'args' => null
+        //'access callback' => '_markaspot_open311_access',
+        //'access arguments' => array('view'),
+        //'access arguments append' => TRUE,
+        //'args' => array()
         ),
       ),   
     'requests' => array(

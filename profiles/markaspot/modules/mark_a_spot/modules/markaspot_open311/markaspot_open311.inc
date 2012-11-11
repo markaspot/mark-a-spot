@@ -12,17 +12,18 @@ function _markaspot_open311_discovery(){
   
   // toDo:  make these key/value available via administration interface
 
-  $discovery['discovery']['changeset'] = "2011-02-03 14:18";
-  $discovery['discovery']['contact'] = "You can email or call for assistance api@mycity.org +1 (555) 555-5555";
-  $discovery['discovery']['key_service'] = "You can request a key here: http://api.mycity.gov/api_key/request";
-  $discovery['discovery']['endpoints']['specification'] = "http://wiki.open311.org/GeoReport_v2";
-  $discovery['discovery']['endpoints']['endpoint']['url'] = "path to endpoint";
-  $discovery['discovery']['endpoints']['endpoint']['changeset'] = "http://wiki.open311.org/GeoReport_v2";
-  $discovery['discovery']['endpoints']['endpoint']['type'] = "test";
-  $discovery['discovery']['endpoints']['endpoint']['formats'] = array('xml','json');
+  $discovery['changeset'] = "2012-11-05 00:18";
+  $discovery['contact'] = "You can email or call for assistance app@bonn.de +49 (0) 228-773699";
+  $discovery['key_service'] = "You can request a key here: not yet";
+  $discovery['endpoints']['specification'] = "http://wiki.open311.org/GeoReport_v2";
+  $discovery['endpoints']['endpoint']['url'] = "http://anliegen.bonn.de/georeport/v2";
+  $discovery['endpoints']['endpoint']['changeset'] = "2012-11-05 00:18";
+  $discovery['endpoints']['endpoint']['type'] = "production";
+  $discovery['endpoints']['endpoint']['formats'] = array('text/xml','application/json');
 
   return $discovery;
 }
+
 
 /**
  * Callback for creating request resources.
