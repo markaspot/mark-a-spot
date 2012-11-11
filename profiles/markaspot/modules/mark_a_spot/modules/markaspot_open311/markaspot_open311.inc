@@ -19,7 +19,7 @@ function _markaspot_open311_discovery(){
   $discovery['endpoints']['endpoint']['url'] = "http://anliegen.bonn.de/georeport/v2";
   $discovery['endpoints']['endpoint']['changeset'] = "2012-11-05 00:18";
   $discovery['endpoints']['endpoint']['type'] = "production";
-  $discovery['endpoints']['endpoint']['formats'] = array('text/xml','application/json');
+  $discovery['endpoints']['endpoint']['formats'] = array('format' => 'text/xml','format' => 'application/json');
 
   return $discovery;
 }
