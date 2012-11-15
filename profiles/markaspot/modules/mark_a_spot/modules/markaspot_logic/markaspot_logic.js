@@ -9,15 +9,20 @@ jQuery(document).ready(function(){
 
   // setting a located/unlocated report, 
   // assuming unchanged lat will be general
+  function clearfields(){
+    $('#edit-field-geo-und-0-latitem > span').html(Drupal.settings.mas.markaspot_ini_lat);
+    $('#edit-field-geo-und-0-lngitem > span').html(Drupal.settings.mas.markaspot_ini_lng);
+    $('#edit-field-geo-und-0-address-field').val(Drupal.settings.mas.markaspot_address);
+    $('#edit-field-address > input').val("");
+  }
+
 
   $('#edit-field-common-und').click(function() {
     if ($('#edit-field-common-und:checked')) {
-      $('#edit-field-geo-und-0-latitem > span').html(Drupal.settings.mas.markaspot_ini_lat);
-      $('#edit-field-geo-und-0-lngitem > span').html(Drupal.settings.mas.markaspot_ini_lng);
-      $('#edit-field-geo-und-0-address-field').val(Drupal.settings.mas.markaspot_address);
-      $('#edit-field-address-und-0-value').val(Drupal.settings.mas.markaspot_address);
+      clearfields();
     } 
    });
+
 
   $('#report-node-form').submit(function(){
 
@@ -26,6 +31,7 @@ jQuery(document).ready(function(){
 
     if (init_lat == is_lat){
       $('#edit-field-common-und').attr('checked','checked');
+      clearfields();
     } else {
       $('#edit-field-common-und').attr('checked',"");
     }

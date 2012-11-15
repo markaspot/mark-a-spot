@@ -72,7 +72,10 @@ function markaspot_logic_validate($node, &$form) {
     if (!strstr($form['values']['field_geo']['und'][0]['address']['field'], variable_get('markaspot_city'))) {
       form_set_error('field_geo',t('The string given for "City" is not valid'));
     } else {
-      $form['values']['field_address']['und'][0]['value'] = $form['values']['field_geo']['und'][0]['address']['field'];
+      // Fill the address field only, if it's not equal to the initial value
+      if ($form['values']['field_geo']['und'][0]['lat'] != variable_get('markaspot_ini_lat')) {
+        $form['values']['field_address']['und'][0]['value'] = $form['values']['field_geo']['und'][0]['address']['field'];
+      }
     }
     
 }
