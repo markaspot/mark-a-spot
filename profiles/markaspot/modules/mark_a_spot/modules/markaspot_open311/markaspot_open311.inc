@@ -1,6 +1,4 @@
 <?php
-// markaspot_open311.inc
-
 /**
  * Callback for the georeport service discovery.
  *
@@ -13,13 +11,13 @@ function _markaspot_open311_discovery(){
   // toDo:  make these key/value available via administration interface
 
   $discovery['changeset'] = "2012-11-05 00:18";
-  $discovery['contact'] = "You can email or call for assistance at 12345";
+  $discovery['contact'] = "You can email or call for assistance ...";
   $discovery['key_service'] = "You can request a key here: not yet";
   $discovery['endpoints']['specification'] = "http://wiki.open311.org/GeoReport_v2";
   $discovery['endpoints']['endpoint']['url'] = "http://yourcity.com/georeport/";
   $discovery['endpoints']['endpoint']['changeset'] = "2012-11-05 00:18";
   $discovery['endpoints']['endpoint']['type'] = "production";
-  $discovery['endpoints']['endpoint']['formats'] = array('format' => 'text/xml','format' => 'application/json');
+  $discovery['endpoints']['endpoint']['formats'] = array('format' => 'text/xml','format' =>'application/json');
 
   return $discovery;
 }
@@ -36,16 +34,15 @@ function _markaspot_open311_requests_create($data) {
   $data = (object) $data;
 
   if (!isset($data->service_code)) {
-    return services_error(t('Service_code missing or empty.'), 406);
+    return services_error(t('Service_code missing or empty.'), 404);
   } 
   if (!isset($data->lat) || !isset($data->long)) {
     return services_error(t('Missing position parameters [lat and long]'), 406);
   }
 
   // Check if submitted service code is in ServiceList:
-  $service_codes = _markaspot_open311_services_index();
-
-  foreach ($service_codes['services'] as $service) {
+  $services = _markaspot_open311_services_index();
+  foreach ($services as $service) {
     $services_available[] = $service['service_code'];
   }
   if (!in_array($data->service_code, $services_available)) {
