@@ -1,7 +1,5 @@
 <?php
 // markaspot_open311.module
-
-
 /**
  * Implementation of hook_rest_server_response_formatters_alter
  * http://drupal.org/node/1588044
@@ -24,7 +22,6 @@ class RESTServerViewOpen311 extends RESTServerView {
   }
 
   public function render_xml($data) {
-  
     $doc = new DOMDocument('1.0', 'utf-8');
     // only change root, if there is GeoReport output data
     if (array_key_exists('endpoints', $data)) {
@@ -39,7 +36,10 @@ class RESTServerViewOpen311 extends RESTServerView {
       } 
       if (array_key_exists('discovery', $data[0])){
         $root = $doc->createElement('discovery');
-      } 
+      }
+      if (array_key_exists('service_notice', $data[0])){
+        $root = $doc->createElement('service_requests');
+      }  
     }
     $doc->appendChild($root);
     $this->xml_recurse($doc, $root, $data);
@@ -54,6 +54,7 @@ class RESTServerViewOpen311 extends RESTServerView {
       }
 
       if (is_array($data)) {
+
         $assoc = FALSE || empty($data);
         foreach ($data as $key => $value) {
           if (is_numeric($key)) {
@@ -65,6 +66,10 @@ class RESTServerViewOpen311 extends RESTServerView {
               $key = 'service';
             }
             if (array_key_exists('status', $data[0])) {
+              $key = 'request';
+            } 
+            // After Posting
+            if (array_key_exists('service_notice', $data[0])) {
               $key = 'request';
             } 
             if (in_array('xml', $data)) {

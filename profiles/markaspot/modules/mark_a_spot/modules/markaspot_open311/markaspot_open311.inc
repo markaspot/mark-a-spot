@@ -5,7 +5,6 @@
  * @return array $discovery
  */
 
-
 function _markaspot_open311_discovery(){
   
   // toDo:  make these key/value available via administration interface
@@ -37,7 +36,7 @@ function _markaspot_open311_requests_create($data) {
     return services_error(t('Service_code missing or empty.'), 404);
   } 
   if (!isset($data->lat) || !isset($data->long)) {
-    return services_error(t('Missing position parameters [lat and long]'), 406);
+    return services_error(t('Missing position parameters [lat and long]'), 404);
   }
 
   // Check if submitted service code is in ServiceList:
@@ -54,10 +53,11 @@ function _markaspot_open311_requests_create($data) {
   
   // then write to DB
   markaspot_open311_write_request($node);
-  $request->service_request_id = $node->nid;
 
-  return $request;
-  
+  // we have the node-id
+  $service_request[0]['service_request_id'] = $node->nid;
+  $service_request[0]['service_notice'] = "";
+  return $service_request;  
 }
 
 
