@@ -11,7 +11,7 @@
 define('TOKEN_MAX_DEPTH', 9);
 
 /**
- * Impelements hook_help().
+ * Implements hook_help().
  */
 function token_help($path, $arg) {
   if ($path == 'admin/help#token') {
@@ -182,7 +182,6 @@ function token_theme() {
     ),
     'file' => 'token.pages.inc',
   );
-  $info['token_tree_link']['variables'] += $info['token_tree']['variables'];
 
   return $info;
 }
@@ -314,14 +313,17 @@ function token_field_display_alter(&$display, $context) {
     // use the default token formatter.
     if (empty($view_mode_settings[$context['view_mode']]['custom_settings'])) {
       $field_type_info = field_info_field_types($context['field']['type']);
-      if (!empty($field_type_info['default_token_formatter'])) {
-        $display['type'] = $field_type_info['default_token_formatter'];
 
-        $formatter_info = field_info_formatter_types($display['type']);
-        $display['settings'] = isset($formatter_info['settings']) ? $formatter_info['settings'] : array();
-        $display['settings']['label'] = 'hidden';
-        $display['module'] = $formatter_info['module'];
-      }
+      // If the field has specified a specific formatter to be used by default
+      // with tokens, use that, otherwise use the default formatter.
+      $formatter = !empty($field_type_info['default_token_formatter']) ? $field_type_info['default_token_formatter'] : $field_type_info['default_formatter'];
+
+      // Now that we have a formatter, fill in all the settings.
+      $display['type'] = $formatter;
+      $formatter_info = field_info_formatter_types($formatter);
+      $display['settings'] = isset($formatter_info['settings']) ? $formatter_info['settings'] : array();
+      $display['settings']['label'] = 'hidden';
+      $display['module'] = $formatter_info['module'];
     }
   }
 }
@@ -440,10 +442,12 @@ function token_entity_info_alter(&$info) {
  * Adds missing token support for core modules.
  */
 function token_module_implements_alter(&$implementations, $hook) {
-  if ($hook == 'tokens' || $hook == 'token_info') {
+  module_load_include('inc', 'token', 'token.tokens');
+
+  if ($hook == 'tokens' || $hook == 'token_info' || $hook == 'token_info_alter' || $hook == 'tokens_alter') {
     foreach (_token_core_supported_modules() as $module) {
-      if (module_exists($module)) {
-        $implementations[$module] = TRUE;
+      if (module_exists($module) && function_exists($module . '_' . $hook)) {
+        $implementations[$module] = FALSE;
       }
     }
     // Move token.module to get included first since it is responsible for

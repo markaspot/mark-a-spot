@@ -6,8 +6,8 @@ core = 7.x
 files[] = block.test
 configure = admin/structure/block
 
-; Information added by drupal.org packaging script on 2012-10-17
-version = "7.16"
+; Information added by drupal.org packaging script on 2012-11-07
+version = "7.17"
 project = "drupal"
-datestamp = "1350508567"
+datestamp = "1352325357"
 
