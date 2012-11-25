@@ -17,6 +17,7 @@ It's source-code is licensed and made available under the GNU General Public Lic
 http://yourserver/admin/structure/types/manage/report/fields
 2. Copy and paste the lat/lon values into the settings of the Mark-a-Spot configuration screen
 http://yourserver/admin/config/system/mark_a_spot
+3. Make sure, that clean Urls are supported and active: http://yourserver/?q=admin/config/search/clean-urls
 
 ## Open311 GeoReport Resources 
 

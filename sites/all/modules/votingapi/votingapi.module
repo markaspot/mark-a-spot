@@ -628,13 +628,13 @@ function _votingapi_delete_cache_by_entity($entity_ids, $type) {
  */
 function _votingapi_delete_votes_by_entity($entity_ids, $type) {
   $result = db_select('votingapi_vote', 'v')
-    ->fields('v', array('vote_id'))
+    ->fields('v', array('vote_id', 'entity_type', 'entity_id'))
     ->condition('entity_type', $type)
     ->condition('entity_id', $entity_ids)
     ->execute();
   $votes = array();
   foreach ($result as $row) {
-    $votes[]['vote_id'] = $row->vote_id;
+    $votes[] = (array) $row;
   }
   votingapi_delete_votes($votes);
 }
