@@ -5,6 +5,7 @@
  * @return array $discovery
  */
 
+
 function _markaspot_open311_discovery(){
   
   // toDo:  make these key/value available via administration interface
@@ -74,8 +75,8 @@ function _markaspot_open311_requests_retrieve($nid, $parameters) {
    // added optional parameters achiving this:
    // http://lists.open311.org/groups/discuss/messages/topic/AaxmrRLUHToO7jCQdjAXy
    $node = node_load($nid);
-   $request['service_requests'][] = _node_map_request($node, $status=false, $parameters);
-   return $request;
+   $service_requests[] = _node_map_request($node, $status=false, $parameters);
+   return $service_requests;
 
 }
 
