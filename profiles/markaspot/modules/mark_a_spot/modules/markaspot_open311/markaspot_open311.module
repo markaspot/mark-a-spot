@@ -170,10 +170,10 @@ function markaspot_open311_services_resources() {
         'help' => 'Provides specification for the service discovery mechanism',
         'file' => array('file' => 'inc', 'module' => 'markaspot_open311'),
         'callback' => '_markaspot_open311_discovery',
-        //'access callback' => '_markaspot_open311_access',
-        //'access arguments' => array('view'),
-        //'access arguments append' => TRUE,
-        //'args' => array()
+        'access callback' => '_markaspot_open311_access',
+        'access arguments' => array('view'),
+        'access arguments append' => TRUE,
+        'args' => array()
         ),
       ),   
     'requests' => array(
