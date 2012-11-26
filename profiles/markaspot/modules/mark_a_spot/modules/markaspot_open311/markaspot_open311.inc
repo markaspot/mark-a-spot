@@ -5,7 +5,6 @@
  * @return array $discovery
  */
 
-
 function _markaspot_open311_discovery(){
   
   // toDo:  make these key/value available via administration interface
@@ -75,7 +74,9 @@ function _markaspot_open311_requests_retrieve($nid, $parameters) {
    // added optional parameters achiving this:
    // http://lists.open311.org/groups/discuss/messages/topic/AaxmrRLUHToO7jCQdjAXy
    $node = node_load($nid);
-   $service_requests[] = _node_map_request($node, $status=false, $parameters);
+   $status = _tax_map_status($node->field_status['und'][0]["tid"]);
+
+   $service_requests[] = _node_map_request($node, $status, $parameters);
    return $service_requests;
 
 }
@@ -236,8 +237,9 @@ function _markaspot_open311_services_retrieve($service_code) {
 
 function _node_map_request($node, $status, $parameters){
   //print_r($node,$parameters);
-  $request['service_request_id'] = $node->nid;
- 
+  $request['service_request_id'] = intval($node->nid);
+  $request['status'] = $status;
+  $request['status_notes'] = "";
   $term['category'] = taxonomy_term_load($node->field_category['und'][0]["tid"]);
   
   // defining content of the status-field
@@ -250,13 +252,13 @@ function _node_map_request($node, $status, $parameters){
 
   $request['description'] = $node->body['und'][0]['value'];
 
-  // $request['agency_responsible'] = null;
-  // $request['service_notice'] = null;
-  // $request['expected_datetime'] = null;
-  // $request['address_id'] = $null;
+  $request['agency_responsible'] = null;
+  $request['service_notice'] = null;
+  $request['address_id'] = null;
 
   $request['requested_datetime'] = date('c',$node->created);
   $request['updated_datetime'] = date('c',$node->changed);
+  $request['expected_datetime'] = date('c',$node->changed);
 
 
   // Geo Information including address
@@ -264,7 +266,7 @@ function _node_map_request($node, $status, $parameters){
 
   $request['lat'] = $node->field_geo['und'][0]['lat'];
   $request['long'] = $node->field_geo['und'][0]['lng'];
-  $request['status'] = $status;
+
 
   // Media Url
   if(isset($node->field_image['und'])){
