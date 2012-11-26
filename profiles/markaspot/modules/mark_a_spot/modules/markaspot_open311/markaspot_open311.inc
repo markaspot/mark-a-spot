@@ -5,6 +5,7 @@
  * @return array $discovery
  */
 
+
 function _markaspot_open311_discovery(){
   
   // toDo:  make these key/value available via administration interface
@@ -239,7 +240,7 @@ function _node_map_request($node, $status, $parameters){
   //print_r($node,$parameters);
   $request['service_request_id'] = intval($node->nid);
   $request['status'] = $status;
-  $request['status_notes'] = "";
+  $request['status_notes'] = $node->field_statement['und'][0]['value'];
   $term['category'] = taxonomy_term_load($node->field_category['und'][0]["tid"]);
   
   // defining content of the status-field
@@ -263,6 +264,7 @@ function _node_map_request($node, $status, $parameters){
 
   // Geo Information including address
   $request['address'] = $node->field_address['und'][0]['value'];
+  $request['zipcode'] = null;
 
   $request['lat'] = $node->field_geo['und'][0]['lat'];
   $request['long'] = $node->field_geo['und'][0]['lng'];
