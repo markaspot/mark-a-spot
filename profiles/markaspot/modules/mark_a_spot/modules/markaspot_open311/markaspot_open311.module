@@ -338,4 +338,3 @@ function markaspot_open311_services_resources() {
     )
   );
 }
-?>
