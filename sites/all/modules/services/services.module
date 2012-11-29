@@ -204,8 +204,8 @@ function services_endpoint_callback($endpoint_name) {
     print call_user_func($server . '_server');
 
     // Do not let this output
-    module_invoke_all('exit');
-    exit;
+    drupal_page_footer();
+    exit();
   }
   // return 404 if the server doesn't exist
   drupal_not_found();
@@ -751,6 +751,11 @@ function services_resource_build_index_list($results, $type, $field) {
 function services_remove_user_data(&$account) {
   // Remove the users password from the account object.
   unset($account->pass);
+  if (!user_access('administer users')) {
+    unset($account->mail);
+    unset($account->init);
+  }
+  drupal_alter('services_account_object', $account);
 }
 
 /**

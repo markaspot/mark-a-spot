@@ -152,9 +152,7 @@ class RESTServer {
       $result = services_controller_execute($controller, $arguments, $options);
     }
     catch (ServicesException $e) {
-      $errors = $this->handleException($e);
-      drupal_alter('rest_server_execute_errors', $errors, $controller, $arguments);
-      $result = $errors;
+      $result = $this->handleException($e);
     }
     $formatter = $formats[$response_format];
 
@@ -515,13 +513,25 @@ class RESTServer {
 			}
 		}
 		else {
-		  // else, simply create an array where the key is name of the element		
+      // else, simply create an array where the key is name of the element
 		  $new_array = self::unmarshalXML($child, $array[$child->getName()]);
 		}
 		// add $new_array to $array
 		$array[$child->getName()] = $new_array;
 	  }
 	  else {
+    // Use the is_raw attribute on value elements for select type fields to
+    // pass form validation. Example:
+    // <field_terms_select>
+    //    <und is_array="true">
+    //      <item>
+    //        <tid is_raw="true">10513</tid>
+    //      </item>
+    //      <item>
+    //        <tid is_raw="true">10523</tid>
+    //      </item>
+    //    </und>
+    //  </field_terms_select>
 		if ($child->attributes()->is_raw) {
 			return (string) $child;
 		}
@@ -683,37 +693,48 @@ class RESTServer {
   }
 
   function handleException($exception){
-    $code = $exception->getCode();
-    switch ($code) {
+    $error_code = $exception->getCode();
+    $error_message = $exception->getMessage();
+    $error_data = method_exists($exception, 'getData') ? $exception->getData() : '';
+
+    switch ($error_code) {
       case 204:
-        drupal_add_http_header('Status', '204 No Content: ' . $exception->getMessage());
+        $error_header_status_message = '204 No Content: ' . $error_message;
         break;
       case 304:
-        drupal_add_http_header('Status', '304 Not Modified: ' . $exception->getMessage());
+        $error_header_status_message =  '304 Not Modified: ' . $error_message;
         break;
       case 401:
-        drupal_add_http_header('Status', '401 Unauthorized: ' . $exception->getMessage());
+        $error_header_status_message =  '401 Unauthorized: ' . $error_message;
         break;
       case 404:
-        drupal_add_http_header('Status', '404 Not found: ' . $exception->getMessage());
+        $error_header_status_message =  '404 Not found: ' . $error_message;
         break;
       case 406:
-        drupal_add_http_header('Status', '406 Not Acceptable: ' . $exception->getMessage());
+        $error_header_status_message = '406 Not Acceptable: ' . $error_message;
         break;
       default:
-        if ($code >= 400 && $code < 600) {
-          drupal_add_http_header('Status', $code . ':' . $exception->getMessage());
+        if ($error_code >= 400 && $error_code < 600) {
+          $error_header_status_message = $error_code . ':' . $error_message;
         }
         else {
-          drupal_add_http_header('Status', '500 Internal Server Error: '. 'An error occurred (' . $code . '):' . $exception->getMessage());
+          $error_header_status_message = '500 Internal Server Error: An error occurred (' . $error_code . '): ' . $error_message;
         }
         break;
     }
-    if($this->endpoint->debug) {
+
+    $error_alter_array = array(
+      'code' => $error_code,
+      'header_message' => &$error_header_status_message,
+      'body_data' => &$error_data,
+    );
+    drupal_alter('rest_server_execute_errors', $error_alter_array, $controller, $arguments);
+
+    drupal_add_http_header('Status', $error_header_status_message);
+    if ($this->endpoint->debug) {
       debug($exception);
     }
-    if(method_exists($exception,'getData')){
-      return $exception->getData();
-    }
+
+    return $error_data;
   }
 }
