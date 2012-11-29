@@ -451,7 +451,7 @@ function mark_a_spot_views_default_views() {
   $handler->display->display_options['fields']['field_common']['field'] = 'field_common';
   $handler->display->display_options['fields']['field_common']['label'] = '';
   $handler->display->display_options['fields']['field_common']['alter']['alter_text'] = TRUE;
-  $handler->display->display_options['fields']['field_common']['alter']['text'] = 'Dieser Beitrag wurde nicht näher lokalisiert.';
+  $handler->display->display_options['fields']['field_common']['alter']['text'] = 'Unlocated report';
   $handler->display->display_options['fields']['field_common']['element_label_colon'] = FALSE;
   $handler->display->display_options['fields']['field_common']['empty'] = '[field_address]';
   $handler->display->display_options['fields']['field_common']['empty_zero'] = TRUE;
@@ -645,7 +645,7 @@ function mark_a_spot_views_default_views() {
   $handler->display->display_options['fields']['field_common']['field'] = 'field_common';
   $handler->display->display_options['fields']['field_common']['label'] = '';
   $handler->display->display_options['fields']['field_common']['alter']['alter_text'] = TRUE;
-  $handler->display->display_options['fields']['field_common']['alter']['text'] = '<div class="non-located">Beitrag nicht näher lokalisiert</div><div class="no-markers"><span></span></div>';
+  $handler->display->display_options['fields']['field_common']['alter']['text'] = '<div class="non-located">Unlocated Report</div><div class="no-markers"><span></span></div>';
   $handler->display->display_options['fields']['field_common']['element_type'] = '0';
   $handler->display->display_options['fields']['field_common']['element_label_type'] = '0';
   $handler->display->display_options['fields']['field_common']['element_label_colon'] = FALSE;
