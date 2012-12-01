@@ -18,7 +18,6 @@ dependencies[] = geolocation
 dependencies[] = geolocation_googlemaps
 dependencies[] = image
 dependencies[] = list
-dependencies[] = markaspot_log
 dependencies[] = markaspot_logic
 dependencies[] = markaspot_open311
 dependencies[] = markaspot_tweet311
