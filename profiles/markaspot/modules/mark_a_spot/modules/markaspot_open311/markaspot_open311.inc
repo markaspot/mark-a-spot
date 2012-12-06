@@ -325,6 +325,10 @@ function _request_map_node($request) {
     );
   }
 
+  // Non Open311 compliant fields can be added here
+  if(isset($parameters['extension'])) {
+    $node->field_common[$node->language]['value'] = $request->field_common['und'];
+  }
 
   $node->is_new = true;
   $node->type = 'report';
