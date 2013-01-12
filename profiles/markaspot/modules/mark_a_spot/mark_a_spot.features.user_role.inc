@@ -10,7 +10,7 @@
 function mark_a_spot_user_default_roles() {
   $roles = array();
 
-  // Exported role: Bürger.
+  // Exported role: Citizen.
   $roles['citizen'] = array(
     'name' => 'Citizen',
     'weight' => '6',

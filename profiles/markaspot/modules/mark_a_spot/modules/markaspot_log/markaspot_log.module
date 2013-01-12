@@ -121,10 +121,10 @@ function markaspot_log_node_insert($node) {
   global $user;
 
 /*
-  if (!in_array('Bürger', $user->roles) && 
+  if (!in_array('Citizen', $user->roles) && 
     !(in_array('Verwaltung', $user->roles) || in_array('administrator', $user->roles))){
-    markaspot_log_add_role_to_user('Bürger', $user->uid);
-    $data->message = t('The User is now Bürger');
+    markaspot_log_add_role_to_user('Citizen', $user->uid);
+    $data->message = t('The User is now Citizen');
   }
 */
 
@@ -197,16 +197,10 @@ function markaspot_log_comment_presave($comment) {
   // Preparing Logging to Mas_log table (don't think of watchdog)
   global $user;
 
-  /*
-  if (!in_array('Bürger', $user->roles) && 
-    !(in_array('Verwaltung', $user->roles) || in_array('administrator', $user->roles))){
-    markaspot_log_add_role_to_user('Bürger', $user->uid);
-    $data->message = t('The User is now Bürger');
-  }
-  */
+
 
   //print_r($user->roles);
-  if (in_array('Bürger', $user->roles) || in_array('anonymous user',$user->roles)){
+  if (in_array('Citizen', $user->roles) || in_array('anonymous user',$user->roles)){
     $data->message = t('A comment has been created by Citizen');
   }
 

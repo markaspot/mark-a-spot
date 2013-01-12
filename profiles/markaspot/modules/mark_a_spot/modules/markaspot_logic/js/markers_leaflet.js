@@ -160,25 +160,25 @@ var markerLayer, queryString ;
                 case 1:
                   var LeafIcon = L.Icon.extend({
                     options: {
-                      shadowUrl: '/profiles/markaspot/modules/mark_a_spot/modules/markaspot_logic/img/icons/cartosoft/marker_crts_shadow.png',
+                      shadowUrl: 'profiles/markaspot/modules/mark_a_spot/modules/markaspot_logic/img/icons/cartosoft/marker_crts_shadow.png',
                       iconSize: new L.Point(32, 32),
                       shadowSize: new L.Point(52, 33),
                       iconAnchor: new L.Point(30, 14)
                     }
                   });
-                  var masIcon = new LeafIcon({iconUrl: '/profiles/markaspot/modules/mark_a_spot/modules/markaspot_logic/img/icons/cartosoft/marker_crts_' + item.categoryHex + '.png'});
+                  var masIcon = new LeafIcon({iconUrl: 'profiles/markaspot/modules/mark_a_spot/modules/markaspot_logic/img/icons/cartosoft/marker_crts_' + item.categoryHex + '.png'});
 
                 break;
                 case 2:
                   var LeafIcon = L.Icon.extend({
                     options: {
-                      shadowUrl: '/profiles/markaspot/modules/mark_a_spot/modules/markaspot_logic/img/icons/cartosoft/marker_crts_shadow.png',
+                      shadowUrl: 'profiles/markaspot/modules/mark_a_spot/modules/markaspot_logic/img/icons/cartosoft/marker_crts_shadow.png',
                       iconSize: new L.Point(32, 32),
                       shadowSize: new L.Point(52, 33),
                       iconAnchor: new L.Point(0, 14)
                     }
                   });
-                  var masIcon = new LeafIcon({iconUrl: '/profiles/markaspot/modules/mark_a_spot/modules/markaspot_logic/img/icons/cartosoft/marker_crts_' + item.statusHex + '.png'});
+                  var masIcon = new LeafIcon({iconUrl: 'profiles/markaspot/modules/mark_a_spot/modules/markaspot_logic/img/icons/cartosoft/marker_crts_' + item.statusHex + '.png'});
 
                 break;
 

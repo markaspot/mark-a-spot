@@ -724,7 +724,7 @@ function mark_a_spot_default_page_manager_pages() {
 <p><a href="/report/add">Report here.</a></p>
 </div>
 <div class="pane-content">
-<p>Hier sehen Sie alle bislang eingegangenen Hinweise, die Sie und andere Bürger als Beiträge eingebracht haben.</p>
+<p>Hier sehen Sie alle bislang eingegangenen Hinweise, die Sie und andere Citizen als Beiträge eingebracht haben.</p>
 <p>Sie können verfolgen, welchen Bearbeitungstand die verschiedenen Anliegen in Ihrer Stadt haben. Zusätzlich steht hierfür auch die <a href="/map">Kartenansicht zur Verfügung</a>.</p>
 <p>In order to rate or comment on other\'s reports, you have to log in.</p>
 </div>

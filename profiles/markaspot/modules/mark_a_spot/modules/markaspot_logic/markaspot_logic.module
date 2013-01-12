@@ -4,21 +4,13 @@
  * This module provides styles, scripts and views for Mark-a-Spot Installation
  * and implements some server-side validation and geocoding
  *
- * @author Holger Kreis - holger@markaspot.org
  */
-
 
 
 function markaspot_logic_form_alter(&$form, &$form_state, $form_id) {
   
   global $user;
   if ($form_id == 'report_node_form') {
-  //   $form['resetbutton'] = array(
-  //   '#markup' => '<button type="reset"/>',
-  //   '#weight' => 1000
-  // );
-    $form['twitter'] = null;
-    $form['comment_settings'] = null;
     $form['field_address']['und'][0]['value']['#type'] = "hidden";
     // Registered users' mail will be prefilled
     if (isset($user->mail)){
@@ -26,44 +18,10 @@ function markaspot_logic_form_alter(&$form, &$form_state, $form_id) {
     }
     $form['#validate'][] = 'markaspot_logic_validate';
   }
-  if (arg(0) != "home" && ($form_id == 'user_login' || $form_id == 'user_login_block' || $form_id == 'user_register_form')) {
-    if (function_exists('twitter_signin_button')) {
-      $items = array();
-      $items[] = twitter_signin_button();
-      if ($form_id == 'user_login_block'){
-        $form['twitter_signin'] = null;
-      }
-    }
-    
-    $attr = array();
-    if (variable_get('fbconnect_fast_reg', 0) && variable_get('fbconnect_reg_options', 0)) {
-      $attr = array('scope' => 'email');
-    }
-    if (function_exists('fbconnect_render_button')){
-      $ss__facebook_connect = fbconnect_render_button($attr);
-      
-      $form['or'] = array(
-        '#type' => 'item',
-        '#prefix' => '<div>',
-        '#markup' => '<h2>'. t('OR') .'</h2>',
-        '#suffix' => '</div>',
-      );
-      
-      $form['fbconnect_button'] = array(
-        '#type' => 'item',
-        '#title' => t('Facebook login'),
-        '#markup' => $ss__facebook_connect,
-      );
-    }
-  }
-
 }
 
-
-
 function markaspot_logic_validate($node, &$form) {
-    // print_r($form['values']['field_geo']);
-    // krumo($form);
+
     $mail = $form['values']['field_e_mail']['und'][0]['value'];
 
     if (!valid_email_address($mail)) {
@@ -77,7 +35,7 @@ function markaspot_logic_validate($node, &$form) {
         $form['values']['field_address']['und'][0]['value'] = $form['values']['field_geo']['und'][0]['address']['field'];
       }
     }
-    
+   
 }
 
 
@@ -92,49 +50,6 @@ function markaspot_logic_node_presave($node) {
   // print_r($address);
   // die;
 }
-
-
-
-function markaspot_logic_getLatLng($address, $api_key = null) {
-
-    $url = "http://maps.google.com/maps/geo?output=xml&key=$api_key&q=";
-    $result = array('lat'=>'', 'lng'=>'', 'code'=>'');
-
-    // Make the Temporary URL for CURL to execute
-    $tempURL    = $url.urlencode($address);
-
-    // Create the cURL Object here
-    $crl    = curl_init();
-    curl_setopt($crl, CURLOPT_HEADER, 0);
-    curl_setopt($crl, CURLOPT_RETURNTRANSFER, 1);
-    
-    // Here we ask google to give us the lats n longs in XML format
-    curl_setopt($crl, CURLOPT_URL, $tempURL);
-    $gXML = curl_exec($crl);    // Here we get the google result in XML
-
-    // Using SimpleXML (Built-in XML parser in PHP5) to parse google result
-    $goo = simplexml_load_string(utf8_encode($gXML)); 
-
-    $result['code'] = $goo->Response->Status->code;
-    if ($result['code'] != 200) {
-        $result['lat'] = 'error';
-        $result['lng'] = 'error';
-        return $result;
-    }
-    else{
-        $coords = $goo->Response->Placemark->Point->coordinates;
-        list($lng, $lat)  = explode(',', $coords);
-        $result['lat']    = $lat;
-        $result['lng']    = $lng;
-        //$result['address']    = $gooAddress;
-        return $result;
-    }
-}
-
-
-
-
-
 
 
 function markaspot_logic_css_alter(&$css){
@@ -196,8 +111,6 @@ function markaspot_logic_init() {
   drupal_add_css(drupal_get_path('module', 'custom') . '/css/custom.css', array(
     'group' => CSS_DEFAULT, 'every_page' => TRUE));
   drupal_add_css(drupal_get_path('module', 'markaspot_logic') . '/css/mas-style.css');
-
-  drupal_add_library('system', 'ui.accordion');
 }
  
 function markaspot_logic_getCountVotes(){
@@ -269,14 +182,7 @@ function markaspot_logic_admin_settings() {
     '#maxlength' => 128,
     '#description' => t('Insert the initial address'),
   );
-  // $form['general']['markaspot_zip'] = array(
-  //   '#type' => 'textfield',
-  //   '#title' => t('Zip'),
-  //   '#default_value' => variable_get('markaspot_zip', _markaspot_logic_defaults('markaspot_zip')),
-  //   '#size' => '7',
-  //   '#maxlength' => 7,
-  //   '#description' => t('Insert the zip code'),
-  // );
+
   $form['general']['markaspot_city'] = array(
     '#type' => 'textfield',
     '#title' => t('City'),
@@ -285,14 +191,7 @@ function markaspot_logic_admin_settings() {
     '#maxlength' => 16,
     '#description' => t('Insert the municipality'),
   );
-  // $form['general']['markaspot_country'] = array(
-  //   '#type' => 'textfield',
-  //   '#title' => t('Country'),
-  //   '#default_value' => variable_get('markaspot_country', _markaspot_logic_defaults('markaspot_country')),
-  //   '#size' => '16',
-  //   '#maxlength' => 16,
-  //   '#description' => t('Insert the country the municipality is located'),
-  // );
+
   $form['general']['markaspot_ini_lat'] = array(
     '#type' => 'textfield',
     '#title' => t('Inital Lat'),
@@ -309,8 +208,6 @@ function markaspot_logic_admin_settings() {
     '#maxlength' => 32,
     '#description' => t('Insert the initial longitude'),
   );
-  
-
   $form['types']['markaspot_map_type'] = array(
   '#type' => 'radios', 
   '#title' => t('Map type'), 
@@ -399,6 +296,7 @@ function _markaspot_logic_defaults($id) {
  *
  * This hook declares what blocks are provided by the module.
  */
+
 function markaspot_logic_block_info() {
 
   $blocks['taxonomy_category'] = array(

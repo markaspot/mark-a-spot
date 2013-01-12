@@ -57,15 +57,7 @@ function mark_a_spot_views_default_views() {
   $handler->display->display_options['relationships']['uid']['id'] = 'uid';
   $handler->display->display_options['relationships']['uid']['table'] = 'node';
   $handler->display->display_options['relationships']['uid']['field'] = 'uid';
-  /* Relationship: Content: Vote results */
-  $handler->display->display_options['relationships']['votingapi_cache_1']['id'] = 'votingapi_cache_1';
-  $handler->display->display_options['relationships']['votingapi_cache_1']['table'] = 'node';
-  $handler->display->display_options['relationships']['votingapi_cache_1']['field'] = 'votingapi_cache';
-  $handler->display->display_options['relationships']['votingapi_cache_1']['votingapi'] = array(
-    'value_type' => '',
-    'tag' => 'vote',
-    'function' => 'count',
-  );
+  
   /* Field: Content: Title */
   $handler->display->display_options['fields']['title']['id'] = 'title';
   $handler->display->display_options['fields']['title']['table'] = 'node';
@@ -179,14 +171,6 @@ function mark_a_spot_views_default_views() {
   );
   $handler->display->display_options['fields']['field_image']['group_column'] = 'fid';
   $handler->display->display_options['fields']['field_image']['delta_offset'] = '0';
-  /* Field: Vote results: Value */
-  $handler->display->display_options['fields']['value']['id'] = 'value';
-  $handler->display->display_options['fields']['value']['table'] = 'votingapi_cache';
-  $handler->display->display_options['fields']['value']['field'] = 'value';
-  $handler->display->display_options['fields']['value']['relationship'] = 'votingapi_cache';
-  $handler->display->display_options['fields']['value']['label'] = 'ratingsCount';
-  $handler->display->display_options['fields']['value']['hide_alter_empty'] = FALSE;
-  $handler->display->display_options['fields']['value']['precision'] = '0';
   /* Field: Content: Non located report */
   $handler->display->display_options['fields']['field_common']['id'] = 'field_common';
   $handler->display->display_options['fields']['field_common']['table'] = 'field_data_field_common';
@@ -1102,16 +1086,6 @@ function mark_a_spot_views_default_views() {
   $handler->display->display_options['fields']['title']['alter']['ellipsis'] = FALSE;
   $handler->display->display_options['fields']['title']['element_label_colon'] = FALSE;
   $handler->display->display_options['fields']['title']['link_to_node'] = FALSE;
-  /* Field: Vote results: Value */
-  $handler->display->display_options['fields']['value']['id'] = 'value';
-  $handler->display->display_options['fields']['value']['table'] = 'votingapi_cache';
-  $handler->display->display_options['fields']['value']['field'] = 'value';
-  $handler->display->display_options['fields']['value']['relationship'] = 'votingapi_cache';
-  $handler->display->display_options['fields']['value']['label'] = '';
-  $handler->display->display_options['fields']['value']['exclude'] = TRUE;
-  $handler->display->display_options['fields']['value']['element_label_colon'] = FALSE;
-  $handler->display->display_options['fields']['value']['hide_alter_empty'] = FALSE;
-  $handler->display->display_options['fields']['value']['precision'] = '0';
   /* Field: Content: Non located report */
   $handler->display->display_options['fields']['field_common']['id'] = 'field_common';
   $handler->display->display_options['fields']['field_common']['table'] = 'field_data_field_common';

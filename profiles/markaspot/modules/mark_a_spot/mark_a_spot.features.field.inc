@@ -80,68 +80,6 @@ function mark_a_spot_field_default_fields() {
     ),
   );
 
-  // Exported field: 'comment-comment_node_report-field_comment_label'.
-  $fields['comment-comment_node_report-field_comment_label'] = array(
-    'field_config' => array(
-      'active' => '1',
-      'cardinality' => '1',
-      'deleted' => '0',
-      'entity_types' => array(),
-      'field_name' => 'field_comment_label',
-      'field_permissions' => array(
-        'type' => '2',
-      ),
-      'foreign keys' => array(),
-      'indexes' => array(
-        'value' => array(
-          0 => 'value',
-        ),
-      ),
-      'locked' => '0',
-      'module' => 'list',
-      'settings' => array(
-        'allowed_values' => array(
-          'Hinweis der Moderation' => 'Hinweis der Moderation',
-          'Stellungnahme der Verwaltung' => 'Stellungnahme der Verwaltung',
-        ),
-        'allowed_values_function' => '',
-      ),
-      'translatable' => '0',
-      'type' => 'list_text',
-    ),
-    'field_instance' => array(
-      'bundle' => 'comment_node_report',
-      'default_value' => NULL,
-      'deleted' => '0',
-      'description' => '',
-      'display' => array(
-        'default' => array(
-          'label' => 'above',
-          'module' => 'list',
-          'settings' => array(),
-          'type' => 'list_default',
-          'weight' => '1',
-        ),
-      ),
-      'entity_type' => 'comment',
-      'field_name' => 'field_comment_label',
-      'label' => 'Art',
-      'required' => 0,
-      'settings' => array(
-        'user_register_form' => FALSE,
-      ),
-      'widget' => array(
-        'active' => 1,
-        'module' => 'options',
-        'settings' => array(
-          'maxlength_js_label' => 'Content limited to @limit characters, remaining: <strong>@remaining</strong>',
-        ),
-        'type' => 'options_buttons',
-        'weight' => '1',
-      ),
-    ),
-  );
-
   // Exported field: 'node-report-body'.
   $fields['node-report-body'] = array(
     'field_config' => array(
