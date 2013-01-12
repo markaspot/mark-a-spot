@@ -59,8 +59,8 @@
 
   Drupal.geolocation.codeAddress = function(i) {
     var address = $('#geolocation-address-' + i + ' input').val();
-    var api_key = Drupal.settings.geolocation.settings.cloudmade_api_key;
-    console.log(Drupal.geolocation.settings);
+    var api_key = Drupal.settings.geolocation.settings.bing_api_key;
+    //console.log(Drupal.geolocation.settings);
     $.getJSON('http://dev.virtualearth.net/REST/v1/Locations?query=' + address + '&key=' + api_key + '&jsonp=?', function (result) {
       if (result.resourceSets[0].estimatedTotal > 0) {
           var loc = result.resourceSets[0].resources[0].point.coordinates;
