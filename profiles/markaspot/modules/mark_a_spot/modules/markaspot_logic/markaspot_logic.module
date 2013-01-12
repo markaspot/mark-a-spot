@@ -263,7 +263,7 @@ function markaspot_logic_admin_settings() {
     '#collapsible' => TRUE);
   $form['general']['markaspot_address'] = array(
     '#type' => 'textfield',
-    '#title' => t('Address'),
+    '#title' => t('Initial Address'),
     '#default_value' => variable_get('markaspot_address', _markaspot_logic_defaults('markaspot_address')),
     '#size' => '128',
     '#maxlength' => 128,
@@ -277,14 +277,14 @@ function markaspot_logic_admin_settings() {
   //   '#maxlength' => 7,
   //   '#description' => t('Insert the zip code'),
   // );
-  // $form['general']['markaspot_city'] = array(
-  //   '#type' => 'textfield',
-  //   '#title' => t('City'),
-  //   '#default_value' => variable_get('markaspot_city', _markaspot_logic_defaults('markaspot_city')),
-  //   '#size' => '16',
-  //   '#maxlength' => 16,
-  //   '#description' => t('Insert the municipality'),
-  // );
+  $form['general']['markaspot_city'] = array(
+    '#type' => 'textfield',
+    '#title' => t('City'),
+    '#default_value' => variable_get('markaspot_city', _markaspot_logic_defaults('markaspot_city')),
+    '#size' => '16',
+    '#maxlength' => 16,
+    '#description' => t('Insert the municipality'),
+  );
   // $form['general']['markaspot_country'] = array(
   //   '#type' => 'textfield',
   //   '#title' => t('Country'),

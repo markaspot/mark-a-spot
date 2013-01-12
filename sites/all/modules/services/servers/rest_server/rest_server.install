@@ -15,7 +15,7 @@ function rest_server_requirements($phase) {
   if ($phase == 'runtime') {
     module_load_include('module', 'rest_server');
     module_load_include('module', 'libraries');
-    if (($library = libraries_load('spyc')) && !empty($library['loaded'])) {
+    if (($library = libraries_load('spyc')) && empty($library['loaded'])) {
       $requirements['rest_server'] = array(
         'description' => 'The spyc library is missing, thus YAML is disabled',
         'severity' => REQUIREMENT_INFO,

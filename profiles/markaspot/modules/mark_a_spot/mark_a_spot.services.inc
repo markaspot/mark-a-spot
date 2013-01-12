@@ -31,26 +31,10 @@ function mark_a_spot_default_services_endpoint() {
     'parsers' => array(
       'application/json' => TRUE,
       'application/x-www-form-urlencoded' => TRUE,
+      'text/xml' => TRUE,
       'application/vnd.php.serialized' => FALSE,
+      'application/xml' => FALSE,
       'multipart/form-data' => FALSE,
-    ),
-    'rest_server' => array(
-      'formatters' => array(
-        'json' => TRUE,
-        'xml' => TRUE,
-        'bencode' => FALSE,
-        'jsonp' => FALSE,
-        'php' => FALSE,
-        'rss' => FALSE,
-        'yaml' => FALSE,
-      ),
-      'parsers' => array(
-        'application/json' => TRUE,
-        'application/vnd.php.serialized' => FALSE,
-        'application/x-www-form-urlencoded' => FALSE,
-        'application/x-yaml' => FALSE,
-        'multipart/form-data' => FALSE,
-      ),
     ),
   );
   $endpoint->resources = array(

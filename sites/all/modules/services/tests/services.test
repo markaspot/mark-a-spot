@@ -88,7 +88,7 @@ class ServicesWebTestCase extends DrupalWebTestCase {
         // Add .php to get serialized response.
         $url = $this->getAbsoluteUrl($url) . '.php';
         // Otherwise Services will reject arguments.
-        $headers = array("Content-type: application/x-www-form-urlencoded");
+        $headers[] = "Content-type: application/x-www-form-urlencoded";
         // Prepare arguments.
         $post = drupal_http_build_query($data, '', '&');
         break;
@@ -96,7 +96,7 @@ class ServicesWebTestCase extends DrupalWebTestCase {
         // Add .json to get json encoded response.
         $url = $this->getAbsoluteUrl($url) . '.json';
         // Set proper headers.
-        $headers = array("Content-type: application/json");
+        $headers[] = "Content-type: application/json";
         // Prepare arguments.
         $post = json_encode($data);
         break;
@@ -129,7 +129,7 @@ class ServicesWebTestCase extends DrupalWebTestCase {
         // Add .php to get serialized response.
         $url = $this->getAbsoluteUrl($url) . '.php';
         // Otherwise Services will reject arguments.
-        $headers = array("Content-type: application/x-www-form-urlencoded");
+        $headers[] = "Content-type: application/x-www-form-urlencoded";
         // Prepare arguments.
         $post = drupal_http_build_query($data, '', '&');
         break;
@@ -137,7 +137,7 @@ class ServicesWebTestCase extends DrupalWebTestCase {
         // Add .json to get json encoded response.
         $url = $this->getAbsoluteUrl($url) . '.json';
         // Set proper headers.
-        $headers = array("Content-type: application/json");
+        $headers[] = "Content-type: application/json";
         // Prepare arguments.
         $post = json_encode($data);
         break;
