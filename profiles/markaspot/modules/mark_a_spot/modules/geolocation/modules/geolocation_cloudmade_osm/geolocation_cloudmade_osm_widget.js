@@ -66,6 +66,7 @@
           var loc = result.resourceSets[0].resources[0].point.coordinates;
           Drupal.geolocation.maps[i].setView(new L.LatLng(loc[0],loc[1]), i);
           Drupal.geolocation.setMapMarker(new L.LatLng(loc[0],loc[1]), i);
+          Drupal.geolocation.codeLatLng(new L.LatLng(loc[0],loc[1]), i);
       }
       else {
           alert(Drupal.t("Sorry that address cannot be found"));
