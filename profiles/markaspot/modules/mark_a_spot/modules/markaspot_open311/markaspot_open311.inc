@@ -6,31 +6,6 @@ function _process_services_error($message, $code) {
 }
 
 
-function _check_location_valid($lat,$lon) {
-
-  /*
-  Bonn: 
-  nw: 50,7686 7,025
-  se: 50,6458 7,217
-  */
-
-
-  $bbox = array(
-    'nw' => array('lat' => 50.7686, 'lng' => 7.025),
-    'se' => array('lat' => 50.6458, 'lng' => 7.217),
-  );
-  if  (($bbox['nw']['lat'] >= $lat) && ($bbox['nw']['lng'] <= $lon)) {
-   $nw = true;
-  }
-  if  (($bbox['se']['lat'] <= $lat) && ($bbox['se']['lng'] >= $lon)) {
-   $se = true;
-  }
-  if ($se != true || $nw != true) {
-        return _process_services_error('The position does not seem to be a place in Bonn', '400');
-  }
- 
-}
-
 
 /**
  * Callback for creating request resources.
@@ -70,9 +45,7 @@ function _markaspot_open311_requests_create($data) {
   } 
   if (!isset($data->lat) || !isset($data->long)) {
     return _process_services_error(t('Missing position parameters lat and long'), $code);
-  } else {
-    _check_location_valid($data->lat,$data->long);
-  }
+  } 
 
   // Check if submitted service code is in ServiceList:
   $services = _markaspot_open311_services_index();
