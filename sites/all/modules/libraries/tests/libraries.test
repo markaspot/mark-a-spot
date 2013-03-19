@@ -320,6 +320,7 @@ class LibrariesTestCase extends DrupalWebTestCase {
               'info callback' => 'not applied',
               'pre-detect callback' => 'not applied',
               'post-detect callback' => 'not applied',
+              'pre-dependencies-load callback' => 'not applied',
               'pre-load callback' => 'not applied',
               'post-load callback' => 'not applied',
             ),
@@ -327,6 +328,7 @@ class LibrariesTestCase extends DrupalWebTestCase {
           'info callback' => 'not applied',
           'pre-detect callback' => 'not applied',
           'post-detect callback' => 'not applied',
+          'pre-dependencies-load callback' => 'not applied',
           'pre-load callback' => 'not applied',
           'post-load callback' => 'not applied',
         ),
@@ -336,6 +338,7 @@ class LibrariesTestCase extends DrupalWebTestCase {
           'info callback' => 'not applied',
           'pre-detect callback' => 'not applied',
           'post-detect callback' => 'not applied',
+          'pre-dependencies-load callback' => 'not applied',
           'pre-load callback' => 'not applied',
           'post-load callback' => 'not applied',
         ),
@@ -344,12 +347,14 @@ class LibrariesTestCase extends DrupalWebTestCase {
         'info' => array('_libraries_test_info_callback'),
         'pre-detect' => array('_libraries_test_pre_detect_callback'),
         'post-detect' => array('_libraries_test_post_detect_callback'),
+        'pre-dependencies-load' => array('_libraries_test_pre_dependencies_load_callback'),
         'pre-load' => array('_libraries_test_pre_load_callback'),
         'post-load' => array('_libraries_test_post_load_callback'),
       ),
       'info callback' => 'not applied',
       'pre-detect callback' => 'not applied',
       'post-detect callback' => 'not applied',
+      'pre-dependencies-load callback' => 'not applied',
       'pre-load callback' => 'not applied',
       'post-load callback' => 'not applied',
       'module' => 'libraries_test',
@@ -387,11 +392,13 @@ class LibrariesTestCase extends DrupalWebTestCase {
     $this->verbose('Actual:<pre>' . var_export($library, TRUE) . '</pre>');
     $this->assertEqual($library, $expected, 'Detect callback was applied correctly.');
 
-    // Test a callback in the 'pre-load' and 'post-load' phases.
+    // Test a callback in the 'pre-dependencies-load', 'pre-load' and
+    // 'post-load' phases.
     // Successfully loaded libraries should only contain information about the
     // already loaded variant.
     unset($expected['variants']);
     $expected['loaded'] = 0;
+    $expected['pre-dependencies-load callback'] = 'applied (top-level)';
     $expected['pre-load callback'] = 'applied (top-level)';
     $expected['post-load callback'] = 'applied (top-level)';
     $library = libraries_load('example_callback');
@@ -520,7 +527,7 @@ class LibrariesTestCase extends DrupalWebTestCase {
           $this->assertRaw($raw, "$label$name.$extension found.");
         }
         else {
-          $this->assertNoRaw($raw, "$label$name.$extension found.");
+          $this->assertNoRaw($raw, "$label$name.$extension not found.");
         }
       }
     }
