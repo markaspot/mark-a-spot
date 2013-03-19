@@ -1,4 +1,37 @@
 <?php
+
+function _process_services_error($message, $code) {
+  $error[] = array('code' => $code, 'description' => $message);
+  services_error($message, $code, $error);
+}
+
+
+function _check_location_valid($lat,$lon) {
+
+  /*
+  Bonn: 
+  nw: 50,7686 7,025
+  se: 50,6458 7,217
+  */
+
+
+  $bbox = array(
+    'nw' => array('lat' => 50.7686, 'lng' => 7.025),
+    'se' => array('lat' => 50.6458, 'lng' => 7.217),
+  );
+  if  (($bbox['nw']['lat'] >= $lat) && ($bbox['nw']['lng'] <= $lon)) {
+   $nw = true;
+  }
+  if  (($bbox['se']['lat'] <= $lat) && ($bbox['se']['lng'] >= $lon)) {
+   $se = true;
+  }
+  if ($se != true || $nw != true) {
+        return _process_services_error('The position does not seem to be a place in Bonn', '400');
+  }
+ 
+}
+
+
 /**
  * Callback for creating request resources.
  *
@@ -6,16 +39,39 @@
  * @return object $request
  */
 
+function _markaspot_open311_discovery(){
+  
+  // toDo:  make these key/value available via administration interface
+ 
+  $discovery['changeset'] = "2012-11-26 00:18";
+  $discovery['contact'] = "Bundesstadt Bonn, Amt 10-11, Berliner Platz 2, 53111 Bonn, fon: +49 228 77369";
+  $discovery['key_service'] = "You can request a key here: not yet";
+  $discovery['endpoints']['specification'] = "http://wiki.open311.org/GeoReport_v2";
+  $discovery['endpoints']['endpoint']['url'] = "http://anliegen.bonn.de/georeport/v2";
+  $discovery['endpoints']['endpoint']['changeset'] = "2012-11-26 00:18";
+  $discovery['endpoints']['endpoint']['type'] = "production";
+  $discovery['endpoints']['endpoint']['formats'] = array('format' => 'text/xml','format' =>'application/json');
+ 
+  return $discovery;
+}
+
 
 function _markaspot_open311_requests_create($data) {
   global $user;
   $data = (object) $data;
 
+  if (!isset($data->email)) {
+    return _process_services_error(t('Please provide a valid email address.'), 400);
+  } 
+
+
   if (!isset($data->service_code)) {
-    return services_error(t('Service_code missing or empty.'), 404);
+    return _process_services_error(t('Service_code missing or empty.'), 404);
   } 
   if (!isset($data->lat) || !isset($data->long)) {
-    return services_error(t('Missing position parameters [lat and long]'), 404);
+    return _process_services_error(t('Missing position parameters lat and long'), $code);
+  } else {
+    _check_location_valid($data->lat,$data->long);
   }
 
   // Check if submitted service code is in ServiceList:
@@ -72,96 +128,66 @@ function _markaspot_open311_requests_retrieve($nid, $parameters) {
 function _markaspot_open311_requests_index($page, $parameters) {
   global $user;
 
-  $query = db_select('node', 'n');
-  $query = $query->extend('PagerDefault')->extend('TableSort');
 
-  if(count($parameters) >= 1) {
+  $query = new EntityFieldQuery();
+  $query->entityCondition('entity_type', 'node')
+    ->entityCondition('bundle', 'report')
+    ->propertyCondition('status', 1)
+
+    //->range(0, 10)
+    
+    ->addMetaData('account', user_load(1)); // Run the query as user 1.
+
+
+  // $query = db_select('node', 'n');
+  // $query = $query->extend('PagerDefault')->extend('TableSort');
+
+  // if(count($parameters) >= 1) {
      // var_dump($parameters);
      // limit param
-    $limit = (isset($parameters['limit'])) ? $parameters['limit']:null;
-    if ($limit) {
-      $query->limit($limit);
-    } else {
-      $query->limit(50);
-    }
-    // start_date param or travel back to 1970
-    $start_timestamp = (isset($parameters['start_date']) && $parameters['start_date'] != '') ? strtotime($parameters['start_date']) : strtotime('01-01-1970');
 
-    // end_date param or create a timestamp now
-    $end_timestamp = (isset($parameters['end_date']) && $parameters['end_date'] != '') ? strtotime($parameters['end_date']) : time();
+  // Checking for a limit parameter  
+  $limit = (isset($parameters['limit'])) ? $parameters['limit']:null;
+  if ($limit) {
+    $query->pager($limit);
+  } else {
+    $query->pager(50);
+  }
+  // }
 
-    // create conditions with AND
-    $anded = db_and();
-
-    $anded
-      ->condition('created', $start_timestamp, '>=')
-      ->condition('created', $end_timestamp, '<=');
-      // ->condition('type', 'report');
-
-    // add to query object  
-    $query->condition($anded);
+  // Checking for service_code and map the code with taxonomy terms
+  if (isset($parameters['service_code'])){
+    // get the service of the current node
+    $tid = _service_map_tax($parameters['service_code']);
+    $query->fieldCondition('field_category', 'tid', $tid);
   }
 
-  // build query
-  $nids = $query
-  ->fields('n', array('nid'))
-  //->condition($anded)
-  ->orderBy('created', 'DESC')//ORDER BY created
-  ->addTag('node_access')
-  ->execute()
-  ->fetchCol();
+  // Checking for status-parameter and map the code with taxonomy terms
+  if (isset($parameters['status'])){
+    // get the service of the current node
+    $tids = _status_map_tax($parameters['status']);
+    $query->fieldCondition('field_status', 'tid', $tids, 'IN');
+  }
 
-  $nodes = node_load_multiple($nids);
+  // start_date param or travel back to 1970
+  $start_timestamp = (isset($parameters['start_date']) && $parameters['start_date'] != '') ? strtotime($parameters['start_date']) : strtotime('01-01-1970');
+  $query->propertyCondition('created', $start_timestamp, '>=');
+
+  // end_date param or create a timestamp now
+  $end_timestamp = (isset($parameters['end_date']) && $parameters['end_date'] != '') ? strtotime($parameters['end_date']) : time();
+  $query->propertyCondition('created', $end_timestamp, '<=');
+  $query->propertyOrderBy('created', $direction = 'DESC');
+
+
+  $result = $query->execute();
+  $nodes = array_keys($result['node']);
+
+  $nodes = node_load_multiple($nodes);
   $requests = false;
-
   // now exploring nodes matching other parameters
   foreach ($nodes as $node) {
-    // mapping node to request
-    if ($node->type == 'report' && $node->status == 1) {
-      $found = false;
-
-      // Mapping Category to Service-Code (only to filter)
-      $term['category'] = taxonomy_term_load($node->field_category['und'][0]["tid"]);
-      // echo $node->title." ".$node->field_category['und'][0]["tid"];
-      if (isset($parameters['service_code'])){
-
-        // comma separated service_code parameters to array
-        $service_codes_filtered = explode(',', $parameters['service_code']);
-        
-        // get the service of the current node
-        $service = $term['category']->field_category_id['und'][0]['value'];
-        // var_dump($service_codes_filtered);
-        foreach ($service_codes_filtered as $service_code) {
-          if ($service_code == $service) {
-            $found['service_code'] = true;
-          }
-        }
-
-      }
-      // Map taxonomy to status (solved = closed, archive = closed)
-      $status = _tax_map_status($node->field_status['und'][0]["tid"]);
-
-      if (isset($parameters['status'])) {
-        if ($parameters['status'] == $status) {
-            $found['status'] = true;
-        }
-
-        // now mapping nodes to request
-        if (isset($parameters['service_code'])) {
-          if (isset($found['service_code']) && isset($found['status'])) {
-            $requests[] = _node_map_request($node, $status, $parameters);
-          }
-        }
-        if (!isset($parameters['service_code'])) {
-          if (isset($found['status'])) {
-            $requests[] = _node_map_request($node, $status, $parameters);
-          }
-        }
-      }
-      if (!isset($parameters['status']) && !isset($parameters['service_code'])) {
-        $requests[] = _node_map_request($node, $status, $parameters);
-      }
-    }
+    $status = _tax_map_status($node->field_status['und'][0]["tid"]);
+    $requests[] = _node_map_request($node, $status, $parameters);
   }
 
   return $requests;
@@ -216,9 +242,12 @@ function _markaspot_open311_services_retrieve($service_code) {
 
 function _node_map_request($node, $status, $parameters){
   //print_r($node,$parameters);
+
   $request['service_request_id'] = intval($node->nid);
   $request['status'] = $status;
-  $request['status_notes'] = $node->field_statement['und'][0]['value'];
+  if (isset($node->field_statement['und'][0]['value'])){
+    $request['status_notes'] = $node->field_statement['und'][0]['value'];
+  }
   $term['category'] = taxonomy_term_load($node->field_category['und'][0]["tid"]);
   
   // defining content of the status-field
@@ -241,7 +270,9 @@ function _node_map_request($node, $status, $parameters){
 
 
   // Geo Information including address
-  $request['address'] = $node->field_address['und'][0]['value'];
+  if (isset($node->field_address['und'][0]['value'])){
+    $request['address'] = $node->field_address['und'][0]['value'];
+  }
   $request['zipcode'] = null;
 
   $request['lat'] = floatval($node->field_geo['und'][0]['lat']);
@@ -250,7 +281,7 @@ function _node_map_request($node, $status, $parameters){
 
   // Media Url
   if(isset($node->field_image['und'])){
-    $image_uri = image_style_url("thumbnail", file_build_uri($node->field_image['und'][0]['filename']));
+    $image_uri = image_style_url("large", file_build_uri($node->field_image['und'][0]['filename']));
     $request['media_url'] = $image_uri;
   }
 
@@ -285,7 +316,6 @@ function _request_map_node($request) {
   
   $node->language = 'und'; // language - neutral
   
-  
   // mapping the requested service code to taxonomy id
   $tid = _service_map_tax($request->service_code);
 
@@ -301,19 +331,13 @@ function _request_map_node($request) {
 
   $node->body[$node->language][0]['value'] = $request->description;
   $node->body[$node->language][0]['format']  = 'filtered_html';
-
-  $node->field_address[$node->language][0]['value'] = $request->adress;
-  $node->field_zip[$node->language][0]['value'] =  $request->zipcode;
-
-  // $node->field_zip[$node->language][0]['value'] = variable_get('markaspot_zip');
-  // Make Requests valid only in the municiple
-  $node->field_city[$node->language][0]['value'] = variable_get('markaspot_city');
-
+  
+  $node->field_address[$node->language][0]['value'] = $request->address;
   $node->field_geo[$node->language][0]['lat'] = $request->lat;
   $node->field_geo[$node->language][0]['lng'] = $request->long;
   
   $node->field_e_mail[$node->language][0]['value'] = $request->email;
-  // var_dump($node);
+
   // File Handling 
 
   if ($request->media_url != ""){
@@ -380,6 +404,25 @@ function _tax_map_status($taxonomyId) {
   }
   //print_r($status);
   return $status;
+}
+
+
+/**
+ * Mapping requested status to drupal taxonomy.
+ *
+ * @param string $status
+ *  Open311 Service status (can be open, closed).
+ * @return int $tid
+ *  The TaxonomyId
+ */
+
+function _status_map_tax($status) {
+  if ($status == "open") {
+    $tids = array(1,2);
+  } else {
+    $tids = array(3);
+  }
+  return $tids;
 }
 
 /**
