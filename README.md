@@ -17,7 +17,11 @@ It's source-code is licensed and made available under the GNU General Public Lic
 http://yourserver/admin/structure/types/manage/report/fields
 2. Copy and paste the lat/lon values into the settings of the Mark-a-Spot configuration screen
 http://yourserver/admin/config/system/mark_a_spot
-3. Make sure, that clean Urls are supported and active: http://yourserver/?q=admin/config/search/clean-urls
+3. Make sure that clean urls are supported and active: http://yourserver/?q=admin/config/search/clean-urls
+
+In case you want to run the system with OSM, you may choose the Cloudmade Geolocation Widget and switch to Cloudmade's map tiles in the Mark-a-Spot configuration screen. You will need an Cloudmade API Key for that. 
+
+Make sure to get a Bing Maps API Key to use geocoding services for OSM. Of course you may choose any other service for that.
 
 ## Open311 GeoReport Resources 
 

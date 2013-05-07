@@ -33,6 +33,61 @@ function mark_a_spot_views_api() {
   return array("version" => "3.0");
 }
 
+
+/**
+ * Implements hook_image_default_styles().
+ */
+function mark_a_spot_image_default_styles() {
+  $styles = array();
+
+  // Exported image style: mas_medium.
+  $styles['mas_medium'] = array(
+    'name' => 'mas_medium',
+    'effects' => array(
+      5 => array(
+        'label' => 'Scale and crop',
+        'help' => 'Scale and crop will maintain the aspect-ratio of the original image, then crop the larger dimension. This is most useful for creating perfectly square thumbnails without stretching the image.',
+        'effect callback' => 'image_scale_and_crop_effect',
+        'dimensions callback' => 'image_resize_dimensions',
+        'form callback' => 'image_resize_form',
+        'summary theme' => 'image_resize_summary',
+        'module' => 'image',
+        'name' => 'image_scale_and_crop',
+        'data' => array(
+          'width' => '720',
+          'height' => '480',
+        ),
+        'weight' => '1',
+      ),
+    ),
+  );
+
+  // Exported image style: mas_thumb.
+  $styles['mas_thumb'] = array(
+    'name' => 'mas_thumb',
+    'effects' => array(
+      4 => array(
+        'label' => 'Scale and crop',
+        'help' => 'Scale and crop will maintain the aspect-ratio of the original image, then crop the larger dimension. This is most useful for creating perfectly square thumbnails without stretching the image.',
+        'effect callback' => 'image_scale_and_crop_effect',
+        'dimensions callback' => 'image_resize_dimensions',
+        'form callback' => 'image_resize_form',
+        'summary theme' => 'image_resize_summary',
+        'module' => 'image',
+        'name' => 'image_scale_and_crop',
+        'data' => array(
+          'width' => '100',
+          'height' => '100',
+        ),
+        'weight' => '1',
+      ),
+    ),
+  );
+
+  return $styles;
+}
+
+
 /**
  * Implements hook_node_info().
  */
@@ -43,8 +98,8 @@ function mark_a_spot_node_info() {
       'base' => 'node_content',
       'description' => t('Mark-a-Spot reports '),
       'has_title' => '1',
-      'title_label' => t('Concise Title'),
-      'help' => t('Describe the issue by choosing a concise title'),
+      'title_label' => t('Title'),
+      'help' => t('Describe the issue you found'),
     ),
   );
   return $items;

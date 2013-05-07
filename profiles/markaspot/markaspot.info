@@ -5,6 +5,7 @@ core = 7.x
 dependencies[] = block
 dependencies[] = rest_server
 dependencies[] = services
+dependencies[] = jquery_update
 dependencies[] = color
 dependencies[] = comment
 dependencies[] = contextual

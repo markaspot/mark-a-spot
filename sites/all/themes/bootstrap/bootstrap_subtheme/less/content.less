@@ -1,0 +1,20 @@
+// Insert your styling here.
+
+.ds-2col {
+  & > .group-left {
+    margin-right: 3%;
+    width: auto;
+    @media @mobile {
+      float: none;
+      margin: 0;
+    }
+  }
+  & > .group-right {
+    float: none;
+    overflow: hidden;
+    width: auto;
+    h2 {
+      margin-top: 0;
+    }
+  }
+}

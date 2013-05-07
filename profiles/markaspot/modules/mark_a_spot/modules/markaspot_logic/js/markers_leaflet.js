@@ -68,7 +68,7 @@ var markerLayer, queryString ;
     var initialLatLng = new L.LatLng(mas.markaspot_ini_lat, mas.markaspot_ini_lng);
 
     Drupal.Geolocation.maps[0] = new L.Map('map');
-    var cloudmadeUrl = 'http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/22677/256/{z}/{x}/{y}.png',
+    var cloudmadeUrl = 'http://{s}.tile.cloudmade.com/'+ mas.cloudmade_api_key +'/22677/256/{z}/{x}/{y}.png',
         cloudmadeAttribution = 'Map data &copy; 2012 OpenStreetMap contributors, Imagery &copy; 2012 CloudMade',
         cloudmade = new L.TileLayer(cloudmadeUrl, {maxZoom: 18, attribution: cloudmadeAttribution});
 
@@ -79,14 +79,14 @@ var markerLayer, queryString ;
   
     /**Sidebar Marker-functions*/
      
-    $("#block-markaspot-logic-taxonomy-category div div a.map-menue").click(function(e){
+    $("#block-markaspot-logic-taxonomy-category ul li a.map-menue").click(function(e){
       e.preventDefault();
       hideMarkers();
       readData(1, getMarkerId, getTaxId(this.id), "All");
       return false;
     });
     
-    $("#block-markaspot-logic-taxonomy-status div div a.map-menue").click(function(e){
+    $("#block-markaspot-logic-taxonomy-status ul li a.map-menue").click(function(e){
       e.preventDefault();
       hideMarkers();
       readData(2, getMarkerId, "All", getTaxId(this.id));
@@ -100,7 +100,9 @@ var markerLayer, queryString ;
     
 
     function readData(getToggle,getMarkerId,categoryCond,statusCond) {
-      markerLayer = new L.LayerGroup();
+      // markerLayer = new L.LayerGroup();
+      markerLayer = new L.MarkerClusterGroup();
+
       uri = mas.uri.split('?');
       
       if (uri[0] == "/node"){
@@ -136,7 +138,7 @@ var markerLayer, queryString ;
 
 
             if (item.address){
-              html += '<div class="marker-address"><p>'+ item.address + '</br>' + item.zip + ' ' + item.city + '</p></div><div><a class="infowindow-link" href="' + item.path + '">mehr lesen</a></span>';
+              html += '<div class="marker-address"><p>'+ item.address + '</p></div><div><a class="infowindow-link" href="' + item.path + '">mehr lesen</a></span>';
             }
             /*
             if (item.Value){
@@ -160,13 +162,13 @@ var markerLayer, queryString ;
                 case 1:
                   var LeafIcon = L.Icon.extend({
                     options: {
-                      shadowUrl: 'profiles/markaspot/modules/mark_a_spot/modules/markaspot_logic/img/icons/cartosoft/marker_crts_shadow.png',
+                      shadowUrl: Drupal.settings.basePath + 'profiles/markaspot/modules/mark_a_spot/modules/markaspot_logic/img/icons/cartosoft/marker_crts_shadow.png',
                       iconSize: new L.Point(32, 32),
                       shadowSize: new L.Point(52, 33),
                       iconAnchor: new L.Point(30, 14)
                     }
                   });
-                  var masIcon = new LeafIcon({iconUrl: 'profiles/markaspot/modules/mark_a_spot/modules/markaspot_logic/img/icons/cartosoft/marker_crts_' + item.categoryHex + '.png'});
+                  var masIcon = new LeafIcon({iconUrl: Drupal.settings.basePath + 'profiles/markaspot/modules/mark_a_spot/modules/markaspot_logic/img/icons/cartosoft/marker_crts_' + item.categoryHex + '.png'});
 
                 break;
                 case 2:
@@ -193,7 +195,9 @@ var markerLayer, queryString ;
             }
    
             bounds.extend(latlon);
-           
+            
+            img = $('<img class="pull-left thumbnail"/>').attr('src', 'http://staticmaps.cloudmade.com/' + mas.cloudmade_api_key + '/staticmap?&amp;zoom=15&amp;size=100x100&amp;format=png&amp;styleid=22677&amp;center=50.8211546%2C6.895930599999929&amp;markers=size%3Amid%7Ccolor%3Ared%7C50.8211546%2C6.895930599999929center=' + item.positionLat + "," + item.positionLng + '&sensor=true&zoom=13&size=100x100');
+            $('.body_' + item.nid).before(img);
 
             var fn  = markerClickFn(latlon, html);
 

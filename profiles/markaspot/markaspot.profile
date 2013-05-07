@@ -18,7 +18,6 @@ function markaspot_install_tasks_alter(&$tasks, $install_state){
 
 }
 
-
 function markaspot_install_finished(&$install_state) {
 
   // saving taonomies for status
@@ -124,8 +123,9 @@ function _createCategories() {
 
   // Define the terms.
   $terms[0] = array('Abandoned Cars', 'abandoned, wrecked, dismantled, or inoperative cars on private property', '010', 'abandonedcar, cars, wreckedcar, car', '235f9b');
-  $terms[1] = array('Litter Basket Complaint','Litter Basket Request or Complaint', '011', 'litter, trash', 'ff00bb') ;
+  $terms[1] = array('Litter Basket Complaint','Litter Basket Request or Complaint', '011', 'litter, trash, garbage', 'ff00bb') ;
   $terms[2] = array('Graffiti Report','Report graffiti on a building you own.', '012', 'graffiti, paintings', '660000') ;
+  $terms[3] = array('Building Construction Complaint','Dangerous Buildings and Vacant Property Operations historically has been known for the demolition of dangerous buildings, but recent adjustments in service delivery are focusing on inventorying vacant structures', '013', 'graffiti, demolition', '660000') ;
 
 
   foreach ($terms as $parent) {
@@ -162,15 +162,17 @@ function _createCategories() {
 function _createNode(){
   $i = 0;
   // now creating initial report
-  $nodes[0] = array('An abandoned car', 'Lorem Ipsum Lorem ipsum dolor sit amet, consectetur ing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,  quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo', '50.8212596','6.8961028','Pingsdorfer Straße 88, 50321 Brühl','holger@markaspot.org','10', '1', '0');
+  $nodes[0] = array('Garbage Collection', 'Lorem Ipsum Lorem ipsum dolor sit amet, consectetur ing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,  quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo', '50.8212596','6.8961028','Pingsdorfer Straße 88, 50321 Brühl','holger@markaspot.org','11', '1', '0', 'flickr_by_dancentury_garbage_collection_4585329947');
 
-  $nodes[1] = array('Ugly graffiti on pavement', 'Lorem Ipsum Lorem ipsum dolor sit amet, consectetur ing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,  quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo', '50.81812812677597','6.8905774494293155','Am Ringofen 21, 50321 Brühl','holger@markaspot.org', '12', '1', '0');
+  $nodes[1] = array('Some graffiti', 'Lorem Ipsum Lorem ipsum dolor sit amet, consectetur ing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,  quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo', '50.81812812677597','6.8905774494293155','Am Ringofen 21, 50321 Brühl','holger@markaspot.org', '12', '1', '0', 'flickr_by_striatic_grafitti_133146861');
 
-  $nodes[2] = array('Abandoned fridge', 'Lorem Ipsum Lorem ipsum dolor sit amet, consectetur ing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,  quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo', '50.82435019881909','6.895512714016718','Liblarer Straße 88, 50321, Brühl','holger@markaspot.org', '11', '3', '0');
+  $nodes[2] = array('Abandoned car', 'Lorem Ipsum Lorem ipsum dolor sit amet, consectetur ing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,  quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo', '50.82435019881909','6.895512714016718','Liblarer Straße 88, 50321, Brühl','holger@markaspot.org', '10', '3', '0', 'flickr_thomasbrandt');
 
-  $nodes[3] = array('Graffiti on castle wall', 'Lorem Ipsum Lorem ipsum dolor sit amet, consectetur ing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,  quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo', '50.8282131596655','6.90819419823913','Promenade, 50321 Brühl','holger@markaspot.org', '12','3', '0');
+  $nodes[3] = array('Danger at subway construction', 'Lorem Ipsum Lorem ipsum dolor sit amet, consectetur ing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,  quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo', '50.8282131596655','6.90819419823913','Promenade, 50321 Brühl','holger@markaspot.org', '13','3', '0', 'flickr_holger_baustellenlage_ebertplatz');
 
-  $nodes[4] = array('Consectetur ing elit', 'Lorem Ipsum Lorem ipsum dolor sit amet, consectetur ing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,  quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo', '50.8327211', '6.9032226','Friedrichstraße 23 50321 Brühl','holger@markaspot.org', '10', '4', '1');
+  $nodes[4] = array('Really Abandoned car', 'Lorem Ipsum Lorem ipsum dolor sit amet, consectetur ing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,  quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo', '50.8327211', '6.9032226','Friedrichstraße 23 50321 Brühl','holger@markaspot.org', '10', '4', '1','flickr_by_mikebaird_abandoned_car_4585329947');
+
+  $nodes[5] = array('Garbage collection', 'Lorem Ipsum Lorem ipsum dolor sit amet, consectetur ing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,  quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo', '50.826873' ,' 6.900167','Centre, 50321 Brühl','holger@markaspot.org', '11', '4', '1','flickr_by_realname_garbage-tonal-decay');
 
 
   foreach ($nodes as $node_data) {
@@ -196,6 +198,12 @@ function _createNode(){
     $node->field_status[$node->language][0]['tid'] = $node_data[7]; 
     $node->field_common['und'] = $node_data[8];
     $node->is_new = true;
+    $node->promote = 0;
+    $filename = 'image_'.$node_data[9].'.jpg';
+    // var_dump(base_path().'profiles/markaspot/themes/mas/images/'.$node_data[9]);
+    $image = file_get_contents('sites/all/themes/mas/images/'.$node_data[9].'.jpg');
+    $file = file_save_data($image, 'public://' . $filename, FILE_EXISTS_RENAME);
+    $node->field_image = array(LANGUAGE_NONE => array('0' => (array)$file));
 
 
     // I prefer using pathauto, which would override the below path
@@ -210,19 +218,44 @@ function _createNode(){
   }
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 function _build_blocks() {
-  $blocks[0] = array('markaspot_log', 'markaspot_activity', 'sidebar_second', 'bartik', 'node/*', '1');
-  $blocks[1] = array('markaspot_logic', 'taxonomy_category', 'sidebar_second', 'bartik', 'map', '1');
-  $blocks[2] = array('markaspot_logic', 'taxonomy_status', 'sidebar_second', 'bartik', 'map', '1');
-  $blocks[3] = array('markaspot_logic', 'markaspot_map', 'sidebar_second', 'bartik', 'map', '1');
-  $blocks[4] = array('markaspot_unpubished', 'recent', 'sidebar_second', 'bartik', '<front>', '1');
-  $blocks[5] = array('search', 'form', 'sidebar_second', 'bartik', 'map', '1');
-  $blocks[6] = array('system', 'navigation', 'sidebar_second', 'bartik', '<front>', '1');
-  $blocks[7] = array('user', 'login', 'sidebar_second', 'bartik', '<front>', '1');
+  $blocks[0] = array('markaspot_log', 'markaspot_activity', 'sidebar_second', 'mas', 'node/*', '1');
+  $blocks[1] = array('markaspot_logic', 'taxonomy_category', 'sidebar_second', 'mas', 'map', '1');
+  $blocks[2] = array('markaspot_logic', 'taxonomy_status', 'sidebar_second', 'mas', 'map', '1');
+  $blocks[3] = array('markaspot_logic', 'markaspot_map', 'sidebar_second', 'mas', 'map', '1');
+  $blocks[4] = array('markaspot_unpubished', 'recent', 'sidebar_second', 'mas', '<front>', '1');
+  $blocks[5] = array('search', 'form', 'sidebar_second', 'mas', 'map', '1');
+  $blocks[6] = array('system', 'navigation', 'sidebar_second', 'mas', '<front>', '1');
+  $blocks[7] = array('user', 'login', 'sidebar_second', 'mas', '<front>', '1');
+  $blocks[7] = array('user', 'login', 'sidebar_second', 'mas', '<front>', '1');
+  $blocks[7] = array('user', 'login', 'sidebar_second', 'mas', '<front>', '1');
+  $blocks[7] = array('user', 'login', 'sidebar_second', 'mas', '<front>', '1');
+  $blocks[7] = array('user', 'login', 'sidebar_second', 'mas', '<front>', '1');
 
   foreach ($blocks as $block) {
     _activate_block($block[0],$block[1],$block[2],$block[3],$block[4],$block[5]);
   }
+  
 
 }
 

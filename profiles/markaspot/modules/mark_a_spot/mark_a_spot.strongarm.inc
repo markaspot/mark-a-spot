@@ -13,9 +13,88 @@ function mark_a_spot_strongarm() {
   $strongarm = new stdClass();
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
+  $strongarm->name = 'admin_theme';
+  $strongarm->value = 'rubik';
+  $export['admin_theme'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'clean_url';
+  $strongarm->value = 1;
+  $export['clean_url'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'comment_anonymous_report';
+  $strongarm->value = 0;
+  $export['comment_anonymous_report'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'comment_default_mode_report';
+  $strongarm->value = 1;
+  $export['comment_default_mode_report'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'comment_default_per_page_report';
+  $strongarm->value = '50';
+  $export['comment_default_per_page_report'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'comment_form_location_report';
+  $strongarm->value = 1;
+  $export['comment_form_location_report'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'comment_preview_report';
+  $strongarm->value = '1';
+  $export['comment_preview_report'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'comment_report';
+  $strongarm->value = '2';
+  $export['comment_report'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'comment_subject_field_report';
+  $strongarm->value = 1;
+  $export['comment_subject_field_report'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
   $strongarm->name = 'field_bundle_settings_node__report';
   $strongarm->value = array(
-    'view_modes' => array(),
+    'view_modes' => array(
+      'teaser' => array(
+        'custom_settings' => TRUE,
+      ),
+      'full' => array(
+        'custom_settings' => FALSE,
+      ),
+      'rss' => array(
+        'custom_settings' => FALSE,
+      ),
+      'search_index' => array(
+        'custom_settings' => FALSE,
+      ),
+      'search_result' => array(
+        'custom_settings' => FALSE,
+      ),
+    ),
     'extra_fields' => array(
       'form' => array(
         'title' => array(
@@ -30,11 +109,58 @@ function mark_a_spot_strongarm() {
   $strongarm = new stdClass();
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
-  $strongarm->name = 'theme_bartik_settings';
+  $strongarm->name = 'menu_options_report';
+  $strongarm->value = array(
+    0 => 'main-menu',
+  );
+  $export['menu_options_report'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'menu_parent_report';
+  $strongarm->value = 'main-menu:0';
+  $export['menu_parent_report'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'node_options_report';
+  $strongarm->value = array(
+    0 => 'status',
+    1 => 'promote',
+  );
+  $export['node_options_report'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'node_preview_report';
+  $strongarm->value = '1';
+  $export['node_preview_report'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'node_submitted_report';
+  $strongarm->value = 1;
+  $export['node_submitted_report'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'theme_default';
+  $strongarm->value = 'mas';
+  $export['theme_default'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'theme_mas_settings';
   $strongarm->value = array(
     'toggle_logo' => 1,
-    'toggle_name' => 1,
-    'toggle_slogan' => 1,
+    'toggle_name' => 0,
+    'toggle_slogan' => 0,
     'toggle_node_user_picture' => 1,
     'toggle_comment_user_picture' => 1,
     'toggle_comment_user_verification' => 1,
@@ -42,150 +168,15 @@ function mark_a_spot_strongarm() {
     'toggle_main_menu' => 1,
     'toggle_secondary_menu' => 1,
     'default_logo' => 0,
-    'logo_path' => 'profiles/markaspot/modules/mark_a_spot/modules/markaspot_logic/img/logo.png',
-    'logo_upload' => '',
+    'logo_path' => 'public://logo.png',
     'default_favicon' => 1,
     'favicon_path' => '',
     'favicon_upload' => '',
-    'scheme' => 'ice',
-    'palette' => array(
-      'top' => '#d0d0d0',
-      'bottom' => '#c2c4c5',
-      'bg' => '#ffffff',
-      'sidebar' => '#ffffff',
-      'sidebarborders' => '#cccccc',
-      'footer' => '#24272c',
-      'titleslogan' => '#000000',
-      'text' => '#4a4a4a',
-      'link' => '#019dbf',
-    ),
-    'theme' => 'bartik',
-    'info' => array(
-      'fields' => array(
-        'top' => 'Header top',
-        'bottom' => 'Header bottom',
-        'bg' => 'Main background',
-        'sidebar' => 'Sidebar background',
-        'sidebarborders' => 'Sidebar borders',
-        'footer' => 'Footer background',
-        'titleslogan' => 'Title and slogan',
-        'text' => 'Text color',
-        'link' => 'Link color',
-      ),
-      'schemes' => array(
-        'default' => array(
-          'title' => 'Blue Lagoon (default)',
-          'colors' => array(
-            'top' => '#0779bf',
-            'bottom' => '#48a9e4',
-            'bg' => '#ffffff',
-            'sidebar' => '#f6f6f2',
-            'sidebarborders' => '#f9f9f9',
-            'footer' => '#292929',
-            'titleslogan' => '#fffeff',
-            'text' => '#3b3b3b',
-            'link' => '#0071B3',
-          ),
-        ),
-        'firehouse' => array(
-          'title' => 'Firehouse',
-          'colors' => array(
-            'top' => '#cd2d2d',
-            'bottom' => '#cf3535',
-            'bg' => '#ffffff',
-            'sidebar' => '#f1f4f0',
-            'sidebarborders' => '#ededed',
-            'footer' => '#1f1d1c',
-            'titleslogan' => '#fffeff',
-            'text' => '#3b3b3b',
-            'link' => '#d6121f',
-          ),
-        ),
-        'ice' => array(
-          'title' => 'Ice',
-          'colors' => array(
-            'top' => '#d0d0d0',
-            'bottom' => '#c2c4c5',
-            'bg' => '#ffffff',
-            'sidebar' => '#ffffff',
-            'sidebarborders' => '#cccccc',
-            'footer' => '#24272c',
-            'titleslogan' => '#000000',
-            'text' => '#4a4a4a',
-            'link' => '#019dbf',
-          ),
-        ),
-        'plum' => array(
-          'title' => 'Plum',
-          'colors' => array(
-            'top' => '#4c1c58',
-            'bottom' => '#593662',
-            'bg' => '#fffdf7',
-            'sidebar' => '#edede7',
-            'sidebarborders' => '#e7e7e7',
-            'footer' => '#2c2c28',
-            'titleslogan' => '#ffffff',
-            'text' => '#301313',
-            'link' => '#9d408d',
-          ),
-        ),
-        'slate' => array(
-          'title' => 'Slate',
-          'colors' => array(
-            'top' => '#4a4a4a',
-            'bottom' => '#4e4e4e',
-            'bg' => '#ffffff',
-            'sidebar' => '#ffffff',
-            'sidebarborders' => '#d0d0d0',
-            'footer' => '#161617',
-            'titleslogan' => '#ffffff',
-            'text' => '#3b3b3b',
-            'link' => '#0073b6',
-          ),
-        ),
-        '' => array(
-          'title' => 'Custom',
-          'colors' => array(),
-        ),
-      ),
-      'css' => array(
-        0 => 'css/colors.css',
-      ),
-      'copy' => array(
-        0 => 'logo.png',
-      ),
-      'gradients' => array(
-        0 => array(
-          'dimension' => array(
-            0 => 0,
-            1 => 0,
-            2 => 0,
-            3 => 0,
-          ),
-          'direction' => 'vertical',
-          'colors' => array(
-            0 => 'top',
-            1 => 'bottom',
-          ),
-        ),
-      ),
-      'fill' => array(),
-      'slices' => array(),
-      'blend_target' => '#ffffff',
-      'preview_css' => 'color/preview.css',
-      'preview_js' => 'color/preview.js',
-      'preview_html' => 'color/preview.html',
-      'base_image' => 'color/base.png',
-    ),
+    'bootstrap_rebuild_registry' => 0,
+    'cdn_bootstrap' => 1,
+    'cdn_bootstrap_version' => '2.3.1',
   );
-  $export['theme_bartik_settings'] = $strongarm;
-
-  $strongarm = new stdClass();
-  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
-  $strongarm->api_version = 1;
-  $strongarm->name = 'theme_default';
-  $strongarm->value = 'bartik';
-  $export['theme_default'] = $strongarm;
+  $export['theme_mas_settings'] = $strongarm;
 
   $strongarm = new stdClass();
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */

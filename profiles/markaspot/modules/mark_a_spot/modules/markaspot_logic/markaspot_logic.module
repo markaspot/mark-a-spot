@@ -71,10 +71,10 @@ function markaspot_logic_init() {
   drupal_add_js(array(
     'mas' => array(
       'markaspot_address' => variable_get('markaspot_address'),
-      // 'markaspot_zip' => variable_get('markaspot_zip'),
-      // 'markaspot_country' => variable_get('markaspot_country'),
       'markaspot_ini_lat' => variable_get('markaspot_ini_lat'),
       'markaspot_ini_lng' => variable_get('markaspot_ini_lng'),
+      'cloudmade_api_key' => variable_get('cloudmade_api_key'),
+
       'uri' => request_uri(),
       'node_type' => $type,
       //'countVotes' => markaspot_logic_getCountVotes(),
@@ -96,16 +96,26 @@ function markaspot_logic_init() {
       drupal_add_js(drupal_get_path('module', 'markaspot_logic') . '/js/mapiconmaker_packed.js', null);
       drupal_add_js(drupal_get_path('module', 'markaspot_logic') . '/js/markers_googlemaps.js', null);
     } else {
-      drupal_add_css('http://cdn.leafletjs.com/leaflet-0.4.4/leaflet.css', 'external');
-      drupal_add_css('http://cdn.leafletjs.com/leaflet-0.4.4/leaflet.ie.css', array(
+      drupal_add_css('http://cdn.leafletjs.com/leaflet-0.4.5/leaflet.css', 'external');
+      drupal_add_css('http://cdn.leafletjs.com/leaflet-0.4.5/leaflet.ie.css', array(
         'group' => CSS_THEME,
         'browsers' => array(
           'IE' => 'lte IE 8',
           '!IE' => FALSE
           )
       ));
-      drupal_add_js('http://cdn.leafletjs.com/leaflet-0.4.4/leaflet.js', 'external');
+      drupal_add_css(drupal_get_path('module', 'markaspot_logic') . '/css/MarkerCluster.css');
+      drupal_add_css(drupal_get_path('module', 'markaspot_logic') . '/css/MarkerCluster.Default.css');
+      drupal_add_css(drupal_get_path('module', 'markaspot_logic') . '/css/MarkerCluster.Default.ie.css', array(
+        'group' => CSS_THEME,
+        'browsers' => array(
+          'IE' => 'lte IE 8',
+          '!IE' => FALSE
+          )
+      ));
+      drupal_add_js('http://cdn.leafletjs.com/leaflet-0.4.5/leaflet.js', 'external');
       drupal_add_js(drupal_get_path('module', 'markaspot_logic') . '/js/markers_leaflet.js', null);
+      drupal_add_js(drupal_get_path('module', 'markaspot_logic') . '/js/leaflet.markercluster.js', null);
     }
   }
   drupal_add_css(drupal_get_path('module', 'custom') . '/css/custom.css', array(
@@ -350,34 +360,46 @@ function markaspot_logic_block_view($delta = '') {
 function markaspot_logic_contents($which_block) {
   switch ($which_block) {
     case 'taxonomy_category': 
-      $list_category = null;
-      $list_category .= "\n<div class='marker-category-wrapper-all'>". l(t('All'), '', array('attributes' => array('class' => 'map-all category'))).'</div>';
+      $list_category  = null;
+      $list_category .= '<div class="btn-group dropup"><button class="btn btn-large btn-primary">'.t('Services').'</button>';
+      $list_category .= '<button class="btn btn-large btn-primary dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>';
 
       $alter['html'] = TRUE;
       $alter['max_length'] = 25;
       $alter['word_boundary'] = true;
       $alter['ellipsis'] = true;
+      $list_category .= '<ul class="dropdown-menu">';
 
 
       $taxonomies = taxonomy_get_tree(2, $parent = 0, $max_depth = 1, $load_entities = TRUE);
       foreach ($taxonomies as $term) {
-        $list_category .= "\n<div class='marker-category-wrapper'>". l(views_trim_text($alter, $term->name),'taxonomy/term/'.$term->tid, array('attributes' => array('class' => 'map-menue marker-category col-'.$term->field_category_hex['und'][0]['value'], 'id' => 'tax-'.$term->tid))).'</div>';
+        $list_category .= "\n<li class='marker-category-wrapper'>". l(views_trim_text($alter, $term->name),'taxonomy/term/'.$term->tid, array('attributes' => array('class' => 'map-menue marker-category col-'.$term->field_status_hex['und'][0]['value'], 'id' => 'tax-'.$term->tid))).'</li>';
       }
+      $list_category .= '</ul>';
+      $list_category .= '</div>';
+
       return $list_category;
     break;
     case 'taxonomy_status':
-      $list_status = null;
-      $list_status .= "\n<div class='marker-status-wrapper-all'>". l(t('All'), '', array('attributes' => array('class' => 'map-all status'))).'</div>';
+      $list_status  = null;
+      $list_status .= '<div class="btn-group dropup"><button class="btn btn-large btn-primary">'.t('Status').'</button>';
+      $list_status .= '<button class="btn btn-large btn-primary dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>';
+
 
       $alter['html'] = TRUE;
       $alter['max_length'] = 25;
       $alter['word_boundary'] = true;
       $alter['ellipsis'] = true;
-      //views_trim_text($alter, $output);      
+      //views_trim_text($alter, $output); 
+      $list_status .= '<ul class="dropdown-menu">';
+     
       $taxonomies = taxonomy_get_tree(3, $parent = 0, $max_depth = 1, $load_entities = TRUE);
       foreach ($taxonomies as $term) {
-        $list_status .= "\n<div class='marker-status-wrapper'>". l(views_trim_text($alter, $term->name),'taxonomy/term/'.$term->tid, array('attributes' => array('class' => 'map-menue marker-status col-'.$term->field_status_hex['und'][0]['value'], 'id' => 'tax-'.$term->tid))).'</div>';
+        $list_status .= "\n<li class='marker-status-wrapper'>". l(views_trim_text($alter, $term->name),'taxonomy/term/'.$term->tid, array('attributes' => array('class' => 'map-menue marker-status col-'.$term->field_status_hex['und'][0]['value'], 'id' => 'tax-'.$term->tid))).'</li>';
       }
+      $list_status .= '</ul>';
+      $list_status .= '</div>';
+
       return $list_status;
     break;    
     case 'markaspot_map':

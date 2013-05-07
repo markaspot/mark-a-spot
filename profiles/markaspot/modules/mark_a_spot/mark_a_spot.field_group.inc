@@ -23,16 +23,16 @@ function mark_a_spot_field_group_info() {
     'label' => 'Location',
     'weight' => '1',
     'children' => array(
-      0 => 'field_common',
-      1 => 'field_geo',
-      2 => 'field_address',
+      0 => 'field_address',
+      1 => 'field_common',
+      2 => 'field_geo',
     ),
     'format_type' => 'fieldset',
     'format_settings' => array(
       'label' => 'Location',
       'instance_settings' => array(
         'required_fields' => 1,
-        'classes' => '',
+        'classes' => 'well',
         'description' => '',
       ),
       'formatter' => 'open',
@@ -50,7 +50,7 @@ function mark_a_spot_field_group_info() {
   $field_group->mode = 'form';
   $field_group->parent_name = '';
   $field_group->data = array(
-    'label' => 'Was liegt vor',
+    'label' => '',
     'weight' => '0',
     'children' => array(
       0 => 'body',
@@ -61,10 +61,10 @@ function mark_a_spot_field_group_info() {
     ),
     'format_type' => 'fieldset',
     'format_settings' => array(
-      'label' => 'Report',
+      'label' => '',
       'instance_settings' => array(
         'required_fields' => 1,
-        'classes' => '',
+        'classes' => 'well',
         'description' => '',
       ),
       'formatter' => 'open',

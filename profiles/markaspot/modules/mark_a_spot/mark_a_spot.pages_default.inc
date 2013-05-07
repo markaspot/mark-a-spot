@@ -58,6 +58,9 @@ function mark_a_spot_default_page_manager_handlers() {
       'left' => NULL,
       'right' => NULL,
     ),
+    'right' => array(
+      'style' => 'naked',
+    ),
   );
   $display->cache = array();
   $display->title = '%node:title';
@@ -93,7 +96,10 @@ function mark_a_spot_default_page_manager_handlers() {
     $pane->style = array(
       'settings' => NULL,
     );
-    $pane->css = array();
+    $pane->css = array(
+      'css_id' => '',
+      'css_class' => '',
+    );
     $pane->extras = array();
     $pane->position = 0;
     $pane->locks = '';
@@ -116,7 +122,10 @@ function mark_a_spot_default_page_manager_handlers() {
     $pane->style = array(
       'settings' => NULL,
     );
-    $pane->css = array();
+    $pane->css = array(
+      'css_id' => '',
+      'css_class' => '',
+    );
     $pane->extras = array();
     $pane->position = 1;
     $pane->locks = '';
@@ -140,7 +149,10 @@ function mark_a_spot_default_page_manager_handlers() {
     $pane->style = array(
       'settings' => NULL,
     );
-    $pane->css = array();
+    $pane->css = array(
+      'css_id' => '',
+      'css_class' => '',
+    );
     $pane->extras = array();
     $pane->position = 2;
     $pane->locks = '';
@@ -154,7 +166,7 @@ function mark_a_spot_default_page_manager_handlers() {
     $pane->shown = TRUE;
     $pane->access = array();
     $pane->configuration = array(
-      'admin_title' => '',
+      'admin_title' => 'Map',
       'title' => '',
       'body' => '<div id="map" class="detail"></div>',
       'format' => 'full_html',
@@ -181,18 +193,24 @@ function mark_a_spot_default_page_manager_handlers() {
       'label' => 'hidden',
       'formatter' => 'image',
       'formatter_settings' => array(
-        'image_style' => 'medium',
-        'image_link' => 'file',
+        'image_style' => 'mas_medium',
+        'image_link' => 'content',
       ),
       'context' => 'argument_entity_id:node_1',
       'override_title' => 0,
       'override_title_text' => '',
+      'delta_limit' => '0',
+      'delta_offset' => '0',
+      'delta_reversed' => 0,
     );
     $pane->cache = array();
     $pane->style = array(
       'settings' => NULL,
     );
-    $pane->css = array();
+    $pane->css = array(
+      'css_id' => '',
+      'css_class' => 'thumbnail',
+    );
     $pane->extras = array();
     $pane->position = 1;
     $pane->locks = '';
@@ -234,16 +252,27 @@ function mark_a_spot_default_page_manager_pages() {
   $page = new stdClass();
   $page->disabled = FALSE; /* Edit this to true to make a default page disabled initially */
   $page->api_version = 1;
-  $page->name = 'home';
+  $page->name = 'map';
   $page->task = 'page';
-  $page->admin_title = 'Home';
+  $page->admin_title = 'page-map';
   $page->admin_description = '';
-  $page->path = 'home';
+  $page->path = 'map';
   $page->access = array(
     'type' => 'none',
     'settings' => NULL,
   );
-  $page->menu = array();
+  $page->menu = array(
+    'type' => 'normal',
+    'title' => 'Map',
+    'name' => 'main-menu',
+    'weight' => '0',
+    'parent' => array(
+      'type' => 'none',
+      'title' => '',
+      'name' => 'navigation',
+      'weight' => '0',
+    ),
+  );
   $page->arguments = array();
   $page->conf = array(
     'admin_paths' => FALSE,
@@ -252,208 +281,40 @@ function mark_a_spot_default_page_manager_pages() {
   $handler = new stdClass();
   $handler->disabled = FALSE; /* Edit this to true to make a default handler disabled initially */
   $handler->api_version = 1;
-  $handler->name = 'page_home_panel_context';
+  $handler->name = 'page_map_panel_context';
   $handler->task = 'page';
-  $handler->subtask = 'home';
+  $handler->subtask = 'map';
   $handler->handler = 'panel_context';
   $handler->weight = 0;
   $handler->conf = array(
     'title' => 'Panel',
     'no_blocks' => 0,
     'pipeline' => 'standard',
-    'css_id' => 'home-pane',
+    'body_classes_to_remove' => '',
+    'body_classes_to_add' => '',
+    'css_id' => '',
     'css' => '',
     'contexts' => array(),
     'relationships' => array(),
   );
   $display = new panels_display();
-  $display->layout = 'twocol_bricks';
+  $display->layout = 'onecol';
   $display->layout_settings = array();
   $display->panel_settings = array(
     'style_settings' => array(
       'default' => NULL,
-      'top' => NULL,
-      'left' => NULL,
-      'right' => NULL,
-      'bottom' => NULL,
-      'left_above' => NULL,
-      'right_above' => NULL,
       'middle' => NULL,
-      'left_below' => NULL,
-      'right_below' => NULL,
     ),
   );
   $display->cache = array();
   $display->title = '';
   $display->content = array();
   $display->panels = array();
-    $pane = new stdClass();
-    $pane->pid = 'new-1';
-    $pane->panel = 'left_above';
-    $pane->type = 'custom';
-    $pane->subtype = 'custom';
-    $pane->shown = TRUE;
-    $pane->access = array();
-    $pane->configuration = array(
-      'admin_title' => 'Map Single Pane',
-      'title' => '',
-      'body' => '<div id="map_wrapper_splash">
-<a id="start" title="Click for Map view" href="/map"></a>
-<div id="map" class=" wml-wrapper" style="position: relative;"></div>
-</div>',
-      'format' => 'full_html',
-      'substitute' => TRUE,
-    );
-    $pane->cache = array();
-    $pane->style = array(
-      'settings' => NULL,
-    );
-    $pane->css = array();
-    $pane->extras = array();
-    $pane->position = 0;
-    $pane->locks = '';
-    $display->content['new-1'] = $pane;
-    $display->panels['left_above'][0] = 'new-1';
-    $pane = new stdClass();
-    $pane->pid = 'new-2';
-    $pane->panel = 'left_below';
-    $pane->type = 'block';
-    $pane->subtype = 'markaspot_unpublished-recent';
-    $pane->shown = TRUE;
-    $pane->access = array();
-    $pane->configuration = array(
-      'override_title' => 0,
-      'override_title_text' => '',
-    );
-    $pane->cache = array();
-    $pane->style = array(
-      'settings' => NULL,
-    );
-    $pane->css = array();
-    $pane->extras = array();
-    $pane->position = 0;
-    $pane->locks = '';
-    $display->content['new-2'] = $pane;
-    $display->panels['left_below'][0] = 'new-2';
-    $pane = new stdClass();
-    $pane->pid = 'new-3';
-    $pane->panel = 'middle';
-    $pane->type = 'block';
-    $pane->subtype = 'views-gallery-block';
-    $pane->shown = TRUE;
-    $pane->access = array();
-    $pane->configuration = array(
-      'override_title' => 0,
-      'override_title_text' => '',
-    );
-    $pane->cache = array();
-    $pane->style = array(
-      'settings' => NULL,
-    );
-    $pane->css = array();
-    $pane->extras = array();
-    $pane->position = 0;
-    $pane->locks = '';
-    $display->content['new-3'] = $pane;
-    $display->panels['middle'][0] = 'new-3';
-    $pane = new stdClass();
-    $pane->pid = 'new-4';
-    $pane->panel = 'right_above';
-    $pane->type = 'custom';
-    $pane->subtype = 'custom';
-    $pane->shown = TRUE;
-    $pane->access = array();
-    $pane->configuration = array(
-      'admin_title' => '',
-      'title' => 'Machen Sie mit',
-      'body' => '<a href="/report/add" class="lap-frontpage-button-add">Melden Sie Probleme in Mas-City</a>',
-      'format' => 'full_html',
-      'substitute' => TRUE,
-    );
-    $pane->cache = array();
-    $pane->style = array(
-      'settings' => NULL,
-    );
-    $pane->css = array();
-    $pane->extras = array();
-    $pane->position = 0;
-    $pane->locks = '';
-    $display->content['new-4'] = $pane;
-    $display->panels['right_above'][0] = 'new-4';
-    $pane = new stdClass();
-    $pane->pid = 'new-5';
-    $pane->panel = 'right_above';
-    $pane->type = 'custom';
-    $pane->subtype = 'custom';
-    $pane->shown = TRUE;
-    $pane->access = array();
-    $pane->configuration = array(
-      'admin_title' => '',
-      'title' => 'Reports in your town',
-      'body' => '<a href="/list">See how we help you</a>',
-      'format' => 'full_html',
-      'substitute' => TRUE,
-    );
-    $pane->cache = array();
-    $pane->style = array(
-      'settings' => NULL,
-    );
-    $pane->css = array();
-    $pane->extras = array();
-    $pane->position = 1;
-    $pane->locks = '';
-    $display->content['new-5'] = $pane;
-    $display->panels['right_above'][1] = 'new-5';
-    $pane = new stdClass();
-    $pane->pid = 'new-6';
-    $pane->panel = 'right_below';
-    $pane->type = 'block';
-    $pane->subtype = 'comment-recent';
-    $pane->shown = TRUE;
-    $pane->access = array();
-    $pane->configuration = array(
-      'override_title' => 0,
-      'override_title_text' => '',
-    );
-    $pane->cache = array();
-    $pane->style = array(
-      'settings' => NULL,
-    );
-    $pane->css = array();
-    $pane->extras = array();
-    $pane->position = 0;
-    $pane->locks = '';
-    $display->content['new-6'] = $pane;
-    $display->panels['right_below'][0] = 'new-6';
-    $pane = new stdClass();
-    $pane->pid = 'new-7';
-    $pane->panel = 'top';
-    $pane->type = 'custom';
-    $pane->subtype = 'custom';
-    $pane->shown = TRUE;
-    $pane->access = array();
-    $pane->configuration = array(
-      'admin_title' => '',
-      'title' => 'Mark-a-Spot Demostadt Mas-City',
-      'body' => 'Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis.',
-      'format' => 'plain_text',
-      'substitute' => TRUE,
-    );
-    $pane->cache = array();
-    $pane->style = array(
-      'settings' => NULL,
-    );
-    $pane->css = array();
-    $pane->extras = array();
-    $pane->position = 0;
-    $pane->locks = '';
-    $display->content['new-7'] = $pane;
-    $display->panels['top'][0] = 'new-7';
-  $display->hide_title = PANELS_TITLE_NONE;
-  $display->title_pane = 'new-7';
+  $display->hide_title = PANELS_TITLE_FIXED;
+  $display->title_pane = '0';
   $handler->conf['display'] = $display;
   $page->default_handlers[$handler->name] = $handler;
-  $pages['home'] = $page;
+  $pages['map'] = $page;
 
   $page = new stdClass();
   $page->disabled = FALSE; /* Edit this to true to make a default page disabled initially */
@@ -467,7 +328,18 @@ function mark_a_spot_default_page_manager_pages() {
     'type' => 'none',
     'settings' => NULL,
   );
-  $page->menu = array();
+  $page->menu = array(
+    'type' => 'normal',
+    'title' => 'Track Reports',
+    'name' => 'main-menu',
+    'weight' => '0',
+    'parent' => array(
+      'type' => 'none',
+      'title' => '',
+      'name' => 'navigation',
+      'weight' => '0',
+    ),
+  );
   $page->arguments = array();
   $page->conf = array(
     'admin_paths' => FALSE,
@@ -501,13 +373,16 @@ function mark_a_spot_default_page_manager_pages() {
       'right' => NULL,
       'bottom' => NULL,
     ),
+    'top' => array(
+      'style' => 'default',
+    ),
   );
   $display->cache = array();
   $display->title = '';
   $display->content = array();
   $display->panels = array();
     $pane = new stdClass();
-    $pane->pid = 'new-8';
+    $pane->pid = 'new-1';
     $pane->panel = 'left';
     $pane->type = 'custom';
     $pane->subtype = 'custom';
@@ -524,14 +399,17 @@ function mark_a_spot_default_page_manager_pages() {
     $pane->style = array(
       'settings' => NULL,
     );
-    $pane->css = array();
+    $pane->css = array(
+      'css_id' => '',
+      'css_class' => '',
+    );
     $pane->extras = array();
     $pane->position = 0;
     $pane->locks = '';
-    $display->content['new-8'] = $pane;
-    $display->panels['left'][0] = 'new-8';
+    $display->content['new-1'] = $pane;
+    $display->panels['left'][0] = 'new-1';
     $pane = new stdClass();
-    $pane->pid = 'new-9';
+    $pane->pid = 'new-2';
     $pane->panel = 'right';
     $pane->type = 'views';
     $pane->subtype = 'markers';
@@ -557,14 +435,17 @@ function mark_a_spot_default_page_manager_pages() {
     $pane->style = array(
       'settings' => NULL,
     );
-    $pane->css = array();
+    $pane->css = array(
+      'css_id' => '',
+      'css_class' => '',
+    );
     $pane->extras = array();
     $pane->position = 0;
     $pane->locks = '';
-    $display->content['new-9'] = $pane;
-    $display->panels['right'][0] = 'new-9';
+    $display->content['new-2'] = $pane;
+    $display->panels['right'][0] = 'new-2';
     $pane = new stdClass();
-    $pane->pid = 'new-10';
+    $pane->pid = 'new-3';
     $pane->panel = 'top';
     $pane->type = 'custom';
     $pane->subtype = 'custom';
@@ -573,14 +454,12 @@ function mark_a_spot_default_page_manager_pages() {
     $pane->configuration = array(
       'admin_title' => '',
       'title' => 'Reports ',
-      'body' => '<div class="bubble-info">
-<h2>Issue reporting</h2>
-<p><a href="/report/add">Report a problem here.</a></p>
-</div>
-<div class="pane-content">
+      'body' => '<div class="span6">
 <p>Watch reports in your area.</p>
 </div>
-',
+<div class="span6">
+<p class="well pagination-centered"><a class="btn btn-large btn-success" href="node/add/report"><i class="icon-bullhorn"> </i>Report a problem here.</a></p>
+</div>',
       'format' => 'full_html',
       'substitute' => TRUE,
     );
@@ -589,21 +468,23 @@ function mark_a_spot_default_page_manager_pages() {
       'settings' => NULL,
     );
     $pane->css = array(
-      'css_id' => 'list-intro',
-      'css_class' => 'markers-list-intro',
+      'css_id' => 'list-intro ',
+      'css_class' => 'row-fluid',
     );
     $pane->extras = array();
     $pane->position = 0;
     $pane->locks = '';
-    $display->content['new-10'] = $pane;
-    $display->panels['top'][0] = 'new-10';
+    $display->content['new-3'] = $pane;
+    $display->panels['top'][0] = 'new-3';
     $pane = new stdClass();
-    $pane->pid = 'new-11';
+    $pane->pid = 'new-4';
     $pane->panel = 'top';
     $pane->type = 'block';
     $pane->subtype = 'views--exp-markers-report_list';
     $pane->shown = TRUE;
-    $pane->access = array();
+    $pane->access = array(
+      'logic' => 'and',
+    );
     $pane->configuration = array(
       'inherit_path' => 1,
       'override_title' => 0,
@@ -613,257 +494,20 @@ function mark_a_spot_default_page_manager_pages() {
     $pane->style = array(
       'settings' => NULL,
     );
-    $pane->css = array();
+    $pane->css = array(
+      'css_id' => '',
+      'css_class' => 'well',
+    );
     $pane->extras = array();
     $pane->position = 1;
     $pane->locks = '';
-    $display->content['new-11'] = $pane;
-    $display->panels['top'][1] = 'new-11';
+    $display->content['new-4'] = $pane;
+    $display->panels['top'][1] = 'new-4';
   $display->hide_title = PANELS_TITLE_NONE;
   $display->title_pane = '0';
   $handler->conf['display'] = $display;
   $page->default_handlers[$handler->name] = $handler;
   $pages['page_list'] = $page;
-
-  $page = new stdClass();
-  $page->disabled = FALSE; /* Edit this to true to make a default page disabled initially */
-  $page->api_version = 1;
-  $page->name = 'page_list_unpublished';
-  $page->task = 'page';
-  $page->admin_title = 'page-list-unpublished';
-  $page->admin_description = 'List reports';
-  $page->path = 'list-unpublished';
-  $page->access = array(
-    'type' => 'none',
-    'settings' => NULL,
-  );
-  $page->menu = array();
-  $page->arguments = array();
-  $page->conf = array(
-    'admin_paths' => FALSE,
-  );
-  $page->default_handlers = array();
-  $handler = new stdClass();
-  $handler->disabled = FALSE; /* Edit this to true to make a default handler disabled initially */
-  $handler->api_version = 1;
-  $handler->name = 'page_page_list_unpublished_panel_context';
-  $handler->task = 'page';
-  $handler->subtask = 'page_list_unpublished';
-  $handler->handler = 'panel_context';
-  $handler->weight = 0;
-  $handler->conf = array(
-    'title' => 'Panel',
-    'no_blocks' => 0,
-    'pipeline' => 'standard',
-    'css_id' => 'markers-list-view-unpublished',
-    'css' => '',
-    'contexts' => array(),
-    'relationships' => array(),
-  );
-  $display = new panels_display();
-  $display->layout = 'twocol_stacked';
-  $display->layout_settings = array();
-  $display->panel_settings = array(
-    'style_settings' => array(
-      'default' => NULL,
-      'top' => NULL,
-      'left' => NULL,
-      'right' => NULL,
-      'bottom' => NULL,
-    ),
-  );
-  $display->cache = array();
-  $display->title = 'Reports, not yet revognized';
-  $display->content = array();
-  $display->panels = array();
-    $pane = new stdClass();
-    $pane->pid = 'new-12';
-    $pane->panel = 'left';
-    $pane->type = 'views';
-    $pane->subtype = 'markers';
-    $pane->shown = TRUE;
-    $pane->access = array();
-    $pane->configuration = array(
-      'override_pager_settings' => 0,
-      'use_pager' => 1,
-      'nodes_per_page' => '10',
-      'pager_id' => '0',
-      'offset' => '0',
-      'more_link' => 0,
-      'feed_icons' => 0,
-      'panel_args' => 0,
-      'link_to_view' => 0,
-      'args' => '',
-      'url' => '',
-      'display' => 'reports_unpublished',
-      'override_title' => 0,
-      'override_title_text' => '',
-    );
-    $pane->cache = array();
-    $pane->style = array(
-      'settings' => NULL,
-    );
-    $pane->css = array();
-    $pane->extras = array();
-    $pane->position = 0;
-    $pane->locks = '';
-    $display->content['new-12'] = $pane;
-    $display->panels['left'][0] = 'new-12';
-    $pane = new stdClass();
-    $pane->pid = 'new-13';
-    $pane->panel = 'right';
-    $pane->type = 'custom';
-    $pane->subtype = 'custom';
-    $pane->shown = TRUE;
-    $pane->access = array();
-    $pane->configuration = array(
-      'admin_title' => '',
-      'title' => 'Reports ',
-      'body' => '<div class="bubble-info">
-<h2>Achtung</h2>
-<p><a href="/report/add">Report here.</a></p>
-</div>
-<div class="pane-content">
-<p>Hier sehen Sie alle bislang eingegangenen Hinweise, die Sie und andere Citizen als Beiträge eingebracht haben.</p>
-<p>Sie können verfolgen, welchen Bearbeitungstand die verschiedenen Anliegen in Ihrer Stadt haben. Zusätzlich steht hierfür auch die <a href="/map">Kartenansicht zur Verfügung</a>.</p>
-<p>In order to rate or comment on other\'s reports, you have to log in.</p>
-</div>
-',
-      'format' => 'full_html',
-      'substitute' => TRUE,
-    );
-    $pane->cache = array();
-    $pane->style = array(
-      'settings' => NULL,
-    );
-    $pane->css = array(
-      'css_id' => 'list-intro',
-      'css_class' => 'markers-list-intro',
-    );
-    $pane->extras = array();
-    $pane->position = 0;
-    $pane->locks = '';
-    $display->content['new-13'] = $pane;
-    $display->panels['right'][0] = 'new-13';
-  $display->hide_title = PANELS_TITLE_FIXED;
-  $display->title_pane = '0';
-  $handler->conf['display'] = $display;
-  $page->default_handlers[$handler->name] = $handler;
-  $pages['page_list_unpublished'] = $page;
-
-  $page = new stdClass();
-  $page->disabled = FALSE; /* Edit this to true to make a default page disabled initially */
-  $page->api_version = 1;
-  $page->name = 'page_map';
-  $page->task = 'page';
-  $page->admin_title = 'page-map';
-  $page->admin_description = '';
-  $page->path = 'map';
-  $page->access = array(
-    'type' => 'none',
-    'settings' => NULL,
-  );
-  $page->menu = array(
-    'type' => 'normal',
-    'title' => 'Map view',
-    'name' => 'main-menu',
-    'weight' => '0',
-    'parent' => array(
-      'type' => 'none',
-      'title' => '',
-      'name' => 'navigation',
-      'weight' => '0',
-    ),
-  );
-  $page->arguments = array();
-  $page->conf = array(
-    'admin_paths' => FALSE,
-  );
-  $page->default_handlers = array();
-  $handler = new stdClass();
-  $handler->disabled = FALSE; /* Edit this to true to make a default handler disabled initially */
-  $handler->api_version = 1;
-  $handler->name = 'page_page_map_panel_context';
-  $handler->task = 'page';
-  $handler->subtask = 'page_map';
-  $handler->handler = 'panel_context';
-  $handler->weight = 0;
-  $handler->conf = array(
-    'title' => 'Panel',
-    'no_blocks' => 0,
-    'pipeline' => 'standard',
-    'css_id' => 'markers-map-view',
-    'css' => '',
-    'contexts' => array(),
-    'relationships' => array(),
-  );
-  $display = new panels_display();
-  $display->layout = 'onecol';
-  $display->layout_settings = array();
-  $display->panel_settings = array(
-    'style_settings' => array(
-      'default' => NULL,
-      'top' => NULL,
-      'left' => NULL,
-      'right' => NULL,
-      'bottom' => NULL,
-      'middle' => NULL,
-    ),
-  );
-  $display->cache = array();
-  $display->title = 'Kartenansicht';
-  $display->content = array();
-  $display->panels = array();
-    $pane = new stdClass();
-    $pane->pid = 'new-14';
-    $pane->panel = 'middle';
-    $pane->type = 'custom';
-    $pane->subtype = 'custom';
-    $pane->shown = TRUE;
-    $pane->access = array();
-    $pane->configuration = array(
-      'admin_title' => 'Map-Pane',
-      'title' => '',
-      'body' => '<div id="map"></div>',
-      'format' => 'full_html',
-      'substitute' => TRUE,
-    );
-    $pane->cache = array();
-    $pane->style = array(
-      'settings' => NULL,
-    );
-    $pane->css = array();
-    $pane->extras = array();
-    $pane->position = 0;
-    $pane->locks = '';
-    $display->content['new-14'] = $pane;
-    $display->panels['middle'][0] = 'new-14';
-    $pane = new stdClass();
-    $pane->pid = 'new-15';
-    $pane->panel = 'middle';
-    $pane->type = 'block';
-    $pane->subtype = 'views-markers-block';
-    $pane->shown = TRUE;
-    $pane->access = array();
-    $pane->configuration = array(
-      'override_title' => 0,
-      'override_title_text' => '',
-    );
-    $pane->cache = array();
-    $pane->style = array(
-      'settings' => NULL,
-    );
-    $pane->css = array();
-    $pane->extras = array();
-    $pane->position = 1;
-    $pane->locks = '';
-    $display->content['new-15'] = $pane;
-    $display->panels['middle'][1] = 'new-15';
-  $display->hide_title = PANELS_TITLE_NONE;
-  $display->title_pane = '0';
-  $handler->conf['display'] = $display;
-  $page->default_handlers[$handler->name] = $handler;
-  $pages['page_map'] = $page;
 
   $page = new stdClass();
   $page->disabled = FALSE; /* Edit this to true to make a default page disabled initially */
@@ -878,9 +522,9 @@ function mark_a_spot_default_page_manager_pages() {
     'settings' => NULL,
   );
   $page->menu = array(
-    'type' => 'none',
-    'title' => '',
-    'name' => 'navigation',
+    'type' => 'normal',
+    'title' => 'Tweet 311',
+    'name' => 'main-menu',
     'weight' => '0',
     'parent' => array(
       'type' => 'none',
@@ -929,7 +573,7 @@ function mark_a_spot_default_page_manager_pages() {
   $display->content = array();
   $display->panels = array();
     $pane = new stdClass();
-    $pane->pid = 'new-16';
+    $pane->pid = 'new-5';
     $pane->panel = 'center';
     $pane->type = 'custom';
     $pane->subtype = 'custom';
@@ -950,8 +594,8 @@ function mark_a_spot_default_page_manager_pages() {
     $pane->extras = array();
     $pane->position = 0;
     $pane->locks = array();
-    $display->content['new-16'] = $pane;
-    $display->panels['center'][0] = 'new-16';
+    $display->content['new-5'] = $pane;
+    $display->panels['center'][0] = 'new-5';
   $display->hide_title = PANELS_TITLE_FIXED;
   $display->title_pane = '0';
   $handler->conf['display'] = $display;

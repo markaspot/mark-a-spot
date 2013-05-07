@@ -47,18 +47,25 @@ var markerLayer, queryString ;
      * Split URL and read MarkerID
      *
      */
-     
     switch (pathId[0]) {
       case "map":
         readData(1, getMarkerId, "All", "All");
         getMarkerId = '';
+      break;
       case "home":
+        readData(1, getMarkerId, "All", "All");
+        getMarkerId = '';
+      break;
       case "list":
         readData(2, getMarkerId, "All", "All");
         getMarkerId = '';
       break;
       case "node":
-        readData(1, pathId[1], categoryCond, statusCond);
+        if (!pathId[1]){
+          readData(2, getMarkerId, "All", "All");
+        } else {
+          readData(1, pathId[1], categoryCond, statusCond);
+        }
         break;
       case "admin":
       case "overlay":
@@ -73,26 +80,21 @@ var markerLayer, queryString ;
       center: initialLatLng,
       zoom: 13,
       draggableCursor: 'point',
-      mapTypeId: google.maps.MapTypeId.ROADMAP,
-      mapTypeControlOptions: {
-        mapTypeIds: [google.maps.MapTypeId.ROADMAP,google.maps.MapTypeId.SATELLITE],
-        style: google.maps.MapTypeControlStyle.DROPDOWN_MENU
-      }
+      mapTypeId: google.maps.MapTypeId.ROADMAP
     };
   
-    var styles = [[{
-      url: '/sites/all/themes/mas/images/google_multi_marker_blue.png',
-      height: 66,
-      width: 68,
-      anchor: [9, 0],
-      textColor: '#fff',
-      textSize: 13
-    }]];
+    // var styles = [[{
+    //   url: '/sites/all/themes/mas/images/google_multi_marker_blue.png',
+    //   height: 66,
+    //   width: 68,
+    //   anchor: [9, 0],
+    //   textColor: '#fff',
+    //   textSize: 13
+    // }]];
   
-    //var mcOptions = {gridSize: 50, maxZoom: 15, styles:style};
     
     Drupal.Geolocation.maps[0] = new google.maps.Map(document.getElementById("map"), myOptions);
-    var mc = new MarkerClusterer(Drupal.Geolocation.maps[0], [],{maxZoom: 10, gridSize:5,styles:styles[0]});
+    var mc = new MarkerClusterer(Drupal.Geolocation.maps[0], [],{maxZoom: 15, gridSize:50});
     
     
     $("#markers-list").append("<ul>");
@@ -100,14 +102,14 @@ var markerLayer, queryString ;
   
     /**Sidebar Marker-functions*/
      
-    $("#block-markaspot-logic-taxonomy-category div div a.map-menue").click(function(e){
+    $("#block-markaspot-logic-taxonomy-category ul li a.map-menue").click(function(e){
       e.preventDefault();
       hideMarkers();
       readData(1, getMarkerId, getTaxId(this.id), "All");
       return false;
     });
     
-    $("#block-markaspot-logic-taxonomy-status div div a.map-menue").click(function(e){
+    $("#block-markaspot-logic-taxonomy-status ul li a.map-menue").click(function(e){
       e.preventDefault();
       hideMarkers();
       readData(2, getMarkerId, "All", getTaxId(this.id));
@@ -171,7 +173,6 @@ var markerLayer, queryString ;
           alert(Drupal.t('No Reports found for this category/status'));
         }
         $.each(data, function(markers, item){
-          // console.log(item.node.positionLat, mas.markaspot_ini_lat);
           if (item.node.positionLat && item.node.positionLat != mas.markaspot_ini_lat){
             item = item.node;
             var latlon = new google.maps.LatLng(item.positionLat,item.positionLng);
@@ -247,12 +248,14 @@ var markerLayer, queryString ;
                 title: 'Klicke für Detail'
               });
 
-              fn = bindInfoWindow(GoogleMarker,  Drupal.Geolocation.maps[0], infoWindow, html);
+              fn = bindInfoWindow(GoogleMarker,  Drupal.Geolocation.maps[0], infoWindow, html, item.nid);
 
-            //}
             mc.addMarker(GoogleMarker);
             bounds.extend(latlon);
-           
+
+            img = $('<img class="pull-left thumbnail"/>').attr('src', 'http://maps.googleapis.com/maps/api/staticmap?center=' + item.positionLat + "," + item.positionLng + '&sensor=true&zoom=13&size=100x100');
+            $('.body_' + item.nid).before(img);
+            
 
             if ($("#markersidebar")){
               var li = document.createElement('li');
@@ -261,7 +264,7 @@ var markerLayer, queryString ;
               li.style.cursor = 'pointer';
               $("#markersidebar").append(li);
             }
-            $('#marker_'+item.nid).hover(function(){
+            $('#marker_'+ item.nid).hover(function(){
                 $(this).css('background-color', '#ccddee')
                 $(this).animate({ backgroundColor: "black" }, 1000);
                 google.maps.event.trigger(GoogleMarker, 'click');
@@ -287,12 +290,10 @@ function hideMarkers(){
  return;
 };
 
-function bindInfoWindow(marker, map, infoWindow, html) {
+function bindInfoWindow(marker, map, infoWindow, html, nid) {
   google.maps.event.addListener(marker, 'click', function() {
     Drupal.Geolocation.maps[0].setCenter(marker.getPosition());
     infoWindow.setContent(html);
-    infoWindow.open(map, marker);
-    //Drupal.Geolocation.maps[0].setZoom(15);
-    
+    infoWindow.open(map, marker);   
   });
 }

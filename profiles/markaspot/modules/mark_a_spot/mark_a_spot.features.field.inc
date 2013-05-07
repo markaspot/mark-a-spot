@@ -121,11 +121,11 @@ function mark_a_spot_field_default_fields() {
       'description' => 'Provide a more detailed description here',
       'display' => array(
         'default' => array(
-          'label' => 'above',
+          'label' => 'hidden',
           'module' => 'text',
           'settings' => array(),
           'type' => 'text_default',
-          'weight' => '0',
+          'weight' => '2',
         ),
         'example_node_list' => array(
           'label' => 'above',
@@ -229,13 +229,13 @@ function mark_a_spot_field_default_fields() {
           'module' => 'text',
           'settings' => array(),
           'type' => 'text_default',
-          'weight' => 14,
+          'weight' => '5',
         ),
         'teaser' => array(
           'label' => 'above',
           'settings' => array(),
           'type' => 'hidden',
-          'weight' => 0,
+          'weight' => '0',
         ),
       ),
       'entity_type' => 'node',
@@ -302,7 +302,7 @@ function mark_a_spot_field_default_fields() {
           'label' => 'above',
           'settings' => array(),
           'type' => 'hidden',
-          'weight' => '11',
+          'weight' => '8',
         ),
         'example_node_list' => array(
           'label' => 'above',
@@ -405,11 +405,11 @@ function mark_a_spot_field_default_fields() {
       'description' => '',
       'display' => array(
         'default' => array(
-          'label' => 'above',
+          'label' => 'hidden',
           'module' => 'taxonomy',
           'settings' => array(),
           'type' => 'taxonomy_term_reference_plain',
-          'weight' => '1',
+          'weight' => '3',
         ),
         'full' => array(
           'label' => 'above',
@@ -441,7 +441,7 @@ function mark_a_spot_field_default_fields() {
       ),
       'entity_type' => 'node',
       'field_name' => 'field_category',
-      'label' => 'Category',
+      'label' => 'Choose Service',
       'required' => 1,
       'settings' => array(
         'user_register_form' => FALSE,
@@ -499,7 +499,7 @@ function mark_a_spot_field_default_fields() {
           'label' => 'above',
           'settings' => array(),
           'type' => 'hidden',
-          'weight' => '12',
+          'weight' => '9',
         ),
         'full' => array(
           'label' => 'above',
@@ -657,10 +657,18 @@ function mark_a_spot_field_default_fields() {
       'description' => '',
       'display' => array(
         'default' => array(
-          'label' => 'above',
-          'settings' => array(),
-          'type' => 'hidden',
-          'weight' => '10',
+          'label' => 'hidden',
+          'module' => 'geolocation_googlemaps',
+          'settings' => array(
+            'map_dimensions' => '300x300',
+            'map_imageformat' => 'png8',
+            'map_maptype' => 'roadmap',
+            'map_scrollwheel' => 0,
+            'map_zoomlevel' => '16',
+            'marker_icon' => '',
+          ),
+          'type' => 'geolocation_googlemaps_dynamic',
+          'weight' => '1',
         ),
         'example_node_list' => array(
           'label' => 'above',
@@ -702,15 +710,16 @@ function mark_a_spot_field_default_fields() {
         ),
         'teaser' => array(
           'label' => 'hidden',
-          'module' => 'geolocation_googlemaps',
+          'module' => 'geolocation_cloudmade_osm',
           'settings' => array(
+            'cloudmade_api_key' => '165795623c424338ad9a8eb60484ef0e',
             'map_dimensions' => '67x67',
-            'map_imageformat' => 'png8',
-            'map_maptype' => 'roadmap',
+            'map_imageformat' => 'png',
+            'map_style' => '997',
             'map_zoomlevel' => '13',
             'marker_icon' => '',
           ),
-          'type' => 'geolocation_googlemaps_static',
+          'type' => 'geolocation_cloudmade_osm_static',
           'weight' => '2',
         ),
       ),
@@ -773,14 +782,14 @@ function mark_a_spot_field_default_fields() {
       'description' => '',
       'display' => array(
         'default' => array(
-          'label' => 'inline',
+          'label' => 'hidden',
           'module' => 'image',
           'settings' => array(
             'image_link' => 'content',
-            'image_style' => 'thumbnail',
+            'image_style' => 'mas_medium',
           ),
           'type' => 'image',
-          'weight' => '2',
+          'weight' => '0',
         ),
         'full' => array(
           'label' => 'above',
@@ -971,7 +980,7 @@ function mark_a_spot_field_default_fields() {
           'label' => 'hidden',
           'settings' => array(),
           'type' => 'hidden',
-          'weight' => '13',
+          'weight' => '10',
         ),
         'full' => array(
           'label' => 'above',
@@ -1058,7 +1067,7 @@ function mark_a_spot_field_default_fields() {
           'module' => 'taxonomy',
           'settings' => array(),
           'type' => 'taxonomy_term_reference_plain',
-          'weight' => '3',
+          'weight' => '4',
         ),
         'full' => array(
           'label' => 'above',
@@ -1514,9 +1523,8 @@ function mark_a_spot_field_default_fields() {
   // Translatables
   // Included for use with string extractors like potx.
   t('Address');
-  t('Art');
   t('Attachments and Documents');
-  t('Category');
+  t('Choose Service');
   t('Comment');
   t('Description');
   t('E-Mail');

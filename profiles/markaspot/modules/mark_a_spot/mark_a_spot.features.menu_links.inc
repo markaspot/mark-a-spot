@@ -29,25 +29,21 @@ function mark_a_spot_menu_default_menu_links() {
     'menu_name' => 'main-menu',
     'link_path' => 'list',
     'router_path' => 'list',
-    'link_title' => 'Report List',
-    'options' => array(
-      'attributes' => array(
-        'title' => '',
-      ),
-    ),
-    'module' => 'menu',
+    'link_title' => 'Track Reports',
+    'options' => array(),
+    'module' => 'system',
     'hidden' => '0',
     'external' => '0',
     'has_children' => '0',
     'expanded' => '0',
-    'weight' => '-48',
+    'weight' => '0',
   );
   // Exported menu link: main-menu:map
   $menu_links['main-menu:map'] = array(
     'menu_name' => 'main-menu',
     'link_path' => 'map',
     'router_path' => 'map',
-    'link_title' => 'Map view',
+    'link_title' => 'Map',
     'options' => array(),
     'module' => 'system',
     'hidden' => '0',
@@ -61,23 +57,7 @@ function mark_a_spot_menu_default_menu_links() {
     'menu_name' => 'main-menu',
     'link_path' => 'node/add/report',
     'router_path' => 'node/add/report',
-    'link_title' => 'Report an Issue',
-    'options' => array(
-      'attributes' => array(),
-    ),
-    'module' => 'menu',
-    'hidden' => '0',
-    'external' => '0',
-    'has_children' => '0',
-    'expanded' => '0',
-    'weight' => '-49',
-  );
-  // Exported menu link: main-menu:tweet311
-  $menu_links['main-menu:tweet311'] = array(
-    'menu_name' => 'main-menu',
-    'link_path' => 'tweet311',
-    'router_path' => 'tweet311',
-    'link_title' => 'Tweet311',
+    'link_title' => 'Report Issue',
     'options' => array(
       'attributes' => array(
         'title' => '',
@@ -88,15 +68,14 @@ function mark_a_spot_menu_default_menu_links() {
     'external' => '0',
     'has_children' => '0',
     'expanded' => '0',
-    'weight' => '0',
+    'weight' => '-49',
   );
   // Translatables
   // Included for use with string extractors like potx.
   t('Home');
-  t('Map view');
-  t('Report List');
-  t('Report an Issue');
-  t('Tweet311');
+  t('Map');
+  t('Report Issue');
+  t('Track Reports');
 
 
   return $menu_links;

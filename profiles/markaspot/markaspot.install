@@ -62,9 +62,30 @@ function markaspot_install() {
   $full_html_format = (object) $full_html_format;
   filter_format_save($full_html_format);
 
+
+  // Any themes without keys here will get numeric keys and so will be enabled,
+  // but not placed into variables.
+  $enable = array(
+    'theme_default' => 'mas',
+    'admin_theme' => 'rubik',
+    //'zen'
+  );
+  theme_enable($enable);
+
+  foreach ($enable as $var => $theme) {
+    if (!is_numeric($var)) {
+      variable_set($var, $theme);
+    }
+  }
+
+  // Disable the default Bartik theme
+  theme_disable(array('bartik'));
+
+
   // Enable some standard blocks.
-  $default_theme = variable_get('theme_default', 'bartik');
+  $default_theme = variable_get('theme_default', 'mas');
   $admin_theme = 'rubik';
+  
   $blocks = array(
     array(
       'module' => 'system',
@@ -82,17 +103,17 @@ function markaspot_install() {
       'theme' => $default_theme,
       'status' => 1,
       'weight' => -1,
-      'region' => 'sidebar_first',
+      'region' => 'footer_secondcolumn',
       'pages' => '',
       'cache' => -1,
     ),
     array(
-      'module' => 'node',
+      'module' => 'comment',
       'delta' => 'recent',
-      'theme' => $admin_theme,
+      'theme' => $default_theme,
       'status' => 1,
       'weight' => 10,
-      'region' => 'dashboard_main',
+      'region' => 'footer_firstcolumn',
       'pages' => '',
       'cache' => -1,
     ),
@@ -102,7 +123,7 @@ function markaspot_install() {
       'theme' => $default_theme,
       'status' => 1,
       'weight' => 0,
-      'region' => 'sidebar_first',
+      'region' => 'sidebar_second',
       'pages' => '',
       'cache' => -1,
     ),
@@ -169,23 +190,13 @@ function markaspot_install() {
     array(
       'module' => 'user',
       'delta' => 'new',
-      'theme' => $admin_theme,
+      'theme' => $default_theme,
       'status' => 1,
       'weight' => 0,
-      'region' => 'dashboard_sidebar',
+      'region' => 'footer_thirdcolumn',
       'pages' => '',
       'cache' => -1,
-    ),
-    array(
-      'module' => 'search',
-      'delta' => 'form',
-      'theme' => $admin_theme,
-      'status' => 1,
-      'weight' => -10,
-      'region' => 'dashboard_sidebar',
-      'pages' => '',
-      'cache' => -1,
-    ),
+    )
   );
   $query = db_insert('block')->fields(array('module', 'delta', 'theme', 'status', 'weight', 'region', 'pages', 'cache'));
   foreach ($blocks as $block) {
@@ -400,6 +411,16 @@ function markaspot_install() {
   variable_set('admin_theme', 'rubik');
   variable_set('node_admin_theme', '1');
   
+
+  // enable some modules
+  $module_list = array('jquery_update');
+  module_enable($module_list, $enable_dependencies = TRUE);
+
+  variable_set('jquery_update_jquery_version', '1.7');
+
+  // clean Urls
+  variable_set('clean_url', 1);
+
   // Setting some Mark-a-Spot default values
   variable_set('markaspot_zip', '50321');
   variable_set('markaspot_city', 'Brühl');

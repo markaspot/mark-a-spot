@@ -1,0 +1,82 @@
+// Fix admin menu
+html body.admin-menu {
+  margin-top: 27px !important;
+}
+body.admin-menu .navbar-fixed-top {
+  top: 28px;
+}
+#admin-menu {
+  .box-shadow(none);
+}
+
+// Bootstrap likes to manually set line-heights to pixels, bad...
+body, h1, h2, h3, h4, h5, h6 {
+  line-height: 1.25em;
+}
+// Input elements need to be controlled if container is smaller.
+input, textarea, select, .uneditable-input {
+  max-width: 100%;
+}
+// Fix inputs
+select, textarea, input[type="text"], input[type="password"], input[type="datetime"], input[type="datetime-local"], input[type="date"], input[type="month"], input[type="time"], input[type="week"], input[type="number"], input[type="email"], input[type="url"], input[type="search"], input[type="tel"], input[type="color"], .uneditable-input {
+  .box-sizing(border-box);
+  height: 31px;
+}
+// Fix appended inputs so they don't overflow the containers.
+.input-append {
+  .box-sizing(border-box);
+  padding-right: 40px;
+  width: 100%;
+  input, textarea, select, .uneditable-input {
+    width: 100% !important;
+  }
+}
+// Remove floats from forms.
+form.pull-left {
+  float: none;
+}
+
+// Drupal Core Overrides
+ul li.collapsed,
+ul li.expanded,
+ul li.leaf {
+  list-style: none;
+  list-style-image: none;
+}
+// Fix labels not clearing initially.
+label {
+  clear: both;
+}
+// Remove the top header margin in blocks.
+.block h2.block-title {
+  margin-top: 0;
+}
+// Remove background image from form-item errors.
+div.error,
+table tr.error {
+  background-color: @errorBackground;
+  color: @errorText;
+}
+.control-group.error {
+  background: none;
+  label, .control-label {
+    color: @errorText;
+    font-weight: 600;
+  }
+  input, textarea, select, .uneditable-input {
+    border: 1px solid @inputBorder;
+  }
+  &, .help-block, .help-inline {
+    color: @textColor;
+  }
+}
+
+// Icon Overrides
+[class^="icon-"]:before, [class*=" icon-"]:before {
+  margin: 0;
+}
+
+// Text enhancement
+#content {
+  text-shadow: 0 1px 0 @white;
+}
