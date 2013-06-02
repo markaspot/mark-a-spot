@@ -28,12 +28,11 @@ jQuery(document).ready(function(){
 
     init_lat = Drupal.settings.mas.markaspot_ini_lat;
     is_lat = $('#edit-field-geo-und-0-latitem > span').text();
-
     if (init_lat == is_lat){
       $('#edit-field-common-und').attr('checked','checked');
       clearfields();
     } else {
-      $('#edit-field-common-und').attr('checked',"");
+      $('#edit-field-common-und').attr('checked', false);
     }
   })
 });
