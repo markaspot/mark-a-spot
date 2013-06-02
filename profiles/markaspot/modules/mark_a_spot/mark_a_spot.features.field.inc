@@ -859,7 +859,7 @@ function mark_a_spot_field_default_fields() {
       ),
     ),
   );
-
+  /*
   // Exported field: 'node-report-field_notify_twitter'.
   $fields['node-report-field_notify_twitter'] = array(
     'field_config' => array(
@@ -1013,6 +1013,7 @@ function mark_a_spot_field_default_fields() {
       ),
     ),
   );
+  */
 
   // Exported field: 'node-report-field_status'.
   $fields['node-report-field_status'] = array(
