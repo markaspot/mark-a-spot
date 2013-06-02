@@ -13,7 +13,7 @@ function markaspot_logic_form_alter(&$form, &$form_state, $form_id) {
   if ($form_id == 'report_node_form') {
     $form['field_address']['und'][0]['value']['#type'] = "hidden";
     // Registered users' mail will be prefilled
-    if (isset($user->mail)){
+    if (isset($user->mail) && arg(0) == 'node' && arg(1) == 'add'){
       $form['field_e_mail']['und'][0]['value']['#default_value'] = $user->mail;
     }
     $form['#validate'][] = 'markaspot_logic_validate';
