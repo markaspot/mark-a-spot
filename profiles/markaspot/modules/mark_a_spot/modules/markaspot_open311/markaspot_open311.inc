@@ -305,7 +305,7 @@ function _request_map_node($request) {
   $node->body[$node->language][0]['value'] = $request->description;
   $node->body[$node->language][0]['format']  = 'filtered_html';
   
-  $node->field_address[$node->language][0]['value'] = $request->address;
+  $node->field_address[$node->language][0]['value'] = $request->address_string;
   $node->field_geo[$node->language][0]['lat'] = $request->lat;
   $node->field_geo[$node->language][0]['lng'] = $request->long;
   
