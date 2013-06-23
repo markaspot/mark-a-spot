@@ -16,7 +16,7 @@
  *  The resource definitions.
  */
 function _services_build_resources($endpoint_name = '') {
-  module_load_include('resource_runtime.inc', 'services');
+  module_load_include('inc', 'services', 'includes/services.runtime');
 
   $resources = array();
   $version_info = services_resource_api_version_info();
@@ -117,7 +117,7 @@ function _services_build_resources($endpoint_name = '') {
  * @return void
  */
 function _services_resource_upgrade($from, &$resources, $version_info = NULL) {
-  module_load_include('resource_update.inc', 'services');
+  module_load_include('inc', 'services', 'includes/services.resource_update');
 
   // Get version info if needed.
   if ($version_info == NULL) {
@@ -188,12 +188,12 @@ function _services_apply_endpoint(&$resources, $endpoint, $strict = TRUE) {
  * @return array
  */
 function _services_core_resources() {
-  require_once("resources/comment_resource.inc");
-  require_once("resources/file_resource.inc");
-  require_once("resources/node_resource.inc");
-  require_once("resources/system_resource.inc");
-  require_once("resources/taxonomy_resource.inc");
-  require_once("resources/user_resource.inc");
+  module_load_include('inc', 'services', 'resources/comment_resource');
+  module_load_include('inc', 'services', 'resources/file_resource');
+  module_load_include('inc', 'services', 'resources/node_resource');
+  module_load_include('inc', 'services', 'resources/system_resource');
+  module_load_include('inc', 'services', 'resources/taxonomy_resource');
+  module_load_include('inc', 'services', 'resources/user_resource');
 
   $resources = array(
     '#api_version' => 3002,

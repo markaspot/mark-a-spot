@@ -28,7 +28,7 @@ class ServicesException extends Exception {
   public function __construct($message, $code = 0, $data = NULL) {
     parent::__construct($message, $code);
 
-    $this->data = $message;
+    $this->data = !empty($data) ? $data : $message;
   }
 
   /**
@@ -93,73 +93,84 @@ class ServicesArgumentException extends ServicesException {
  *  made.
  */
 function services_controller_execute($controller, $args = array(), $options = array()) {
-  global $user;
   $server_info =  services_server_info_object();
   if ($server_info->debug) {
     watchdog('services', 'Controller: <pre>@controller</pre>', array('@controller' => print_r($controller, TRUE)), WATCHDOG_DEBUG);
     watchdog('services', 'Passed arguments: <pre>@arguments</pre>', array('@arguments' => print_r($args, TRUE)), WATCHDOG_DEBUG);
   }
 
-  $original_user = $user;
-  
-  if (strpos($controller['callback'], 'login') !== FALSE && strpos($controller['callback'], 'logout') !== FALSE) {
-    $old_state = drupal_save_session();
+  // Switch to anonymous user preserving currently session authenticated user.
+  _services_controller_execute_preserve_user_switch_anonymous($controller);
+
+  try {
+    $result = _services_controller_execute_internals($controller, $args, $options);
+  }
+  catch (Exception $exception) {
+    _services_controller_execute_restore_user();
+    throw $exception;
+  }
+
+  _services_controller_execute_restore_user();
+
+  if ($server_info->debug) {
+    watchdog('services', 'results: <pre>@results</pre>', array('@results' => print_r($result, TRUE)), WATCHDOG_DEBUG);
+  }
+  return $result;
+}
+
+/**
+ * As authentication methods should authenticate user themselves changing global $user variable
+ * we preserve incoming session authenticated user and his session so changes made by authentication
+ * do not interfere.
+ */
+function _services_controller_execute_preserve_user_switch_anonymous($controller) {
+  global $user;
+  services_set_server_info('original_user', $user);
+
+  $preserve_session = strpos($controller['callback'], 'login') === FALSE && strpos($controller['callback'], 'logout') === FALSE;
+  services_set_server_info('preserve_session', $preserve_session);
+  if ($preserve_session) {
+    $original_session_state = drupal_save_session();
+    services_set_server_info('original_session_state', $original_session_state);
     drupal_save_session(FALSE);
   }
+
   $user = drupal_anonymous_user();
   $user->timestamp = time();
-  services_set_server_info('original_user', $original_user);
+}
 
+function _services_controller_execute_restore_user() {
+  if (services_get_server_info('preserve_session', FALSE)) {
+    $original_user = services_get_server_info('original_user');
+    $original_session_state = services_get_server_info('original_session_state');
+    global $user;
+    $user = $original_user;
+    drupal_save_session($original_session_state);
+  }
+}
+
+/**
+ * Internals of the services_controller_execute().
+ *
+ * Arguments are the same as services_controller_execute().
+ */
+function _services_controller_execute_internals($controller, $args, $options) {
+  $server_info =  services_server_info_object();
   $endpoint_name = services_get_server_info('endpoint');
   $endpoint = services_endpoint_load($endpoint_name);
 
-  // Check authentication.
-  if (!isset($options['skip_authentication']) || !$options['skip_authentication']) {
-    foreach ($endpoint->authentication as $auth_module => $settings) {
-      if (isset($settings) && $auth_error = services_auth_invoke($auth_module, 'authenticate_call', $settings, $controller, $args)) {
-        return services_error($auth_error, 401);
-      }
-    }
-  }
+  _services_authenticate_user($controller, $endpoint, $args, $options);
+
   // Load the proper file.
   if (!empty($controller['file']) && $file = $controller['file']) {
     module_load_include($file['type'], $file['module'], (isset($file['name']) ? $file['name'] : NULL));
   }
 
-  // Construct access arguments array.
-  if (isset($controller['access arguments'])) {
-    $access_arguments = $controller['access arguments'];
-    if (isset($controller['access arguments append']) && $controller['access arguments append']) {
-      $access_arguments[] = $args;
-    }
-  }
-  else {
-    // Just use the arguments array if no access arguments have been specified
-    $access_arguments = $args;
-  }
+  _services_run_access_callback($controller, $args);
 
-  // Load the proper file for the access callback.
-  if (!empty($controller['access callback file']) && $access_cb_file = $controller['access callback file']) {
-    $access_cb_file_name = isset($access_cb_file['name']) ? $access_cb_file['name'] : NULL;
-    module_load_include($access_cb_file['type'], $access_cb_file['module'], $access_cb_file_name);
-  }
-
-  // Call default or custom access callback.
-  if (call_user_func_array($controller['access callback'], $access_arguments) != TRUE) {
-    return services_error(t('Access denied for user @user', array(
-      '@user' => isset($user->name) ? $user->name : 'anonymous',
-    )), 401);
-  }
   $endpoint_path = services_get_server_info('endpoint_path', '');
   $endpoint_path_len = drupal_strlen($endpoint_path) + 1;
   $canonical_path = drupal_substr($_GET['q'], $endpoint_path_len, drupal_strlen($_GET['q']) - $endpoint_path_len);
-  // Extract response format info from the canonical path.
-  $matches = array();
-  $response_format = '';
-  if (preg_match('/^(.+)\.([^\.^\/]+)$/', $canonical_path, $matches)) {
-    $canonical_path = $matches[1];
-    $response_format = $matches[2];
-  }
 
   // Prepare $path array and $resource_name.
   $path = explode('/', $canonical_path);
@@ -170,7 +181,7 @@ function services_controller_execute($controller, $args = array(), $options = ar
     $options['method'] = $path[0];
   }
 
-  if(!empty($options['version'])) {
+  if (!empty($options['version'])) {
     services_request_apply_version($controller, $options);
   }
 
@@ -186,13 +197,6 @@ function services_controller_execute($controller, $args = array(), $options = ar
 
   drupal_alter('services_request_postprocess', $controller, $args, $result);
 
-  if (strpos($controller['callback'], 'login') !== FALSE && strpos($controller['callback'], 'logout') !== FALSE) {
-    drupal_save_session($old_state);
-  }
-
-  if ($server_info->debug) {
-    watchdog('services', 'results: <pre>@results</pre>', array('@results' => print_r($result, TRUE)), WATCHDOG_DEBUG);
-  }
   return $result;
 }
 
@@ -236,21 +240,21 @@ function services_authentication_info($module) {
 function services_auth_invoke($module, $method, &$arg1 = NULL, &$arg2 = NULL, &$arg3 = NULL) {
   // Get information about the auth module
   $info = services_authentication_info($module);
+  drupal_alter('services_authentication_info', $info, $module);
   $func = $info && !empty($info[$method]) ? $info[$method] : FALSE;
-  if ($func) {
-    if (!empty($info['file'])) {
-      require_once(drupal_get_path('module', $module) . '/' . $info['file']);
-    }
-
-    if (is_callable($func)) {
-      $args = func_get_args();
-      // Replace module and method name and arg1 with reference to $arg1 and $arg2.
-      array_splice($args, 0, 5, array(&$arg1, &$arg2, &$arg3));
-      return call_user_func_array($func, $args);
-    }
-  }
-  else {
+  if (!$func) {
     return TRUE;
+  }
+
+  if (!empty($info['file'])) {
+    require_once(drupal_get_path('module', $module) . '/' . $info['file']);
+  }
+
+  if (is_callable($func)) {
+    $args = func_get_args();
+    // Replace module and method name and arg1 with reference to $arg1 and $arg2.
+    array_splice($args, 0, 5, array(&$arg1, &$arg2, &$arg3));
+    return call_user_func_array($func, $args);
   }
 }
 
@@ -356,29 +360,6 @@ function services_error($message, $code = 0, $data = NULL) {
 }
 
 /**
- * Make any changes we might want to make to node.
- */
-function services_node_load($node, $fields = array()) {
-  if (!isset($node->nid)) {
-    return NULL;
-  }
-
-  // Loop through and get only requested fields
-  if (count($fields) > 0) {
-    foreach ($fields as $field) {
-      $val->{$field} = $node->{$field};
-    }
-  }
-  else {
-    $val = $node;
-  }
-
-  return $val;
-}
-
-
-
-/**
  * Extract arguments for a services method callback, preserving backwards compatibility with #1083242.
  *
  * @param array $data
@@ -420,4 +401,50 @@ function _services_access_value($data, $fields) {
     }
   }
   return $data;
+}
+
+/**
+ * Run enabled authentication plugins.
+ *
+ * Plugin that authenticate user will change global $user.
+ */
+function _services_authenticate_user($controller, $endpoint, $args, $options) {
+  if (!isset($options['skip_authentication']) || !$options['skip_authentication']) {
+    foreach ($endpoint->authentication as $auth_module => $auth_settings) {
+      if (isset($auth_settings) && $auth_error = services_auth_invoke($auth_module, 'authenticate_call', $auth_settings, $controller, $args)) {
+        return services_error($auth_error, 401);
+      }
+    }
+  }
+}
+
+/**
+ * Call access callback of the method.
+ */
+function _services_run_access_callback($controller, $args) {
+  // Construct access arguments array.
+  if (isset($controller['access arguments'])) {
+    $access_arguments = $controller['access arguments'];
+    if (isset($controller['access arguments append']) && $controller['access arguments append']) {
+      $access_arguments[] = $args;
+    }
+  }
+  else {
+    // Just use the arguments array if no access arguments have been specified
+    $access_arguments = $args;
+  }
+
+  // Load the proper file for the access callback.
+  if (!empty($controller['access callback file']) && $access_cb_file = $controller['access callback file']) {
+    $access_cb_file_name = isset($access_cb_file['name']) ? $access_cb_file['name'] : NULL;
+    module_load_include($access_cb_file['type'], $access_cb_file['module'], $access_cb_file_name);
+  }
+
+  // Call default or custom access callback.
+  if (call_user_func_array($controller['access callback'], $access_arguments) != TRUE) {
+    global $user;
+    return services_error(t('Access denied for user @user', array(
+      '@user' => isset($user->name) ? $user->name : 'anonymous',
+    )), 401);
+  }
 }
