@@ -22,23 +22,23 @@ class Open311XMLFormatter implements ServicesFormatterInterface {
 
     if (array_key_exists('endpoints', $data)) {
       $root = $doc->createElement('discovery');
-    } 
+    }
     if (isset($data[0])){
       if (array_key_exists('code', $data[0])) {
         $root = $doc->createElement('errors');
-      } 
+      }
       if (array_key_exists('service_code', $data[0])) {
         $root = $doc->createElement('services');
-      } 
+      }
       if (array_key_exists('service_request_id', $data[0])){
         $root = $doc->createElement('service_requests');
-      } 
+      }
       if (array_key_exists('discovery', $data[0])){
         $root = $doc->createElement('discovery');
       }
       if (array_key_exists('service_notice', $data[0])){
         $root = $doc->createElement('service_requests');
-      }  
+      }
     }
     $doc->appendChild($root);
     $this->xml_recurse($doc, $root, $data);
@@ -74,14 +74,14 @@ class Open311XMLFormatter implements ServicesFormatterInterface {
             }
             if (array_key_exists('status', $data[0])) {
               $key = 'request';
-            } 
+            }
             // After Posting
             if (array_key_exists('service_notice', $data[0])) {
               $key = 'request';
-            } 
+            }
             if (in_array('xml', $data)) {
               $key = 'format';
-            } 
+            }
           }
           else {
             $assoc = TRUE;
@@ -134,7 +134,7 @@ function _markaspot_open311_access($op, $args) {
       break;
   }
   $access = TRUE;
-  
+
   return $access;
 }
 
@@ -185,7 +185,7 @@ function markaspot_open311_services_resources() {
         'access arguments append' => TRUE,
         'args' => array()
         ),
-      ),   
+      ),
     'requests' => array(
       'retrieve' => array(
         'help' => 'Retrieves a request',

@@ -30,11 +30,11 @@ function markaspot_install_finished(&$install_state) {
   _build_blocks();
   // deleting dummy entries
   _delete_dummies();
-  
+
 
   drupal_set_title(st('Mark-a-Spot installation complete'));
   $messages = drupal_set_message();
-  
+
   $output = '<p>' . st('Congratulations, you installed Mark-a-Spot @drupal!', array('@drupal' => drupal_install_profile_distribution_name())) . '</p>';
   $output .= '<p>' . (isset($messages['error']) ? st('Review the messages above before visiting <a href="@url">your new site</a>.', array('@url' => url(''))) : st('<a href="@url">Visit your new site</a>.', array('@url' => url('')))) . '</p>';
 
@@ -77,17 +77,17 @@ function _createStatus () {
   $vid = db_query("SELECT vid FROM {taxonomy_vocabulary} WHERE machine_name = 'status'")->fetchField();
 
   // Define the terms, with description and color
-  $terms[0] = array('Open', 'This is just a description which should be replaced', 'cc0000');
-  $terms[1] = array('In progress','This is just a description which should be replaced', 'ff6600') ;
-  $terms[3] = array('Solved','This is just a description which should be replaced', '8fe83b') ;
-  $terms[4] = array('Archive','This is just a description which should be replaced', 'cccccc') ;
+  $terms[0] = array('Open', 'This is just a description which should be replaced', 'cc0000', 'pause');
+  $terms[1] = array('In progress','This is just a description which should be replaced', 'ff6600', 'play');
+  $terms[3] = array('Solved','This is just a description which should be replaced', '8fe83b', 'checkmark');
+  $terms[4] = array('Archive','This is just a description which should be replaced', 'cccccc', 'drawer');
 
   // You may customize those entries
-  $terms[5] = array('dummy','This is just a description which should be replaced', '8fe83b') ;
-  $terms[6] = array('dummy','This is just a description which should be replaced', '8fe83b') ;
-  $terms[7] = array('dummy','This is just a description which should be replaced', '8fe83b') ;
-  $terms[8] = array('dummy','This is just a description which should be replaced', '8fe83b') ;
-  $terms[9] = array('dummy','This is just a description which should be replaced', '8fe83b') ;
+  $terms[5] = array('dummy','This is just a description which should be replaced', '8fe83b', '');
+  $terms[6] = array('dummy','This is just a description which should be replaced', '8fe83b', '');
+  $terms[7] = array('dummy','This is just a description which should be replaced', '8fe83b', '');
+  $terms[8] = array('dummy','This is just a description which should be replaced', '8fe83b', '');
+  $terms[9] = array('dummy','This is just a description which should be replaced', '8fe83b', '');
 
   foreach ($terms as $parent) {
     // Create the parent term.
@@ -95,6 +95,7 @@ function _createStatus () {
     $term['name'] = $parent[0];
     $term['description'] = $parent[1];
     $term['field_status_hex']['und'][0]['value'] = $parent[2];
+    $term['field_status_icon']['und'][0]['value'] = $parent[3];
 
     // taxonomy_term_save((object)$term);
     // $term = ;
@@ -122,10 +123,10 @@ function _createCategories() {
   $vid = db_query("SELECT vid FROM {taxonomy_vocabulary} WHERE machine_name = 'category'")->fetchField();
 
   // Define the terms.
-  $terms[0] = array('Abandoned Cars', 'abandoned, wrecked, dismantled, or inoperative cars on private property', '010', 'abandonedcar, cars, wreckedcar, car', '235f9b');
-  $terms[1] = array('Litter Basket Complaint','Litter Basket Request or Complaint', '011', 'litter, trash, garbage', 'ff00bb') ;
-  $terms[2] = array('Graffiti Report','Report graffiti on a building you own.', '012', 'graffiti, paintings', '660000') ;
-  $terms[3] = array('Building Construction Complaint','Dangerous Buildings and Vacant Property Operations historically has been known for the demolition of dangerous buildings, but recent adjustments in service delivery are focusing on inventorying vacant structures', '013', 'graffiti, demolition', '660000') ;
+  $terms[0] = array('Abandoned Cars', 'abandoned, wrecked, dismantled, or inoperative cars on private property', '010', 'abandonedcar, cars, wreckedcar, car', '00008B','car');
+  $terms[1] = array('Litter Basket Complaint','Litter Basket Request or Complaint', '011', 'litter, trash, garbage', '5F9EA0','trash') ;
+  $terms[2] = array('Graffiti Report','Report graffiti on a building you own.', '012', 'graffiti, paintings', '8B0000', 'graffiti') ;
+  $terms[3] = array('Building Construction Complaint','Dangerous Buildings and Vacant Property Operations historically has been known for the demolition of dangerous buildings, but recent adjustments in service delivery are focusing on inventorying vacant structures', '013', 'graffiti, demolition', '006400', 'office') ;
 
 
   foreach ($terms as $parent) {
@@ -135,8 +136,9 @@ function _createCategories() {
     $term['name'] = $parent[0];
     $term['description'] = $parent[1];
     $term['field_category_id']['und'][0]['value'] = $parent[2];
-    $term['field_category_hex']['und'][0]['value'] = $parent[4];
     $term['field_hash']['und'][0]['value'] = $parent[3];
+    $term['field_category_hex']['und'][0]['value'] = $parent[4];
+    $term['field_category_icon']['und'][0]['value'] = $parent[5];
 
     // taxonomy_term_save((object)$term);
     // $term = ;
@@ -178,7 +180,7 @@ function _createNode(){
   foreach ($nodes as $node_data) {
     $node = new stdClass(); // Create a new node object
     $node->type = "report"; // Or page, or whatever content type you like
-    
+
     node_object_prepare($node); // Set some default values
 
     $i++;
@@ -190,18 +192,18 @@ function _createNode(){
     $node->language = 'und'; // language - neutral
     $node->body[$node->language][0]['value']   = $node_data[1];
     $node->body[$node->language][0]['format']  = 'filtered_html';
-    $node->field_geo[$node->language][0]['lat'] = $node_data[2]; 
+    $node->field_geo[$node->language][0]['lat'] = $node_data[2];
     $node->field_geo[$node->language][0]['lng'] = $node_data[3];
     $node->field_address[$node->language][0]['value'] = $node_data[4];
     $node->field_e_mail[$node->language][0]['value'] = $node_data[5];
-    $node->field_category[$node->language][0]['tid'] = $node_data[6]; 
-    $node->field_status[$node->language][0]['tid'] = $node_data[7]; 
+    $node->field_category[$node->language][0]['tid'] = $node_data[6];
+    $node->field_status[$node->language][0]['tid'] = $node_data[7];
     $node->field_common['und'] = $node_data[8];
     $node->is_new = true;
     $node->promote = 0;
     $filename = 'image_'.$node_data[9].'.jpg';
     // var_dump(base_path().'profiles/markaspot/themes/mas/images/'.$node_data[9]);
-    $image = file_get_contents('sites/all/themes/mas/images/'.$node_data[9].'.jpg');
+    $image = file_get_contents('profiles/markaspot/themes/mas/images/'.$node_data[9].'.jpg');
     $file = file_save_data($image, 'public://' . $filename, FILE_EXISTS_RENAME);
     $node->field_image = array(LANGUAGE_NONE => array('0' => (array)$file));
 
@@ -217,22 +219,6 @@ function _createNode(){
     }
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -255,7 +241,7 @@ function _build_blocks() {
   foreach ($blocks as $block) {
     _activate_block($block[0],$block[1],$block[2],$block[3],$block[4],$block[5]);
   }
-  
+
 
 }
 

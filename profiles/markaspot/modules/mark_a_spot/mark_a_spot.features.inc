@@ -7,20 +7,16 @@
 /**
  * Implements hook_ctools_plugin_api().
  */
-function mark_a_spot_ctools_plugin_api() {
-  list($module, $api) = func_get_args();
+function mark_a_spot_ctools_plugin_api($module = NULL, $api = NULL) {
   if ($module == "field_group" && $api == "field_group") {
     return array("version" => "1");
   }
-  list($module, $api) = func_get_args();
   if ($module == "page_manager" && $api == "pages_default") {
     return array("version" => "1");
   }
-  list($module, $api) = func_get_args();
   if ($module == "services" && $api == "services") {
     return array("version" => "3");
   }
-  list($module, $api) = func_get_args();
   if ($module == "strongarm" && $api == "strongarm") {
     return array("version" => "1");
   }
@@ -29,10 +25,9 @@ function mark_a_spot_ctools_plugin_api() {
 /**
  * Implements hook_views_api().
  */
-function mark_a_spot_views_api() {
-  return array("version" => "3.0");
+function mark_a_spot_views_api($module = NULL, $api = NULL) {
+  return array("api" => "3.0");
 }
-
 
 /**
  * Implements hook_image_default_styles().
@@ -54,12 +49,13 @@ function mark_a_spot_image_default_styles() {
         'module' => 'image',
         'name' => 'image_scale_and_crop',
         'data' => array(
-          'width' => '720',
-          'height' => '480',
+          'width' => 720,
+          'height' => 480,
         ),
-        'weight' => '1',
+        'weight' => 1,
       ),
     ),
+    'label' => 'mas_medium',
   );
 
   // Exported image style: mas_thumb.
@@ -76,17 +72,17 @@ function mark_a_spot_image_default_styles() {
         'module' => 'image',
         'name' => 'image_scale_and_crop',
         'data' => array(
-          'width' => '100',
-          'height' => '100',
+          'width' => 100,
+          'height' => 100,
         ),
-        'weight' => '1',
+        'weight' => 1,
       ),
     ),
+    'label' => 'mas_thumb',
   );
 
   return $styles;
 }
-
 
 /**
  * Implements hook_node_info().

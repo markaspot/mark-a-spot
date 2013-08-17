@@ -16,7 +16,7 @@ function geolocation_cloudmade_osm_field_formatter_info() {
       'settings' => array(
         'map_dimensions' => '300x300',
         'map_imageformat' => 'png',
-        'map_zoomlevel' => '7',
+        'map_zoomlevel' => '15',
         'map_style' => '1',
         'marker_icon' => '',
         'cloudmade_api_key' => ''
@@ -27,7 +27,7 @@ function geolocation_cloudmade_osm_field_formatter_info() {
       'field types' => array('geolocation_latlng'),
       'settings' => array(
         'map_dimensions' => '300x300',
-        'map_zoomlevel' => '7',
+        'map_zoomlevel' => '15',
         'map_style' => '1',
         'marker_icon' => '',
         'map_scrollwheel' => FALSE,
@@ -222,16 +222,19 @@ function geolocation_cloudmade_osm_field_formatter_view($entity_type, $entity, $
         // Attach CSS and JS files via FAPI '#attached'.
         $map_element['cloudmade-osm']['#attached']['css'][] = drupal_get_path('module', 'geolocation_cloudmade_osm') . '/geolocation_cloudmade_osm.css';
           // Attach CSS and JS files via FAPI '#attached'.
-        
+
 
         // Wont work:
         // $map_element['cloudmade-osm']['#attached']['css'][] = array(
         //   'http://cdn.leafletjs.com/leaflet-0.4.4/leaflet.css',
         //   'type' => 'external'
         // );
+
+
         $map_element['cloudmade-osm']['#attached']['js'][] = array(
-          'data' => 'http://cdn.leafletjs.com/leaflet-0.4.4/leaflet.js',
-          'type' => 'external',
+          'data' => drupal_get_path('profile','markaspot') . '/libraries/leaflet-0.6.3/leaflet.js',
+          'type' => 'file',
+          //'scope' => 'footer',
         );
 
         $map_element['cloudmade-osm']['#attached']['js'][] = array(
@@ -286,11 +289,23 @@ function geolocation_cloudmade_osm_field_widget_info() {
 function geolocation_cloudmade_osm_field_widget_settings_form($field, $instance) {
   $widget = $instance['widget'];
   $settings = $widget['settings'];
-  $form['bing_api_key'] = array(
+  // $form['bing_api_key'] = array(
+  //   '#type' => 'textfield',
+  //   '#title' => t('Bing Geolocation API Key'),
+  //   '#description' => t('This module makes use of the bing geolocation api. Check http://msdn.microsoft.com/en-us/library/ff701713.aspx for more information. You have to sign up to obtain an API. Sart here: http://msdn.microsoft.com/en-us/library/ff428642.aspx '),
+  //   '#default_value' => isset($settings['bing_api_key']) ? $settings['bing_api_key'] : FALSE,
+  // );
+  $form['nominatimEmail'] = array(
     '#type' => 'textfield',
-    '#title' => t('Bing Geolocation API Key'),
-    '#description' => t('This module makes use of the bing geolocation api. Check http://msdn.microsoft.com/en-us/library/ff701713.aspx for more information. You have to sign up to obtain an API. Sart here: http://msdn.microsoft.com/en-us/library/ff428642.aspx '),
-    '#default_value' => isset($settings['bing_api_key']) ? $settings['bing_api_key'] : FALSE,
+    '#title' => t('Nominatim E-Mail for problem reporting'),
+    '#description' => t('If you are making large numbers of request please include a valid email address or alternatively include your email address as part of the User-Agent string. This information will be kept confidential and only used to contact you in the event of a problem, see Usage Policy for more details.'),
+    '#default_value' => isset($settings['nominatimEmail']) ? $settings['nominatimEmail'] : FALSE,
+  );
+  $form['leafletImagePath'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Leaflet Image path'),
+    '#description' => t('Set the image path of your leaflet library (needed with compressed javascript on production sites, see https://github.com/Leaflet/Leaflet/issues/766'),
+    '#default_value' => isset($settings['leafletImagePath']) ? $settings['leafletImagePath'] : FALSE,
   );
   $form['scrollwheel'] = array(
     '#type' => 'checkbox',
@@ -334,6 +349,7 @@ function geolocation_cloudmade_osm_field_widget_form(&$form, &$form_state, $fiel
       $element['address']['field'] = array(
         '#type' => 'textfield',
         '#maxlength' => 120,
+        '#size' => 50
       );
       $element['address']['geocode'] = array(
         '#prefix' => '<span id="geolocation-address-geocode-' . $id . '" class="geolocation-address-geocode">',
@@ -388,7 +404,7 @@ function geolocation_cloudmade_osm_field_widget_form(&$form, &$form_state, $fiel
       // Attach CSS and JS files via FAPI '#attached'.
       $element['cloudmade-osm']['#attached']['css'][] = drupal_get_path('module', 'geolocation_cloudmade_osm') . '/geolocation_cloudmade_osm.css';
         // Attach CSS and JS files via FAPI '#attached'.
-      
+
 
       // Wont work:
       // $map_element['cloudmade-osm']['#attached']['css'][] = array(
@@ -398,8 +414,9 @@ function geolocation_cloudmade_osm_field_widget_form(&$form, &$form_state, $fiel
 
 
       $element['cloudmade-osm']['#attached']['js'][] = array(
-        'data' => 'http://cdn.leafletjs.com/leaflet-0.4.4/leaflet.js',
-        'type' => 'external',
+        'data' => drupal_get_path('profile','markaspot') . '/libraries/leaflet-0.6.3/leaflet.js',
+        'type' => 'file',
+        'scope' => 'footer',
       );
 
       $element['cloudmade-osm']['#attached']['js'][] = array(

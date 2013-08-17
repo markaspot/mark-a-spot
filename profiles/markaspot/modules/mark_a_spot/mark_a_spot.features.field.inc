@@ -465,7 +465,7 @@ function mark_a_spot_field_default_fields() {
       'entity_types' => array(),
       'field_name' => 'field_common',
       'field_permissions' => array(
-        'type' => '0',
+        'type' => '2',
       ),
       'foreign keys' => array(),
       'indexes' => array(
@@ -647,7 +647,7 @@ function mark_a_spot_field_default_fields() {
       'default_value' => array(
         0 => array(
           'address' => array(
-            'field' => 'Pingsdorfer Straße 88, 50321 Brühl, Deutschland',
+            'field' => '',
           ),
           'lat' => '50.8212596',
           'lng' => '6.8961028',
@@ -712,7 +712,7 @@ function mark_a_spot_field_default_fields() {
           'label' => 'hidden',
           'module' => 'geolocation_cloudmade_osm',
           'settings' => array(
-            'cloudmade_api_key' => '165795623c424338ad9a8eb60484ef0e',
+            'cloudmade_api_key' => '',
             'map_dimensions' => '67x67',
             'map_imageformat' => 'png',
             'map_style' => '997',
@@ -732,11 +732,14 @@ function mark_a_spot_field_default_fields() {
       ),
       'widget' => array(
         'active' => 1,
-        'module' => 'geolocation_googlemaps',
+        'module' => 'geolocation_cloudmade_osm',
         'settings' => array(
+          'leafletImagePath' => '/profiles/markaspot/libraries/leaflet-0.6.3/images',
+          'marker_draggable' => 0,
+          'nominatimEmail' => 'holger@markaspot.org',
           'scrollwheel' => 0,
         ),
-        'type' => 'geolocation_googlemap',
+        'type' => 'geolocation_cloudmade-osm',
         'weight' => '15',
       ),
     ),
@@ -859,161 +862,76 @@ function mark_a_spot_field_default_fields() {
       ),
     ),
   );
-  /*
-  // Exported field: 'node-report-field_notify_twitter'.
-  $fields['node-report-field_notify_twitter'] = array(
+
+  // Exported field: 'node-report-field_statement'.
+  $fields['node-report-field_statement'] = array(
     'field_config' => array(
       'active' => '1',
       'cardinality' => '1',
       'deleted' => '0',
       'entity_types' => array(),
-      'field_name' => 'field_notify_twitter',
+      'field_name' => 'field_statement',
       'field_permissions' => array(
         'type' => '2',
       ),
-      'foreign keys' => array(),
+      'foreign keys' => array(
+        'format' => array(
+          'columns' => array(
+            'format' => 'format',
+          ),
+          'table' => 'filter_format',
+        ),
+      ),
       'indexes' => array(
-        'value' => array(
-          0 => 'value',
+        'format' => array(
+          0 => 'format',
         ),
       ),
       'locked' => '0',
-      'module' => 'list',
-      'settings' => array(
-        'allowed_values' => array(
-          0 => '',
-          1 => '',
-        ),
-        'allowed_values_function' => '',
-      ),
+      'module' => 'text',
+      'settings' => array(),
       'translatable' => '0',
-      'type' => 'list_boolean',
+      'type' => 'text_long',
     ),
     'field_instance' => array(
       'bundle' => 'report',
-      'default_value' => array(
-        0 => array(
-          'value' => 0,
-        ),
-      ),
+      'default_value' => NULL,
       'deleted' => '0',
       'description' => '',
       'display' => array(
         'default' => array(
           'label' => 'above',
+          'module' => 'text',
           'settings' => array(),
-          'type' => 'hidden',
-          'weight' => '6',
+          'type' => 'text_default',
+          'weight' => 10,
         ),
-        'full' => array(
+        'teaser' => array(
           'label' => 'above',
           'settings' => array(),
           'type' => 'hidden',
           'weight' => 0,
         ),
-        'teaser' => array(
-          'label' => 'above',
-          'settings' => array(),
-          'type' => 'hidden',
-          'weight' => '0',
-        ),
       ),
       'entity_type' => 'node',
-      'field_name' => 'field_notify_twitter',
-      'label' => 'Post status @twitter',
+      'field_name' => 'field_statement',
+      'label' => 'Statement',
       'required' => 0,
       'settings' => array(
+        'text_processing' => '0',
         'user_register_form' => FALSE,
       ),
       'widget' => array(
         'active' => 1,
-        'module' => 'options',
+        'module' => 'text',
         'settings' => array(
-          'display_label' => 1,
+          'rows' => '5',
         ),
-        'type' => 'options_onoff',
-        'weight' => '7',
+        'type' => 'text_textarea',
+        'weight' => '17',
       ),
     ),
   );
-
-  // Exported field: 'node-report-field_notify_user'.
-  $fields['node-report-field_notify_user'] = array(
-    'field_config' => array(
-      'active' => '1',
-      'cardinality' => '1',
-      'deleted' => '0',
-      'entity_types' => array(),
-      'field_name' => 'field_notify_user',
-      'field_permissions' => array(
-        'type' => '2',
-      ),
-      'foreign keys' => array(),
-      'indexes' => array(
-        'value' => array(
-          0 => 'value',
-        ),
-      ),
-      'locked' => '0',
-      'module' => 'list',
-      'settings' => array(
-        'allowed_values' => array(
-          0 => '0',
-          1 => '1',
-        ),
-        'allowed_values_function' => '',
-      ),
-      'translatable' => '0',
-      'type' => 'list_boolean',
-    ),
-    'field_instance' => array(
-      'bundle' => 'report',
-      'default_value' => array(
-        0 => array(
-          'value' => 0,
-        ),
-      ),
-      'deleted' => '0',
-      'description' => '',
-      'display' => array(
-        'default' => array(
-          'label' => 'hidden',
-          'settings' => array(),
-          'type' => 'hidden',
-          'weight' => '10',
-        ),
-        'full' => array(
-          'label' => 'above',
-          'settings' => array(),
-          'type' => 'hidden',
-          'weight' => '0',
-        ),
-        'teaser' => array(
-          'label' => 'above',
-          'settings' => array(),
-          'type' => 'hidden',
-          'weight' => '0',
-        ),
-      ),
-      'entity_type' => 'node',
-      'field_name' => 'field_notify_user',
-      'label' => 'Notify User',
-      'required' => 0,
-      'settings' => array(
-        'user_register_form' => FALSE,
-      ),
-      'widget' => array(
-        'active' => 1,
-        'module' => 'options',
-        'settings' => array(
-          'display_label' => 1,
-        ),
-        'type' => 'options_onoff',
-        'weight' => '6',
-      ),
-    ),
-  );
-  */
 
   // Exported field: 'node-report-field_status'.
   $fields['node-report-field_status'] = array(
@@ -1532,15 +1450,14 @@ function mark_a_spot_field_default_fields() {
   t('If you want to report a more common issue, click here');
   t('Image');
   t('Non located report');
-  t('Notify User');
   t('Place your report');
   t('Please leave an e-Mail address, so that we can contact you, in case you don\'t want to register');
-  t('Post status @twitter');
   t('Provide a more detailed description here');
   t('Status');
   t('StatusId');
   t('This field applies to the tweet311 module. A Twitter-hashtag that citizens may use, applying to a certain service/service code/category');
   t('This field can be used for attaching official documents');
+  t('Statement');
   t('categoryHex');
   t('categoryId');
   t('hash');

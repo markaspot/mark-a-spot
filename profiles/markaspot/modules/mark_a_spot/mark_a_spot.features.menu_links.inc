@@ -18,11 +18,11 @@ function mark_a_spot_menu_default_menu_links() {
     'link_title' => 'Home',
     'options' => array(),
     'module' => 'menu',
-    'hidden' => '0',
-    'external' => '1',
-    'has_children' => '0',
-    'expanded' => '0',
-    'weight' => '-50',
+    'hidden' => 0,
+    'external' => 1,
+    'has_children' => 0,
+    'expanded' => 0,
+    'weight' => -50,
   );
   // Exported menu link: main-menu:list
   $menu_links['main-menu:list'] = array(
@@ -32,11 +32,11 @@ function mark_a_spot_menu_default_menu_links() {
     'link_title' => 'Track Reports',
     'options' => array(),
     'module' => 'system',
-    'hidden' => '0',
-    'external' => '0',
-    'has_children' => '0',
-    'expanded' => '0',
-    'weight' => '0',
+    'hidden' => 0,
+    'external' => 0,
+    'has_children' => 0,
+    'expanded' => 0,
+    'weight' => 0,
   );
   // Exported menu link: main-menu:map
   $menu_links['main-menu:map'] = array(
@@ -46,11 +46,11 @@ function mark_a_spot_menu_default_menu_links() {
     'link_title' => 'Map',
     'options' => array(),
     'module' => 'system',
-    'hidden' => '0',
-    'external' => '0',
-    'has_children' => '0',
-    'expanded' => '0',
-    'weight' => '0',
+    'hidden' => 0,
+    'external' => 0,
+    'has_children' => 0,
+    'expanded' => 0,
+    'weight' => 0,
   );
   // Exported menu link: main-menu:node/add/report
   $menu_links['main-menu:node/add/report'] = array(
@@ -64,11 +64,11 @@ function mark_a_spot_menu_default_menu_links() {
       ),
     ),
     'module' => 'menu',
-    'hidden' => '0',
-    'external' => '0',
-    'has_children' => '0',
-    'expanded' => '0',
-    'weight' => '-49',
+    'hidden' => 0,
+    'external' => 0,
+    'has_children' => 0,
+    'expanded' => 0,
+    'weight' => -49,
   );
   // Translatables
   // Included for use with string extractors like potx.

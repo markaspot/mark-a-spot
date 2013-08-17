@@ -1,6 +1,6 @@
 /**
  * @file
- * Javascript for Goole Map widget of Geolocation field.
+ * Javascript for Cloudmade Leaflet Map widget of Geolocation field.
  */
 
 (function ($) {
@@ -23,33 +23,40 @@
    *   the op that was performed
    */
   Drupal.geolocation.codeLatLng = function(latLng, i, op) {
-    
     //Update the lat and lng input fields
     $('#geolocation-lat-' + i + ' input').attr('value', latLng.lat);
     $('#geolocation-lat-item-' + i + ' .geolocation-lat-item-value').html(latLng.lat);
     $('#geolocation-lng-' + i + ' input').attr('value', latLng.lng);
     $('#geolocation-lng-item-' + i + ' .geolocation-lng-item-value').html(latLng.lng);
- 
+
     // Update the address field
     if ((op == 'marker' || op == 'geocoder')) {
 
-      var api_key = Drupal.settings.geolocation.settings.bing_api_key;
-     
-      $.getJSON('http://dev.virtualearth.net/REST/v1/Locations/' + latLng.lat + ', ' + latLng.lng + '?o=json&key=' + api_key + '&jsonp=?', function (result) {
-        if (result.resourceSets[0].estimatedTotal > 0) {
-            var loc = result.resourceSets[0].resources[0].point.coordinates;
-            var address = result.resourceSets[0].resources[0].address.formattedAddress;
-            $('#geolocation-address-' + i + ' input').val(address);            
-            Drupal.geolocation.maps[i].setView(new L.LatLng(loc[0],loc[1]), i);
-            Drupal.geolocation.setMapMarker(new L.LatLng(loc[0],loc[1]), i);
+      var nominatimEmail = Drupal.settings.geolocation.settings.nominatimEmail;
+      L.Icon.Default.imagePath = Drupal.settings.geolocation.settings.leafletImagePath;
+
+      var url = Drupal.settings.basePath + 'profiles/markaspot/libraries/proxy/src/reverse';
+      $.getJSON(url  + '?email=' + nominatimEmail + '&lat=' + latLng.lat + '&lon=' + latLng.lng + '&json_callback=?', {
+        format : 'json'
+      }).done(function (result) {
+
+        if (result) {
+            var street = result.address.road ? result.address.road : undefined;
+            var street = street ? street : result.address.pedestrian;
+            var street = result.address.house_number ? street  + ' ' + result.address.house_number : street;
+            var address = street + ', ' + result.address.postcode + ' ' + result.address.city;
+
+            $('#edit-field-geo-und-0-address-field').val(address);
+            Drupal.geolocation.maps[i].setView(new L.LatLng(result.lat , result.lon),16);
+            // Drupal.geolocation.setMapMarker(new L.LatLng(result.lat , result.lon),i);
         }
         else {
             alert(Drupal.t("Sorry an address cannot be found"));
         }
-      });    
+      });
     }
   }
- 
+
   /**
    * Get the location from the address field
    *
@@ -58,18 +65,42 @@
    */
 
   Drupal.geolocation.codeAddress = function(i) {
-    var address = $('#geolocation-address-' + i + ' input').val();
-    var api_key = Drupal.settings.geolocation.settings.bing_api_key;
-    //console.log(Drupal.geolocation.settings);
-    $.getJSON('http://dev.virtualearth.net/REST/v1/Locations?query=' + address + '&key=' + api_key + '&jsonp=?', function (result) {
-      if (result.resourceSets[0].estimatedTotal > 0) {
-          var loc = result.resourceSets[0].resources[0].point.coordinates;
-          Drupal.geolocation.maps[i].setView(new L.LatLng(loc[0],loc[1]), i);
-          Drupal.geolocation.setMapMarker(new L.LatLng(loc[0],loc[1]), i);
-          Drupal.geolocation.codeLatLng(new L.LatLng(loc[0],loc[1]), i);
+    // Nominatim
+    // http://wiki.openstreetmap.org/wiki/Nominatim_usage_policy
+    //
+    /**
+     * Mark-a-Spot Integration: Fill input with formatted address again
+     */
+    mas = Drupal.settings.mas;
+
+    var address = $('#edit-field-geo-und-0-address-field').val() + ", " + mas.markaspot_city + ", " + "Deutschland";
+    // Mark-a-Spot End
+    // var url = 'http://where.yahooapis.com/geocode?';
+    // $.getJSON(url  + 'q="+address+"&flags=J&callback=ws_results&output=jso', {
+
+     var url =  Drupal.settings.basePath + 'profiles/markaspot/libraries/proxy/src/search';
+    $.getJSON(url  + '?q=' + address + '&polygon=0&addressdetails=1&viewbox=&json_callback=?', {
+      format : 'json'
+    }).done(function (result) {
+      if (result.length > 0) {
+        Drupal.geolocation.maps[i].setView(new L.LatLng(result[0].lat,result[0].lon), i);
+        Drupal.geolocation.setMapMarker(new L.LatLng(result[0].lat,result[0].lon), i);
+        var street = result[0].address.road ? result[0].address.road : undefined;
+        var street = street ? street : result[0].address.pedestrian;
+        var street = result[0].address.house_number ? street  + ' ' + result[0].address.house_number : street;
+        var address = street + ', ' + result[0].address.postcode + ' ' + result[0].address.city;
+
+        $('#edit-field-geo-und-0-address-field').val(address);
+        $('#geolocation-lat-' + i + ' input').attr('value', result[0].lat);
+        $('#geolocation-lat-item-' + i + ' .geolocation-lat-item-value').html(result[0].lat);
+        $('#geolocation-lng-' + i + ' input').attr('value', result[0].lon);
+        $('#geolocation-lng-item-' + i + ' .geolocation-lng-item-value').html(result[0].lon);
+            // Drupal.geolocation.maps[i].setView(new L.LatLng(result.lat , result.lon),i);
+            // Drupal.geolocation.setMapMarker(new L.LatLng(result.lat , result.lon),i);
+        // Drupal.geolocation.codeLatLng(new L.LatLng(result[0].lat,result[0].lon), i, 'geocoder');
       }
       else {
-          alert(Drupal.t("Sorry that address cannot be found"));
+        alert(Drupal.t("Sorry that address cannot be found"));
       }
     });
   }
@@ -92,7 +123,7 @@
      }
    }
 
-   
+
   /**
    * Set/Update a marker on a map
    *
@@ -102,8 +133,8 @@
    *   the index from the maps array we are working on
    */
   Drupal.geolocation.setMapMarker = function(latLng, i) {
-    
-    
+
+
     // remove old marker
     if(Drupal.geolocation.maps[i].hasLayer(markerLayer) == true){
       //console.log(Drupal.geolocation.maps[i].hasLayer(markerLayer));
@@ -111,12 +142,12 @@
     }
 
     var markerLocation = latLng;
-      Drupal.geolocation.maps[i].setView(latLng, 13)
+      Drupal.geolocation.maps[i].setView(latLng, 16)
       var marker = new L.Marker(latLng);
       // add marker to markerLayer
       markerLayer.addLayer(marker);
       Drupal.geolocation.maps[i].addLayer(markerLayer);
-   
+
 
     // google.maps.event.addListener(Drupal.geolocation.markers[i], 'dragend', function(me) {
     //   Drupal.geolocation.codeLatLng(me.latLng, i, 'marker');
@@ -125,7 +156,7 @@
 
     return false; // if called from <a>-Tag
   }
- 
+
   /**
    * Get the current user location if one is given
    * @return
@@ -134,7 +165,7 @@
   Drupal.geolocation.getFormattedLocation = function() {
     if (google.loader.ClientLocation.address.country_code == "US" &&
       google.loader.ClientLocation.address.region) {
-      return google.loader.ClientLocation.address.city + ", " 
+      return google.loader.ClientLocation.address.city + ", "
           + google.loader.ClientLocation.address.region.toUpperCase();
     }
     else {
@@ -142,7 +173,7 @@
           + google.loader.ClientLocation.address.country_code;
     }
   }
- 
+
   /**
    * Clear/Remove the values and the marker
    *
@@ -157,7 +188,7 @@
     $('#geolocation-address-' + i + ' input').attr('value', '');
     Drupal.geolocation.markers[i].setMap();
   }
- 
+
   /**
    * Do something when no location can be found
    *
@@ -172,7 +203,7 @@
     if (supportFlag == true) {
       alert(Drupal.t("Geolocation service failed. We've placed you in NewYork."));
       initialLocation = newyork;
-    } 
+    }
     else {
       alert(Drupal.t("Your browser doesn't support geolocation. We've placed you in Siberia."));
       initialLocation = siberia;
@@ -197,6 +228,12 @@
         $("#geolocation-map-" + i).once('geolocation-cloudmade-osm', function(){
 
           // Attach listeners
+          $('#geolocation-address-' + i + ' input').keypress(function(ev){
+            if(ev.which == 13){
+              ev.preventDefault();
+              Drupal.geolocation.codeAddress(i);
+            }
+          });
           $('#geolocation-address-' + i + ' input').keypress(function(ev){
             if(ev.which == 13){
               ev.preventDefault();
@@ -229,17 +266,19 @@
             });
           }
           // If browser geolication is not supoprted, try ip location
-          else if (google.loader.ClientLocation) {
-            latLng = new L.LatLng(google.loader.ClientLocation.latitude, google.loader.ClientLocation.longitude);
-            $('#geolocation-help-' + i + ':not(.geolocation-cloudmade-osm-processed)').addClass('geolocation-cloudmade-osm-processed').append(Drupal.t(', or use the IP-based location by clicking this link') +': <span id="geolocation-client-location-' + i + '" class="geolocation-client-location">' + Drupal.geolocation.getFormattedLocation() + '</span>');
+          else {
+            // alert(Drupal.t("Your browser does currently not support geolocation"));
 
-            // Set current user location, if available
-            $('#geolocation-client-location-' + i + ':not(.geolocation-cloudmade-osm-processed)').addClass('geolocation-cloudmade-osm-processed').click(function() {
-              latLng = new L.LatLng(google.loader.ClientLocation.latitude, google.loader.ClientLocation.longitude);
-              Drupal.geolocation.maps[i].setView(latLng);
-              Drupal.geolocation.setMapMarker(latLng, i);
-              Drupal.geolocation.codeLatLng(latLng, i, 'geocoder');
-            });
+            // latLng = new L.LatLng(google.loader.ClientLocation.latitude, google.loader.ClientLocation.longitude);
+            // $('#geolocation-help-' + i + ':not(.geolocation-cloudmade-osm-processed)').addClass('geolocation-cloudmade-osm-processed').append(Drupal.t(', or use the IP-based location by clicking this link') +': <span id="geolocation-client-location-' + i + '" class="geolocation-client-location">' + Drupal.geolocation.getFormattedLocation() + '</span>');
+
+            // // Set current user location, if available
+            // $('#geolocation-client-location-' + i + ':not(.geolocation-cloudmade-osm-processed)').addClass('geolocation-cloudmade-osm-processed').click(function() {
+            //   latLng = new L.LatLng(google.loader.ClientLocation.latitude, google.loader.ClientLocation.longitude);
+            //   Drupal.geolocation.maps[i].setView(latLng);
+            //   Drupal.geolocation.setMapMarker(latLng, i);
+            //   Drupal.geolocation.codeLatLng(latLng, i, 'geocoder');
+            // });
           }
           // END: Autodetect clientlocation.
           // Get current/default values
@@ -250,7 +289,7 @@
           lat = $('#geolocation-lat-' + i + ' input').attr('value') == false ? mapDefaults.lat : $('#geolocation-lat-' + i + ' input').attr('value');
           lng = $('#geolocation-lng-' + i + ' input').attr('value') == false ? mapDefaults.lng : $('#geolocation-lng-' + i + ' input').attr('value');
           latLng = new L.LatLng(lat, lng);
-        
+
           // Set map options
           // mapOptions = {
           //   zoom: 2,
@@ -263,11 +302,12 @@
           // console.log(Drupal.settings.geolocation.settings);
 
           Drupal.geolocation.maps[i] = new L.Map(document.getElementById("geolocation-map-" + i));
-          var cloudmadeUrl = 'http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/22677/256/{z}/{x}/{y}.png',
+          var cloudmadeUrl = 'https://ssl_tiles.cloudmade.com/f8cbb17738ce44549546b623717ea018/22677/256/{z}/{x}/{y}.png',
           cloudmadeAttribution = 'Map data &copy; 2012 OpenStreetMap contributors, Imagery &copy; 2012 CloudMade',
           cloudmade = new L.TileLayer(cloudmadeUrl, {maxZoom: 18, attribution: cloudmadeAttribution});
 
-          Drupal.geolocation.maps[i].setView(latLng, 13).addLayer(cloudmade);
+          Drupal.geolocation.maps[i].setView(latLng, 16).addLayer(cloudmade);
+          Drupal.geolocation.maps[i].setZoom(16);
 
           if (lat && lng) {
             // Set initial marker
@@ -276,7 +316,7 @@
           }
 
           Drupal.geolocation.maps[i].on('click', function(e){
-            console.log(e);
+            // console.log(e);
             Drupal.geolocation.codeLatLng(e.latlng, i, 'geocoder');
             Drupal.geolocation.setMapMarker(e.latlng, i);
           });

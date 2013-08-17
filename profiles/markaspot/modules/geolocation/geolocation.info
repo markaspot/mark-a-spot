@@ -1,0 +1,11 @@
+
+name = Geolocation
+description = Provides a geolocation field.
+package = Geolocation
+core = 7.x
+; Information added by drupal.org packaging script on 2013-07-29
+version = "7.x-1.4"
+core = "7.x"
+project = "geolocation"
+datestamp = "1375087575"
+

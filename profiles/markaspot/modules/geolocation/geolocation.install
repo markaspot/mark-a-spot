@@ -1,0 +1,154 @@
+<?php
+
+/**
+ * @file
+ * Install/Update/Uninstall functions for geolocation_field module
+ */
+
+/**
+ * Implements hook_field_schema().
+ */
+function geolocation_field_schema($field) {
+  $columns = array(
+    'lat' => array(
+      'description' => 'Stores the latitude value',
+      'type' => 'float',
+      'size' => 'big',
+      'not null' => TRUE,
+      'default' => 0,
+    ),
+    'lng' => array(
+      'description' => 'Stores the longitude value',
+      'type' => 'float',
+      'size' => 'big',
+      'not null' => TRUE,
+      'default' => 0,
+    ),
+    'lat_sin' => array(
+      'description' => 'Stores the sine of latitude',
+      'type' => 'float',
+      'size' => 'big',
+      'not null' => TRUE,
+      'default' => 0,
+    ),
+    'lat_cos' => array(
+      'description' => 'Stores the cosine of latitude',
+      'type' => 'float',
+      'size' => 'big',
+      'not null' => TRUE,
+      'default' => 0,
+    ),
+    'lng_rad' => array(
+      'description' => 'Stores the radian longitude',
+      'type' => 'float',
+      'size' => 'big',
+      'not null' => TRUE,
+      'default' => 0,
+    ),
+  );
+  $indexes = array(
+    'lat' => array('lat'),
+    'lng' => array('lng'),
+  );
+  return array(
+    'columns' => $columns,
+    'indexes' => $indexes,
+  );
+}
+
+/**
+ * Increase precision of Geolocation Field data columns: lat_sin, lat_cos, lng_rad
+ */
+function geolocation_update_7101() {
+  $fields = geolocation_get_geolocation_fields();
+
+  foreach ($fields as $field) {
+
+    $tables = array(_field_sql_storage_tablename($field), _field_sql_storage_revision_tablename($field));
+    foreach ($tables as $table) {
+      $field_name = $field['field_name']; // eg 'field_mygeolocname' ;
+
+      // Convert three db columns from float to double precision
+      $columns = array($field_name . '_lat_sin', $field_name . '_lat_cos', $field_name . '_lng_rad');
+      $spec = array('type' => 'float', 'size' => 'big', 'not null' => TRUE, 'default' => 0.0);
+      foreach ($columns as $column) {
+        db_change_field($table, $column, $column, $spec);
+      }
+
+      // Now update these columns by re-calculating and re-storing existing values
+      $column_lat = $field_name . '_lat';
+      $column_lng = $field_name . '_lng';
+
+      $query = db_select($table, 'g')
+        ->fields('g', array('revision_id', 'delta', $column_lat, $column_lng));
+      $results = $query->execute();
+
+      foreach ($results as $row) {
+        $lat_rad = deg2rad($row->{$column_lat});
+        $lat_sin = sin($lat_rad);
+        $lat_cos = cos($lat_rad);
+        $lng_rad = deg2rad($row->{$column_lng});
+
+        // Cannot use drupal_write_record() within hook_update_N(), as the database
+        // schema cannot be relied on when a user is running a series of updates.
+        $updated = db_update($table)
+          ->fields(array(
+            $columns[0] => $lat_sin,
+            $columns[1] => $lat_cos,
+            $columns[2] => $lng_rad
+          ))
+          ->condition('revision_id', $row->revision_id)
+          ->condition('delta', $row->delta)
+          ->execute();
+      }
+    }
+  }
+  return t('Geolocation Field data columns lat_sin, lat_cos, lng_rad converted to double precision.');
+}
+
+function geolocation_get_geolocation_fields() {
+  $types = array_keys(geolocation_field_info()); // returns one value in our case
+  $fields = array();
+  foreach (field_info_fields() as $field) {
+    if (in_array($field['type'], $types)) {
+      $fields[] = $field;
+    }
+  }
+  return $fields;
+}
+
+/**
+ * Update map dimensions to allow responsive settings.
+ */
+function geolocation_update_7102() {
+  $result = db_query("SELECT id, field_name, data FROM {field_config} WHERE module = 'geolocation' AND type = 'geolocation_latlng'");
+  foreach ($result as $field) {
+
+    $field_id = $field->id;
+    $name = $field->field_name;
+    $field_data = unserialize($field->data);
+
+    $instances = db_query("SELECT id, data FROM {field_config_instance} WHERE field_id = :field_id", array(':field_id' => $field_id));
+    foreach ($instances as $instance) {
+
+      // If this field has been updated already, we want to skip it.
+      $instance_data = unserialize($instance->data);
+      foreach ($instance_data['display'] as $key => $display) {
+
+        if (isset($display['settings']['map_dimensions'])) {
+          $map_diemensions = explode('x', $display['settings']['map_dimensions']);
+          unset($instance_data['display'][$key]['settings']['map_dimensions']);
+          $instance_data['display'][$key]['settings']['map_width'] = $map_diemensions['0'] . 'px';
+          $instance_data['display'][$key]['settings']['map_height'] = $map_diemensions['1'] . 'px';
+
+          // update the database.
+          $num_updated = db_update('field_config_instance')
+            ->fields(array('data' => serialize($instance_data)))
+            ->condition('id', $instance->id)
+            ->execute();
+        }
+      }
+    }
+  }
+  return t('Updated Geolocation Field map dimensions to allow responsive settings.');
+}
