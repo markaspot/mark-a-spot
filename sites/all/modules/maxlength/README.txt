@@ -1,1 +1,0 @@
-This module allows you to set a maximum length for any text field on any form.
