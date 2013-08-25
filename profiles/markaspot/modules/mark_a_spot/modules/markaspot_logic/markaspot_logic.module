@@ -280,33 +280,45 @@ function markaspot_logic_admin_settings() {
       '#description' => t('Define an area within all reports will be based on a valid location'),
     );
 
-  $form['bbox']['nw_lat'] = array(
+  $form['bbox']['bbox_nw_lat'] = array(
     '#type' => 'textfield',
     '#size' => '10',
     '#default_value' => variable_get('bbox_nw_lat', _markaspot_logic_defaults('bbox_nw_lat')),
     '#title' => t('North-West latitude.'),
   );
-  $form['bbox']['nw_lng'] = array(
+  $form['bbox']['bbox_nw_lng'] = array(
     '#type' => 'textfield',
     '#size' => '10',
     '#default_value' => variable_get('bbox_nw_lng', _markaspot_logic_defaults('bbox_nw_lng')),
     '#title' => t('North-West longitude.'),
   );
 
-  $form['bbox']['se_lat'] = array(
+  $form['bbox']['bbox_se_lat'] = array(
     '#type' => 'textfield',
     '#size' => '10',
     '#default_value' => variable_get('bbox_se_lat', _markaspot_logic_defaults('bbox_se_lat')),
     '#title' => t('South-East latitude.'),
   );
-  $form['bbox']['se_lng'] = array(
+  $form['bbox']['bbox_se_lng'] = array(
     '#type' => 'textfield',
     '#size' => '10',
     '#default_value' => variable_get('bbox_se_lng', _markaspot_logic_defaults('bbox_se_lng')),
     '#title' => t('South-East longitude.'),
   );
-
-
+  if (module_exists('markaspot_archive')){
+    $form['archive'] = array(
+        '#type' => 'fieldset',
+        '#title' => t('Archive Settings'),
+        '#collapsible' => TRUE,
+        '#description' => t('Set the period in days since reports have been last edited. Closed reports earlier than this period will be archived automatically'),
+      );
+    $form['archive']['archive_days'] = array(
+      '#type' => 'textfield',
+      '#size' => '2',
+      '#default_value' => variable_get('archive_days', _markaspot_logic_defaults('archive_days')),
+      '#title' => t('Days'),
+    );
+  }
 
   if (module_exists('markaspot_tweet311')){
     $form['twitter'] = array (
@@ -381,6 +393,8 @@ function _markaspot_logic_defaults($id) {
       return '50.8042';
     case 'bbox_se_lng':
       return '6.937';
+    case 'archive_days':
+      return '30';
   }
 }
 
