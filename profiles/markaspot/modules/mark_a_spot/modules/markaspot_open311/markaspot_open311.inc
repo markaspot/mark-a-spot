@@ -181,7 +181,7 @@ function _markaspot_open311_requests_index($page, $parameters) {
  */
 
 function _markaspot_open311_services_index($args) {
-  $taxonomies = taxonomy_get_tree(2, $parent = 0, $max_depth = 1, $load_entities = TRUE);
+  $taxonomies = taxonomy_get_tree(1, $parent = 0, $max_depth = 1, $load_entities = TRUE);
 
   foreach ($taxonomies as $taxonomy_term) {
     $services[] = _tax_map_service($taxonomy_term);
