@@ -1,0 +1,11 @@
+<?php
+/**
+ * @file
+ * Code for the Mark-a-Spot Admin feature.
+ */
+
+include_once 'mark_a_spot_admin.features.inc';
+
+function mark_a_spot_admin_init(){
+  drupal_add_css(drupal_get_path('module', 'mark_a_spot_admin') . '/css/mas-admin-style.css');
+}

@@ -15,7 +15,7 @@ function mark_a_spot_default_services_endpoint() {
   $endpoint->api_version = 3;
   $endpoint->name = 'georeport_v2';
   $endpoint->server = 'rest_server';
-  $endpoint->path = 'georeport';
+  $endpoint->path = 'georeport/v2';
   $endpoint->authentication = array(
     'services' => 'services',
   );

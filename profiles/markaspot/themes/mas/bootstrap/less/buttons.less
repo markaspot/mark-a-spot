@@ -132,6 +132,7 @@ input[type="button"] {
 
 // Provide *some* extra contrast for those who can get it
 .btn-primary.active,
+.btn-custom1.active
 .btn-warning.active,
 .btn-danger.active,
 .btn-success.active,
@@ -142,6 +143,8 @@ input[type="button"] {
 
 // Set the backgrounds
 // -------------------------
+
+
 .btn-primary {
   .buttonBackground(@btnPrimaryBackground, @btnPrimaryBackgroundHighlight);
 }
@@ -165,7 +168,9 @@ input[type="button"] {
 .btn-inverse {
   .buttonBackground(@btnInverseBackground, @btnInverseBackgroundHighlight);
 }
-
+.btn-custom {
+  .buttonBackground(@btnCustomBackground, @btnCustomBackgroundHighlight);
+}
 
 // Cross-browser Jank
 // --------------------------------------------------

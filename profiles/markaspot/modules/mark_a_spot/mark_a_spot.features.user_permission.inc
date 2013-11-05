@@ -25,6 +25,7 @@ function mark_a_spot_user_default_permissions() {
   $permissions['view field_statement'] = array(
     'name' => 'view field_statement',
     'roles' => array(
+      'administrator' => 'administrator',
       'anonymous user' => 'anonymous user',
       'authenticated user' => 'authenticated user',
     ),
@@ -35,6 +36,7 @@ function mark_a_spot_user_default_permissions() {
   $permissions['view field_status'] = array(
     'name' => 'view field_status',
     'roles' => array(
+      'administrator' => 'administrator',
       'anonymous user' => 'anonymous user',
       'authenticated user' => 'authenticated user',
     ),

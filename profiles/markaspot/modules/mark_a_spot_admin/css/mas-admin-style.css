@@ -1,0 +1,185 @@
+/**
+ * @file
+ * CSS for Mark-a-Spot admin theme adoption.
+ */
+ 
+
+#block-markaspot-stats-markaspot-stats ul  {
+    list-style-type:none;
+    padding: 0;
+    margin: 0;
+}
+
+/*Admin Styles*/
+
+#markaspot-admin .panel-col-first {
+    width: 60%;
+}
+#markaspot-admin .panel-col-last {
+    width: 35%;
+    padding: 0 0 0 40px;
+}
+
+#markaspot-admin .panel-2col-bricks, 
+#markaspot-admin .panel-separator {
+margin: 0 0 3em 0;
+}
+
+#markaspot-admin .pane-title {
+font-size: 25px;
+margin: 10px 5px;
+color:#BBB;
+
+}
+.page-admin-track-content span.icon {
+    background-position: 0 -30px;
+}
+
+.view-mark-a-spot-admin-comments .item-list li,
+.view-mark-a-spot-admin-comments .item-list li.views-row-last {
+
+padding: 10px 5px 25px 10px;
+
+}
+
+.view-mark-a-spot-admin-comments .views-field-timestamp {
+    color: #999;
+}
+
+ul.mas-admin.action-links.clearfix {
+    float: right;
+    padding: 0 0 0 120px;
+    clear: both;
+}
+ul.mas-admin.action-links li{
+    display: inline;
+}
+.mas-admin a{
+min-width: 10px;
+padding: 5px 15px;
+float: left;
+text-align: center;
+padding: 5px 10px;
+color: #333;
+text-shadow: white 0px 1px 0px;
+
+}
+
+
+/**
+ * The .contextual.css file is intended to contain styles that override declarations
+ * in the Contextual module.
+ */
+
+/* @group Wrapper */
+
+#views-live-preview .contextual-links-region-active {
+  outline: medium none;
+}
+
+#views-live-preview div.contextual-links-wrapper {
+  right: auto;
+  top: auto;
+}
+
+html.js #views-live-preview div.contextual-links-wrapper {
+  display: inline;
+}
+
+/* @end */
+
+/* @group Trigger */
+
+#views-live-preview a.contextual-links-trigger {
+  display: block;
+}
+
+/* @end */
+
+/* @group List */
+
+div.contextual-links-wrapper ul.contextual-links {
+  -moz-border-radius: 0 4px 4px 4px;
+  -webkit-border-radius: 0 4px 4px 4px;
+  border-radius: 0 4px 4px 4px;
+  min-width: 10em;
+  padding: 6px 6px 9px 6px;
+  right: auto;
+}
+
+ul.contextual-links li a,
+ul.contextual-links li span {
+  padding-bottom: 0.25em;
+  padding-right: 0.1667em;
+  padding-top: 0.25em;
+}
+
+ul.contextual-links li span {
+  font-weight: bold;
+}
+
+ul.contextual-links li a {
+  color: #666666 !important;
+  margin: 0.25em 0;
+  padding-left: 1em;
+}
+
+ul.contextual-links li a:hover {
+  background-color: #badbec;
+}
+
+/* @end */
+
+
+/* start geo street search */
+input.fluid {
+-moz-box-sizing: border-box;
+-webkit-box-sizing: border-box;
+width: 300px;
+}/* @end */
+
+
+.status_cc0000 {
+    color: #cc0000;
+    font-weight: 700;
+}
+.status_beddbf {
+    color:  #beddbf;
+}
+.status_ff6600 {
+    color:  #ff6600;
+    font-weight: 700;
+}
+.status_dddddd {
+    color: #DDD;
+    font-weight: 700;
+}
+
+
+
+.meta-info {
+    color: #999;
+}
+
+
+/*Print-Client Styles*/
+
+.print-content .field {
+margin: 1em;
+}
+
+.print-content .field-name-field-image {
+float:right;
+  width:15em;
+  height: 15em;
+}
+.print-content .field-name-field-image img {
+  width:15em;
+  height: 15em;
+}
+
+
+.print-footer {
+display: none
+}
+

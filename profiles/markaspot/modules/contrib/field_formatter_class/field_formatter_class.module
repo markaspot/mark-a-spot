@@ -1,0 +1,69 @@
+<?php
+
+/**
+ * @file
+ * Provide for custom classes on field formatters in the display.
+ */
+
+/**
+ * Implements hook_field_formatter_info_alter().
+ */
+function field_formatter_class_field_formatter_info_alter(&$info) {
+  // added to ALL formatters...
+  foreach ($info as &$formatter) {
+    $formatter['settings']['field_formatter_class'] = '';
+  }
+}
+
+/**
+ * Implements hook_field_formatter_settings_summary_alter().
+ */
+function field_formatter_class_field_formatter_settings_summary_alter(&$summary, $context) {
+  $display = $context['instance']['display'][$context['view_mode']];
+  $settings = $display['settings'];
+
+  if (!empty($summary)) {
+    $summary .= '<br />';
+  }
+
+  if (!empty($settings['field_formatter_class'])) {
+    $summary .= t('Class: @field', array('@field' => filter_xss($settings['field_formatter_class'], array())));
+  }
+  else {
+    $summary .= t('No class');
+  }
+}
+
+/**
+ * Implements hook_field_formatter_settings_form_alter().
+ */
+function field_formatter_class_field_formatter_settings_form_alter(&$settings_form, $context) {
+  $display = $context['instance']['display'][$context['view_mode']];
+  $settings = $display['settings'];
+
+  $settings_form['field_formatter_class'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Field Formatter Class'),
+    '#default_value' => $settings['field_formatter_class'],
+  );
+}
+
+/**
+ * Implements hook_preprocess_field().
+ *
+ * Adds a custom field class to the field's classes_array
+ * according to the field formatter settings.
+ */
+function field_formatter_class_preprocess_field(&$variables, $hook) {
+  $entity_type = $variables['element']['#entity_type'];
+  $field_name  = $variables['element']['#field_name'];
+  $bundle      = $variables['element']['#bundle'];
+  $view_mode   = $variables['element']['#view_mode'];
+
+  $formatter_info = field_formatter_settings_get_instance_display_settings($entity_type, $field_name, $bundle, $view_mode);
+
+  // add class for whole field
+  if (!empty($formatter_info['field_formatter_class'])) {
+    $variables['classes_array'][] = filter_xss($formatter_info['field_formatter_class'], array());
+  }
+}

@@ -2,7 +2,7 @@
 
 /**
  * This module logs and shows logging of node (reports) actions.
- * toDo ... convert to entity-api? http://drupal.org/node/1026420 
+ * toDo ... convert to entity-api? http://drupal.org/node/1026420
  *
  * @author Holger Kreis - holger@markaspot.org
  */
@@ -56,9 +56,9 @@ function markaspot_log_field_extra_fields() {
 /**
  * Implements hook_block_info().
  *
- * 
+ *
  */
- 
+
 function markaspot_log_block_info() {
   $blocks['markaspot_activity'] = array(
       'info' => t('Mark-a-Spot: Show Activity for a report'),
@@ -76,7 +76,7 @@ function markaspot_log_block_view($delta = '') {
   switch ($delta) {
     case 'markaspot_activity':
       $block['subject'] = t('MaS Activity Log');
-      
+
       if (user_access('view maslogs')) {
         $node = menu_get_object();
         // var_dump($node);
@@ -85,15 +85,15 @@ function markaspot_log_block_view($delta = '') {
         } else {
           return NULL;
         }
-        
+
         $items = array();
-        
+
         foreach ($result as $log) {
           $items[] = array(
             'data' => '<span class="log-entry">'.$log->message.' </span><br/>'.t('<span class="meta-info">@time ago</span>', array('@time' => format_interval(REQUEST_TIME - $log->modified))));
         }
         if (empty($items)) { //No content in the last week.
-          $block['content'] = t('No log available.'); 
+          $block['content'] = t('No log available.');
         }
         else {
           //Pass data through theme function.
@@ -115,40 +115,43 @@ function markaspot_log_block_view($delta = '') {
  * @return void
  */
 function markaspot_log_node_insert($node) {
-  // var_dump($node);
-  // die;
+
+  $data = new stdClass();
+
   // Preparing Logging to Mas_log table (don't think of watchdog)
   global $user;
 
 /*
-  if (!in_array('Citizen', $user->roles) && 
-    !(in_array('Verwaltung', $user->roles) || in_array('administrator', $user->roles))){
+  if (!in_array('Citizen', $user->roles) &&
+    !(in_array('Management', $user->roles) || in_array('administrator', $user->roles))){
     markaspot_log_add_role_to_user('Citizen', $user->uid);
     $data->message = t('The User is now Citizen');
   }
 */
 
-  if (!in_array('Verwaltung', $user->roles) || !in_array('administrator', $user->roles) && $node->type == 'report'){
+
+  if (!in_array('Management', $user->roles) || !in_array('administrator', $user->roles) && $node->type == 'report'){
 
     if(isset($node->nid)) {
       $data->message = t('The report has been edited by Citizen');
     } else {
+
       $data->message = t('The report has been created by Citizen');
     }
   }
-  
-  if (in_array('administrator', $user->roles) || 
-    in_array('Verwaltung', $user->roles) && $node->type == 'report'){  
+
+  if (in_array('administrator', $user->roles) ||
+    in_array('Management', $user->roles) && $node->type == 'report'){
 
     if(isset($node->nid)) {
       $data->message = t('The report has been edited/created by Administration');
     } else {
-      $data->message = t('The report has been created');    
+      $data->message = t('The report has been created');
     }
   }
 
   unset($data->nid);
-  
+
   $data->uid = $user->uid;
   $data->nid = $node->nid;
 
@@ -165,25 +168,26 @@ function markaspot_log_node_insert($node) {
  * @return void
  */
 function markaspot_log_node_update($node) {
+  $data = new stdClass();
   global $user;
 
-  if (!in_array('Verwaltung', $user->roles) || !in_array('administrator', $user->roles) && $node->type == 'report'){
+  if (!in_array('Management', $user->roles) || !in_array('administrator', $user->roles) && $node->type == 'report'){
 
     if($node->nid) {
       $data->message = t('The report has been edited by Citizen');
-    } 
+    }
   }
-  
-  if (in_array('administrator', $user->roles) || 
-    in_array('Verwaltung', $user->roles) && $node->type == 'report'){  
+
+  if (in_array('administrator', $user->roles) ||
+    in_array('Management', $user->roles) && $node->type == 'report'){
 
     if($node->nid) {
-      $data->message = t('The report has been edited/created by Administration');
-    } 
+      $data->message = t('The report has been edited by Administration');
+    }
   }
 
   unset($data->nid);
-  
+
   $data->uid = $user->uid;
   $data->nid = $node->nid;
 
@@ -193,6 +197,7 @@ function markaspot_log_node_update($node) {
 }
 
 function markaspot_log_comment_presave($comment) {
+  $data = new stdClass();
 
   // Preparing Logging to Mas_log table (don't think of watchdog)
   global $user;
@@ -204,14 +209,14 @@ function markaspot_log_comment_presave($comment) {
     $data->message = t('A comment has been created by Citizen');
   }
 
-  
-  if (in_array('administrator', $user->roles) || 
-    in_array('Verwaltung', $user->roles) && $node->type == 'report'){
+
+  if (in_array('administrator', $user->roles) ||
+    in_array('Management', $user->roles) && $node->type == 'report'){
       $data->message = t('A comment has been created by Adminstration');
   }
 
   unset($data->nid);
-  
+
   $data->uid = $user->uid;
   $data->nid = $comment->nid;
 
@@ -221,9 +226,9 @@ function markaspot_log_comment_presave($comment) {
 print_r($data);
   die;
 */
-  
+
 /*   Array ( [2] => authenticated user [3] => administrator ) stdClass Object ( [message] => A Comment has been created by Adminstration [uid] => 1 [nid] => 185 [created] => 1325696052 [modified] => 1325696052 ) */
-  
+
   markaspot_log_write_log($data);
 }
 
@@ -240,7 +245,7 @@ function markaspot_log_add_role_to_user($role_name, $uid)  {
     ->fields('ur', array('rid'))
     ->condition('ur.uid', $uid)
     ->execute();
-  
+
   $_add_to_user = TRUE;
   if ($results->rowCount() > 0)  {
     // check to see if the user already has this role assigned to them
@@ -251,7 +256,7 @@ function markaspot_log_add_role_to_user($role_name, $uid)  {
       }
     }
   }
-  
+
   if ($_add_to_user)  {
     $rid = user_role_load_by_name($role_name)->rid;
     // var_dump(user_role_load_by_name($role_name));

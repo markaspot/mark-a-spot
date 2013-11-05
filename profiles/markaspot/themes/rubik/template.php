@@ -19,10 +19,6 @@ function rubik_css_alter(&$css) {
   if (isset($css['modules/shortcut/shortcut.css'])) {
     $css['modules/shortcut/shortcut.css']['data'] = drupal_get_path('theme', 'rubik') . '/shortcut.css';
   }
-  // This can be removed once http://drupal.org/node/1221560 is released
-  if (isset($css['sites/all/modules/views/css/views-admin.rubik.css'])) {
-    $css['sites/all/modules/views/css/views-admin.rubik.css']['data'] = drupal_get_path('theme', 'rubik') . '/views-admin.rubik.css';
-  }
 }
 
 /**
@@ -127,12 +123,8 @@ function rubik_preprocess_page(&$vars) {
     $vars['help'] = '';
   }
 
-  // Process local tasks. Only do this processing if the current theme is
-  // indeed Rubik. Subthemes must reimplement this call.
-  global $theme;
-  if ($theme === 'rubik') {
-    _rubik_local_tasks($vars);
-  }
+  // Process local tasks. This will get called for rubik and its subthemes.
+  _rubik_local_tasks($vars);
 
   // Overlay is enabled.
   $vars['overlay'] = (module_exists('overlay') && overlay_get_mode() === 'child');
@@ -269,9 +261,10 @@ function rubik_preprocess_help_page(&$vars) {
 
   // Truly hackish way to navigate help pages.
   $module_info = system_rebuild_module_data();
+  $empty_arg = drupal_help_arg();
   $modules = array();
   foreach (module_implements('help', TRUE) as $module) {
-    if (module_invoke($module, 'help', "admin/help#$module", NULL)) {
+    if (module_invoke($module, 'help', "admin/help#$module", $empty_arg)) {
       $modules[$module] = $module_info[$module]->info['name'];
     }
   }
@@ -409,9 +402,9 @@ function rubik_admin_block_content($vars) {
 
   $output = '';
   if (!empty($content)) {
-  
+
     foreach ($content as $k => $item) {
-    
+
       //-- Safety check for invalid clients of the function
       if (empty($content[$k]['localized_options']['attributes']['class'])) {
         $content[$k]['localized_options']['attributes']['class'] = array();
@@ -419,7 +412,7 @@ function rubik_admin_block_content($vars) {
       if (!is_array($content[$k]['localized_options']['attributes']['class'])) {
         $content[$k]['localized_options']['attributes']['class'] = array($content[$k]['localized_options']['attributes']['class']);
       }
-    
+
       $content[$k]['title'] = "<span class='icon'></span>" . filter_xss_admin($item['title']);
       $content[$k]['localized_options']['html'] = TRUE;
       if (!empty($content[$k]['localized_options']['attributes']['class'])) {
@@ -468,7 +461,7 @@ function rubik_admin_drilldown_menu_item_link($link) {
 function rubik_preprocess_textfield(&$vars) {
   if ($vars['element']['#size'] >= 30 && empty($vars['element']['#field_prefix']) && empty($vars['element']['#field_suffix'])) {
     $vars['element']['#size'] = '';
-    if (!isset($vars['element']['#attributes']['class']) 
+    if (!isset($vars['element']['#attributes']['class'])
       || !is_array($vars['element']['#attributes']['class'])) {
        $vars['element']['#attributes']['class'] = array();
     }

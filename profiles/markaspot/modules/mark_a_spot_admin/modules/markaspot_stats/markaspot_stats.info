@@ -1,0 +1,5 @@
+name = Mark-a-Spot Stats Module 
+package = "Mark-a-Spot"
+core = 7.x
+description = Provides a Stats block for civic and administrative activity on reports
+version = "7.x-1.0-dev"

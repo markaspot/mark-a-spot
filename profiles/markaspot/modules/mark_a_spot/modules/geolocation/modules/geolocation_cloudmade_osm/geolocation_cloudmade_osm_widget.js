@@ -41,8 +41,10 @@
       }).done(function (result) {
 
         if (result) {
-            var street = result.address.road ? result.address.road : undefined;
-            var street = street ? street : result.address.pedestrian;
+            var street = result.address.construction ? result.address.construction : undefined;
+            street = street ? street : result.address.road;
+            street = street ? street : result.address.pedestrian;
+            street = street ? street : result.address.footway;
             var street = result.address.house_number ? street  + ' ' + result.address.house_number : street;
             var address = street + ', ' + result.address.postcode + ' ' + result.address.city;
 
@@ -78,8 +80,8 @@
     // var url = 'http://where.yahooapis.com/geocode?';
     // $.getJSON(url  + 'q="+address+"&flags=J&callback=ws_results&output=jso', {
 
-     var url =  Drupal.settings.basePath + 'profiles/markaspot/libraries/proxy/src/search';
-    $.getJSON(url  + '?q=' + address + '&polygon=0&addressdetails=1&viewbox=&json_callback=?', {
+    var url =  Drupal.settings.basePath + 'profiles/markaspot/libraries/proxy/src/search';
+    $.getJSON(url  + '?q=' + address + '&bounded=1&addressdetails=1&viewbox=' + mas.bbox_nw_lng +',' + mas.bbox_nw_lat +',' + mas.bbox_se_lng +',' + mas.bbox_se_lat +' &json_callback=?', {
       format : 'json'
     }).done(function (result) {
       if (result.length > 0) {
@@ -142,17 +144,15 @@
     }
 
     var markerLocation = latLng;
-      Drupal.geolocation.maps[i].setView(latLng, 16)
-      var marker = new L.Marker(latLng);
-      // add marker to markerLayer
-      markerLayer.addLayer(marker);
-      Drupal.geolocation.maps[i].addLayer(markerLayer);
+    Drupal.geolocation.maps[i].setView(latLng, 16)
+    var marker = new L.Marker(latLng, {draggable: true});
+    // add marker to markerLayer
+    markerLayer.addLayer(marker);
+    Drupal.geolocation.maps[i].addLayer(markerLayer);
 
-
-    // google.maps.event.addListener(Drupal.geolocation.markers[i], 'dragend', function(me) {
-    //   Drupal.geolocation.codeLatLng(me.latLng, i, 'marker');
-    //   Drupal.geolocation.setMapMarker(me.latLng, i);
-    // });
+    marker.on('dragend', function(event) {
+      Drupal.geolocation.codeLatLng(marker.getLatLng(), i, 'marker');
+    });
 
     return false; // if called from <a>-Tag
   }

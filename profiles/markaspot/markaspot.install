@@ -85,7 +85,7 @@ function markaspot_install() {
   // Enable some standard blocks.
   $default_theme = variable_get('theme_default', 'mas');
   $admin_theme = 'rubik';
-  
+
   $blocks = array(
     array(
       'module' => 'system',
@@ -98,12 +98,12 @@ function markaspot_install() {
       'cache' => -1,
     ),
     array(
-      'module' => 'search',
-      'delta' => 'form',
+      'module' => 'markaspot_stats',
+      'delta' => 'markaspot_stats',
       'theme' => $default_theme,
       'status' => 1,
-      'weight' => -1,
-      'region' => 'footer_secondcolumn',
+      'weight' => -100,
+      'region' => 'sidebar_second',
       'pages' => '',
       'cache' => -1,
     ),
@@ -113,30 +113,11 @@ function markaspot_install() {
       'theme' => $default_theme,
       'status' => 1,
       'weight' => 10,
-      'region' => 'footer_firstcolumn',
-      'pages' => '',
-      'cache' => -1,
-    ),
-    array(
-      'module' => 'user',
-      'delta' => 'login',
-      'theme' => $default_theme,
-      'status' => 1,
-      'weight' => 0,
       'region' => 'sidebar_second',
       'pages' => '',
       'cache' => -1,
     ),
-    array(
-      'module' => 'system',
-      'delta' => 'navigation',
-      'theme' => $default_theme,
-      'status' => 1,
-      'weight' => 0,
-      'region' => 'sidebar_first',
-      'pages' => '',
-      'cache' => -1,
-    ),
+
     array(
       'module' => 'system',
       'delta' => 'powered-by',
@@ -147,16 +128,18 @@ function markaspot_install() {
       'pages' => '',
       'cache' => -1,
     ),
-    array(
-      'module' => 'system',
-      'delta' => 'help',
-      'theme' => $default_theme,
-      'status' => 1,
-      'weight' => 0,
-      'region' => 'help',
-      'pages' => '',
-      'cache' => -1,
-    ),
+
+    // array(
+    //   'module' => 'menu',
+    //   'delta' => 'menu-secondary-navigation',
+    //   'theme' => $default_theme,
+    //   'status' => 1,
+    //   'weight' => 10,
+    //   'region' => 'footer',
+    //   'pages' => '',
+    //   'cache' => -1,
+    // ),
+
     array(
       'module' => 'system',
       'delta' => 'main',
@@ -174,26 +157,6 @@ function markaspot_install() {
       'status' => 1,
       'weight' => 0,
       'region' => 'help',
-      'pages' => '',
-      'cache' => -1,
-    ),
-    array(
-      'module' => 'user',
-      'delta' => 'login',
-      'theme' => $admin_theme,
-      'status' => 1,
-      'weight' => 10,
-      'region' => 'content',
-      'pages' => '',
-      'cache' => -1,
-    ),
-    array(
-      'module' => 'user',
-      'delta' => 'new',
-      'theme' => $default_theme,
-      'status' => 1,
-      'weight' => 0,
-      'region' => 'footer_thirdcolumn',
       'pages' => '',
       'cache' => -1,
     )
@@ -252,126 +215,6 @@ function markaspot_install() {
   // Allow visitor account creation with administrative approval.
   variable_set('user_register', USER_REGISTER_VISITORS);
 
-  // Create a default vocabulary named "Tags", enabled for the 'article' content type.
-  $description = st('Use tags to group articles on similar topics into categories.');
-  $help = st('Enter a comma-separated list of words to describe your content.');
-  $vocabulary = (object) array(
-    'name' => st('Tags'),
-    'description' => $description,
-    'machine_name' => 'tags',
-    'help' => $help,
-
-  );
-  taxonomy_vocabulary_save($vocabulary);
-
-  $field = array(
-    'field_name' => 'field_' . $vocabulary->machine_name,
-    'type' => 'taxonomy_term_reference',
-    // Set cardinality to unlimited for tagging.
-    'cardinality' => FIELD_CARDINALITY_UNLIMITED,
-    'settings' => array(
-      'allowed_values' => array(
-        array(
-          'vocabulary' => $vocabulary->machine_name,
-          'parent' => 0,
-        ),
-      ),
-    ),
-  );
-  field_create_field($field);
-
-  $instance = array(
-    'field_name' => 'field_' . $vocabulary->machine_name,
-    'entity_type' => 'node',
-    'label' => 'Tags',
-    'bundle' => 'article',
-    'description' => $vocabulary->help,
-    'widget' => array(
-      'type' => 'taxonomy_autocomplete',
-      'weight' => -4,
-    ),
-    'display' => array(
-      'default' => array(
-        'type' => 'taxonomy_term_reference_link',
-        'weight' => 10,
-      ),
-      'teaser' => array(
-        'type' => 'taxonomy_term_reference_link',
-        'weight' => 10,
-      ),
-    ),
-  );
-  field_create_instance($instance);
-
-
-  // Create an image field named "Image", enabled for the 'article' content type.
-  // Many of the following values will be defaulted, they're included here as an illustrative examples.
-  // See http://api.drupal.org/api/function/field_create_field/7
-
-  $field = array(
-    'field_name' => 'field_image',
-    'type' => 'image',
-    'cardinality' => 1,
-    'locked' => FALSE,
-    'indexes' => array('fid' => array('fid')),
-    'settings' => array(
-      'uri_scheme' => 'public',
-      'default_image' => FALSE,
-    ),
-    'storage' => array(
-      'type' => 'field_sql_storage',
-      'settings' => array(),
-    ),
-  );
-  field_create_field($field);
-
-
-  // Many of the following values will be defaulted, they're included here as an illustrative examples.
-  // See http://api.drupal.org/api/function/field_create_instance/7
-  $instance = array(
-    'field_name' => 'field_image',
-    'entity_type' => 'node',
-    'label' => 'Image',
-    'bundle' => 'article',
-    'description' => st('Upload an image to go with this article.'),
-    'required' => FALSE,
-
-    'settings' => array(
-      'file_directory' => 'field/image',
-      'file_extensions' => 'png gif jpg jpeg',
-      'max_filesize' => '',
-      'max_resolution' => '',
-      'min_resolution' => '',
-      'alt_field' => TRUE,
-      'title_field' => '',
-    ),
-
-    'widget' => array(
-      'type' => 'image_image',
-      'settings' => array(
-        'progress_indicator' => 'throbber',
-        'preview_image_style' => 'thumbnail',
-      ),
-      'weight' => -1,
-    ),
-
-    'display' => array(
-      'default' => array(
-        'label' => 'hidden',
-        'type' => 'image',
-        'settings' => array('image_style' => 'large', 'image_link' => ''),
-        'weight' => -1,
-      ),
-      'teaser' => array(
-        'label' => 'hidden',
-        'type' => 'image',
-        'settings' => array('image_style' => 'medium', 'image_link' => 'content'),
-        'weight' => -1,
-      ),
-    ),
-  );
-  field_create_instance($instance);
-
   // Enable default permissions for system roles.
   $filtered_html_permission = filter_permission_name($filtered_html_format);
   user_role_grant_permissions(DRUPAL_ANONYMOUS_RID, array('access content', 'access comments', $filtered_html_permission));
@@ -410,7 +253,7 @@ function markaspot_install() {
     ->execute();
   variable_set('admin_theme', 'rubik');
   variable_set('node_admin_theme', '1');
-  
+
 
   // enable some modules
   $module_list = array('jquery_update');

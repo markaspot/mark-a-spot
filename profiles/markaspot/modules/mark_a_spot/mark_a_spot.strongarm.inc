@@ -21,7 +21,7 @@ function mark_a_spot_strongarm() {
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'clean_url';
-  $strongarm->value = '0';
+  $strongarm->value = '1';
   $export['clean_url'] = $strongarm;
 
   $strongarm = new stdClass();
@@ -93,6 +93,9 @@ function mark_a_spot_strongarm() {
       ),
       'search_result' => array(
         'custom_settings' => FALSE,
+      ),
+      'report_list' => array(
+        'custom_settings' => TRUE,
       ),
     ),
     'extra_fields' => array(

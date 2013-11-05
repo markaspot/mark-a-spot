@@ -51,9 +51,9 @@ exclude[css][] = 'modules/tracker/tracker.css'
 exclude[css][] = 'modules/update/update.css'
 exclude[css][] = 'modules/user/user.css'
 
-; Information added by drupal.org packaging script on 2013-06-25
-version = "7.x-2.1"
+; Information added by drupal.org packaging script on 2013-09-21
+version = "7.x-2.2"
 core = "7.x"
 project = "bootstrap"
-datestamp = "1372204551"
+datestamp = "1379796670"
 

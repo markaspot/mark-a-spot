@@ -1,5 +1,5 @@
 name = Mark-a-Spot
-description = Another Bootstrap subtheme
+description = A Bootstrap Theme for Mark-a-Spot
 version = 0.1
 core = 7.x
 base theme = bootstrap
@@ -23,7 +23,7 @@ stylesheets[all][] = bootstrap/css/bootstrap.css
 stylesheets[all][] = bootstrap/css/responsive.css
 
 stylesheets[all][] = css/mas.css
-;stylesheets[all][] = css/font-awesome.min.css
+; stylesheets[all][] = css/font-awesome.min.css
 scripts[] = js/mas.js
 
 
@@ -40,9 +40,10 @@ scripts[] = js/mas.js
  scripts[] = 'bootstrap/js/bootstrap-dropdown.js'
  scripts[] = 'bootstrap/js/bootstrap-modal.js'
  scripts[] = 'bootstrap/js/bootstrap-tooltip.js'
- scripts[] = 'bootstrap/js/bootstrap-popover.js'
+ ;scripts[] = 'bootstrap/js/bootstrap-popover.js'
  scripts[] = 'bootstrap/js/bootstrap-scrollspy.js'
  scripts[] = 'bootstrap/js/bootstrap-transition.js'
+ scripts[] = 'bootstrap/js/bootstrap-tab.js'
  scripts[] = 'bootstrap/js/bootstrap-typeahead.js'
 
 ; ; Settings inherited by base theme, uncomment to override.

@@ -1,0 +1,26 @@
+name = UUID Features
+description = Provides features integration for content (nodes, taxonomy, etc) based on the UUID module.
+core = 7.x
+dependencies[] = features
+dependencies[] = uuid
+dependencies[] = entity
+package = Features
+
+files[] = uuid_features.install
+files[] = uuid_features.module
+files[] = includes/uuid_features.drush.inc
+files[] = includes/uuid_file.features.inc
+files[] = includes/uuid_node.features.inc
+files[] = includes/uuid_term.features.inc
+files[] = modules/content.inc
+files[] = modules/filefield.inc
+files[] = modules/nodereference.inc
+files[] = modules/taxonomy.inc
+files[] = modules/userreference.inc
+
+; Information added by drupal.org packaging script on 2013-01-30
+version = "7.x-1.0-alpha3"
+core = "7.x"
+project = "uuid_features"
+datestamp = "1359521134"
+

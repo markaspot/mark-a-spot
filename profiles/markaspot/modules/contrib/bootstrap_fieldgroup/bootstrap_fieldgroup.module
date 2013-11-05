@@ -1,0 +1,273 @@
+<?php
+// $Id$
+
+/**
+ * @file
+ * Module file for the bootstrap_fieldgroup module.
+ */
+
+/**
+ * Implements hook_ctools_plugin_api().
+ */
+function bootstrap_fieldgroup_ctools_plugin_api($module, $api) {
+  if ($module == 'field_group' && $api == 'field_group') {
+    return array('version' => 1);
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function bootstrap_fieldgroup_theme() {
+  return array(
+    'bootstrap_fieldgroup_nav' => array(
+      'template' => 'templates/bootstrap-fieldgroup-nav',
+      'variables' => array('items' => array(), 'group' => NULL),
+    ),
+  );
+}
+
+/**
+ * Implements hook_field_group_formatter_info().
+ */
+function bootstrap_fieldgroup_field_group_formatter_info() {
+  $formatters = array();
+
+  $formatters['bootstrap_fieldgroup_nav'] = array(
+    'label' => t('Bootstrap nav: tabs/pills'),
+    'description' => t('This fieldgroup renders child groups as Bootstrap nav tabs/pills'),
+    'instance_settings' => array('classes' => '', 'bootstrap_nav_type' => 'tabs', 'bootstrap_stacked' => 0, 'bootstrap_orientation' => 0),
+  );
+
+  $formatters['bootstrap_fieldgroup_nav_item'] = array(
+    'label' => t('Bootstrap nav: item'),
+    'description' => t('This fieldgroup renders the content as a Bootstrap nav item'),
+    'instance_settings' => array('classes' => ''),
+  );
+
+  foreach (array_keys($formatters) as $key) {
+    $formatter = &$formatters[$key];
+    $formatter['instance_settings']['required_fields'] = 1;
+  }
+
+  return array(
+    'form' => $formatters,
+    'display' => $formatters,
+  );
+}
+
+/**
+ * Implements hook_field_group_format_settings().
+ * If the group has no format settings, default ones will be added.
+ */
+function bootstrap_fieldgroup_field_group_format_settings($group) {
+
+   // Add a wrapper for extra settings to use by others.
+  $form = array(
+    'instance_settings' => array(
+      '#tree' => TRUE,
+      '#weight' => 5,
+    ),
+  );
+
+  $field_group_types = field_group_formatter_info();
+  $mode = $group->mode == 'form' ? 'form' : 'display';
+  $formatter = $field_group_types[$mode][$group->format_type];
+
+  // Add optional instance_settings.
+  switch ($group->format_type) {
+
+    case 'bootstrap_fieldgroup_nav':
+
+      $form['instance_settings']['bootstrap'] = array(
+        '#tree' => TRUE,
+      );
+
+      $form['instance_settings']['bootstrap_nav_type'] = array(
+        '#title' => t('Nav type'),
+        '#type' => 'select',
+        '#options' => array(
+          'tabs' => 'Tabs',
+          'pills' => 'Pills',
+        ),
+        '#default_value' => isset($group->format_settings['instance_settings']['bootstrap_nav_type']) ? $group->format_settings['instance_settings']['bootstrap_nav_type'] : $formatter['instance_settings']['bootstrap_nav_type'],
+        '#weight' => 1,
+        '#attributes' => array(
+          'class' => array('bootstrap-fieldgroup-nav-type'),
+        ),
+        '#attached' => array(
+          'js' => array(drupal_get_path('module', 'bootstrap_fieldgroup') . '/bootstrap_fieldgroup.js'),
+        )
+      );
+
+      $form['instance_settings']['bootstrap_stacked'] = array(
+        '#title' => t('Stacked'),
+        '#type' => 'select',
+        '#options' => array(
+          0 => t('No'),
+          1 => t('Yes'),
+        ),
+        '#attributes' => array(
+          'class' => array('bootstrap-fieldgroup-stacked'),
+        ),
+        '#default_value' => isset($group->format_settings['instance_settings']['bootstrap_stacked']) ? $group->format_settings['instance_settings']['bootstrap_stacked'] : $formatter['instance_settings']['bootstrap_stacked'],
+        '#weight' => 1.5,
+      );
+
+      $form['instance_settings']['bootstrap_orientation'] = array(
+        '#title' => t('Position the tabs/pills will appear'),
+        '#type' => 'select',
+        '#options' => array(
+          0 => t('Top'),
+          1 => t('Right'),
+          2 => t('Bottom'),
+          3 => t('Left'),
+        ),
+        '#attributes' => array(
+          'class' => array('bootstrap-fieldgroup-orientation'),
+        ),
+        '#default_value' => isset($group->format_settings['instance_settings']['bootstrap_orientation']) ? $group->format_settings['instance_settings']['bootstrap_orientation'] : $formatter['instance_settings']['bootstrap_orientation'],
+        '#weight' => 1.7,
+      );
+
+      break;
+
+    default:
+  }
+
+ return $form;
+}
+
+/**
+ * Implements hook_field_group_pre_render().
+ */
+function bootstrap_fieldgroup_field_group_pre_render(&$element, $group, &$form) {
+
+  switch ($group->format_type) {
+
+    case 'bootstrap_fieldgroup_nav':
+
+      $element['#group'] = $group;
+      $items = array();
+      foreach ($group->children as $group_name) {
+        $items[$group_name] = &$element[$group_name];
+      }
+      $element['#items'] = $items;
+
+      break;
+
+    default:
+  }
+}
+
+/**
+ * Implements field_group_pre_render_<format-type>.
+ * Format type: Bootstrap nav tabs/pills.
+ */
+function field_group_pre_render_bootstrap_fieldgroup_nav(&$element, $group, &$form) {
+  $element += array(
+    '#type' => 'bootstrap_fieldgroup_nav',
+    '#theme' => 'bootstrap_fieldgroup_nav',
+    '#description' => $group->description,
+    '#parents' => array($group->parent_name),
+  );
+}
+
+/**
+ * Implements field_group_pre_render_<format-type>.
+ * Format type: Bootstrap nav item.
+ */
+function field_group_pre_render_bootstrap_fieldgroup_nav_item(&$element, $group, &$form) {
+  $element += array(
+    '#type' => 'bootstrap_fieldgroup_nav_item',
+    '#title' => check_plain($group->label),
+    '#description' => $group->description,
+    '#weight' => $group->weight,
+    '#parents' => array($group->parent_name),
+  );
+}
+
+/**
+ * Implements template_preprocess_bootstrap_tabs().
+ * @param $variables
+ */
+function template_preprocess_bootstrap_fieldgroup_nav(&$variables) {
+
+  $group = &$variables['group'];
+
+  $variables['wrapper_classes'] = $variables['group']->classes;
+
+  $variables['flip'] = FALSE;
+
+  if ($group->format_settings['instance_settings']['bootstrap_orientation']) {
+    switch ($group->format_settings['instance_settings']['bootstrap_orientation']) {
+      case 1:
+        $variables['wrapper_classes'] .= ' tabs-right';
+        break;
+      case 2:
+        $variables['wrapper_classes'] .= ' tabs-below';
+        $variables['flip'] = TRUE;
+        break;
+      case 3:
+        $variables['wrapper_classes'] .= ' tabs-left';
+        break;
+      default:
+    }
+  }
+
+  $variables['nav_classes'] = $variables['group']->classes;
+
+  switch ($group->format_settings['instance_settings']['bootstrap_nav_type']) {
+    case 'tabs':
+      $variables['nav_classes'] .= ' nav-tabs';
+      break;
+    case 'pills':
+      $variables['nav_classes'] .= ' nav-pills';
+      break;
+    default:
+  }
+
+  if ($group->format_settings['instance_settings']['bootstrap_stacked']) {
+    $variables['nav_classes'] .= ' nav-stacked';
+  }
+
+  $variables['pane_classes'] = $variables['group']->classes;
+
+  uasort($variables['items'], 'element_sort');
+  foreach ($variables['items'] as $key => $item) {
+
+    $id = _bootstrap_fieldgroup_label_to_id($item['#title']);
+
+    $variables['navs'][] = l(
+      $item['#title'],
+      NULL,
+      array(
+        'attributes' => array(
+          'data-toggle' => 'tab'
+        ),
+        'fragment' => $id,
+        'external' => TRUE,
+        'html' => TRUE,
+      )
+    );
+
+    $variables['panes'][] = array(
+      'id' => $id,
+      'content' => drupal_render($item),
+    );
+  }
+
+  // Config?
+  $variables['active'] = 0;
+
+  if (count($variables['navs']) && count($variables['panes'])) {
+    $variables['is_empty'] = FALSE;
+  }
+}
+
+/**
+ * Convert a group label to a usable HTML id attribute.
+ */
+function _bootstrap_fieldgroup_label_to_id($title) {
+  return preg_replace('/[^0-9a-z]/', '-', drupal_strtolower($title));
+}

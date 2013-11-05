@@ -1,0 +1,8 @@
+name = Mark-a-Spot Archive
+description = Provides cron to archive reports automatically
+package = "Mark-a-Spot"
+
+core = 7.x
+
+files[] = markaspot_archive.module
+dependencies[] = "markaspot_logic"

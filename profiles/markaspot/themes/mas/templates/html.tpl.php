@@ -2,7 +2,7 @@
 <html lang="<?php print $language->language; ?>">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <?php print $head; ?>
   <title><?php print $head_title; ?></title>
   <?php print $styles; ?>
@@ -13,6 +13,11 @@
   <![endif]-->
 </head>
 <body class="<?php print $classes; ?>">
+  <div id="header" class="container">
+     <div class="logo-area">
+        <strong class="logo-header"><a href="/">Home</a></strong>
+     </div>
+  </div>
   <?php print $page_top; ?>
   <?php print $page; ?>
   <?php print $page_bottom; ?>

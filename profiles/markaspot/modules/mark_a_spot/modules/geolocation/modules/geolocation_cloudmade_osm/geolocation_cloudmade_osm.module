@@ -16,9 +16,10 @@ function geolocation_cloudmade_osm_field_formatter_info() {
       'settings' => array(
         'map_dimensions' => '300x300',
         'map_imageformat' => 'png',
+        'marker_icon' => '/profiles/markaspot/libraries/leaflet-0.6.3/images/marker-icon.png',
         'map_zoomlevel' => '15',
-        'map_style' => '1',
-        'marker_icon' => '',
+        'map_style' => '22677',
+        'leafletImagePath' => '/profiles/markaspot/libraries/leaflet-0.6.3/images/',
         'cloudmade_api_key' => ''
       ),
     ),
@@ -28,8 +29,8 @@ function geolocation_cloudmade_osm_field_formatter_info() {
       'settings' => array(
         'map_dimensions' => '300x300',
         'map_zoomlevel' => '15',
-        'map_style' => '1',
-        'marker_icon' => '',
+        'map_style' => '22677',
+        'leafletImagePath' => '/profiles/markaspot/libraries/leaflet-0.6.3/images/',
         'map_scrollwheel' => FALSE,
         'cloudmade_api_key' => ''
 
@@ -103,6 +104,13 @@ function geolocation_cloudmade_osm_field_formatter_settings_form($field, $instan
     '#title' => t('Map Style'),
     '#description' => t('Enter a map style-id.'),
     '#default_value' => $settings['map_style'],
+  );
+
+  $element['leafletImagePath'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Leaflet Image Path'),
+    '#description' => t('Set the image path of your leaflet library (needed with compressed javascript on production sites, see https://github.com/Leaflet/Leaflet/issues/766'),
+    '#default_value' => $settings['leafletImagePath'],
   );
 
   $element['map_zoomlevel'] = array(

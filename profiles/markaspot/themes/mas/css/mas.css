@@ -1,94 +1,128 @@
-html,body {
-
-height: 100%;
+html,
+body {
+  height: 100%;
+  color: #222;
 }
 
-#map img{max-width: inherit;}
-
-.logo.pull-left img {
-    margin: 5px 0  0;
+.field.field-name-body {
+    margin: 30px 0;
+    font-size: 1.1em;
 }
 
-/* report design */
+.spec-table th {
+    margin: 1em;
+    width: 100px;
+    background: #f2f2f2;
+    padding: 10px;
+    border-bottom: 1px solid #fff;
 
-#markers-list-view div.report{
-    min-height: 160px;
-    padding: 0 0 20px 40px;
-    margin: 0 0 40px 0px;
+}
+
+.spec-table td {
+    margin: 1em;
+    background: #fff;
+    padding: 20px;
+    font: 0.9em Courier, Monotype;
     border-bottom: 1px solid #f2f2f2;
 }
 
+#map img {
+  max-width: inherit;
+}
+/* report design */
+#markers-list-view .report {
+  min-height: 180px;
+  padding: 0 0 20px 0px;
+  margin: 0 0 40px 40px;
+  border-bottom: 1px solid #f2f2f2;
+}
+
+.view-markers .list-title {
+    line-height: 1.5em;
+}
+
+/* comments */
+
+.management-comment {
+  border-left: 3px solid #c00;
+  padding-left: 10px;
+}
+
+
+.submitted {
+margin-bottom: 1em;
+font-style: normal;
+color: #999;
+}
+
 div.show-markers:hover {
-    background: #ccc;
+  background: #ccc;
 }
-
 div.show-markers span {
-    display:block;
-    margin-top: 10px;
-    color: #999;
-    font-weight: 700;
+  display: block;
+  margin-top: 10px;
+  color: #999;
+  font-weight: 700;
 }
-
-
 div.show-markers,
 div.no-markers {
-    clear:left;
-    min-height: 33px;
-    padding: 7px;
-    float: left;
+  clear: left;
+  min-height: 33px;
+  padding: 7px;
+  float: left;
 }
-
 div.no-markers {
-    float: left;
-    margin: 10px 5px 0 -10px;
-    padding: 0;
-    width: 25px;
+  float: left;
+  margin: 10px 5px 0 -10px;
+  padding: 0;
+  width: 25px;
 }
-
 div.show-markers {
-  margin: -35px 0 0 -40px;
-  cursor:pointer;
+  margin: -100px 0 0 -40px;
+  cursor: pointer;
   border: 1px solid #e3e3e3;
   border-right: 1px solid #e3e3e3;
   border-bottom: 1px solid #e3e3e3;
-
   -webkit-border-right-top-radius: 4px;
   -webkit-border-right-bottom-radius: 4px;
-
-     -moz-border-radius: 4px;
-          border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
   -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
-     -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
-          box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+  -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
 }
-
-
 .pull-left.thumbnail {
-    margin: 0 10px 0 0px;
+  margin: 0 10px 0 0px;
 }
 
-span.marker-status  {
-    width: 49%;
+.report .field-name-field-geo {
+    display: none;
 }
 
-span.marker-category  {
-    display:inline-block;
-    width: 49%;
+.span6.label {
+  margin: 2px 2px 0 0;
+  /* padding: 0; */
+  min-height: 18px;
 }
 
-/*
-        {"color" : "red", "hex"  : "FF0000"},
-               {"color" : "darkred", "hex"  : "8B0000" },
-               {"color" : "orange", "hex"  : "FFA500" },
-               {"color" : "green", "hex"  : "008000"},
-               {"color" : "darkgreen", "hex"  : "006400"},
-               {"color" : "blue", "hex"  : "0000FF"},
-               {"color" : "darkblue", "hex"  : "00008B"},
-               {"color" : "purple" , "hex" : "800080"},
-               {"color" : "darkpurple", "hex"  : "871F78"},
-               {"color" : "cadetblue", "hex"  : "5F9EA0"}
-*/
-
+.marker-status.col-8fe83b,
+.marker-status.col-8fe83b a {
+  background: no-repeat scroll right center #8fe83b;
+  color: green;
+  font-weight: 400;
+}
+.marker-status.col-cc0000,
+.marker-status.col-cc0000 a {
+  background: no-repeat scroll right center #cc0000;
+  color: #fff;
+  font-weight: 400;
+}
+.marker-status.col-ff6600,
+.marker-status.col-ff6600 a {
+  background: no-repeat scroll right center #ff6600;
+  color: yellow;
+  font-weight: 400;
+}
 
 
 .marker-status.col-8fe83b,
@@ -98,12 +132,22 @@ span.marker-category  {
     font-weight: 400
 
 }
-.marker-status.col-cc0000,
-.marker-status.col-cc0000 a {
-    background: no-repeat scroll right center #CC0000;
-    color: #fff;
+.marker-status.col-CCCCCC,
+.marker-status.col-CCCCCC a {
+    color: #CCCCCC;
     font-weight: 400
 }
+
+.marker-status.col-8B0000,
+.marker-status.col-8B0000 a {
+    color: #8B0000;
+    font-weight: 700
+}
+
+.report header{
+margin: 10px 0;
+}
+
 .report .marker-status.col-ff6600,
  .marker-status.col-ff6600 a {
     background: no-repeat scroll right center #ff6600;
@@ -111,203 +155,216 @@ span.marker-category  {
     font-weight: 400
 }
 
+
 /* report detail */
-
 .node-report .row-fluid {
-    margin-top: 10px;
+  margin-top: 10px;
 }
-
-
-
-
-
 body.page-list div#map {
-    height: 400px;
-    width: 100%;
+  height: 400px;
+  width: 100%;
 }
-
-
 body.page-node div#map {
-    height: 250px;
-    width: 100%;
+  height: 250px;
 }
-
-
 body.toolbar-drawer {
   padding-top: 0px !important;
 }
 
-.navbar-fixed-top {
-margin-bottom: 0px;
+.report-log ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
 }
+
+
+#admin-menu {
+  z-index: 9999;
+}
+
 
 .marker-category-wrapper a {
-    display: block;
+  display: block;
 }
 .block-title.block-title {
-    font-size: 20px;
+  font-size: 2em;
 }
-
-
 /* Map Styles*/
-
-#block-markaspot-logic-taxonomy-category, #block-markaspot-logic-taxonomy-status {
-  margin: 11px;
-  background: none;
-  opacity: 0.8;
+#block-markaspot-logic-taxonomy-category,
+#block-markaspot-logic-taxonomy-status {
+  margin: 1px;
+  background-color: #1b1b1b;
+  background-image: -moz-linear-gradient(top, #222222, #111111);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#222222), to(#111111));
+  background-image: -webkit-linear-gradient(top, #222222, #111111);
+  background-image: -o-linear-gradient(top, #222222, #111141);
+  background-image: linear-gradient(to bottom, #222222, #111111);
+  background-repeat: repeat-x;
+  border-color: #252525;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff222222', endColorstr='#ff111111', GradientType=0);
+  opacity: 0.4;
   border: none;
   box-shadow: none;
   -webkit-transition: opacity 500ms ease-out;
   -moz-transition: opacity 500ms ease-out;
   -o-transition: opacity 500ms ease-out;
   transition: opacity 500ms ease-out;
+  /* padding: 10px; */
 }
-
-#block-markaspot-logic-taxonomy-category:hover, #block-markaspot-logic-taxonomy-status:hover {
+#block-markaspot-logic-taxonomy-category:hover,
+#block-markaspot-logic-taxonomy-status:hover {
   opacity: 1;
   border: none;
   box-shadow: none;
 }
-
-.page-map  .span3 {
-    width: 100px;
-    margin: 10px;
-}
-
-.page-map .btn.btn-primary {
-    width: 100px;
-}
-
-.page-map .btn.btn-primary.dropdown-toggle {
-    width: 30px;
-}
-
-.page-map .dropdown-menu > li > a {
-    display: inline;
-}
-
-.page-map .dropdown-menu > li > a:before {
-    display: inline;
-    padding: 0 10px 0 0;
-    text-indent: 10px
-}
-
 #block-markaspot-logic-taxonomy-category h2,
-#block-markaspot-logic-taxonomy-status h2  {
-  display: none
+#block-markaspot-logic-taxonomy-status h2 {
+  display: none;
 }
-
-
 #block-markaspot-logic-markaspot-map {
-  display:none
+  display: none;
 }
-
-
-.main-container {
-  margin: 60px auto;
-  min-height: 400px;
-}
-
 
 /*footer header*/
 
+.logo-header{width: 59px;height: 43px;background: url("../images/logo.png") no-repeat 50% 50%;display: block;text-indent: -999px;}
+.logo-header a{height:100%;width: 100%;display: block;}
+
+
 #footer-columns {
-    padding: 10px;
+  padding: 10px;
 }
 .footer section {
-    background: none;
-    border: none;
+  background: none;
+  border: none;
+}
+.footer {
+  padding: 0;
+}
+.footer .span3 {
+  margin: 0 10px 0 0 ;
+}
+.footer section {
+  box-shadow: none;
+  padding: 0;
+  border: 0;
+}
+
+.footer .block-title {
+  display:none;
 }
 
 .footer {
-    padding: 0;
-    background: #f5f5f5;
-}
 
-.footer .span3 {
-    margin: 0 10px 0 0 ;
-}
-
-.footer section {
-    box-shadow:none;
-    padding: 0;
-    border: 0;
 }
 
 .page-map .footer {
   margin: 0;
 }
-
 .region.region-footer {
-  background: rgb(26,76,130); /* Old browsers */
-  /* IE9 SVG, needs conditional override of 'filter' to 'none' */
-  background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMTAwJSI+CiAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjMWE0YzgyIiBzdG9wLW9wYWNpdHk9IjEiLz4KICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzExMTExMSIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgPC9saW5lYXJHcmFkaWVudD4KICA8cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSJ1cmwoI2dyYWQtdWNnZy1nZW5lcmF0ZWQpIiAvPgo8L3N2Zz4=);
-  background: -moz-linear-gradient(-45deg,  rgba(26,76,130,1) 0%, rgba(17,17,17,1) 100%); /* FF3.6+ */
-  background: -webkit-gradient(linear, left top, right bottom, color-stop(0%,rgba(26,76,130,1)), color-stop(100%,rgba(17,17,17,1))); /* Chrome,Safari4+ */
-  background: -webkit-linear-gradient(-45deg,  rgba(26,76,130,1) 0%,rgba(17,17,17,1) 100%); /* Chrome10+,Safari5.1+ */
-  background: -o-linear-gradient(-45deg,  rgba(26,76,130,1) 0%,rgba(17,17,17,1) 100%); /* Opera 11.10+ */
-  background: -ms-linear-gradient(-45deg,  rgba(26,76,130,1) 0%,rgba(17,17,17,1) 100%); /* IE10+ */
-  background: linear-gradient(135deg,  rgba(26,76,130,1) 0%,rgba(17,17,17,1) 100%); /* W3C */
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#1a4c82', endColorstr='#111111',GradientType=1 ); /* IE6-8 fallback on horizontal gradient */
-    padding: 20px;
-    color: #fff;
+  padding: 10px 30px;
+  color: #666;
+}
+
+.region.region-footer a{
+  color: #434BAF;
 }
 
 
-.mapheader {
-color: #fff;
-  text-align: center;
-  text-shadow: 0 1px 3px rgba(0,0,0,.4), 0 0 30px rgba(0,0,0,.075);
-   /* IE9 SVG, needs conditional override of 'filter' to 'none' */
-  background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMTAwJSI+CiAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjMWU1Nzk5IiBzdG9wLW9wYWNpdHk9IjEiLz4KICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzdkYjllOCIgc3RvcC1vcGFjaXR5PSIwIi8+CiAgPC9saW5lYXJHcmFkaWVudD4KICA8cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSJ1cmwoI2dyYWQtdWNnZy1nZW5lcmF0ZWQpIiAvPgo8L3N2Zz4=);
-  background: -moz-linear-gradient(-45deg, rgba(30,87,153,1) 0%, rgba(125,185,232,0) 100%); /* FF3.6+ */
-  background: -webkit-gradient(linear, left top, right bottom, color-stop(0%,rgba(30,87,153,1)), color-stop(100%,rgba(125,185,232,0))); /* Chrome,Safari4+ */
-  background: -webkit-linear-gradient(-45deg, rgba(30,87,153,1) 0%,rgba(125,185,232,0) 100%); /* Chrome10+,Safari5.1+ */
-  background: -o-linear-gradient(-45deg, rgba(30,87,153,1) 0%,rgba(125,185,232,0) 100%); /* Opera 11.10+ */
-  background: -ms-linear-gradient(-45deg, rgba(30,87,153,1) 0%,rgba(125,185,232,0) 100%); /* IE10+ */
-  background: linear-gradient(135deg, rgba(30,87,153,1) 0%,rgba(125,185,232,0) 100%); /* W3C */
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#1e5799', endColorstr='#007db9e8',GradientType=1 ); /* IE6-8 fallback on horizontal gradient */  /*http://www.colorzilla.com/gradient-editor/*/
-  box-shadow: 0 2px 10px -2px #232323;
-  -moz-box-shadow: 0 2px 10px -2px #232323;
-  -webkit-box-shadow: 0 4px 10px -4px #232323;
-}
+/* Footer Menue */
 
-
-.row.map-tools {
-    position: absolute;
-    top: 50px;
-    right: 20px;
-}
-
-
-div.marker-status  {
-    float:right;
-}
-span.marker-status  {
-    display:inline-block;
-    width: 49%;
+footer.footer .region.region-footer section.block-menu {
+margin-bottom:0;
+float:right;
 }
 
 
 
-
-div.marker-status  {
-    float:right;
-}
-span.marker-status  {
-    display:inline-block;
-    width: 45%;
+footer.footer .region.region-footer section.block-menu li a {
+color:#333;
 }
 
-.page-map #map {
-    margin: 70px 0;
-    margin: 40px 0;
+footer.footer .region.region-footer section.block-menu li a:hover,footer.footer .region.region-footer section.block-menu li a:focus {
+color:#08c;
+text-decoration:underline;
+}
+
+footer.footer .region.region-footer section.block-menu li a.active-trail {
+font-weight:700;
+}
+
+footer.footer .region.region-footer section.block-menu li {
+float:left;
+margin-right:20px;
 }
 
 
-.page-map .marker-status {
-    background: none;
+body.page-map  {
+/*  padding: 20px;*/
 }
+
+.page-map .row.map-tools {
+
+  position: absolute;
+  z-index: 999;
+  width: 100%;
+  top:40px;
+  left: 0;
+
+}
+
+.row.map-tools aside {
+    width: 320px;
+    margin: auto;
+}
+
+
+.page-map .navbar-inner {
+    opacity: 0.6;
+    -webkit-transition: opacity 500ms ease-out;
+    -moz-transition: opacity 500ms ease-out;
+    -o-transition: opacity 500ms ease-out;
+    transition: opacity 500ms ease-out;
+}
+
+.page-map .navbar-inner:hover {
+    opacity: 0.9;
+}
+
+.page-map .leaflet-top {
+top: 45px;
+}
+
+div.marker-status {
+  float: right;
+}
+span.marker-status {
+  display: inline-block;
+  width: 49%;
+}
+div.marker-status {
+  float: right;
+}
+span.marker-status {
+  display: inline-block;
+  width: 45%;
+}
+
+.page-map .marker-status.col-8fe83b .page-map .marker-status.col-8fe83b a {
+  color: green;
+  font-weight: 700;
+}
+.page-map .marker-status.col-cc0000,
+.page-map .marker-status.col-cc0000 a {
+  color: #cc0000;
+  font-weight: 700;
+}
+.page-map .marker-status.col-ff6600,
+.page-map .marker-status.col-ff6600 a {
+  color: #ff6600;
+  font-weight: 700;
+}
+
 
 .page-map  .marker-status.col-8fe83b
 .page-map  .marker-status.col-8fe83b a {
@@ -327,164 +384,503 @@ span.marker-status  {
 }
 
 .page-map .marker-category.col-00008B,
-.page-map .marker-category.col-00008B a {
-    background: no-repeat scroll right center #fff;
+.page-map .marker-category.col-00008B a {
     color: #00008B;
     font-weight: 700
 }
 
+.page-map .marker-category.col-0000FF,
+.page-map .marker-category.col-0000FF a {
+    color: #0000FF;
+    font-weight: 700
+}
 .page-map .marker-category.col-5F9EA0,
-.page-map .marker-category.col-5F9EA0 a {
-    background: no-repeat scroll right center #fff;
+.page-map .marker-category.col-5F9EA0 a {
     color: #5F9EA0;
     font-weight: 700
 }
 
 .page-map .marker-category.col-8B0000,
-.page-map .marker-category.col-8B0000 a {
-    background: no-repeat scroll right center #fff;
+.page-map .marker-category.col-8B0000 a {
     color: #8B0000;
     font-weight: 700
 }
 
 .page-map .marker-category.col-006400,
-.page-map .marker-category.col-006400 a {
-    background: no-repeat scroll right center #fff;
+.page-map .marker-category.col-006400 a {
     color: #006400;
+    font-weight: 700
+}
+
+.page-map .marker-category.col-871F78,
+.page-map .marker-category.col-871F78 a {
+    color: #871F78;
+    font-weight: 700
+}
+.page-map .marker-category.col-FFA500,
+.page-map .marker-category.col-FFA500 a {
+    color: #FFA500;
+    font-weight: 700
+}
+.page-map .marker-category,
+.page-map .marker-status {
+  background: none;
+}
+
+.page-map a.marker-status:hover,
+.page-map a.marker-category:hover {
+    color: #fff;
     font-weight: 700
 }
 
 
 /* Jumbotrons
 -------------------------------------------------- */
-
 /* Base class
 ------------------------- */
-.mapheader {
-  position: relative;
-  z-index: 42;
-  height: 350px;
-  padding: 40px 0;
-}
-.mapheader h1 {
-  font-size: 80px;
-  font-weight: bold;
-  letter-spacing: -1px;
-  line-height: 1;
-}
-.mapheader p {
-  font-size: 24px;
-  font-weight: 300;
-  line-height: 1.25;
-  margin-bottom: 30px;
-}
+
 
 /* Link styles (used on .masthead-links as well) */
-.mapheader a, .region-footer a {
+.mapheader a,
+.region-footer a {
   color: rgba(255, 255, 255, 0.9);
-  -webkit-transition: all .2s ease-in-out;
-     -moz-transition: all .2s ease-in-out;
-          transition: all .2s ease-in-out;
+  -webkit-transition: all 0.2s ease-in-out;
+  -moz-transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out;
 }
 .mapheader a:hover,
 .region-footer a:hover {
-  color: #fff;
-  text-shadow: 0 0 10px rgba(255,255,255,.25);
+  color: #8F8F8F;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.25);
 }
-
-/* Download button */
-.masthead .btn {
-  padding: 19px 24px;
-  font-size: 24px;
-  font-weight: 200;
-  color: #fff; /* redeclare to override the `.mapheader a` */
-  border: 0;
-  -webkit-border-radius: 6px;
-     -moz-border-radius: 6px;
-          border-radius: 6px;
-  -webkit-box-shadow: inset 0 1px 0 rgba(255,255,255,.1), 0 1px 5px rgba(0,0,0,.25);
-     -moz-box-shadow: inset 0 1px 0 rgba(255,255,255,.1), 0 1px 5px rgba(0,0,0,.25);
-          box-shadow: inset 0 1px 0 rgba(255,255,255,.1), 0 1px 5px rgba(0,0,0,.25);
-  -webkit-transition: none;
-     -moz-transition: none;
-          transition: none;
-}
-.masthead .btn:hover {
-  -webkit-box-shadow: inset 0 1px 0 rgba(255,255,255,.1), 0 1px 5px rgba(0,0,0,.25);
-     -moz-box-shadow: inset 0 1px 0 rgba(255,255,255,.1), 0 1px 5px rgba(0,0,0,.25);
-          box-shadow: inset 0 1px 0 rgba(255,255,255,.1), 0 1px 5px rgba(0,0,0,.25);
-}
-.masthead .btn:active {
-  -webkit-box-shadow: inset 0 2px 4px rgba(0,0,0,.1), 0 1px 0 rgba(255,255,255,.1);
-     -moz-box-shadow: inset 0 2px 4px rgba(0,0,0,.1), 0 1px 0 rgba(255,255,255,.1);
-          box-shadow: inset 0 2px 4px rgba(0,0,0,.1), 0 1px 0 rgba(255,255,255,.1);
-}
-
-
-
-/* Masthead (docs home)
-------------------------- */
-.masthead {
-  padding: 70px 0 80px;
-  margin-bottom: 0;
-  color: #fff;
-}
-.masthead h1 {
-  font-size: 80px;
-  line-height: 1;
-  letter-spacing: -2px;
-}
-.masthead p {
-  font-size: 40px;
-  font-weight: 200;
-  line-height: 1.25;
-}
-
-/* Textual links in masthead */
-.masthead-links {
-  margin: 0;
-  list-style: none;
-}
-.masthead-links li {
-  display: inline;
-  padding: 0 10px;
-  color: rgba(255,255,255,.7);
-}
-
-.navbar-wrapper {
-position: absolute;
-top: 0;
-left: 0;
-right: 0;
-z-index: 10;
-margin-top: 20px;
-margin-bottom: -90px;
-}
-
 
 
 /* map @map-page*/
 
-#map_wrapper_map {
-  margin: auto; /* Div soll zentriert werden */
-  min-height: 100%; /* Mindesthöhe für moderne Browser */
-  height:auto !important; /* Important Regel für moderne Browser */
-  height:100%; /* Mindesthöhe für den IE */
-  overflow: hidden !important; /* FF Scroll-leiste */
-  padding: 40px 0 0 40px;
+.page-map .logo-area {
+    display: none;
 }
 
+
+.page-map .logo.pull-left img {
+    margin: 5px 0 0 0;
+}
+
+
+.logo {
+  padding: 3px 0;
+  display: block;
+}
+
+
+
+/* Map Styles*/
+
+#block-markaspot-logic-taxonomy-category, #block-markaspot-logic-taxonomy-status {
+  margin: 11px 40px 0 0;
+  background: none;
+  opacity: 0.8;
+  border: none;
+  box-shadow: none;
+  -webkit-transition: opacity 500ms ease-out;
+  -moz-transition: opacity 500ms ease-out;
+  -o-transition: opacity 500ms ease-out;
+  transition: opacity 500ms ease-out;
+  float: left;
+}
+
+#block-markaspot-logic-taxonomy-category:hover, #block-markaspot-logic-taxonomy-status:hover {
+  opacity: 1;
+  border: none;
+  box-shadow: none;
+}
+
+.page-map  .span3 {
+    width: 100px;
+    /* margin: 79px; */
+}
+
+.page-map .btn.btn-primary {
+    width: 100px;
+}
+
+.page-map .btn.btn-primary.dropdown-toggle {
+    width: 30px;
+}
+
+.page-map .dropdown-menu > li > a {
+    display: block;
+}
+
+/*.page-map .dropdown-menu > li > a:before {
+    display: inline;
+    padding: 0 10px 0 0;
+    text-indent: 10px
+}*/
+
+#block-markaspot-logic-taxonomy-category h2,
+#block-markaspot-logic-taxonomy-status h2  {
+  display: none
+}
+
+
+#block-markaspot-logic-markaspot-map {
+  display:none}
+
+
+
+#map_wrapper_map {
+  margin: auto;
+  /* Div soll zentriert werden */
+
+  min-height: 100%;
+  /* Mindesthöhe für moderne Browser */
+
+  height: auto !important;
+  /* Important Regel für moderne Browser */
+
+  height: 100%;
+  /* Mindesthöhe für den IE */
+
+  overflow: hidden !important;
+  /* FF Scroll-leiste */
+
+  padding: 40px 0 0 40px;
+}
 /*gallery @front page*/
 
-.gallery{
-    margin: auto;
 
+
+.front .gallery {
+    margin: 10px 0;
+}
+
+.front .page-header {
+  display:none;
+}
+
+.row.welcome {
+  padding: 10px 0;
+}
+
+.welcome-text.well {
+    background: none;
+    border: none;
+    box-shadow: none;
+    padding: 0;
+    margin: 0;
+}
+
+.container.stage {
+    padding: 70px 0;
+}
+
+.stage .span5.offset1.thumbnail {
+    background: #fff;
+}
+
+.carousel {
+  margin-top: -150px;
+  z-index: -1;
+}
+
+
+/* if you don't use the carousel, you may take a look at the page--front.tpl and find a block there */.
+.welcome-text.well{
+  margin: 30px;
+  margin: 4px 0;
+  background:none;
+}
+
+/*In case you need a header*/
+
+#header {
+  display:none;
+}
+
+
+.region.region-sidebar-second h3 {
+    margin: 10px 0 0 0;
+    padding: 0;
+    font-size: 1em;
+    line-height: 1.5em;
+}
+
+.block-title.block-title {
+    font-size: 1.1em;
+    color: #888;
+    margin: 0;
+    padding: 0;
+    line-height: 1.5em;
+    text-transform: uppercase;
+}
+
+.block {
+    padding: 5px 10px;
+}
+
+div.view.view-recent-edits ul, .block-user ul  {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+
+.region-sidebar-second .well {
+  /* background-image:  url('../images/squairy_light.png'); */
+  /* background-image:  url('../images/white_bed_sheet.png'); */
+  background: none;
+  border: 0;
+  border-left: 1px solid #eee;
+  box-shadow: none;
+  padding: 0 0 0 20px;
+  /* margin: 0 0 0 10px; */
+}
+.panel-pane.pane-block.pane-views-exp-markers-report-list.well {
+    padding: 0 10px;
+}
+
+
+.navbar-fixed-top,
+.navbar-fixed-bottom,
+.navbar-static-top {
+  margin-left: 0px;
+  margin-right: 0px;
+}
+
+
+/* Form styles */
+.form-text {
+}
+
+#edit-body-und-0-format {
+    display:none;
+}
+
+.control-label {
+    font-weight: 700;
+}
+
+select,
+textarea,
+input[type="text"],
+input[type="password"],
+input[type="datetime"],
+input[type="datetime-local"],
+input[type="date"],
+input[type="month"],
+input[type="time"],
+input[type="week"],
+input[type="number"],
+input[type="email"],
+input[type="url"],
+input[type="search"],
+input[type="tel"],
+input[type="color"] {
+  display: block;
+  width: 100%;
+  min-height: 30px;
+  -webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
+/*.nav-tabs .active {
+    font-weight: 700;
+}
+
+.nav-tabs li{
+    margin: 20px 0
+}
+
+
+.nav-tabs li a{
+    margin: 10px 0;
+    font-weight: bold;
+}
+
+.tabs-left > .nav-tabs {
+    background: #fff;
+    margin-right: 0;
+    border-right: 1px solid #f5f5f5;
+
+}
+
+
+.tabs-left > .nav-tabs > li > a {
+  padding: 15px;
+  margin-right: -1px;
+  -webkit-border-radius: 2px 0 0 2px;
+  -moz-border-radius: 2px 0 0 2px;
+  border-radius: 2px 0 0 2px;
+  background: #fff;
+  border: 1;
+}
+.tabs-left > .nav-tabs > li > a:hover,
+.tabs-left > .nav-tabs > li > a:focus {
+  border-color: #eeeeee #dddddd #eeeeee #eeeeee;
+}
+
+.tabs-left > .nav-tabs > li > a{
+    background: #fff;
+    margin-right: 0;
+    border-right: 0px solid #f5f5f5;
+}
+
+.tabs-left > .nav-tabs li.active a{
+    background-color: #f5f5f5;
+    margin-right: 0
+}*/
+
+
+
+/*.nav-tabs {
+    border-bottom: 1px solid #f5f5f5;
+    margin: 0;
+}
+
+.nav-tabs .active {
+    font-weight: 700;
+}
+
+.nav-tabs li{
+    margin: 0px 0
+}
+
+
+.nav-tabs li a{
+    margin: 0px 0;
+    font-weight: bold;
+}
+
+.tabs-left > .nav-tabs {
+    background: #fff;
+    margin-right: 0;
+    border-right: 1px solid #f5f5f5;
+
+}
+
+
+.tabs-left > .nav-tabs > li > a {
+  padding: 15px;
+  margin-right: -1px;
+  -webkit-border-radius: 2px 0 0 2px;
+  -moz-border-radius: 2px 0 0 2px;
+  border-radius: 2px 0 0 2px;
+  background: #fff;
+  border: 1;
+}
+.tabs-left > .nav-tabs > li > a:hover,
+.tabs-left > .nav-tabs > li > a:focus {
+  border: 0px;
+  border-color: #fff #fff #fff #fff;
+}
+
+.tabs-left > .nav-tabs > li > a{
+    background: #fff;
+    margin-right: 0;
+    border-right: 0px solid #f5f5f5;
+}
+
+.tabs-left > .nav-tabs li.active a{
+    background-color: #f5f5f5;
+    margin-right: 0
+}
+*/
+
+
+#geolocation-help-8-0 {
+  font-size: 0.9em;
+  color: #999;
+  background: #fff;
+  border: solid 1px #eeeeee;
+  padding: 1em;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+}
+#geolocation-help-8-0:before {
+  font-family: 'markaspot';
+  speak: none;
+  font-size: 70px;
+  color: #ddd;
+  font-style: normal;
+  font-weight: normal;
+  text-transform: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+    content: '&#xe004';
+    float:right;
+}
+#geolocation-address-8-0 {
+    padding: 1em;
+    width: 52%;
+    float: left;
+}
+
+.geolocation-map {
+  height: 300px;
+}
+
+.geolocation-remove {
+  display:none;
+}
+
+.fieldset-description, .description, .help-block {
+    color: #999;
+    padding: 0px 0 10px 0;
+}
+
+.group-tab1 a {
+    font-size: 2em;
+}
+.nav.field-group-bootstrap_fieldgroup_nav.group-tab1.required-fields.nav-pills {
+    border-bottom: 1px solid #ccc;
+}
+.page-node-add .well {
+    background: none;
+    border: none;
+    box-shadow: none;
+    padding: 0;
+}
+
+.geolocation-lng-item, .geolocation-lat-item {
+    visibility: hidden;
+}
+
+
+
+
+.mapheader {
+  position: relative;
+  color: #fff;
+  text-align: center;
+  text-shadow: 0 1px 3px rgba(0,0,0,.4), 0 0 30px rgba(0,0,0,.075);
+   /* IE9 SVG, needs conditional override of 'filter' to 'none' */
+  background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMTAwJSI+CiAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjMWU1Nzk5IiBzdG9wLW9wYWNpdHk9IjEiLz4KICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzdkYjllOCIgc3RvcC1vcGFjaXR5PSIwIi8+CiAgPC9saW5lYXJHcmFkaWVudD4KICA8cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSJ1cmwoI2dyYWQtdWNnZy1nZW5lcmF0ZWQpIiAvPgo8L3N2Zz4=);
+  background: -moz-linear-gradient(-45deg, rgba(30,87,153,1) 0%, rgba(125,185,232,0) 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, right bottom, color-stop(0%,rgba(30,87,153,1)), color-stop(100%,rgba(125,185,232,0))); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(-45deg, rgba(30,87,153,1) 0%,rgba(125,185,232,0) 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(-45deg, rgba(30,87,153,1) 0%,rgba(125,185,232,0) 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(-45deg, rgba(30,87,153,1) 0%,rgba(125,185,232,0) 100%); /* IE10+ */
+  background: linear-gradient(135deg, rgba(30,87,153,1) 0%,rgba(125,185,232,0) 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#1e5799', endColorstr='#007db9e8',GradientType=1 ); /* IE6-8 fallback on horizontal gradient */  /*http://www.colorzilla.com/gradient-editor/*/
+  box-shadow: 0 2px 2px -2px #232323;
+  -moz-box-shadow: 0 1px 10px -2px #232323;
+  -webkit-box-shadow: 0 1px 10px -4px #232323;
+}
+
+.mapheader {
+  position: relative;
+  z-index: 42;
+  height: 420px;
+  padding: 40px 0;
 }
 
 #map_wrapper_splash #start {
     background: none repeat scroll 0 0 #FFFFFF;
     display: block;
-    height: 500px;
+    height: 550px;
     left: 0;
     opacity: 0.1;
     position: absolute;
@@ -498,133 +894,176 @@ margin-bottom: -90px;
     position: absolute;
     top: 0;
     width: 100%;
-    height: 500px;
+    height: 550px;
     z-index: 39;
 }
 #map_wrapper_splash #map {
     height: 500px;
 }
 
-.navbar-wrapper {
-    z-index: 43;
+.front .navbar-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
 }
 
-/* Form styles */
 
-.form-text {
-    width: 95%;
+div.add a h3,
+div.list a h3 {
+    font-size: 14px;
+    line-height: 28px;
+    /* margin: 10px; */
 }
 
+.row-fluid.welcome .list,
+.row-fluid.welcome .add{
 
+margin: 10px 30px;}
 
 /* Responsive
 -------------------------------------------------- */
-
 /* Desktop large
 ------------------------- */
 @media (min-width: 1200px) {
   /* Remove any padding from the body */
   body {
-    padding-top: 0;
+    /*padding-top: 0;*/
   }
 
-  .bs-docs-container {
-    max-width: 970px;
-  }
-  .bs-docs-sidenav {
-    width: 258px;
-  }
-  .bs-docs-sidenav > li > a {
-    width: 230px \9; /* Override the previous IE8-9 hack */
-  }
   .report .show-markers {
-      display: block;
+    display: block;
   }
   .report img.pull-left.thumbnail {
-      display:none;
+    display: none;
   }
-}
 
+  div.add a h3,
+  div.list a h3 {
+      font-size: 1.5em;
+  }
+  .stage h1 {
+      font-size: 3.5em;
+  }
+  .stage p {
+      font-size: 2em;
+      margin: 2em;
+      line-height: 1.4em;
+  }
+
+}
 /* Desktop
 ------------------------- */
-@media (max-width: 980px) {
-
+@media (max-width: 979px) {
   /* Remove any padding from the body */
   body {
     padding-top: 0;
   }
+
   /* Unfloat brand */
   body > .navbar-fixed-top .brand {
-    float: left;
+/*    float: left;
     margin-left: 0;
     padding-left: 10px;
-    padding-right: 10px;
+    padding-right: 10px;*/
   }
-
+  .navbar-fixed-top {
+  margin-bottom: 0;
+  }
   /* Inline-block quick links for more spacing */
   .quick-links li {
     display: inline-block;
     margin: 5px;
   }
-
-  /* When affixed, space properly */
-  .bs-docs-sidenav {
-    top: 0;
-    width: 218px;
-    margin-top: 30px;
-    margin-right: 0;
+  .main-container {
+    margin: 60px auto;
   }
-
   .report .show-markers {
-      display: block;
+    display: block;
   }
   .report img.pull-left.thumbnail {
-      display:none;
+    display: none;
   }
 }
-
-
-@media(min-width: 980px) {
+@media (min-width: 979px) {
   body {
     padding-top: 0px;
   }
+
+  .front .navbar-wrapper {
+    top: 30px;
+  }
+  .stage h1 {
+      font-size: 2.5em;
+  }
+  .stage p {
+      font-size: 1.5em;
+      margin: 2em;
+      line-height: 1.4em;
+  }
+
+  .map .navbar-wrapper {
+    position: fixed;
+    z-index: 9998;
+    margin-top: 0px;
+    top: 0;
+    left: 0;
+    right: 0;
+  }
+
+  .main-container {
+    margin: 40px auto;
+    min-height: 400px;
+  }
+
   .report .show-markers {
-      display: block;
+    display: block;
   }
   .report img.pull-left.thumbnail {
-      display:none;
+    display: none;
   }
-}
 
+
+
+  /* Form Transitions*/
+
+
+}
 /* Tablet to desktop
 ------------------------- */
 @media (min-width: 768px) and (max-width: 979px) {
+
+  .front .navbar-wrapper {
+    top: 20px;
+  }
+
   /* Remove any padding from the body */
   body {
     padding-top: 0;
   }
   /* Widen masthead and social buttons to fill body padding */
-  ._mapheader {
-    margin-top: -20px; /* Offset bottom margin on .navbar */
-  }
-  /* Adjust sidenav width */
-  .bs-docs-sidenav {
-    width: 166px;
-    margin-top: 20px;
-  }
-  .bs-docs-sidenav.affix {
-    top: 0;
-  }
+
 
   .report .show-markers {
-      display: block;
+    display: block;
   }
   .report img.pull-left.thumbnail {
-      display:none;
+    display: none;
+  }
+  /* Tighten up footer */
+  .footer {
+    margin: 0 -20px;
   }
 
-}
+  .page-map .row.map-tools {
+    position: absolute;
+    top: 80px;
+  }
 
+
+
+}
 /* Tablet
 ------------------------- */
 @media (max-width: 767px) {
@@ -632,148 +1071,154 @@ margin-bottom: -90px;
   body {
     padding-top: 0;
   }
-
-  /* Widen masthead and social buttons to fill body padding */
-  .mapheader {
-    padding: 40px 20px;
-    margin-top: -18px; /* Offset bottom margin on .navbar */
-    margin-right: -20px;
-    margin-left:  -20px;
-    height: 425px
-
+  body{
+    /*padding-top: 40px;*/
   }
-  .masthead h1 {
-    font-size: 75px;
 
-    margin: 30px;
+  #map_wrapper_splash #map {
+    margin: 0 20px
+  }
+
+
+ /* .welcome-text.well {
+      padding: 2em 4em 2em 4em;
+  }*/
+
+  .span5.offset1.thumbnail {
+      display: none;
+  }
+
+  .list,
+  .add {
+    margin: 10px;
 }
-  .masthead p,
-  .masthead .btn {
-    font-size: 24px;
-  }
-  .marketing .span4 {
-    margin-bottom: 40px;
-  }
-  .bs-docs-social {
-    margin: 0 -20px;
-  }
 
-  /* Space out the show-grid examples */
-  .show-grid [class*="span"] {
-    margin-bottom: 5px;
-  }
-
-  /* Sidenav */
-  .bs-docs-sidenav {
-    width: auto;
-    margin-bottom: 20px;
-  }
-  .bs-docs-sidenav.affix {
-    position: static;
-    width: auto;
-    top: 0;
-  }
-
-  /* Unfloat the back to top link in footer */
-  .footer {
-    margin-left: -20px;
-    margin-right: -20px;
-    padding-left: 0px;
-    padding-right: 0px;
-  }
-  .footer p {
-    margin-bottom: 9px;
+  .main-container {
+    margin: 0px auto;
   }
 
   .report img.pull-left.thumbnail {
-      display:none;
+    display: none;
   }
   .report .show-markers {
-      display: block;
+    display: block;
   }
+  /* Tighten up footer */
+  .footer {
+    margin: 0 -20px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+  }
+  .page-map .row.map-tools {
+    position: absolute;
+    top: 40px;
+  }
+
+
+  .logo-area{
+    /* background: url("../images/header.png") no-repeat 100% 100%;
+       padding: 0px 0 30px 0px;
+       background-size:600px;
+    */
+  }
+  .logo-header{
+    background-repeat:no-repeat;
+  }
+  .logo-header a{
+    height:100%;width: 100%;display: block;
+
+    /* background-color: #cc0000; */
 }
 
+  table td {
+    word-wrap:break-word;
+  }
+
+
+  /* Report design small */
+  #markers-list-view .report {
+    padding: 0;
+    margin-left: 0;
+  }
+  .panel-2col-stacked .panel-col-last .inside {
+  margin: 0 0 1em 0em;
+  }
+}
 /* Landscape phones
 ------------------------- */
 @media (max-width: 480px) {
-  /* Remove padding above mapheader */
-  body {
-    padding-top: 0;
-  }
+
 
   /* Change up some type stuff */
   h2 small {
     display: block;
   }
 
-  /* Downsize the mapheaders */
-  .mapheader h1 {
-    font-size: 45px;
-  }
-  .mapheader p,
-  .mapheader .btn {
-    font-size: 18px;
-  }
+
   .mapheader .btn {
     display: block;
     margin: 5px auto;
   }
 
-  /* center align subhead text like the masthead */
-  .subhead h1,
-  .subhead p {
-    text-align: center;
+
+  .navbar-wrapper {
+    position: fixed;
+    z-index: 9999;
+    margin-top: 0px;
   }
 
-  /* Marketing on home */
-  .marketing h1 {
-    font-size: 30px;
+  .navbar-fixed-top, .navbar-fixed-bottom {
+    position: fixed;
   }
-  .marketing-byline {
-    font-size: 18px;
-  }
-
-
-
-  /* Do our best to make tables work in narrow viewports */
-  table code {
-    white-space: normal;
-    word-wrap: break-word;
-    word-break: break-all;
-  }
-
-
-
 
   /* Tighten up footer */
   .footer {
-    padding-top: 20px;
-    padding-bottom: 20px;
+    margin: 0 -20px;
   }
-
   /* Container and Map Handling in List View */
   .panel-col-first.panel-panel {
     display: none;
   }
+
+  .report .field-name-field-geo {
+      display: block;
+  }
+
   .panel-col-last.panel-panel {
-      width: 100%;
+    width: 100%;
   }
-
-  #markers-list-view div.report{
-      padding: 0 0 20px 0;
+  #markers-list-view .report {
+    padding: 0 0 20px 0;
   }
-
   .report div.pull-left.thumbnail,
   .report img.pull-left.thumbnail {
-      display: block;
-      margin: 0 10px 0 0;
+    display: block;
+    margin: 0 10px 0 0;
   }
   .report .show-markers {
-      display: none;
+    display: none;
+  }
+  .page-map .row.map-tools {
+    position: absolute;
+    top: 80px;
+  }
+  /*narrow form styles*/
+  #geolocation-address-8-0 {
+    width: 100%;
+    float: none;
+  }
+
+
+  /* Report design small */
+  #markers-list-view .report {
+    padding: 0;
+    margin-left: 0;
+  }
+  .panel-2col-stacked .panel-col-last .inside {
+  margin: 0 0 1em 0em;
   }
 
 }
-
 
 /*  Font Awesome styles
     ------------------------------------------------------- */
@@ -1009,3 +1454,104 @@ ul.icons li [class*=" icon-"] {
   }
 }
 
+/* Admin Styles */
+.page-map.admin-menu .navbar,
+.page-map.admin-menu #map,
+.page-map.admin-menu .map-tools
+ {
+  margin: 30px 0;
+}
+
+.tab-content {
+    padding: 0 3px;
+}
+
+
+
+.tab-content>.tab-pane {
+    -webkit-animation-duration: 0;
+    -moz-animation-duration: 0;
+    -o-animation-duration: 0;
+    animation-duration: 0;
+    -webkit-animation-fill-mode: both;
+    -moz-animation-fill-mode: both;
+    -o-animation-fill-mode: both;
+    animation-fill-mode: both;
+    -webkit-backface-visibility: visible!important;
+    -webkit-animation-name: fadeInUp;
+    -moz-backface-visibility: visible!important;
+    -moz-animation-name: fadeInUp;
+    -o-backface-visibility: visible!important;
+    -o-animation-name: fadeInUp;
+    backface-visibility: visible!important;
+    animation-name: fadeInUp;
+}
+
+.tab-content>.tab-pane {
+    -webkit-animation-duration: 1.5s;
+    -moz-animation-duration: 1.5s;
+    -o-animation-duration: 1.5s;
+    animation-duration: 1.5s;
+    -webkit-animation-fill-mode: both;
+    -moz-animation-fill-mode: both;
+    -o-animation-fill-mode: both;
+    animation-fill-mode: both;
+}
+
+
+
+@-webkit-keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        -webkit-transform: translateY(10px);
+    }
+
+    100% {
+        opacity: 1;
+        -webkit-transform: translateY(0);
+    };
+}
+
+
+@-moz-keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        -moz-transform: translateY(10px);
+    }
+
+    100% {
+        opacity: 1;
+        -moz-transform: translateY(0);
+    };
+}
+
+@-o-keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        -o-transform: translateY(10px);
+    }
+
+    100% {
+        opacity: 1;
+        -o-transform: translateY(0);
+    };
+}
+
+@keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    };
+}
+
+.fadeInUp {
+    -webkit-animation-name: fadeInUp;
+    -moz-animation-name: fadeInUp;
+    -o-animation-name: fadeInUp;
+    animation-name: fadeInUp;
+}

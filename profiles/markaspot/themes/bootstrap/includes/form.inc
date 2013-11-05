@@ -170,7 +170,7 @@ function bootstrap_form_element_label(&$variables) {
   $t = get_t();
 
   // If title and required marker are both empty, output no label.
-  if ((!isset($element['#title']) || $element['#title'] === '') && empty($element['#required'])) {
+  if ((!isset($element['#title']) || $element['#title'] === '' && $element['#type'] !== 'radio' && $element['#type'] !== 'checkbox') && empty($element['#required'])) {
     return '';
   }
 
@@ -316,7 +316,7 @@ function bootstrap_bootstrap_append_element(&$variables) {
   $exclude_control = FALSE;
   $control_wrapper = '<div class="controls">';
   // Add bootstrap class
-  if ($element['#type'] == "radio" || $element['#type'] == "checkbox" || isset($element['#exclude_control'])) {
+  if ($element['#type'] == "radio" || $element['#type'] == "checkbox" || $element['#type'] == "tableselect" || isset($element['#exclude_control'])) {
     $exclude_control = TRUE;
   }
   else {

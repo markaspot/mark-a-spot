@@ -86,6 +86,10 @@ div.status {
     padding-bottom:5px;
     }
 
+  .item-list ul.ui-tabs-nav li:last-child {
+    padding-bottom:0;
+    }
+
 .admin-panel h3 span.icon,
 .admin-list li a span.icon {
   position:absolute;
@@ -182,12 +186,14 @@ table tr.region td { background:#f8f8f8; }
 
 /* Hide tabledrag markers */
 table tr.draggable span.tabledrag-changed { display:none; }
- 
+
+table.field-multiple-table td { padding: 10px; }
+
 /* Stripe administrative tables */
 .page-admin table tr.even, .page-admin table tr.even td {
   background: #f9f9f9;
 }
-               
+
 /**
  * Forms ==============================================================
  */
@@ -211,6 +217,23 @@ table tr.draggable span.tabledrag-changed { display:none; }
     position:relative;
     padding:9px;
     }
+.form-wrapper {
+  border: 1px solid #ddd;
+  margin-bottom: 10px;
+  }
+
+.form-wrapper .form-item,
+.form-wrapper .form-wrapper {
+  border:0;
+  margin-bottom:0;
+  }
+
+.media-widget.form-wrapper{
+  padding-bottom:10px;
+  }
+.form-wrapper .form-wrapper a.button{
+  margin-left:10px;
+  }
 
   .admin-list { margin:0px; }
 
@@ -314,14 +337,15 @@ table .item-list,
 
   .page-content .form-item:hover > .description { display:block; }
 
+input.form-submit, a.button { display: inline-block;}
+
 input.teaser-button,
-input.form-submit {
+input.form-submit, a.button {
   cursor:pointer;
   padding:2px 10px;
   color:#333;
-
+  font-size:13px;
   text-align:center;
-
   font-weight:normal;
   border-width:1px;
   border-style:solid;
@@ -329,31 +353,65 @@ input.form-submit {
   background:#fff url(images/buttons.png) -1px 50% no-repeat;
   }
 
-  input.form-submit:hover {
+  input.form-submit:hover, a.button:hover {
     border-color:#ace;
     -webkit-box-shadow:#ace 0px 0px 5px;
     }
 
-  input.form-submit:active {
+  input.form-submit:active, a.button:active {
     border-color:#666 #666 #555;
     background:#666 url(images/buttons.png) -401px 50% no-repeat;
     color:#222;
     text-shadow:#999 0px 1px 0px;
     }
 
-  input.button-yes {
+  input.button-yes, a.button-yes {
     background-position:-2401px 50%;
     padding-left:25px;
     }
 
-  input.button-yes:active { background-position:-2801px 50%; }
+  input.button-yes:active, a.button-yes:active { background-position:-2801px 50%; }
 
-  input.button-no {
+  input.button-no, a.button-no{
     background-position:-3201px 50%;
     padding-left:25px;
     }
 
-  input.button-no:active { background-position:-3601px 50%; }
+  input.button-no:active , a.button-no:active{ background-position:-3601px 50%; }
+
+  input.button.launcher , a.button.launcher {
+    background-position:-4800px 50%;
+    padding-left: 25px;
+  }
+
+  input.button.launcher:active , a.button.launcher:active {
+    background-position:-1200px 50%;
+  }
+
+  input.button.edit , a.button.edit {
+    background-position:-2400px 50%;
+    padding-left: 25px;
+  }
+
+  input.button.edit:active , a.button.edit:active {
+    background-position:-2800px 50%;
+  }
+
+  input.button.remove , a.button.remove {
+    background-position:-3200px 50%;
+    padding-left: 25px;
+  }
+
+  input.button.remove:active , a.button.remove:active {
+    background-position:-3600px 50%;
+  }
+  .media-widget a.button.remove {
+    padding-top: 4px;
+    padding-bottom: 4px;
+  }
+  .media-widget .preview {
+    min-height:35px;
+  }
 
 input.form-autocomplete,
 input.form-text,
@@ -387,10 +445,15 @@ select.form-select {
     width:100%;
     }
 
-    table input.fluid { width:auto; }
-
   html.js input.form-autocomplete { background-position:100% 7px; }
-  html.js input.throbbing { background-position:100% -13px; }
+  html.js input.throbbing { background-position:100% -2px; }
+
+#search-block-form .form-wrapper.form-actions {
+  background: none;
+  border: none;
+  padding: 0;
+  margin-top: 0;
+}
 
 /* Fieldsets */
 .fieldset,
@@ -446,16 +509,17 @@ body.page-admin div.vertical-tabs .vertical-tabs-panes .vertical-tabs-pane field
     position:absolute;
     left:-20px;
     top:4px;
-    background:url(images/bleeds.png) -20px -180px no-repeat;
+    background:url(images/bleeds.png) -20px -120px no-repeat;
     width:20px;
     height:20px;
     display:block;
     cursor:pointer;
     }
 
-    html.js .collapsed .fieldset-legend span.icon { background-position:0px -180px; }
+    html.js .collapsed .fieldset-legend span.icon { background-position:0px -120px; }
 
-    .fieldset .collapsible .fieldset-legend span.icon { display:none; }
+    .fieldset .collapsible .fieldset-legend span.icon,
+    html.js .fieldset .collapsible .fieldset-legend span.icon { display:none; }
 
   .collapsed .fieldset-legend a {
     background:#eee;
@@ -488,6 +552,10 @@ body.page-admin div.vertical-tabs .vertical-tabs-panes .vertical-tabs-pane field
   font-size:11px;
   margin-top:-10px;
   border-top:none; 
+  }
+.text-format-wrapper .filter-wrapper{
+  border-top:1px solid #CCC;
+  margin-top: 0;
   }
 
 .filter-wrapper .fieldset-content,
@@ -536,10 +604,11 @@ body.page-admin div.vertical-tabs .vertical-tabs-panes .vertical-tabs-pane field
 
 .column-footer { clear:both; }
 
-form .form-actions {
+.form-wrapper.form-actions {
   background:#eee;
   border:1px solid #ddd;
   padding:9px;
+  margin-top: 20px;
   }
 
   form .form-actions.container-inline {
@@ -548,11 +617,14 @@ form .form-actions {
     padding:0px;
     }
 
-  form .form-actions input.form-submit { margin-right:5px; }
+  .form-wrapper.form-actions input.form-submit, .form-wrapper.form-actions a.button { margin-right:5px; }
 
   .form-layout-default .column-main .form-actions { display:none; }
   .form-layout-default .column-side .form-actions { margin:0px 0px 10px; }
-  .form-layout-default .column-side .form-actions input.form-submit { margin:1px 5px 1px 0px; }
+  .form-layout-default .column-side .form-actions input.form-submit,
+  .form-layout-deafult .column-side .form-actions a.button {
+    margin:1px 5px 1px 0px;
+    }
 
 /**
  * "Boxes" aka generic wrappers =======================================
@@ -772,6 +844,16 @@ body.tao #admin-toolbar a.menu-hover span.menu-description span.icon {
   }
 
 .vertical-tabs-list .summary { font-size:11px; }
+
+.vertical-tabs .vertical-tabs-panes .vertical-tabs-pane .fieldset legend {
+  display: block;
+}
+
+.vertical-tabs .vertical-tabs-panes .vertical-tabs-pane fieldset.collapsible {
+  border: 1px solid #CCCCCC;
+  margin: 1em 0;
+  position: relative;
+}
 
 /**
  * Action links =======================================================

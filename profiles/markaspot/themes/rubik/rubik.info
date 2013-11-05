@@ -19,9 +19,9 @@ stylesheets[print][] = print.css
 settings[shortcut_module_link] = 1
 
 
-; Information added by drupal.org packaging script on 2012-02-22
-version = "7.x-4.0-beta8"
+; Information added by drupal.org packaging script on 2013-08-19
+version = "7.x-4.0-beta9"
 core = "7.x"
 project = "rubik"
-datestamp = "1329953445"
+datestamp = "1376905014"
 

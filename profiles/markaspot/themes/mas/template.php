@@ -1,6 +1,24 @@
 <?php
 
+/**
+ * Implements hook_form_alter().
+ */
+function mas_form_alter(&$form, &$form_state, $form_id) {
 
+  switch($form_id) {
+
+    case 'report_node_form': // the value we stole from the rendered form
+
+      drupal_set_title(t('Add your report'));
+      $form['revision_information']['#access'] = false;
+      // $form['instruction'] = array(
+      // '#type' => 'item',
+      // '#markup' => '<div><p class="span6">In drei Schritten zu unseren Dienstleistungen: Suchen Sie die Strasse, beschreiben Sie Ihr Anliegen und laden Sie ggf. ein Foto hoch.</p>'.'<p class="span6 required-explained"><span class="form-required">*</span>'. t(' indicates required fields') .'</p></div>',
+      // '#weight' => -1001, // Adjust so that you can place it whereever
+      // );
+      // break;
+  }
+}
 
 /**
  * Implements hook_theme().
@@ -17,7 +35,7 @@ function mas_theme(&$existing, $type, $theme, $path) {
     flood_register_event($GLOBALS['theme'] . '_rebuild_registry_warning');
     drupal_set_message(t('For easier theme development, the theme registry is being rebuilt on every page request. It is <em>extremely</em> important to <a href="!link">turn off this feature</a> on production websites.', array('!link' => url('admin/appearance/settings/' . $GLOBALS['theme']))), 'warning', FALSE);
   }
-  
+
   return array(
     'mas_links' => array(
       'variables' => array(
@@ -64,7 +82,7 @@ function mas_breadcrumb($variables) {
 
   if (!empty($breadcrumb)) {
     $breadcrumbs = '<ul class="breadcrumb">';
-    
+
     $count = count($breadcrumb) - 1;
     foreach ($breadcrumb as $key => $value) {
       if ($count != $key) {
@@ -75,7 +93,7 @@ function mas_breadcrumb($variables) {
       }
     }
     $breadcrumbs .= '</ul>';
-    
+
     return $breadcrumbs;
   }
 }
@@ -94,6 +112,22 @@ function mas_process_html_tag(&$variables) {
     if (isset($tag['#attributes']['media']) && $tag['#attributes']['media'] === 'all') {
       unset($tag['#attributes']['media']);
     }
+  }
+}
+
+
+/**
+ * Preprocess variables for comment.tpl.php
+ *
+ * @see comment.tpl.php
+ */
+function mas_preprocess_comment(&$variables) {
+
+  $comment_author_uid = $variables['comment']->uid;
+  $account = user_load_multiple(array('uid'=>$comment_author_uid));
+
+  if (in_array('Management', $account[$comment_author_uid]->roles)) {
+    $variables['classes_array'][] = "management-comment";
   }
 }
 
@@ -239,7 +273,7 @@ function mas_preprocess_region(&$variables, $hook) {
   if ($variables['region'] == 'content') {
     $variables['theme_hook_suggestions'][] = 'region__no_wrapper';
   }
-   
+
   if (strstr($variables['region'], 'footer_')) {
     $variables['classes_array'][] = 'span3';
   }
@@ -286,7 +320,7 @@ function mas_process_block(&$variables, $hook) {
  */
 function _mas_content_span($columns = 1) {
   $class = FALSE;
-  
+
   switch($columns) {
     case 1:
       $class = 'span12';
@@ -298,7 +332,7 @@ function _mas_content_span($columns = 1) {
       $class = 'span6';
       break;
   }
-  
+
   return $class;
 }
 
@@ -307,7 +341,7 @@ function _mas_content_span($columns = 1) {
  *
  * @ingroup themable
  */
-function mas_mas_search_form_wrapper(&$variables) {
+function mas_search_form_wrapper(&$variables) {
   $output = '<div class="input-append">';
   $output .= $variables['element']['#children'];
   $output .= '<button type="submit" class="btn">';

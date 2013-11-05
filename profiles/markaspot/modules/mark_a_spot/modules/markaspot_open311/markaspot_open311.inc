@@ -15,18 +15,18 @@ function _process_services_error($message, $code) {
  */
 
 function _markaspot_open311_discovery(){
-  
+  global $base_url;
   // toDo:  make these key/value available via administration interface
- 
-  $discovery['changeset'] = "2012-11-26 00:18";
-  $discovery['contact'] = "Bundesstadt Bonn, Amt 10-11, Berliner Platz 2, 53111 Bonn, fon: +49 228 77369";
-  $discovery['key_service'] = "You can request a key here: not yet";
+
+  $discovery['changeset'] = variable_get('open311_changeset');;
+  $discovery['contact'] = variable_get('open311_contact');
+  $discovery['key_service'] = variable_get('open311_key_service');
   $discovery['endpoints']['specification'] = "http://wiki.open311.org/GeoReport_v2";
-  $discovery['endpoints']['endpoint']['url'] = "http://anliegen.bonn.de/georeport/v2";
-  $discovery['endpoints']['endpoint']['changeset'] = "2012-11-26 00:18";
-  $discovery['endpoints']['endpoint']['type'] = "production";
+  $discovery['endpoints']['endpoint']['url'] = $base_url . "/georeport/v2";
+  $discovery['endpoints']['endpoint']['changeset'] = variable_get('open311_changeset');
+  $discovery['endpoints']['endpoint']['type'] = variable_get('open311_type');;
   $discovery['endpoints']['endpoint']['formats'] = array('format' => 'text/xml','format' =>'application/json');
- 
+
   return $discovery;
 }
 
@@ -37,15 +37,15 @@ function _markaspot_open311_requests_create($data) {
 
   if (!isset($data->email)) {
     return _process_services_error(t('Please provide a valid email address.'), 400);
-  } 
+  }
 
 
   if (!isset($data->service_code)) {
     return _process_services_error(t('Service_code missing or empty.'), 404);
-  } 
+  }
   if (!isset($data->lat) || !isset($data->long)) {
     return _process_services_error(t('Missing position parameters lat and long'), $code);
-  } 
+  }
 
   // Check if submitted service code is in ServiceList:
   $services = _markaspot_open311_services_index();
@@ -58,14 +58,14 @@ function _markaspot_open311_requests_create($data) {
 
   // map request to node object;
   $node = _request_map_node($data);
-  
+
   // then write to DB
   markaspot_open311_write_request($node);
 
   // we have the node-id
   $service_request[0]['service_request_id'] = $node->nid;
   $service_request[0]['service_notice'] = "";
-  return $service_request;  
+  return $service_request;
 }
 
 
@@ -75,7 +75,7 @@ function _markaspot_open311_requests_create($data) {
  * @param int $nid
  * $nid = service_request_id
  * @return array $request
- * 
+ *
  */
 
 function _markaspot_open311_requests_retrieve($nid, $parameters) {
@@ -91,9 +91,9 @@ function _markaspot_open311_requests_retrieve($nid, $parameters) {
 
 
 /**
- * Provides a list of accepted 311 service requests. 
+ * Provides a list of accepted 311 service requests.
  * These request types can be unique to the city/jurisdiction.
- * 
+ *
  * @return array $requests
  * an array of all requests for this jurisdiction
  */
@@ -108,7 +108,7 @@ function _markaspot_open311_requests_index($page, $parameters) {
     ->propertyCondition('status', 1)
 
     //->range(0, 10)
-    
+
     ->addMetaData('account', user_load(1)); // Run the query as user 1.
 
 
@@ -119,7 +119,7 @@ function _markaspot_open311_requests_index($page, $parameters) {
      // var_dump($parameters);
      // limit param
 
-  // Checking for a limit parameter  
+  // Checking for a limit parameter
   $limit = (isset($parameters['limit'])) ? $parameters['limit']:null;
   if ($limit) {
     $query->pager($limit);
@@ -133,6 +133,11 @@ function _markaspot_open311_requests_index($page, $parameters) {
     // get the service of the current node
     $tid = _service_map_tax($parameters['service_code']);
     $query->fieldCondition('field_category', 'tid', $tid);
+  }
+
+  $search = (isset($parameters['query'])) ? $parameters['query'] : null;
+  if ($search) {
+    $query->fieldCondition('body', 'value', "%" . $search . "%", "LIKE");
   }
 
   // Checking for status-parameter and map the code with taxonomy terms
@@ -168,7 +173,7 @@ function _markaspot_open311_requests_index($page, $parameters) {
 
 
 /**
- * Provides a list of acceptable 311 service types and their associated service codes. 
+ * Provides a list of acceptable 311 service types and their associated service codes.
  * These request types can be unique to the city/jurisdiction.
  *
  * @return array $services
@@ -177,11 +182,11 @@ function _markaspot_open311_requests_index($page, $parameters) {
 
 function _markaspot_open311_services_index($args) {
   $taxonomies = taxonomy_get_tree(2, $parent = 0, $max_depth = 1, $load_entities = TRUE);
-  
+
   foreach ($taxonomies as $taxonomy_term) {
     $services[] = _tax_map_service($taxonomy_term);
    }
- 
+
   return $services;
 }
 
@@ -192,7 +197,7 @@ function _markaspot_open311_services_index($args) {
  * @param int $nid
  * $tid = service_code_id
  * @return array $request
- * 
+ *
  */
 
 function _markaspot_open311_services_retrieve($service_code) {
@@ -222,7 +227,7 @@ function _node_map_request($node, $status, $parameters){
     $request['status_notes'] = $node->field_statement['und'][0]['value'];
   }
   $term['category'] = taxonomy_term_load($node->field_category['und'][0]["tid"]);
-  
+
   // defining content of the status-field
   $status = _tax_map_status($node->field_status['und'][0]["tid"]);
 
@@ -281,20 +286,20 @@ function _node_map_request($node, $status, $parameters){
 
 function _request_map_node($request) {
   global $user;
-  
+
   $node->uid = $user->uid;
   $node->created = time();
   $node->modified = time();
 
-  
+
   $node->language = 'und'; // language - neutral
-  
+
   // mapping the requested service code to taxonomy id
   $tid = _service_map_tax($request->service_code);
 
   // applying term-name to title and it's taxonomyId to field_category
   $node->field_category[$node->language][0]['tid'] = $tid;
-  
+
   // Loading the taxonomy term by requested service_code
   $service_code = taxonomy_term_load($tid);
   $node->title = $service_code->name;
@@ -304,14 +309,14 @@ function _request_map_node($request) {
 
   $node->body[$node->language][0]['value'] = $request->description;
   $node->body[$node->language][0]['format']  = 'filtered_html';
-  
+
   $node->field_address[$node->language][0]['value'] = $request->address_string;
   $node->field_geo[$node->language][0]['lat'] = $request->lat;
   $node->field_geo[$node->language][0]['lng'] = $request->long;
-  
+
   $node->field_e_mail[$node->language][0]['value'] = $request->email;
 
-  // File Handling 
+  // File Handling
 
   if ($request->media_url != ""){
     $managed = TRUE; // Whether or not to create a Drupal file record
@@ -329,7 +334,7 @@ function _request_map_node($request) {
 
   $node->is_new = true;
   $node->type = 'report';
-  
+
   return $node;
 }
 
@@ -365,7 +370,7 @@ function _tax_map_status($taxonomyId) {
   // Mapping Status to Open311 Status (open/closed)
   $term['status'] = taxonomy_term_load($taxonomyId);
   if (isset($term['status'])) {
-    // declare all taxonomy-ids for status "open" 
+    // declare all taxonomy-ids for status "open"
     // (could be "acknowledged", "edited", "in progress")
     $status_open = array(1, 2);
 

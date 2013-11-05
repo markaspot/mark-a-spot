@@ -40,4 +40,11 @@ Drupal.behaviors.rubik.attach = function(context) {
     $(this).addClass('rubik-processed');
   });
 };
+$(document).ready(function() {
+  // If there's no active secondary tab, make the first one show.
+  var activeli = $('.primary-tabs li.active .secondary-tabs li.active');
+  if (activeli.length == 0) {
+    $('.primary-tabs li.active .secondary-tabs li:first-child a').css('display', 'block');
+  }
+});
 })(jQuery);

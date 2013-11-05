@@ -5,41 +5,51 @@
  * Drupal site-specific configuration file.
  *
  * IMPORTANT NOTE:
- * This file may have been set to read-only by the Drupal installation
- * program. If you make changes to this file, be sure to protect it again
- * after making your modifications. Failure to remove write permissions
- * to this file is a security risk.
+ * This file may have been set to read-only by the Drupal installation program.
+ * If you make changes to this file, be sure to protect it again after making
+ * your modifications. Failure to remove write permissions to this file is a
+ * security risk.
  *
- * The configuration file to be loaded is based upon the rules below.
+ * The configuration file to be loaded is based upon the rules below. However
+ * if the multisite aliasing file named sites/sites.php is present, it will be
+ * loaded, and the aliases in the array $sites will override the default
+ * directory rules below. See sites/example.sites.php for more information about
+ * aliases.
  *
- * The configuration directory will be discovered by stripping the
- * website's hostname from left to right and pathname from right to
- * left. The first configuration file found will be used and any
- * others will be ignored. If no other configuration file is found
- * then the default configuration file at 'sites/default' will be used.
+ * The configuration directory will be discovered by stripping the website's
+ * hostname from left to right and pathname from right to left. The first
+ * configuration file found will be used and any others will be ignored. If no
+ * other configuration file is found then the default configuration file at
+ * 'sites/default' will be used.
  *
  * For example, for a fictitious site installed at
- * http://www.drupal.org/mysite/test/, the 'settings.php'
- * is searched in the following directories:
+ * http://www.drupal.org:8080/mysite/test/, the 'settings.php' file is searched
+ * for in the following directories:
  *
- *  1. sites/www.drupal.org.mysite.test
- *  2. sites/drupal.org.mysite.test
- *  3. sites/org.mysite.test
+ * - sites/8080.www.drupal.org.mysite.test
+ * - sites/www.drupal.org.mysite.test
+ * - sites/drupal.org.mysite.test
+ * - sites/org.mysite.test
  *
- *  4. sites/www.drupal.org.mysite
- *  5. sites/drupal.org.mysite
- *  6. sites/org.mysite
+ * - sites/8080.www.drupal.org.mysite
+ * - sites/www.drupal.org.mysite
+ * - sites/drupal.org.mysite
+ * - sites/org.mysite
  *
- *  7. sites/www.drupal.org
- *  8. sites/drupal.org
- *  9. sites/org
+ * - sites/8080.www.drupal.org
+ * - sites/www.drupal.org
+ * - sites/drupal.org
+ * - sites/org
  *
- * 10. sites/default
+ * - sites/default
  *
- * If you are installing on a non-standard port number, prefix the
+ * Note that if you are installing on a non-standard port number, prefix the
  * hostname with that number. For example,
  * http://www.drupal.org:8080/mysite/test/ could be loaded from
  * sites/8080.www.drupal.org.mysite.test/.
+ *
+ * @see example.sites.php
+ * @see conf_path()
  */
 
 /**
@@ -137,7 +147,7 @@
  *     'authmap'   => 'shared_',
  *   ),
  * @endcode
- * You can also use a reference to a schema/database as a prefix. This maybe
+ * You can also use a reference to a schema/database as a prefix. This may be
  * useful if your Drupal installation exists in a schema that is not the default
  * or you want to access several databases from the same code base at the same
  * time.
@@ -152,6 +162,29 @@
  *   );
  * @endcode
  * NOTE: MySQL and SQLite's definition of a schema is a database.
+ *
+ * Advanced users can add or override initial commands to execute when
+ * connecting to the database server, as well as PDO connection settings. For
+ * example, to enable MySQL SELECT queries to exceed the max_join_size system
+ * variable, and to reduce the database connection timeout to 5 seconds:
+ *
+ * @code
+ * $databases['default']['default'] = array(
+ *   'init_commands' => array(
+ *     'big_selects' => 'SET SQL_BIG_SELECTS=1',
+ *   ),
+ *   'pdo' => array(
+ *     PDO::ATTR_TIMEOUT => 5,
+ *   ),
+ * );
+ * @endcode
+ *
+ * WARNING: These defaults are designed for database portability. Changing them
+ * may cause unexpected behavior, including potential data loss.
+ *
+ * @see DatabaseConnection_mysql::__construct
+ * @see DatabaseConnection_pgsql::__construct
+ * @see DatabaseConnection_sqlite::__construct
  *
  * Database configuration format:
  * @code
@@ -196,10 +229,10 @@ $update_free_access = FALSE;
  * Salt for one-time login links and cancel links, form tokens, etc.
  *
  * This variable will be set to a random value by the installer. All one-time
- * login links will be invalidated if the value is changed.  Note that this
- * variable must have the same value on every web server.  If this variable is
- * empty, a hash of the serialized database credentials will be used as a
- * fallback salt.
+ * login links will be invalidated if the value is changed. Note that if your
+ * site is deployed on a cluster of web servers, you must ensure that this
+ * variable has the same value on each server. If this variable is empty, a hash
+ * of the serialized database credentials will be used as a fallback salt.
  *
  * For enhanced security, you may set this variable to a value using the
  * contents of a file outside your docroot that is never saved together
@@ -239,7 +272,7 @@ $drupal_hash_salt = '';
  * To see what PHP settings are possible, including whether they can be set at
  * runtime (by using ini_set()), read the PHP documentation:
  * http://www.php.net/manual/en/ini.list.php
- * See drupal_initialize_variables() in includes/bootstrap.inc for required
+ * See drupal_environment_initialize() in includes/bootstrap.inc for required
  * runtime settings and the .htaccess file for non-runtime settings. Settings
  * defined there should not be duplicated here so as to avoid conflict issues.
  */
@@ -285,9 +318,10 @@ ini_set('session.cookie_lifetime', 2000000);
  * same Drupal site, you can either redirect them all to a single domain (see
  * comment in .htaccess), or uncomment the line below and specify their shared
  * base domain. Doing so assures that users remain logged in as they cross
- * between your various domains.
+ * between your various domains. Make sure to always start the $cookie_domain
+ * with a leading dot, as per RFC 2109.
  */
-# $cookie_domain = 'example.com';
+# $cookie_domain = '.example.com';
 
 /**
  * Variable overrides:
@@ -321,41 +355,49 @@ ini_set('session.cookie_lifetime', 2000000);
 # $conf['maintenance_theme'] = 'bartik';
 
 /**
- * Enable this setting to determine the correct IP address of the remote
- * client by examining information stored in the X-Forwarded-For headers.
- * X-Forwarded-For headers are a standard mechanism for identifying client
- * systems connecting through a reverse proxy server, such as Squid or
- * Pound. Reverse proxy servers are often used to enhance the performance
+ * Reverse Proxy Configuration:
+ *
+ * Reverse proxy servers are often used to enhance the performance
  * of heavily visited sites and may also provide other site caching,
- * security or encryption benefits. If this Drupal installation operates
- * behind a reverse proxy, this setting should be enabled so that correct
- * IP address information is captured in Drupal's session management,
- * logging, statistics and access management systems; if you are unsure
- * about this setting, do not have a reverse proxy, or Drupal operates in
- * a shared hosting environment, this setting should remain commented out.
+ * security, or encryption benefits. In an environment where Drupal
+ * is behind a reverse proxy, the real IP address of the client should
+ * be determined such that the correct client IP address is available
+ * to Drupal's logging, statistics, and access management systems. In
+ * the most simple scenario, the proxy server will add an
+ * X-Forwarded-For header to the request that contains the client IP
+ * address. However, HTTP headers are vulnerable to spoofing, where a
+ * malicious client could bypass restrictions by setting the
+ * X-Forwarded-For header directly. Therefore, Drupal's proxy
+ * configuration requires the IP addresses of all remote proxies to be
+ * specified in $conf['reverse_proxy_addresses'] to work correctly.
+ *
+ * Enable this setting to get Drupal to determine the client IP from
+ * the X-Forwarded-For header (or $conf['reverse_proxy_header'] if set).
+ * If you are unsure about this setting, do not have a reverse proxy,
+ * or Drupal operates in a shared hosting environment, this setting
+ * should remain commented out.
+ *
+ * In order for this setting to be used you must specify every possible
+ * reverse proxy IP address in $conf['reverse_proxy_addresses'].
+ * If a complete list of reverse proxies is not available in your
+ * environment (for example, if you use a CDN) you may set the
+ * $_SERVER['REMOTE_ADDR'] variable directly in settings.php.
+ * Be aware, however, that it is likely that this would allow IP
+ * address spoofing unless more advanced precautions are taken.
  */
 # $conf['reverse_proxy'] = TRUE;
 
 /**
- * Set this value if your proxy server sends the client IP in a header other
- * than X-Forwarded-For.
- *
- * The "X-Forwarded-For" header is a comma+space separated list of IP addresses,
- * only the last one (the left-most) will be used.
- */
-# $conf['reverse_proxy_header'] = 'HTTP_X_CLUSTER_CLIENT_IP';
-
-/**
- * reverse_proxy accepts an array of IP addresses.
- *
- * Each element of this array is the IP address of any of your reverse
- * proxies. Filling this array Drupal will trust the information stored
- * in the X-Forwarded-For headers only if Remote IP address is one of
- * these, that is the request reaches the web server from one of your
- * reverse proxies. Otherwise, the client could directly connect to
- * your web server spoofing the X-Forwarded-For headers.
+ * Specify every reverse proxy IP address in your environment.
+ * This setting is required if $conf['reverse_proxy'] is TRUE.
  */
 # $conf['reverse_proxy_addresses'] = array('a.b.c.d', ...);
+
+/**
+ * Set this value if your proxy server sends the client IP in a header
+ * other than X-Forwarded-For.
+ */
+# $conf['reverse_proxy_header'] = 'HTTP_X_CLUSTER_CLIENT_IP';
 
 /**
  * Page caching:
@@ -393,7 +435,7 @@ ini_set('session.cookie_lifetime', 2000000);
 /**
  * String overrides:
  *
- * To override specific strings on your site with or without enabling locale
+ * To override specific strings on your site with or without enabling the Locale
  * module, add an entry to this list. This functionality allows you to change
  * a small number of your site's default English language interface strings.
  *
@@ -428,16 +470,83 @@ ini_set('session.cookie_lifetime', 2000000);
 # );
 
 /**
+ * Fast 404 pages:
+ *
+ * Drupal can generate fully themed 404 pages. However, some of these responses
+ * are for images or other resource files that are not displayed to the user.
+ * This can waste bandwidth, and also generate server load.
+ *
+ * The options below return a simple, fast 404 page for URLs matching a
+ * specific pattern:
+ * - 404_fast_paths_exclude: A regular expression to match paths to exclude,
+ *   such as images generated by image styles, or dynamically-resized images.
+ *   If you need to add more paths, you can add '|path' to the expression.
+ * - 404_fast_paths: A regular expression to match paths that should return a
+ *   simple 404 page, rather than the fully themed 404 page. If you don't have
+ *   any aliases ending in htm or html you can add '|s?html?' to the expression.
+ * - 404_fast_html: The html to return for simple 404 pages.
+ *
+ * Add leading hash signs if you would like to disable this functionality.
+ */
+$conf['404_fast_paths_exclude'] = '/\/(?:styles)\//';
+$conf['404_fast_paths'] = '/\.(?:txt|png|gif|jpe?g|css|js|ico|swf|flv|cgi|bat|pl|dll|exe|asp)$/i';
+$conf['404_fast_html'] = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML+RDFa 1.0//EN" "http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>404 Not Found</title></head><body><h1>Not Found</h1><p>The requested URL "@path" was not found on this server.</p></body></html>';
+
+/**
+ * By default the page request process will return a fast 404 page for missing
+ * files if they match the regular expression set in '404_fast_paths' and not
+ * '404_fast_paths_exclude' above. 404 errors will simultaneously be logged in
+ * the Drupal system log.
+ *
+ * You can choose to return a fast 404 page earlier for missing pages (as soon
+ * as settings.php is loaded) by uncommenting the line below. This speeds up
+ * server response time when loading 404 error pages and prevents the 404 error
+ * from being logged in the Drupal system log. In order to prevent valid pages
+ * such as image styles and other generated content that may match the
+ * '404_fast_html' regular expression from returning 404 errors, it is necessary
+ * to add them to the '404_fast_paths_exclude' regular expression above. Make
+ * sure that you understand the effects of this feature before uncommenting the
+ * line below.
+ */
+# drupal_fast_404();
+
+/**
+ * External access proxy settings:
+ *
+ * If your site must access the Internet via a web proxy then you can enter
+ * the proxy settings here. Currently only basic authentication is supported
+ * by using the username and password variables. The proxy_user_agent variable
+ * can be set to NULL for proxies that require no User-Agent header or to a
+ * non-empty string for proxies that limit requests to a specific agent. The
+ * proxy_exceptions variable is an array of host names to be accessed directly,
+ * not via proxy.
+ */
+# $conf['proxy_server'] = '';
+# $conf['proxy_port'] = 8080;
+# $conf['proxy_username'] = '';
+# $conf['proxy_password'] = '';
+# $conf['proxy_user_agent'] = '';
+# $conf['proxy_exceptions'] = array('127.0.0.1', 'localhost');
+
+/**
  * Authorized file system operations:
  *
  * The Update manager module included with Drupal provides a mechanism for
  * site administrators to securely install missing updates for the site
- * directly through the web user interface by providing either SSH or FTP
- * credentials. This allows the site to update the new files as the user who
- * owns all the Drupal files, instead of as the user the webserver is running
- * as. However, some sites might wish to disable this functionality, and only
- * update the code directly via SSH or FTP themselves. This setting completely
+ * directly through the web user interface. On securely-configured servers,
+ * the Update manager will require the administrator to provide SSH or FTP
+ * credentials before allowing the installation to proceed; this allows the
+ * site to update the new files as the user who owns all the Drupal files,
+ * instead of as the user the webserver is running as. On servers where the
+ * webserver user is itself the owner of the Drupal files, the administrator
+ * will not be prompted for SSH or FTP credentials (note that these server
+ * setups are common on shared hosting, but are inherently insecure).
+ *
+ * Some sites might wish to disable the above functionality, and only update
+ * the code directly via SSH or FTP themselves. This setting completely
  * disables all functionality related to these authorized file operations.
+ *
+ * @see http://drupal.org/node/244924
  *
  * Remove the leading hash signs to disable.
  */

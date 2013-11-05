@@ -1,6 +1,5 @@
 <div class="navbar-wrapper">
   <div class="container">
-    <!-- header id="navbar" role="banner" class="navbar nav-collapse collapse navbar-inverse" -->
     <header id="navbar" role="banner" class="navbar navbar-inverse">
       <div class="navbar-inner">
         <div class="container">
@@ -43,39 +42,45 @@
     </header>
   </div>
 </div>
+
 <div id="map_wrapper_splash">
   <a id="start" title="<?php t('Click to get the map view')?>" href="/map"></a>
   <div id="map" class="front"></div>
 </div>
 <div class="mapheader masthead">
   <div class="container">
-    <h1>Fix MaS-City</h1>
-    <p>Help to make your city a better place</p>
-    <p>
-      <a href="node/add/report" class="btn btn-primary btn-success btn-large"><i class="icon-bullhorn"> </i> Report Issue</a>
-       <a href="list" class="btn btn-primary btn-action btn-large"><i class="icon-eye-open"> </i>Track Issues</a>
 
-    </p>
-    <ul class="masthead-links">
-      <li>
-        <a href="imprint" onclick="">Imprint</a>
-      </li>
-      <li>
-        <a href="open311" onclick="">Open311</a>
-      </li>
-      <li>
-        <a href="about" onclick="">About us</a>
-      </li>
-      <li>
-        Mark-a-Spot Version 2.2
-      </li>
-    </ul>
+  </div>
+  <div class="container stage">
+    <div class="row-fluid">
+      <div class="span6">
+        <div class="welcome-text well">
+          <?php
+            // if you don't want bootstrap carousel to welcome visitors
+            // you can use this block
+            $block = module_invoke('markaspot_default_content', 'block_view', 'welcome');
+            print render($block['content']);
+          ?>
+        </div>
+        <div class="row-fluid welcome">
+          <?php
+            $block = module_invoke('markaspot_default_content', 'block_view', 'add_reports');
+            print render($block['content']);
+          ?>
+          <?php
+            $block = module_invoke('markaspot_default_content', 'block_view', 'watch_reports');
+            print render($block['content']);
+          ?>
+        </div>
+      </div>
+      <div class="span5 offset1 thumbnail">
+        <img src="http://local.mas/sites/default/files/styles/mas_medium/public/image_flickr_by_realname_garbage-tonal-decay_82.jpg?itok=hy4lw8Vl" width="720" height="480">
+      </div>
+    </div>
   </div>
 </div>
+<div class="container main-container">
 
-
-<div class="main-container container">
-  
   <header role="banner" id="page-header">
     <?php if (!empty($site_slogan)): ?>
       <p class="lead"><?php print $site_slogan; ?></p>
@@ -90,13 +95,10 @@
       <aside class="span3" role="complementary">
         <?php print render($page['sidebar_first']); ?>
       </aside>  <!-- /#sidebar-first -->
-    <?php endif; ?>  
+    <?php endif; ?>
 
-    <section class="<?php print _bootstrap_content_span($columns); ?>">  
-      <?php
-      $viewName = 'Gallery';
-      print views_embed_view($viewName);
-      ?>
+    <section class="<?php print _bootstrap_content_span($columns); ?>">
+
       <?php if (!empty($page['highlighted'])): ?>
         <div class="highlighted hero-unit"><?php print render($page['highlighted']); ?></div>
       <?php endif; ?>
@@ -104,7 +106,7 @@
       <a id="main-content"></a>
       <?php print render($title_prefix); ?>
       <?php if (!empty($title)): ?>
-        <h1 class="page-header"><?php print $title; ?></h1>
+        <h1 class="page-header element-invisible"><?php print $title; ?></h1>
       <?php endif; ?>
       <?php print render($title_suffix); ?>
       <?php print $messages; ?>
@@ -117,18 +119,36 @@
       <?php if (!empty($action_links)): ?>
         <ul class="action-links"><?php print render($action_links); ?></ul>
       <?php endif; ?>
-      <?php print render($page['content']); ?>
+
+
+
+      <div class="media gallery">
+      <h3>
+        <?php print t('Reports with Media'); ?>
+      </h3>
+      <?php
+        $viewName = 'Gallery';
+        print views_embed_view($viewName);
+      ?>
+
+      </div>
+
+
     </section>
 
     <?php if (!empty($page['sidebar_second'])): ?>
-      <aside class="span3" role="complementary">     
+      <aside class="span3" role="complementary">
         <?php print render($page['sidebar_second']); ?>
       </aside>  <!-- /#sidebar-second -->
     <?php endif; ?>
 
   </div>
+
+
+
+
 </div>
-<footer class="footer">
+<footer class="footer navbar-bottom navbar-inner">
   <?php if ($page['footer_firstcolumn'] || $page['footer_secondcolumn'] || $page['footer_thirdcolumn'] || $page['footer_fourthcolumn']): ?>
     <div id="footer-columns" class="container">
       <?php print render($page['footer_firstcolumn']); ?>

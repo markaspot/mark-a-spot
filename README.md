@@ -13,19 +13,23 @@ It's source-code is licensed and made available under the GNU General Public Lic
 
 ## Initial configuration
 
-1. Start with changing the field settings of the field_geo field by choosing a starting position.
+1. Make sure that clean urls are supported and active: http://yourserver/?q=admin/config/search/clean-urls
+2. If you choose to keep OSM as map type, get a cloudmade API Key and enter it there.
+3. Cang the field settings of the field_geo field by choosing a starting position (Structure > Content Type > Report)
 http://yourserver/admin/structure/types/manage/report/fields
-2. Copy and paste the lat/lon values into the settings of the Mark-a-Spot configuration screen
+3. Copy and paste the lat/lon values into the settings of the Mark-a-Spot configuration screen
 http://yourserver/admin/config/system/mark_a_spot
-3. If you choose to keep OSM as map type, get a cloudmade API Key and enter it there.
 
-4. Make sure that clean urls are supported and active: http://yourserver/?q=admin/config/search/clean-urls
 
 ## Open311 GeoReport Resources
 
 http://yourserver/georeport/services.format (xml/json)
 http://yourserver/georeport/requests.format (xml/json)
 http://yourserver/georeport/discovery.format (xml/json)
+
+All relevant information of the discovery resource can be added:
+http://yourserver/admin/config/system/mark_a_spot
+
 
 ## Contact
 Holger Kreis | @markaspot | http://mark-a-spot.org

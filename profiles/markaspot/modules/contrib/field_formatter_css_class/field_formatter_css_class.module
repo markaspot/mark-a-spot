@@ -1,0 +1,239 @@
+<?php
+/**
+ * @file
+ * adds a formatter for text fields that render as css classes.
+ *
+ */
+
+/**
+ * Implements hook_field_formatter_info().
+ *
+ * Expose Field API formatter types.
+ */
+function field_formatter_css_class_field_formatter_info() {
+  return array(
+    'cssclass_formatter' => array(
+      'label' => t('CSS Class'),
+      'field types' => array('list_boolean', 'list_text', 'text', 'taxonomy_term_reference'),
+      'settings'  => array(
+        'target' => 'node',
+        'depth' => 0,
+        'hidden' => 1,
+      ),
+    ),
+  );
+}
+
+/**
+ * Implements hook_field_formatter_settings_form().
+ *
+ * Specify the form elements for a formatter's settings.
+ */
+function field_formatter_css_class_field_formatter_settings_form($field, $instance, $view_mode, $form, &$form_state) {
+  $display = $instance['display'][$view_mode];
+  $settings = $display['settings'];
+  $element = array();
+  $element['target'] = array(
+    '#type'           => 'select',
+    '#title'          => t('Target tag'),
+    '#description'    => t('Select where the CSS class should be added. Note that <code>entity</code> and <code>node</code> may target the same element.'),
+    '#default_value'  => $settings['target'],
+    '#options'        => array(
+      'field' => t('Field'),
+      'field_group' => t('Fieldgroup'),
+      'entity' => t('Entity'),
+      'field_collection_view' => t('Field collection item'),
+      'fieldable_panels_pane' => t('Fieldable panel pane'),
+      'node' => t('Node'),
+      'block' => t('Block'),
+      'region' => t('Region'),
+      'body' => t('Page'), // should be 'html'
+    ),
+  );
+  $element['depth'] = array(
+    '#type'           => 'select',
+    '#title'          => t('Target level'),
+    '#description'    => t('Choose how many tag levels should be skipped. Useful if you have nested <em>Field collection</em> or <em>Entity reference</em> fields. The default is <code>0</code> to display on the closest selected tag.'),
+    '#default_value'  => $settings['depth'],
+    '#options'        => array(
+      '0' => t('Default'),
+      '1' => '1',
+      '2' => '2',
+      '3' => '3',
+    ),
+  );
+  $element['hidden'] = array(
+    '#type'           => 'checkbox',
+    '#title'          => t('Remove original field from output'),
+    '#description'    => t('Select if the <em>original field</em> content should be <em>hidden</em> in the output. This is the <em>default</em> and only the CSS class will be rendered.'),
+    '#default_value'  => $settings['hidden'],
+  );
+  return $element;
+}
+
+/**
+ * Implements hook_field_formatter_settings_summary().
+ *
+ * Return a short summary for the current formatter settings of an instance.
+ */
+function field_formatter_css_class_field_formatter_settings_summary($field, $instance, $view_mode) {
+  $display = $instance['display'][$view_mode];
+  $settings = $display['settings'];
+  $target = array_key_exists('target', $settings) ? $settings['target'] : 'node';
+  $depth = array_key_exists('depth', $settings) ? $settings['depth'] : 0;
+  $hidden = array_key_exists('hidden', $settings) ? $settings['hidden'] : 1;
+  $summary = t('Add CSS classes to the <strong>@target</strong>, skip <strong>@depth</strong> levels, the original content will be <strong>@hidden</strong>', array('@target' => $target, '@depth' => $depth, '@hidden' => $hidden ? 'hidden' : 'shown'));
+  return $summary;
+}
+
+/**
+ * Implements hook_field_formatter_view().
+ *
+ * Build a renderable array for a field value.
+ */
+function field_formatter_css_class_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+  $settings = $display['settings'];
+  $target = array_key_exists('target', $settings) ? $settings['target'] : 'node';
+  $depth = array_key_exists('depth', $settings) ? $settings['depth'] : 0;
+  $hidden = array_key_exists('hidden', $settings) ? $settings['hidden'] : 1;
+
+  $element = array();
+
+  if (!$hidden) {
+    // pre-fill with default field formatter
+    switch ($field['type']) {
+      case 'list_text':
+      case 'list_boolean':
+        $element = list_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, array('type' => 'list_default'));
+        break;
+      case 'text':
+        $element = text_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, array('type' => 'text_default'));
+        break;
+      case 'taxonomy_term_reference':
+        $element = taxonomy_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, array('type' => 'taxonomy_term_reference_link'));
+        break;
+    }
+  } else {
+    $element['#theme'] = NULL; // this is a hack, needs work...
+  }
+
+  $classes_array = array();
+  $tids = array();
+  foreach ($items as $delta => $item) {
+    // suppress all children so this field is not rendered
+    if ($field['type'] == 'list_boolean') {
+      $classes_array[] = drupal_html_class($field['settings']['allowed_values'][$item['value']]);
+    }
+    elseif ($field['type'] == 'taxonomy_term_reference') {
+      $tids[] = $item['tid']; //store the terms ids and just do taxonomy_term_load_multiple once at the end
+    }
+    else {
+      $classes_array[] = drupal_html_class($item['value']);
+    }
+  }
+  if (count($tids) > 0) {
+    foreach (taxonomy_term_load_multiple($tids) as $term) {
+      $classes_array[] = drupal_html_class($term->vocabulary_machine_name . '-' . $term->name);
+    }
+  }
+  if (count($classes_array)) {
+    // caveat emptor: this is supposed to be an array of children, not properties
+    $element['#css_class'] = implode(' ', $classes_array);
+    $element['#css_target'] = $target;
+    $element['#css_depth'] = $depth;
+  }
+
+  return $element;
+}
+
+/**
+ * Implements hook_field_formatter_prepare_view().
+ *
+ * Allow formatters to load information for field values being displayed.
+ */
+function field_formatter_css_class_field_formatter_prepare_view($entity_type, $entities, $field, $instances, $langcode, &$items, $displays) {
+  $hidden = 1;
+  foreach ($displays as $id => $display) {
+    $settings = $display['settings'];
+    $hidden &= array_key_exists('hidden', $settings) ? $settings['hidden'] : 1;
+  }
+  if (!$hidden) {
+    switch ($field['type']) {
+      case 'taxonomy_term_reference':
+        $display = array('type' => 'taxonomy_term_reference_link');
+        taxonomy_field_formatter_prepare_view($entity_type, $entities, $field, $instances, $langcode, $items, array($display));
+        break;
+    }
+  }
+}
+
+/**
+ * Implements hook_preprocess_HOOK().
+ */
+function field_formatter_css_class_preprocess_html(&$variables) {
+  _field_formatter_css_class_extract_css_classes('body', $variables['page'], $variables['classes_array']);
+}
+function field_formatter_css_class_preprocess_region(&$variables, $hook) {
+  _field_formatter_css_class_extract_css_classes($hook, $variables['elements'], $variables['classes_array']);
+}
+function field_formatter_css_class_preprocess_block(&$variables, $hook) {
+  _field_formatter_css_class_extract_css_classes($hook, $variables['elements'], $variables['classes_array']);
+}
+function field_formatter_css_class_preprocess_node(&$variables, $hook) {
+  _field_formatter_css_class_extract_css_classes($hook, $variables['elements'], $variables['classes_array']);
+}
+function field_formatter_css_class_preprocess_entity(&$variables, $hook) {
+  _field_formatter_css_class_extract_css_classes($hook, $variables['elements'], $variables['classes_array']);
+}
+function field_formatter_css_class_preprocess_field(&$variables, $hook) {
+  _field_formatter_css_class_extract_css_classes($hook, $variables['element'], $variables['classes_array']);
+}
+function field_formatter_css_class_preprocess_field_collection_view(&$variables, $hook) {
+  _field_formatter_css_class_extract_css_classes($hook, $variables['element'], $variables['element']['#attributes']['class']);
+}
+function field_formatter_css_class_preprocess_fieldable_panels_pane(&$variables, $hook) {
+  _field_formatter_css_class_extract_css_classes($hook, $variables['elements'], $variables['classes_array']);
+}
+
+/**
+ * Implements hook_field_group_pre_render().
+ */
+function field_formatter_css_class_field_group_pre_render(&$element, $group, &$form) {
+  $classes_array = explode(' ', $group->format_settings['instance_settings']['classes']);
+  _field_formatter_css_class_extract_css_classes('field_group', $element, $classes_array);
+  $group->format_settings['instance_settings']['classes'] = trim(implode(' ', $classes_array));
+}
+
+/**
+ * Recurse a renderable array for css_class info.
+ */
+function _field_formatter_css_class_extract_css_classes($filter, &$items, &$classes_array, $depth=0) {
+  if (is_array($items)) {
+
+    // every field_collection and entityreference increases the depth level
+    if (array_key_exists('#field_type', $items) &&
+        $items['#field_type'] == 'field_collection' &&
+        ($filter == 'field' || $filter == 'entity' || $filter == 'field_collection_view')) {
+      $depth += 1;
+    }
+    if (array_key_exists('#field_type', $items) &&
+        $items['#field_type'] == 'entityreference' &&
+        ($filter == 'field' || $filter == 'node')) {
+      $depth += 1;
+    }
+
+    // apply css class if available
+    if (array_key_exists('#css_class', $items) &&
+        $items['#css_target'] == $filter &&
+        $items['#css_depth'] == $depth &&
+        !in_array($items['#css_class'], $classes_array, true)) {
+      $classes_array[] = $items['#css_class'];
+    }
+
+    // recurse
+    foreach (element_children($items) as $delta) {
+      _field_formatter_css_class_extract_css_classes($filter, $items[$delta], $classes_array, $depth);
+    }
+
+  }
+}

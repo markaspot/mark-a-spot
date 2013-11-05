@@ -20,7 +20,9 @@ function mark_a_spot_field_default_field_instances() {
       'default' => array(
         'label' => 'hidden',
         'module' => 'text',
-        'settings' => array(),
+        'settings' => array(
+          'field_formatter_class' => '',
+        ),
         'type' => 'text_default',
         'weight' => 0,
       ),
@@ -58,7 +60,9 @@ function mark_a_spot_field_default_field_instances() {
       'default' => array(
         'label' => 'hidden',
         'module' => 'text',
-        'settings' => array(),
+        'settings' => array(
+          'field_formatter_class' => '',
+        ),
         'type' => 'text_default',
         'weight' => 2,
       ),
@@ -71,21 +75,37 @@ function mark_a_spot_field_default_field_instances() {
       'full' => array(
         'label' => 'hidden',
         'module' => 'text',
-        'settings' => array(),
+        'settings' => array(
+          'field_formatter_class' => '',
+        ),
         'type' => 'text_default',
         'weight' => 0,
+      ),
+      'report_list' => array(
+        'label' => 'hidden',
+        'module' => 'text',
+        'settings' => array(
+          'field_formatter_class' => '',
+          'trim_length' => 300,
+        ),
+        'type' => 'text_trimmed',
+        'weight' => 2,
       ),
       'search_result' => array(
         'label' => 'hidden',
         'module' => 'text',
-        'settings' => array(),
+        'settings' => array(
+          'field_formatter_class' => '',
+        ),
         'type' => 'text_default',
         'weight' => 0,
       ),
       'status_list' => array(
         'label' => 'hidden',
         'module' => 'text',
-        'settings' => array(),
+        'settings' => array(
+          'field_formatter_class' => '',
+        ),
         'type' => 'text_default',
         'weight' => 0,
       ),
@@ -93,6 +113,7 @@ function mark_a_spot_field_default_field_instances() {
         'label' => 'hidden',
         'module' => 'text',
         'settings' => array(
+          'field_formatter_class' => '',
           'trim_length' => 600,
         ),
         'type' => 'text_trimmed',
@@ -130,9 +151,17 @@ function mark_a_spot_field_default_field_instances() {
       'default' => array(
         'label' => 'above',
         'module' => 'text',
-        'settings' => array(),
+        'settings' => array(
+          'field_formatter_class' => '',
+        ),
         'type' => 'text_default',
         'weight' => 5,
+      ),
+      'report_list' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 8,
       ),
       'teaser' => array(
         'label' => 'above',
@@ -189,10 +218,10 @@ function mark_a_spot_field_default_field_instances() {
     'description' => 'This field can be used for attaching official documents',
     'display' => array(
       'default' => array(
-        'label' => 'above',
+        'label' => 'hidden',
         'settings' => array(),
         'type' => 'hidden',
-        'weight' => 8,
+        'weight' => 9,
       ),
       'example_node_list' => array(
         'label' => 'above',
@@ -203,14 +232,24 @@ function mark_a_spot_field_default_field_instances() {
       'full' => array(
         'label' => 'above',
         'module' => 'file',
-        'settings' => array(),
+        'settings' => array(
+          'field_formatter_class' => '',
+        ),
         'type' => 'file_table',
+        'weight' => 9,
+      ),
+      'report_list' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
         'weight' => 9,
       ),
       'search_result' => array(
         'label' => 'above',
         'module' => 'file',
-        'settings' => array(),
+        'settings' => array(
+          'field_formatter_class' => '',
+        ),
         'type' => 'file_table',
         'weight' => 3,
       ),
@@ -259,28 +298,45 @@ function mark_a_spot_field_default_field_instances() {
       'default' => array(
         'label' => 'hidden',
         'module' => 'taxonomy',
-        'settings' => array(),
+        'settings' => array(
+          'field_formatter_class' => '',
+        ),
         'type' => 'taxonomy_term_reference_plain',
         'weight' => 3,
       ),
       'full' => array(
         'label' => 'above',
         'module' => 'taxonomy',
-        'settings' => array(),
+        'settings' => array(
+          'field_formatter_class' => '',
+        ),
+        'type' => 'taxonomy_term_reference_plain',
+        'weight' => 4,
+      ),
+      'report_list' => array(
+        'label' => 'hidden',
+        'module' => 'taxonomy',
+        'settings' => array(
+          'field_formatter_class' => '',
+        ),
         'type' => 'taxonomy_term_reference_plain',
         'weight' => 4,
       ),
       'search_result' => array(
         'label' => 'above',
         'module' => 'taxonomy',
-        'settings' => array(),
+        'settings' => array(
+          'field_formatter_class' => '',
+        ),
         'type' => 'taxonomy_term_reference_link',
         'weight' => 4,
       ),
       'status_list' => array(
         'label' => 'above',
         'module' => 'taxonomy',
-        'settings' => array(),
+        'settings' => array(
+          'field_formatter_class' => '',
+        ),
         'type' => 'taxonomy_term_reference_link',
         'weight' => 2,
       ),
@@ -293,7 +349,7 @@ function mark_a_spot_field_default_field_instances() {
     ),
     'entity_type' => 'node',
     'field_name' => 'field_category',
-    'label' => 'Choose Service',
+    'label' => 'Category',
     'required' => 1,
     'settings' => array(
       'user_register_form' => FALSE,
@@ -304,60 +360,6 @@ function mark_a_spot_field_default_field_instances() {
       'settings' => array(),
       'type' => 'options_select',
       'weight' => 5,
-    ),
-  );
-
-  // Exported field_instance: 'node-report-field_common'
-  $field_instances['node-report-field_common'] = array(
-    'bundle' => 'report',
-    'default_value' => array(
-      0 => array(
-        'value' => 0,
-      ),
-    ),
-    'deleted' => 0,
-    'description' => 'If you want to report a more common issue, click here',
-    'display' => array(
-      'default' => array(
-        'label' => 'above',
-        'settings' => array(),
-        'type' => 'hidden',
-        'weight' => 9,
-      ),
-      'full' => array(
-        'label' => 'above',
-        'settings' => array(),
-        'type' => 'hidden',
-        'weight' => 10,
-      ),
-      'status_list' => array(
-        'label' => 'above',
-        'settings' => array(),
-        'type' => 'hidden',
-        'weight' => 9,
-      ),
-      'teaser' => array(
-        'label' => 'above',
-        'settings' => array(),
-        'type' => 'hidden',
-        'weight' => 4,
-      ),
-    ),
-    'entity_type' => 'node',
-    'field_name' => 'field_common',
-    'label' => 'Non located report',
-    'required' => 0,
-    'settings' => array(
-      'user_register_form' => FALSE,
-    ),
-    'widget' => array(
-      'active' => 1,
-      'module' => 'options',
-      'settings' => array(
-        'display_label' => 1,
-      ),
-      'type' => 'options_onoff',
-      'weight' => 14,
     ),
   );
 
@@ -372,13 +374,19 @@ function mark_a_spot_field_default_field_instances() {
         'label' => 'hidden',
         'settings' => array(),
         'type' => 'hidden',
-        'weight' => 7,
+        'weight' => 8,
       ),
       'full' => array(
         'label' => 'above',
         'settings' => array(),
         'type' => 'hidden',
         'weight' => 0,
+      ),
+      'report_list' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 7,
       ),
       'teaser' => array(
         'label' => 'above',
@@ -412,7 +420,7 @@ function mark_a_spot_field_default_field_instances() {
     'default_value' => array(
       0 => array(
         'address' => array(
-          'field' => '',
+          'field' => 'Pingsdorfer Straße 94, 50321 Brühl',
         ),
         'lat' => 50.8212596,
         'lng' => 6.8961028,
@@ -423,17 +431,17 @@ function mark_a_spot_field_default_field_instances() {
     'display' => array(
       'default' => array(
         'label' => 'hidden',
-        'module' => 'geolocation_googlemaps',
+        'module' => 'geolocation_cloudmade_osm',
         'settings' => array(
-          'map_height' => '300px',
-          'map_imageformat' => 'png8',
-          'map_maptype' => 'roadmap',
+          'cloudmade_api_key' => '165795623c424338ad9a8eb60484ef0e',
+          'field_formatter_class' => '',
+          'leafletImagePath' => '/profiles/markaspot/libraries/leaflet-0.6.3/images',
+          'map_dimensions' => '100%x300px',
           'map_scrollwheel' => 0,
-          'map_width' => '300px',
+          'map_style' => 22677,
           'map_zoomlevel' => 16,
-          'marker_icon' => '',
         ),
-        'type' => 'geolocation_googlemaps_dynamic',
+        'type' => 'geolocation_cloudmade_osm_dynamic',
         'weight' => 1,
       ),
       'example_node_list' => array(
@@ -446,6 +454,7 @@ function mark_a_spot_field_default_field_instances() {
         'label' => 'above',
         'module' => 'geolocation_googlemaps',
         'settings' => array(
+          'field_formatter_class' => '',
           'map_height' => '300px',
           'map_imageformat' => 'png',
           'map_maptype' => 'roadmap',
@@ -456,10 +465,27 @@ function mark_a_spot_field_default_field_instances() {
         'type' => 'geolocation_googlemaps_static',
         'weight' => 1,
       ),
+      'report_list' => array(
+        'label' => 'hidden',
+        'module' => 'geolocation_cloudmade_osm',
+        'settings' => array(
+          'cloudmade_api_key' => '165795623c424338ad9a8eb60484ef0e',
+          'field_formatter_class' => 'thumbnail pull-left',
+          'leafletImagePath' => '/profiles/markaspot/libraries/leaflet-0.6.3/images/',
+          'map_dimensions' => '100x100',
+          'map_imageformat' => 'png',
+          'map_style' => 22677,
+          'map_zoomlevel' => 15,
+          'marker_icon' => '',
+        ),
+        'type' => 'geolocation_cloudmade_osm_static',
+        'weight' => 1,
+      ),
       'search_result' => array(
         'label' => 'above',
         'module' => 'geolocation_googlemaps',
         'settings' => array(
+          'field_formatter_class' => '',
           'map_height' => '300px',
           'map_imageformat' => 'png32',
           'map_maptype' => 'roadmap',
@@ -481,6 +507,8 @@ function mark_a_spot_field_default_field_instances() {
         'module' => 'geolocation_cloudmade_osm',
         'settings' => array(
           'cloudmade_api_key' => '165795623c424338ad9a8eb60484ef0e',
+          'field_formatter_class' => '',
+          'leafletImagePath' => '/profiles/markaspot/libraries/leaflet-0.6.3/images/',
           'map_dimensions' => '300x300',
           'map_height' => '67px',
           'map_imageformat' => 'png',
@@ -505,7 +533,7 @@ function mark_a_spot_field_default_field_instances() {
       'module' => 'geolocation_cloudmade_osm',
       'settings' => array(
         'leafletImagePath' => '/profiles/markaspot/libraries/leaflet-0.6.3/images',
-        'marker_draggable' => 0,
+        'marker_draggable' => 1,
         'nominatimEmail' => 'holger@markaspot.org',
         'scrollwheel' => 0,
       ),
@@ -524,6 +552,7 @@ function mark_a_spot_field_default_field_instances() {
         'label' => 'hidden',
         'module' => 'image',
         'settings' => array(
+          'field_formatter_class' => '',
           'image_link' => 'content',
           'image_style' => 'mas_medium',
         ),
@@ -534,16 +563,29 @@ function mark_a_spot_field_default_field_instances() {
         'label' => 'above',
         'module' => 'image',
         'settings' => array(
+          'field_formatter_class' => '',
           'image_link' => 'file',
           'image_style' => 'medium',
         ),
         'type' => 'image',
         'weight' => 2,
       ),
+      'report_list' => array(
+        'label' => 'hidden',
+        'module' => 'image',
+        'settings' => array(
+          'field_formatter_class' => 'thumbnail pull-left',
+          'image_link' => '',
+          'image_style' => 'mas_thumb',
+        ),
+        'type' => 'image',
+        'weight' => 0,
+      ),
       'search_result' => array(
         'label' => 'above',
         'module' => 'image',
         'settings' => array(
+          'field_formatter_class' => '',
           'image_link' => 'file',
           'image_style' => 'medium',
         ),
@@ -554,6 +596,7 @@ function mark_a_spot_field_default_field_instances() {
         'label' => 'above',
         'module' => 'image',
         'settings' => array(
+          'field_formatter_class' => '',
           'image_link' => 'file',
           'image_style' => 'medium',
         ),
@@ -564,6 +607,7 @@ function mark_a_spot_field_default_field_instances() {
         'label' => 'hidden',
         'module' => 'image',
         'settings' => array(
+          'field_formatter_class' => '',
           'image_link' => '',
           'image_style' => 'thumbnail',
         ),
@@ -610,11 +654,16 @@ function mark_a_spot_field_default_field_instances() {
     'description' => '',
     'display' => array(
       'default' => array(
-        'label' => 'above',
-        'module' => 'list',
+        'label' => 'hidden',
         'settings' => array(),
-        'type' => 'list_default',
-        'weight' => 11,
+        'type' => 'hidden',
+        'weight' => 7,
+      ),
+      'report_list' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 5,
       ),
       'teaser' => array(
         'label' => 'above',
@@ -625,7 +674,7 @@ function mark_a_spot_field_default_field_instances() {
     ),
     'entity_type' => 'node',
     'field_name' => 'field_notify_user',
-    'label' => 'Bürger benachrichtigen?',
+    'label' => 'Notify User?',
     'required' => 0,
     'settings' => array(
       'user_register_form' => FALSE,
@@ -651,9 +700,17 @@ function mark_a_spot_field_default_field_instances() {
       'default' => array(
         'label' => 'above',
         'module' => 'text',
-        'settings' => array(),
+        'settings' => array(
+          'field_formatter_class' => '',
+        ),
         'type' => 'text_default',
-        'weight' => 10,
+        'weight' => 6,
+      ),
+      'report_list' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 6,
       ),
       'teaser' => array(
         'label' => 'above',
@@ -693,30 +750,47 @@ function mark_a_spot_field_default_field_instances() {
     'description' => '',
     'display' => array(
       'default' => array(
-        'label' => 'above',
+        'label' => 'hidden',
         'module' => 'taxonomy',
-        'settings' => array(),
+        'settings' => array(
+          'field_formatter_class' => '',
+        ),
         'type' => 'taxonomy_term_reference_plain',
         'weight' => 4,
       ),
       'full' => array(
         'label' => 'above',
         'module' => 'taxonomy',
-        'settings' => array(),
+        'settings' => array(
+          'field_formatter_class' => '',
+        ),
         'type' => 'taxonomy_term_reference_plain',
         'weight' => 5,
+      ),
+      'report_list' => array(
+        'label' => 'hidden',
+        'module' => 'taxonomy',
+        'settings' => array(
+          'field_formatter_class' => '',
+        ),
+        'type' => 'taxonomy_term_reference_plain',
+        'weight' => 3,
       ),
       'search_result' => array(
         'label' => 'above',
         'module' => 'taxonomy',
-        'settings' => array(),
+        'settings' => array(
+          'field_formatter_class' => '',
+        ),
         'type' => 'taxonomy_term_reference_link',
         'weight' => 5,
       ),
       'status_list' => array(
         'label' => 'above',
         'module' => 'taxonomy',
-        'settings' => array(),
+        'settings' => array(
+          'field_formatter_class' => '',
+        ),
         'type' => 'taxonomy_term_reference_link',
         'weight' => 3,
       ),
@@ -759,14 +833,18 @@ function mark_a_spot_field_default_field_instances() {
       'full' => array(
         'label' => 'above',
         'module' => 'text',
-        'settings' => array(),
+        'settings' => array(
+          'field_formatter_class' => '',
+        ),
         'type' => 'text_default',
         'weight' => 1,
       ),
       'token' => array(
         'label' => 'hidden',
         'module' => 'text',
-        'settings' => array(),
+        'settings' => array(
+          'field_formatter_class' => '',
+        ),
         'type' => 'text_default',
         'weight' => 1,
       ),
@@ -800,7 +878,9 @@ function mark_a_spot_field_default_field_instances() {
       'default' => array(
         'label' => 'above',
         'module' => 'text',
-        'settings' => array(),
+        'settings' => array(
+          'field_formatter_class' => '',
+        ),
         'type' => 'text_default',
         'weight' => 4,
       ),
@@ -840,14 +920,18 @@ function mark_a_spot_field_default_field_instances() {
       'full' => array(
         'label' => 'above',
         'module' => 'text',
-        'settings' => array(),
+        'settings' => array(
+          'field_formatter_class' => '',
+        ),
         'type' => 'text_default',
         'weight' => 1,
       ),
       'token' => array(
         'label' => 'hidden',
         'module' => 'text',
-        'settings' => array(),
+        'settings' => array(
+          'field_formatter_class' => '',
+        ),
         'type' => 'text_default',
         'weight' => 1,
       ),
@@ -881,7 +965,9 @@ function mark_a_spot_field_default_field_instances() {
       'default' => array(
         'label' => 'above',
         'module' => 'text',
-        'settings' => array(),
+        'settings' => array(
+          'field_formatter_class' => '',
+        ),
         'type' => 'text_default',
         'weight' => 3,
       ),
@@ -915,7 +1001,9 @@ function mark_a_spot_field_default_field_instances() {
       'default' => array(
         'label' => 'above',
         'module' => 'taxonomy',
-        'settings' => array(),
+        'settings' => array(
+          'field_formatter_class' => '',
+        ),
         'type' => 'taxonomy_term_reference_link',
         'weight' => 2,
       ),
@@ -982,7 +1070,9 @@ function mark_a_spot_field_default_field_instances() {
       'default' => array(
         'label' => 'above',
         'module' => 'text',
-        'settings' => array(),
+        'settings' => array(
+          'field_formatter_class' => '',
+        ),
         'type' => 'text_default',
         'weight' => 2,
       ),
@@ -1044,14 +1134,12 @@ function mark_a_spot_field_default_field_instances() {
   t('Address');
   t('Adminstration statement');
   t('Attachments and Documents');
-  t('Bürger benachrichtigen?');
-  t('Choose Service');
+  t('Category');
   t('Comment');
   t('E-Mail');
   t('Enter details of the problem');
-  t('If you want to report a more common issue, click here');
   t('Image');
-  t('Non located report');
+  t('Notify User?');
   t('Place your report');
   t('Please leave an e-Mail address, so that we can contact you, in case you don\'t want to register');
   t('Report details');

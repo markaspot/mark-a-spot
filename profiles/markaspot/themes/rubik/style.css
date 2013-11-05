@@ -1,7 +1,12 @@
 body,
 input,
 textarea,
-select { font-family:"Lucida","Lucida Grande","Trebuchet MS",Tahoma,Verdana,sans-serif; }
+select,
+.ui-widget,
+.ui-widget input,
+.ui-widget select,
+.ui-widget textarea,
+.ui-widget button { font-family:"Lucida","Lucida Grande","Trebuchet MS",Tahoma,Verdana,sans-serif; }
 
 html { overflow-y:scroll; }
 
@@ -49,7 +54,8 @@ a {
  */
 .compact-link a,
 input.teaser-button,
-input.form-submit {
+input.form-submit,
+a.button {
   -moz-border-radius:3px;
   -webkit-border-radius:3px;
   }
@@ -58,7 +64,8 @@ input.form-submit {
  * "Popped" elements ==================================================
  */
 input.teaser-button,
-input.form-submit {
+input.form-submit,
+a.button {
   box-shadow:#ddd 0px 1px 1px;
   -moz-box-shadow:#ddd 0px 1px 1px;
   -webkit-box-shadow:#ddd 0px 1px 1px;
@@ -245,7 +252,7 @@ div.pager {
 .pager li.pager-current span,
 .primary-tabs li.active a {
   color:#fff;
-  text-shadow:#38a 0px 1px 0px;  
+  text-shadow:#38a 0px 1px 0px;
   }
 
 /* Secondary tabs, nested */
