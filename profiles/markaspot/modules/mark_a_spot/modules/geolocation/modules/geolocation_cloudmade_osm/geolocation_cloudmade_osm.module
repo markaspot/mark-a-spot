@@ -9,6 +9,7 @@
  * Implements hook_field_formatter_info().
  */
 function geolocation_cloudmade_osm_field_formatter_info() {
+  global $base_url;
   return array(
     'geolocation_cloudmade_osm_static' => array(
       'label' => t('Static Cloudmade Map'),
@@ -16,10 +17,10 @@ function geolocation_cloudmade_osm_field_formatter_info() {
       'settings' => array(
         'map_dimensions' => '300x300',
         'map_imageformat' => 'png',
-        'marker_icon' => '/profiles/markaspot/libraries/leaflet-0.6.3/images/marker-icon.png',
+        'marker_icon' => $base_url . '/profiles/markaspot/libraries/leaflet-0.6.3/images/marker-icon.png',
         'map_zoomlevel' => '15',
         'map_style' => '22677',
-        'leafletImagePath' => '/profiles/markaspot/libraries/leaflet-0.6.3/images/',
+        'leafletImagePath' => $base_url . '/profiles/markaspot/libraries/leaflet-0.6.3/images/',
         'cloudmade_api_key' => ''
       ),
     ),
@@ -30,7 +31,7 @@ function geolocation_cloudmade_osm_field_formatter_info() {
         'map_dimensions' => '300x300',
         'map_zoomlevel' => '15',
         'map_style' => '22677',
-        'leafletImagePath' => '/profiles/markaspot/libraries/leaflet-0.6.3/images/',
+        'leafletImagePath' => $base_url . '/profiles/markaspot/libraries/leaflet-0.6.3/images/',
         'map_scrollwheel' => FALSE,
         'cloudmade_api_key' => ''
 
