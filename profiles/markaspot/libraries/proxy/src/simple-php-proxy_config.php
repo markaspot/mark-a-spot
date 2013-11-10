@@ -1,4 +1,25 @@
 <?php
+global $base_url, $base_path, $base_root;
+
+$is_https = isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) == 'on';
+
+
+$http_protocol = $is_https ? 'https' : 'http';
+$base_root = $http_protocol . '://' . $_SERVER['HTTP_HOST'];
+
+$base_url = $base_root;
+
+// $_SERVER['SCRIPT_NAME'] can, in contrast to $_SERVER['PHP_SELF'], not
+// be modified by a visitor.
+if ($dir = rtrim(dirname($_SERVER['SCRIPT_NAME']), '\/')) {
+  $base_path = $dir;
+  $base_url .= $base_path;
+  $base_path .= '/';
+} else {
+  $base_path = '/';
+}
+
+
 
 /*
 Allowed destination host, request URIs are fetched from there

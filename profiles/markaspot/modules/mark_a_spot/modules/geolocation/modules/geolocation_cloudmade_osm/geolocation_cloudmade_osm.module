@@ -30,6 +30,7 @@ function geolocation_cloudmade_osm_field_formatter_info() {
       'settings' => array(
         'map_dimensions' => '300x300',
         'map_zoomlevel' => '15',
+        'marker_icon' => $base_url . '/profiles/markaspot/libraries/leaflet-0.6.3/images/marker-icon.png',
         'map_style' => '22677',
         'leafletImagePath' => $base_url . '/profiles/markaspot/libraries/leaflet-0.6.3/images/',
         'map_scrollwheel' => FALSE,
