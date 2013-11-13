@@ -23,7 +23,9 @@ projects[field_formatter_class][subdir] = "contrib"
 projects[field_formatter_css_class][subdir] = "contrib"
 projects[uuid][subdir] = "contrib"
 projects[uuid_features][subdir] = "contrib"
-
+projects[twitter][subdir] = "contrib"
+projects[twitter][patch][2132231] = "https://drupal.org/files/issues/Twitter-add_geo_and_entities_Twitter_object_2132231-1_0.patch"
+projects[oauth][subdir] = "contrib"
 
 ; Themes
 projects[bootstrap][type] = "theme"

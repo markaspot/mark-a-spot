@@ -24,71 +24,84 @@ function _markaspot_tweet311_import_manual() {
  * Function that imports the tweets from the term search
  */
 function _markaspot_tweet311_import_terms() {
-  $term = variable_get('markaspot_twittername', '');
-  if (!empty($term)) {
-    $term = urlencode($term);
-    $url = 'http://search.twitter.com/search.json?q=' . $term . '&include_entities=1&show_user=true&result_type=mixed&rpp=50';
-    $data = drupal_http_request($url);
+  $account = variable_get('markaspot_twittername', '');
+
+  if (!empty($account)) {
+
+    if (!module_exists('twitter')) {
+      return FALSE;
+    }
+    // Load the twitter module.
+
+    module_load_include('inc', 'twitter');
+    $account = twitter_account_load($account);
+
+    // $twitter = new Twitter;
+    $twitter = twitter_connect($account);
+    $params = array('include_entities' => TRUE);
+    $data = $twitter->mentions_timeline($params);
+
     _markaspot_tweet311_create_content($data, TRUE);
   }
 }
 
 
 function _markaspot_tweet311_create_content($data, $usercheck = FALSE) {
-  if ($data->code < 400 && !empty($data->data)) {
-    $results = drupal_json_decode($data->data);
+  if (!empty($data)) {
+    // $results = drupal_json_decode($data->data);
     $varusers = variable_get('markaspot_tweet311_user', '');
     $importuser = explode(',', drupal_strtolower($varusers));
 
-    if (!empty($results)) {
-      foreach ($results['results'] AS $tweet) {
-
-        if ($tweet['from_user'] != $importuser || !$usercheck) {
+    if (!empty($data)) {
+      foreach ($data as $tweet) {
+        // die;
+        if ($tweet->user->screen_name != $importuser || !$usercheck) {
           $safeuser = explode(',', drupal_strtolower(variable_get('markaspot_tweet311_term_safe_user', '')));
           // Checking if tweet is already imported
           $query = db_select('twitter_import', 'ti');
-          $query->condition('ti.tweet_id', $tweet['id_str'])
+          $query->condition('ti.tweet_id', $tweet->id)
             ->fields('ti', array('id'))
             ->range(0, 1);
           $result = $query->execute();
           $num_rows = $query->countQuery()->execute()->fetchField();
           if (empty($num_rows)) {
-            if (in_array(drupal_strtolower($tweet['from_user']), $safeuser) || in_array(drupal_strtolower($tweet['from_user']), $importuser)) {
+            if (in_array(drupal_strtolower($tweet->user->screen_name), $safeuser) || in_array(drupal_strtolower($tweet->user->screen_name), $importuser)) {
               $status = 1;
             }
             else {
               $status = 0;
             }
-            
+
             $fid = 0;
-            
-            // create User
-            $user = _twitter_create_user_from_tweet($tweet);
 
-            $id = db_insert('twitter_import')
-              ->fields(array(
-                'tweet_id' => $tweet['id_str'],
-                'user' => $tweet['from_user'],
-                'tweet' => $tweet['text'],
-                'created' => strtotime($tweet['created_at']),
-                'data' => drupal_json_encode($tweet),
-                'status' => $status,
-                'source' => $tweet['source'],
-                'fid' => $fid,
-              ))
-              ->execute();
-            // mapping tweet to node
-            // _markaspot_tweet311_map_node($tweet, $user);
 
-            // only import tweet if tweet applies to a known service
-            $node = _markaspot_tweet311_map_node($tweet, $user);
-            if (isset($node)) {
-              node_save($node);
-              drupal_set_message(t("Tweet imported with Hashtag"));
-            } else {
-              drupal_set_message(t("Tweet found but no matching Hashtag"));
+            if (strstr($tweet->text, variable_get('markaspot_twittername'))){
+
+              $id = db_insert('twitter_import')
+                ->fields(array(
+                  'tweet_id' => $tweet->id,
+                  'user' => $tweet->user->screen_name,
+                  'tweet' => $tweet->text,
+                  'created' => strtotime($tweet->created_at),
+                  'data' => drupal_json_encode($tweet),
+                  'status' => $status,
+                  'source' => $tweet->user->screen_name,
+                  'fid' => $fid,
+                ))
+                ->execute();
+              // mapping tweet to node
+              // _markaspot_tweet311_map_node($tweet, $user);
+
+              // only import tweet if tweet applies to a known service
+              $node = _markaspot_tweet311_map_node($tweet, $tweet->user->screen_name);
+              if (isset($node)) {
+
+                node_save($node);
+                drupal_set_message(t("Tweet imported with Hashtag"));
+              } else {
+                drupal_set_message(t("Tweet found but no matching Hashtag"));
+              }
             }
-
           }
         }
       }
@@ -158,7 +171,7 @@ function markaspot_tweet311_load_tweet($tid) {
     ->fields('ti', array('tweet', 'user'))
     ->condition('ti.id', $tid)
     ->range(0, 1);
-  
+
   $result = $query->execute();
   foreach ($result as $record) {
     return $record;
@@ -177,20 +190,19 @@ function markaspot_tweet311_load_tweet($tid) {
 
 function _markaspot_get_taxonomy($tweet){
 
-  // Getting all servicecodes or hashes 
-  $taxonomies = taxonomy_get_tree(2, $parent = 0, $max_depth = 1, $load_entities = TRUE);
+  // Getting all servicecodes or hashes
+  $taxonomies = taxonomy_get_tree(1, $parent = 0, $max_depth = 1, $load_entities = TRUE);
 
   foreach ($taxonomies as $taxonomy_term) {
     if (variable_get('markaspot_tweetSearch') == 1) {
-        $services[] = '#'.$taxonomy_term->field_category_id['und'][0]['value'];  
+        $services[] = '#'.$taxonomy_term->field_category_id['und'][0]['value'];
     } else {
       if (isset($taxonomy_term->field_hash['und'][0]['value'])) {
-
         $service_hashes = explode(',', $taxonomy_term->field_hash['und'][0]['value']);
         foreach ($service_hashes as $service) {
-          $services[] = '#'.trim($service); 
+          $services[] = '#'.trim($service);
         }
-      } 
+      }
     }
   }
 
@@ -198,9 +210,9 @@ function _markaspot_get_taxonomy($tweet){
   if (!isset($services)) {
     return false;
   }
-  foreach ($services as $service) { 
-    
-    if (strpos($tweet['text'], $service) !== FALSE) {
+  foreach ($services as $service) {
+
+    if (strpos($tweet->text, $service) !== FALSE) {
       $service_found = substr($service, 1);
 
 
@@ -209,7 +221,7 @@ function _markaspot_get_taxonomy($tweet){
 
       $query
       ->entityCondition('entity_type', 'taxonomy_term', '=')
-      ->propertyCondition('vid', 2);
+      ->propertyCondition('vid', 1);
 
       // Switch Service Code or Service Name
 
@@ -243,38 +255,41 @@ function _markaspot_get_taxonomy($tweet){
 
 function _markaspot_tweet311_map_node($tweet, $twitter_user) {
 
+  $node = new stdClass(); // Create a new node object
   $node->language = 'und'; // language - neutral
 
+
+  $user = _twitter_create_user_from_tweet($twitter_user);
 
   // Loading the taxonomy term by requested hashed #service_code or #hash-tag
   $service = _markaspot_get_taxonomy($tweet);
 
-  
+
   if (isset($service->name)) {
     $node->title = $service->name;
     $node->field_category[$node->language][0]['tid'] = $service->tid;
 
-    $node->uid = $twitter_user->uid;
+    $node->uid = $user->uid;
     $node->created = time();
     $node->modified = time();
 
-    if(isset($tweet['entities']['media'])){
-      $fid = _markaspot_tweet311_get_tweet_pic($tweet['entities']['media'][0]['media_url']);
+    if(isset($tweet->entities['media'][0]['media_url'])){
+      $fid = _markaspot_tweet311_get_tweet_pic($tweet->entities['media'][0]['media_url']);
       $node->field_image[$node->language][0]['fid'] = $fid;
     }
-    
+
     // applying it to title and it's taxonomyId to field_category
     // All incoming requests get status "open"
     $node->field_status[$node->language][0]['tid'] = 1;
 
-    $node->body[$node->language][0]['value'] = $tweet['text'];
+    $node->body[$node->language][0]['value'] = $tweet->text;
     $node->body[$node->language][0]['format']  = 'filtered_html';
 
     // Make Requests valid only in the municiple
     $node->field_city[$node->language][0]['value'] = variable_get('markaspot_city');
 
-    $node->field_geo[$node->language][0]['lat'] = (isset($tweet['geo']['coordinates'][0])) ? $tweet['geo']['coordinates'][0] : variable_get('markaspot_ini_lat');
-    $node->field_geo[$node->language][0]['lng'] = (isset($tweet['geo']['coordinates'][1])) ? $tweet['geo']['coordinates'][1] : variable_get('markaspot_ini_lng');
+    $node->field_geo[$node->language][0]['lat'] = (isset($tweet->geo['coordinates'][0])) ? $tweet->geo['coordinates'][0] : variable_get('markaspot_ini_lat');
+    $node->field_geo[$node->language][0]['lng'] = (isset($tweet->geo['coordinates'][1])) ? $tweet->geo['coordinates'][1] : variable_get('markaspot_ini_lng');
     global $base_url;
     $url_parts = parse_url($base_url);
     $node->field_e_mail[$node->language][0]['value'] = 'no-reply@'.$url_parts['host'];
@@ -284,7 +299,7 @@ function _markaspot_tweet311_map_node($tweet, $twitter_user) {
   } else {
     $node = null;
   }
-  
+
   return $node;
 }
 
@@ -294,11 +309,10 @@ function _markaspot_tweet311_map_node($tweet, $twitter_user) {
  */
 
 function _markaspot_tweet311_get_tweet_pic($picurl) {
+
   $fid = FALSE;
-
-
   $filename = substr(hash('sha256', time()), 0,8) . '.png';
-  $folder = 'markaspot_tweet311_tweet_pics/';
+  $folder = 'mas_tweet311/';
   $complete = $folder . $filename;
 
   $folderuri = file_build_uri($folder);
@@ -306,10 +320,12 @@ function _markaspot_tweet311_get_tweet_pic($picurl) {
   $path = drupal_realpath($uri);
 
   if (!file_exists($folderuri)) {
-    drupal_install_mkdir($folderuri, $mask);
-  }  
+    drupal_install_mkdir($folderuri, array(FILE_READABLE));
+  }
   if (!file_exists($path) || filemtime($path) < (REQUEST_TIME - 604800)) {
     $data = @file_get_contents($picurl);
+    //var_dump($picurl);
+    //die;
     //drupal_mkdir($folderuri);
     $file = file_save_data($data, $uri, FILE_EXISTS_REPLACE);
     $fid = $file->fid;
@@ -325,20 +341,19 @@ function _markaspot_tweet311_get_tweet_pic($picurl) {
   return $fid;
 }
 
-function _twitter_create_user_from_tweet($tweet){
+function _twitter_create_user_from_tweet($username){
 
-  $username = $tweet['from_user'];
   // Check if user is already registered
   if (!db_query("SELECT COUNT(*) FROM {users} WHERE name = :name", array(':name' => $username))->fetchField()) {
     $newUser = array(
-      'name' => $username, 
+      'name' => $username,
       'pass' => '',  // note: do not md5 the password
-      'mail' => '', 
-      'status' => 1, 
+      'mail' => '',
+      'status' => 1,
       'init' => $username,
       'roles' => array(4)
     );
-    $user = user_save(null, $newUser); 
+    $user = user_save(null, $newUser);
   } else {
     // yes we have $username;
     $user = user_load_by_name(check_plain($username));
