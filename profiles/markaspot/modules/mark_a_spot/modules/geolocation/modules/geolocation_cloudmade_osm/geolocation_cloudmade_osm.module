@@ -17,10 +17,10 @@ function geolocation_cloudmade_osm_field_formatter_info() {
       'settings' => array(
         'map_dimensions' => '300x300',
         'map_imageformat' => 'png',
-        'marker_icon' => $base_url . '/profiles/markaspot/libraries/leaflet-0.6.3/images/marker-icon.png',
+        'marker_icon' => $base_url . '/profiles/markaspot/libraries/Leaflet/images/marker-icon.png',
         'map_zoomlevel' => '15',
         'map_style' => '22677',
-        'leafletImagePath' => $base_url . '/profiles/markaspot/libraries/leaflet-0.6.3/images/',
+        'leafletImagePath' => $base_url . '/profiles/markaspot/libraries/Leaflet/images/',
         'cloudmade_api_key' => ''
       ),
     ),
@@ -30,9 +30,9 @@ function geolocation_cloudmade_osm_field_formatter_info() {
       'settings' => array(
         'map_dimensions' => '300x300',
         'map_zoomlevel' => '15',
-        'marker_icon' => $base_url . '/profiles/markaspot/libraries/leaflet-0.6.3/images/marker-icon.png',
+        'marker_icon' => $base_url . '/profiles/markaspot/libraries/Leaflet/images/marker-icon.png',
         'map_style' => '22677',
-        'leafletImagePath' => $base_url . '/profiles/markaspot/libraries/leaflet-0.6.3/images/',
+        'leafletImagePath' => $base_url . '/profiles/markaspot/libraries/Leaflet/images/',
         'map_scrollwheel' => FALSE,
         'cloudmade_api_key' => ''
 
@@ -242,7 +242,7 @@ function geolocation_cloudmade_osm_field_formatter_view($entity_type, $entity, $
 
 
         $map_element['cloudmade-osm']['#attached']['js'][] = array(
-          'data' => drupal_get_path('profile','markaspot') . '/libraries/leaflet-0.6.3/leaflet.js',
+          'data' => drupal_get_path('profile','markaspot') . '/libraries/Leaflet/leaflet.js',
           'type' => 'file',
           //'scope' => 'footer',
         );
@@ -424,7 +424,7 @@ function geolocation_cloudmade_osm_field_widget_form(&$form, &$form_state, $fiel
 
 
       $element['cloudmade-osm']['#attached']['js'][] = array(
-        'data' => drupal_get_path('profile','markaspot') . '/libraries/leaflet-0.6.3/leaflet.js',
+        'data' => drupal_get_path('profile','markaspot') . '/libraries/Leaflet/leaflet.js',
         'type' => 'file',
         'scope' => 'footer',
       );

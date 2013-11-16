@@ -1,0 +1,64 @@
+<?php
+/**
+ * @file
+ * Installation and uninstallation functions.
+ */
+
+/**
+ * Implements hook_requirements().
+ */
+function chosen_requirements($phase) {
+  $requirements = array();
+  module_load_include('module', 'chosen');
+  $t = get_t();
+  $chosen_path = chosen_get_chosen_path();
+  switch($phase) {
+    case 'runtime':
+      if (!$chosen_path) {
+        $requirements['chosen_js'] = array(
+          'title' => $t('Chosen JavaScript file'),
+          'severity' => REQUIREMENT_ERROR,
+          'description' => $t('You need to download the !chosen and extract the entire contents of the archive into the %path directory on your server.', array('!chosen' => l($t('Chosen JavaScript file'), CHOSEN_WEBSITE_URL), '%path' => 'sites/all/libraries')),
+          'value' => $t('Not Installed'),
+        );
+      }
+      else {
+        $requirements['chosen_js'] = array(
+          'title' => $t('Chosen JavaScript file'),
+          'severity' => REQUIREMENT_OK,
+          'value' => $t('Installed'),
+        );
+      }
+    break;
+   }
+  return $requirements;
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function chosen_uninstall() {
+  // Delete created variables.
+  variable_del('chosen_minimum_single');
+  variable_del('chosen_minimum_multiple');
+  variable_del('chosen_minimum_width');
+  variable_del('chosen_search_contains');
+  variable_del('chosen_jquery_selector');
+  variable_del('chosen_placeholder_text_multiple');
+  variable_del('chosen_placeholder_text_single');
+  variable_del('chosen_no_results_text');
+  variable_del('chosen_use_theme');
+  variable_del('chosen_disable_search');
+  variable_del('chosen_disable_search_threshold');
+}
+
+/**
+ * Transfer the old chosen minimum value to the new chosen minimum single and
+ * chosen minimum multiple variables.
+ */
+function chosen_update_7201() {
+  $chosen_minimum = variable_get('chosen_minimum', 20);
+  variable_set('chosen_minimum_single', $chosen_minimum);
+  variable_set('chosen_minimum_multiple', $chosen_minimum);
+  variable_del('chosen_minimum');
+}

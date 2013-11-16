@@ -370,7 +370,7 @@ function mark_a_spot_admin_views_default_views() {
   /* Display: MaS Reports Open */
   $handler = $view->new_display('block', 'MaS Reports Open', 'block');
   $handler->display->display_options['defaults']['title'] = FALSE;
-  $handler->display->display_options['title'] = 'Last Reports (closed)';
+  $handler->display->display_options['title'] = 'Recent Reports';
   $handler->display->display_options['defaults']['style_plugin'] = FALSE;
   $handler->display->display_options['style_plugin'] = 'table';
   $handler->display->display_options['style_options']['columns'] = array(
@@ -572,7 +572,7 @@ function mark_a_spot_admin_views_default_views() {
   /* Display: Mas Reports Solved */
   $handler = $view->new_display('block', 'Mas Reports Solved', 'block_1');
   $handler->display->display_options['defaults']['title'] = FALSE;
-  $handler->display->display_options['title'] = 'Erledigte Beiträge';
+  $handler->display->display_options['title'] = 'Closed Reports';
   $handler->display->display_options['defaults']['pager'] = FALSE;
   $handler->display->display_options['pager']['type'] = 'full';
   $handler->display->display_options['pager']['options']['items_per_page'] = '10';

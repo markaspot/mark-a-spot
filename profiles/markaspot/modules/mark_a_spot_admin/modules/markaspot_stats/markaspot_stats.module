@@ -44,11 +44,15 @@ function markaspot_stats_block_view($delta = '') {
         $items = array();
 
         $block['content'] =  '<h3>'.t("Category").'</h3>';
-        $tax_stats = taxonomy_get_tree(1, $parent = 0, $max_depth = 1, $load_entities = TRUE);
+          // Get the vocabulary ID.
+        $vid = db_query("SELECT vid FROM {taxonomy_vocabulary} WHERE machine_name = 'category'")->fetchField();
+        $tax_stats = taxonomy_get_tree($vid, $parent = 0, $max_depth = 1, $load_entities = TRUE);
         $block['content'] .= theme('item_list', array(
           'items' =>  _markaspot_stats_taxonomy($tax_stats)));
         $block['content'] .=  '<h3>'.t("Status").'</h3>';
-        $tax_stats = taxonomy_get_tree(2, $parent = 0, $max_depth = 1, $load_entities = TRUE);
+          // Get the vocabulary ID.
+        $vid = db_query("SELECT vid FROM {taxonomy_vocabulary} WHERE machine_name = 'status'")->fetchField();
+        $tax_stats = taxonomy_get_tree($vid, $parent = 0, $max_depth = 1, $load_entities = TRUE);
         $block['content'] .= theme('item_list', array(
           'items' =>  _markaspot_stats_taxonomy($tax_stats)));
       }

@@ -1,0 +1,233 @@
+<?php
+
+/**
+ * @file
+ * General functions and hook implementations.
+ *
+ * @see http://harvesthq.github.com/chosen/
+ */
+
+/**
+ * Define chosen library url
+ */
+define('CHOSEN_WEBSITE_URL', 'http://harvesthq.github.com/chosen');
+
+/**
+ * Widget that Chosen can be applied to
+ */
+define('CHOSEN_WIDGETS', serialize(array('options_select', 'date_select')));
+
+/**
+ * Implements hook_menu().
+ */
+function chosen_menu() {
+  $items = array();
+
+  $items['admin/config/user-interface/chosen'] = array(
+    'title' => 'Chosen',
+    'description' => 'Configuration for Chosen plugin',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('chosen_admin_settings'),
+    'access arguments' => array('administer site configuration'),
+    'file' => 'chosen.admin.inc',
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function chosen_form_field_ui_field_edit_form_alter(&$form, $form_state) {
+  if (isset($form['instance']['widget']['type']['#value'])) {
+    $type = $form['instance']['widget']['type']['#value'];
+    if (in_array($type, unserialize(CHOSEN_WIDGETS))) {
+      $field = $form['#field'];
+      $instance = field_info_instance($form['instance']['entity_type']['#value'], $form['instance']['field_name']['#value'], $form['instance']['bundle']['#value']);
+      $form['instance'] += chosen_field_widget_settings_form($field, $instance);
+    }
+  }
+}
+
+/**
+ * Implements hook_field_widget_info_alter().
+ *
+ * A list of settings needed by Chosen module for widgets.
+ */
+function chosen_field_widget_info_alter(&$info) {
+  $settings = array(
+    'apply_chosen' => 0,
+  );
+
+  foreach (unserialize(CHOSEN_WIDGETS) as $widget) {
+    if (isset($info[$widget]['settings'])) {
+      $info[$widget]['settings'] += $settings;
+    }
+  }
+}
+
+/**
+ * Implements hook_field_widget_settings_form().
+ */
+function chosen_field_widget_settings_form($field, $instance) {
+  $widget = $instance['widget'];
+  $settings = $widget['settings'];
+
+  $form['chosen'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Chosen'),
+    '#collapsed' => TRUE,
+    '#collapsible' => TRUE,
+    '#parents' => array('instance', 'widget', 'settings'),
+  );
+
+  $chosen_path = chosen_get_chosen_path();
+  if ($chosen_path) {
+    $form['chosen']['apply_chosen'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Apply Chosen on this field'),
+      '#default_value' => isset($settings['apply_chosen']) ? $settings['apply_chosen'] : FALSE,
+    );
+  }
+  else {
+    $form['chosen']['chosen_library_missing'] = array(
+      '#markup' => t('The library could not be detected. You need to download the !chosen and extract the entire contents of the archive into the %path directory on your server.', array('!chosen' => l(t('Chosen JavaScript file'), CHOSEN_WEBSITE_URL), '%path' => 'sites/all/libraries')),
+    );
+  }
+
+  return $form;
+}
+
+/**
+ * Implements hook_field_widget_form_alter().
+ */
+function chosen_field_widget_form_alter(&$element, &$form_state, $context) {
+  $type = $context['instance']['widget']['type'];
+  if (in_array($type, unserialize(CHOSEN_WIDGETS))) {
+    $settings = $context['instance']['widget']['settings'];
+    if (!empty($settings['apply_chosen'])) {
+      $element['#attributes']['class'][] = 'chosen-widget';
+    }
+  }
+}
+
+/**
+ * Implements hook_library().
+ */
+function chosen_library() {
+  $library_path = module_exists('libraries') ? libraries_get_path('chosen') : 'sites/all/libraries/chosen';
+  $info['chosen'] = array(
+    'title' => 'Chosen',
+    'website' => CHOSEN_WEBSITE_URL,
+    'version' => '0.10.0',
+    'js' => array(
+      $library_path . '/chosen.jquery.min.js' => array('group' => 'JS_LIBRARY'),
+    ),
+  );
+  if (variable_get('chosen_use_theme', TRUE)) {
+    $info['chosen']['css'] = array($library_path . '/chosen.css' => array());
+  }
+
+  $module_path = drupal_get_path('module', 'chosen');
+  $info['drupal.chosen'] = array(
+    'title' => 'Drupal Chosen integration',
+    'website' => 'http://drupal.org/project/chosen',
+    'version' => '1.0',
+    'js' => array(
+      $module_path . '/chosen.js' => array(),
+      array(
+        'data' => array(
+          'chosen' => array(
+            'selector' => variable_get('chosen_jquery_selector', 'select:visible'),
+            'minimum_single' => variable_get('chosen_minimum_single', 20),
+            'minimum_multiple' => variable_get('chosen_minimum_multiple', 20),
+            'minimum_width' => variable_get('chosen_minimum_width', 200),
+            'search_contains' => (variable_get('chosen_search_contains', FALSE)) ? TRUE : FALSE,
+            'disable_search' => (variable_get('chosen_disable_search', FALSE)) ? TRUE : FALSE,
+            'disable_search_threshold' => variable_get('chosen_disable_search_threshold', 0),
+            'placeholder_text_multiple' => variable_get('chosen_placeholder_text_multiple', t('Choose some options')),
+            'placeholder_text_single' => variable_get('chosen_placeholder_text_single', t('Choose an option')),
+            'no_results_text' => variable_get('chosen_no_results_text', t('No results match')),
+          ),
+        ),
+        'type' => 'setting',
+      ),
+    ),
+    'css' => array(
+      $module_path . '/css/chosen-drupal.css' => array(),
+    ),
+    'dependencies' => array(
+      array('chosen', 'chosen'),
+    ),
+  );
+
+  return $info;
+}
+
+/**
+ * Implements hook_element_info_alter().
+ */
+function chosen_element_info_alter(&$info) {
+  $info['select']['#pre_render'][] = 'chosen_pre_render_select';
+
+  if (module_exists('date')) {
+    $info['date_combo']['#pre_render'][] = 'chosen_pre_render_select';
+  }
+}
+
+/**
+ * Implementation of chosen_pre_render_select().
+ */
+function chosen_pre_render_select($element) {
+  $field_info = isset($element['#field_name']) ? field_info_field($element['#field_name']) : FALSE;
+
+  $element_name = $element['#name'];
+  if(!empty($element['#multiple'])) {
+    // We need to add those brackets for multivalue fields.
+    $element_name = $element['#name'] . '[]';
+  }
+
+  $max_selected_options = FALSE;
+  if (isset($field_info['cardinality'])) {
+    if ($field_info['cardinality'] != FIELD_CARDINALITY_UNLIMITED) {
+      $max_selected_options = $field_info['cardinality'];
+    }
+  }
+
+  $element['#attached']['library'][] = array('chosen', 'drupal.chosen');
+  $element['#attached']['js'][] = array(
+    'data' => array(
+      'chosen' => array(
+        'multiple' => array(
+          $element_name => isset($element['#multiple']) ? $element['#multiple'] : FALSE,
+        ),
+        'max_selected_options' => array(
+          $element_name => $max_selected_options,
+        ),
+      ),
+    ),
+    'type' => 'setting',
+  );
+
+  return $element;
+}
+
+/**
+ * Get the location of the chosen library.
+ *
+ * @return
+ *   The location of the library, or FALSE if the library isn't installed.
+ */
+function chosen_get_chosen_path() {
+  $path = FALSE;
+  if (function_exists('libraries_get_path')) {
+    $path = libraries_get_path('chosen');
+    if (!file_exists($path)) {
+      $path = FALSE;
+    }
+  }
+  elseif (file_exists('sites/all/libraries/chosen/chosen.jquery.min.js')) {
+    $path = 'sites/all/libraries/chosen';
+  }
+  return $path;
+}

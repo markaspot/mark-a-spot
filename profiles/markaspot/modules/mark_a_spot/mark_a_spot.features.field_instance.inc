@@ -435,7 +435,7 @@ function mark_a_spot_field_default_field_instances() {
         'settings' => array(
           'cloudmade_api_key' => '165795623c424338ad9a8eb60484ef0e',
           'field_formatter_class' => '',
-          'leafletImagePath' => '/profiles/markaspot/libraries/leaflet-0.6.3/images',
+          'leafletImagePath' => '/profiles/markaspot/libraries/Leaflet/images',
           'map_dimensions' => '100%x300px',
           'map_scrollwheel' => 0,
           'map_style' => 22677,
@@ -471,7 +471,7 @@ function mark_a_spot_field_default_field_instances() {
         'settings' => array(
           'cloudmade_api_key' => '165795623c424338ad9a8eb60484ef0e',
           'field_formatter_class' => 'thumbnail pull-left',
-          'leafletImagePath' => '/profiles/markaspot/libraries/leaflet-0.6.3/images/',
+          'leafletImagePath' => '/profiles/markaspot/libraries/Leaflet/images/',
           'map_dimensions' => '100x100',
           'map_imageformat' => 'png',
           'map_style' => 22677,
@@ -508,7 +508,7 @@ function mark_a_spot_field_default_field_instances() {
         'settings' => array(
           'cloudmade_api_key' => '165795623c424338ad9a8eb60484ef0e',
           'field_formatter_class' => '',
-          'leafletImagePath' => '/profiles/markaspot/libraries/leaflet-0.6.3/images/',
+          'leafletImagePath' => '/profiles/markaspot/libraries/Leaflet/images/',
           'map_dimensions' => '300x300',
           'map_height' => '67px',
           'map_imageformat' => 'png',
@@ -532,7 +532,7 @@ function mark_a_spot_field_default_field_instances() {
       'active' => 1,
       'module' => 'geolocation_cloudmade_osm',
       'settings' => array(
-        'leafletImagePath' => '/profiles/markaspot/libraries/leaflet-0.6.3/images',
+        'leafletImagePath' => '/profiles/markaspot/libraries/Leaflet/images',
         'marker_draggable' => 1,
         'nominatimEmail' => 'holger@markaspot.org',
         'scrollwheel' => 0,

@@ -114,16 +114,16 @@ function markaspot_logic_init() {
   );
 
   drupal_add_js(drupal_get_path('module','markaspot_logic'). '/markaspot_logic.js');
-
+  drupal_add_css(drupal_get_path('profile','markaspot') . '/libraries/Leaflet.awesome-markers/dist/leaflet.awesome-markers.css');
+  drupal_add_css(drupal_get_path('profile','markaspot') . '/libraries/markaspot-font/style.css');
 
   //  drupal_set_message($type, 'status', FALSE);
   // Add some css to show which line is output by which script
 
   if (arg(0) == "list" || arg(0) == "map" || drupal_is_front_page() == TRUE){
-    drupal_add_css(drupal_get_path('profile','markaspot')
-     . '/libraries/showLoading/jquery.showLoading.css');
     drupal_add_js(drupal_get_path('profile','markaspot')
-     . '/libraries/showLoading/jquery.showLoading.min.js', null);
+     . '/libraries/spin.js/dist/spin.min.js', null);
+
     if (variable_get('markaspot_map_type') != 1) {
 
       drupal_add_js('http://maps.google.com/maps/api/js?sensor=false&amp;region=DE', 'external');
@@ -131,32 +131,31 @@ function markaspot_logic_init() {
       drupal_add_js(drupal_get_path('module', 'markaspot_logic') . '/js/mapiconmaker_packed.js', null);
       drupal_add_js(drupal_get_path('module', 'markaspot_logic') . '/js/markers_googlemaps.js', null);
     } else {
-      drupal_add_css(drupal_get_path('profile','markaspot') . '/libraries/leaflet-0.6.3/leaflet.css');
-      drupal_add_css(drupal_get_path('profile','markaspot') . '/libraries/leaflet-0.6.3/leaflet.ie.css', array(
+      drupal_add_css(drupal_get_path('profile','markaspot') . '/libraries/leaflet/leaflet.css');
+      drupal_add_css(drupal_get_path('profile','markaspot') . '/libraries/leaflet/leaflet.ie.css', array(
         'group' => CSS_THEME,
         'browsers' => array(
           'IE' => 'lte IE 8',
           '!IE' => FALSE
           )
       ));
-      drupal_add_css(drupal_get_path('profile','markaspot') . '/libraries/Leaflet.markercluster-master/dist/MarkerCluster.css');
-      drupal_add_css(drupal_get_path('profile','markaspot') . '/libraries/Leaflet.markercluster-master/dist/MarkerCluster.Default.css');
-      drupal_add_css(drupal_get_path('profile','markaspot') . '/libraries/Leaflet.markercluster-master/dist/MarkerCluster.Default.ie.css', array(
+      drupal_add_css(drupal_get_path('profile','markaspot') . '/libraries/Leaflet.markercluster/dist/MarkerCluster.css');
+      drupal_add_css(drupal_get_path('profile','markaspot') . '/libraries/Leaflet.markercluster/dist/MarkerCluster.Default.css');
+      drupal_add_css(drupal_get_path('profile','markaspot') . '/libraries/Leaflet.markercluster/dist/MarkerCluster.Default.ie.css', array(
         'group' => CSS_THEME,
         'browsers' => array(
           'IE' => 'lte IE 8',
           '!IE' => FALSE
           )
       ));
-      drupal_add_css(drupal_get_path('profile','markaspot') . '/libraries/Leaflet.awesome-markers-master/dist/leaflet.awesome-markers.css');
-      drupal_add_css(drupal_get_path('profile','markaspot') . '/libraries/markaspot-font/style.css');
 
-      drupal_add_js(drupal_get_path('profile','markaspot') . '/libraries/leaflet-0.6.3/leaflet.js');
+
+      drupal_add_js(drupal_get_path('profile','markaspot') . '/libraries/leaflet/leaflet.js');
 
       drupal_add_js(drupal_get_path('module', 'markaspot_logic') . '/js/markers_leaflet.js');
-      drupal_add_js(drupal_get_path('profile','markaspot') . '/libraries/Leaflet.awesome-markers-master/dist/leaflet.awesome-markers.min.js', null);
+      drupal_add_js(drupal_get_path('profile','markaspot') . '/libraries/Leaflet.awesome-markers/dist/leaflet.awesome-markers.min.js', null);
 
-      drupal_add_js(drupal_get_path('profile','markaspot') . '/libraries/Leaflet.markercluster-master/dist/leaflet.markercluster.js', null);
+      drupal_add_js(drupal_get_path('profile','markaspot') . '/libraries/Leaflet.markercluster/dist/leaflet.markercluster.js', null);
 
     }
   }
