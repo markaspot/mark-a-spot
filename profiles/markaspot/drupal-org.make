@@ -63,5 +63,6 @@ libraries[spin.js][directory_name] = spin.js
 
 ; Themes
 projects[bootstrap][type] = "theme"
+projects[bootstrap][version] = 2.2
 projects[rubik][type] = "theme"
 projects[tao][type] = "theme"

@@ -203,9 +203,8 @@ var markerLayer, queryString ;
             if (item.statusHex == element.hex || item.categoryHex == element.hex) {
               var awesomeColor = element.color;
               var awesomeIcon = (getToggle == 1) ? item.categoryIcon  : item.statusIcon;
-              console.log(awesomeIcon);
-              var marker = new L.Marker(latlon, {icon: L.AwesomeMarkers.icon({icon: awesomeIcon, markerColor: awesomeColor, prefix: 'icon', spin: false}) });
-              marker.bindPopup(html);
+              var marker = new L.Marker(latlon, {icon: L.AwesomeMarkers.icon({icon: awesomeIcon, color: awesomeColor, spin: false}) });
+              marker.bindPopup(html)
               markerLayer.addLayer(marker);
               bounds.extend(latlon);
              }

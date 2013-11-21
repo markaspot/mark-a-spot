@@ -126,7 +126,7 @@ function markaspot_logic_init() {
 
     if (variable_get('markaspot_map_type') != 1) {
 
-      drupal_add_js('http://maps.google.com/maps/api/js?sensor=false&amp;region=DE', 'external');
+      drupal_add_js('https://maps.google.com/maps/api/js?sensor=true&v=3.1.3', 'external');
       drupal_add_js(drupal_get_path('module', 'markaspot_logic') . '/js/markerclusterer.js', null);
       drupal_add_js(drupal_get_path('module', 'markaspot_logic') . '/js/mapiconmaker_packed.js', null);
       drupal_add_js(drupal_get_path('module', 'markaspot_logic') . '/js/markers_googlemaps.js', null);

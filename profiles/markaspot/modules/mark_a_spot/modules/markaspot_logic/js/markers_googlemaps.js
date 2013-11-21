@@ -7,7 +7,7 @@
  *
  * @copyright  2012 Holger Kreis <holger@markaspot.org>
  * @link       http://mark-a-spot.org/
- * @version    2.0  
+ * @version    2.0
  */
 
 var getMarkerId ="";
@@ -29,17 +29,15 @@ var markerLayer, queryString ;
           };
       });
     }
-    
     var mas = Drupal.settings.mas;
 
-    Drupal.Geolocation = new Object();
-    Drupal.Geolocation.maps = new Array();
-    Drupal.Geolocation.markers = new Array();
+    Drupal.Markaspot = new Object();
+    Drupal.Markaspot.maps = new Array();
+    Drupal.Markaspot.markers = new Array();
     var categoryCond = mas.params.field_category_tid;
     var statusCond = mas.params.field_status_tid;
-
     var queryString =  mas.params.q.split('?');
-    
+
     var pathId = mas.params.q.split('/');
 
 
@@ -47,34 +45,22 @@ var markerLayer, queryString ;
      * Split URL and read MarkerID
      *
      */
+
     switch (pathId[0]) {
       case "map":
-        readData(1, getMarkerId, "All", "All");
-        getMarkerId = '';
-      break;
-      case "home":
-        readData(1, getMarkerId, "All", "All");
-        getMarkerId = '';
-      break;
-      case "list":
-        readData(2, getMarkerId, "All", "All");
-        getMarkerId = '';
-      break;
-      case "node":
-        if (!pathId[1]){
-          readData(2, getMarkerId, "All", "All");
-        } else {
-          readData(1, pathId[1], categoryCond, statusCond);
-        }
+        readData(1, arg, "All", "All");
+        arg = '';
         break;
+      case "list":
+        readData(2, "list", "All", "All");
+        break;
+      break;
       case "admin":
       case "overlay":
         return false;
-      default:
-        return false;
       break;
     }
-    
+
     var initialLatLng = new google.maps.LatLng(mas.markaspot_ini_lat, mas.markaspot_ini_lng);
     var myOptions = {
       center: initialLatLng,
@@ -82,7 +68,7 @@ var markerLayer, queryString ;
       draggableCursor: 'point',
       mapTypeId: google.maps.MapTypeId.ROADMAP
     };
-  
+
     // var styles = [[{
     //   url: '/sites/all/themes/mas/images/google_multi_marker_blue.png',
     //   height: 66,
@@ -91,24 +77,23 @@ var markerLayer, queryString ;
     //   textColor: '#fff',
     //   textSize: 13
     // }]];
-  
-    
-    Drupal.Geolocation.maps[0] = new google.maps.Map(document.getElementById("map"), myOptions);
-    var mc = new MarkerClusterer(Drupal.Geolocation.maps[0], [],{maxZoom: 15, gridSize:50});
-    
-    
+
+
+    Drupal.Markaspot.maps[0] = new google.maps.Map(document.getElementById("map"), myOptions);
+
+
     $("#markers-list").append("<ul>");
-  
-  
+
+
     /**Sidebar Marker-functions*/
-     
+
     $("#block-markaspot-logic-taxonomy-category ul li a.map-menue").click(function(e){
       e.preventDefault();
       hideMarkers();
       readData(1, getMarkerId, getTaxId(this.id), "All");
       return false;
     });
-    
+
     $("#block-markaspot-logic-taxonomy-status ul li a.map-menue").click(function(e){
       e.preventDefault();
       hideMarkers();
@@ -134,7 +119,7 @@ var markerLayer, queryString ;
       id = id.split("-");
       return id[1];
     }
-    
+
     function hideMarkers(){
      if(mc !== null) {
        mc.clearMarkers();
@@ -157,22 +142,22 @@ var markerLayer, queryString ;
         statusCond = mas.params.field_status_tid;
       }
       $("#markersidebar >*").remove();
- 
+
       $.getJSON(url, function(data){
 
         data = data.nodes;
         points = [];
-  
+
         var bounds = new google.maps.LatLngBounds(initialLatLng);
         var infoWindow = new google.maps.InfoWindow;
-
+        var markers = [];
         if (!data[0] && mas.node_type == 'report') {
           // invoke a message box or something less permanent than an alert box later
           alert(Drupal.t('No Reports found for this category/status'));
         } else if (!data[0] && mas.params.q.indexOf("map") != -1){
           alert(Drupal.t('No Reports found for this category/status'));
         }
-        $.each(data, function(markers, item){
+        $.each(data, function(index, item){
           if (item.node.positionLat && item.node.positionLat != mas.markaspot_ini_lat){
             item = item.node;
             var latlon = new google.maps.LatLng(item.positionLat,item.positionLng);
@@ -188,74 +173,39 @@ var markerLayer, queryString ;
               console.log(circleRadius);
             }
             */
-            
+
             // var hex = (categoryCond != "All" || (categoryCond == "All" && statusCond == "All") && url.search('map') != -1) ? item.categoryHex : item.statusHex;
-            
+
             if (getToggle == 1) {
               var hex = item.categoryHex;
             }
             if (getToggle == 2) {
               var hex = item.statusHex;
-            } 
+            }
 
             //console.log(url, url.search('map'),categoryCond, statusCond, hex);
             var image = new google.maps.MarkerImage('http://chart.apis.google.com/chart?cht=mm&chs=32x32&chco=ffffff,' + hex + ',333333&ext=.png');
             var shadow = new google.maps.MarkerImage(
-             'http://maps.gstatic.com/intl/de_ALL/mapfiles/shadow50.png', 
+             'http://maps.gstatic.com/intl/de_ALL/mapfiles/shadow50.png',
               new google.maps.Size(37, 32),
               new google.maps.Point(0,0),
               new google.maps.Point(13, 32)
             );
-            
-            //if (getToggle != 3) {
-            /*  switch (getToggle) {
-                case 0:
-                  var image = new google.maps.MarkerImage('https://chart.googleapis.com/chart?chs=150x150&cht=qr&chl=Hello%20world&choe=UTF-8');
-                  var shadow = new google.maps.MarkerImage(
-                   'http://maps.gstatic.com/intl/de_ALL/mapfiles/shadow50.png', 
-                    new google.maps.Size(37, 32),
-                    new google.maps.Point(0,0),
-                    new google.maps.Point(13, 32)
-                  );
-                break;
-                case 1:
-                  var image = new google.maps.MarkerImage('http://chart.apis.google.com/chart?cht=mm&chs=32x32&chco=ffffff,' + item.categoryHex + ',333333&ext=.png');
-                  var shadow = new google.maps.MarkerImage(
-                   'http://maps.gstatic.com/intl/de_ALL/mapfiles/shadow50.png', 
-                    new google.maps.Size(37, 32),
-                    new google.maps.Point(0,0),
-                    new google.maps.Point(13, 32)
-                  );
-                break;
 
-                case 2:
-                  var image = new google.maps.MarkerImage('http://chart.apis.google.com/chart?cht=mm&chs=32x32&chco=ffffff,' + item.statusHex + ',000000&ext=.png');
-                  var shadow = new google.maps.MarkerImage(
-                   'http://maps.gstatic.com/intl/de_ALL/mapfiles/shadow50.png', 
-                    new google.maps.Size(37, 32),
-                    new google.maps.Point(0,0),
-                    new google.maps.Point(13, 32)
-                  );
-                break;
+           var GoogleMarker = new google.maps.Marker({
+              position: latlon,
+              map: Drupal.Markaspot.maps[0],
+              icon: image,
+              shadow: shadow,
+            });
 
-              }*/
-              
-              var GoogleMarker = new google.maps.Marker({
-                position: latlon,
-                map: Drupal.Geolocation.maps[0],
-                icon: image,
-                shadow: shadow,
-                title: 'Klicke für Detail'
-              });
+            fn = bindInfoWindow(GoogleMarker,  Drupal.Markaspot.maps[0], infoWindow, html, item.nid);
 
-              fn = bindInfoWindow(GoogleMarker,  Drupal.Geolocation.maps[0], infoWindow, html, item.nid);
-
-            mc.addMarker(GoogleMarker);
             bounds.extend(latlon);
+            markers.push(GoogleMarker);
 
             img = $('<img class="pull-left thumbnail"/>').attr('src', 'http://maps.googleapis.com/maps/api/staticmap?center=' + item.positionLat + "," + item.positionLng + '&sensor=true&zoom=13&size=100x100');
             $('.body_' + item.nid).before(img);
-            
 
             if ($("#markersidebar")){
               var li = document.createElement('li');
@@ -269,15 +219,18 @@ var markerLayer, queryString ;
                 $(this).animate({ backgroundColor: "black" }, 1000);
                 google.maps.event.trigger(GoogleMarker, 'click');
             });
-          } 
+          }
         }); // $.each
-        Drupal.Geolocation.maps[0].fitBounds(bounds);
-        var listener = google.maps.event.addListener(Drupal.Geolocation.maps[0], "idle", function() { 
-          if (Drupal.Geolocation.maps[0].getZoom() > 14) Drupal.Geolocation.maps[0].setZoom(14); 
-          google.maps.event.removeListener(listener); 
+
+        var mc = new MarkerClusterer(Drupal.Markaspot.maps[0], markers,{maxZoom: 15, gridSize:50});
+
+        Drupal.Markaspot.maps[0].fitBounds(bounds);
+        var listener = google.maps.event.addListener(Drupal.Markaspot.maps[0], "idle", function() {
+          if (Drupal.Markaspot.maps[0].getZoom() > 14) Drupal.Markaspot.maps[0].setZoom(14);
+          google.maps.event.removeListener(listener);
         });
       });
-    } 
+    }
   });
 })(jQuery);
 
@@ -292,8 +245,8 @@ function hideMarkers(){
 
 function bindInfoWindow(marker, map, infoWindow, html, nid) {
   google.maps.event.addListener(marker, 'click', function() {
-    Drupal.Geolocation.maps[0].setCenter(marker.getPosition());
+    Drupal.Markaspot.maps[0].setCenter(marker.getPosition());
     infoWindow.setContent(html);
-    infoWindow.open(map, marker);   
+    infoWindow.open(map, marker);
   });
 }
