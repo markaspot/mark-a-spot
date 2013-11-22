@@ -56,8 +56,6 @@
       <div class="span6">
         <div class="welcome-text well">
           <?php
-            // if you don't want bootstrap carousel to welcome visitors
-            // you can use this block
             $block = module_invoke('markaspot_default_content', 'block_view', 'welcome');
             print render($block['content']);
           ?>
@@ -74,7 +72,7 @@
         </div>
       </div>
       <div class="span5 offset1 thumbnail">
-        <img src="http://local.mas/sites/default/files/styles/mas_medium/public/image_flickr_by_realname_garbage-tonal-decay_82.jpg?itok=hy4lw8Vl" width="720" height="480">
+        <img src="sites/default/files/image_flickr_by_realname_garbage-tonal-decay.jpg" width="720" height="480">
       </div>
     </div>
   </div>

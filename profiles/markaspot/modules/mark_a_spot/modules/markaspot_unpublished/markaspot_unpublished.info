@@ -1,8 +1,0 @@
-name = Mark-a-Spot Unpublished Nodes
-core = 7.x
-description = Provides a block with unpublished nodes
-version = "7.x-1.0-dev"
-package = "Mark-a-Spot"
-
-
-files[] = markaspot_unpblished.module
