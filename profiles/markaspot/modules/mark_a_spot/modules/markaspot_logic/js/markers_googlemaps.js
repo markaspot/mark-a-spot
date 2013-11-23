@@ -2,16 +2,12 @@
 /**
  * Mark-a-Spot marker_googlemaps.js
  *
- * Main Map-Application File with google Maps api
- * *
+ * Main Map-Application File with Google Maps Api
  *
- * @copyright  2012 Holger Kreis <holger@markaspot.org>
- * @link       http://mark-a-spot.org/
- * @version    2.0
  */
 
-var getMarkerId ="";
-var markerLayer, queryString ;
+var arg = "";
+var markerLayer, queryString;
 (function ($) {
   $(document).ready(function () {
     if ($('#markers-list-view #map').length != 0){
@@ -127,20 +123,23 @@ var markerLayer, queryString ;
      return;
     };
 
-    function readData(getToggle,getMarkerId,categoryCond,statusCond) {
+    function readData(getToggle, arg, categoryCond, statusCond) {
 
       uri = mas.uri.split('?');
-      if (mas.params.q.indexOf("node") != -1){
-        url = Drupal.settings.basePath + 'reports/json/' + getMarkerId;
+
+      if (mas.node_type == "report"){
+        url = Drupal.settings.basePath + 'reports/json/' + arg;
       } else if (uri[0].search('node/') != -1){
-        url = Drupal.settings.basePath + 'reports/json/' + getMarkerId;
+        url = Drupal.settings.basePath + 'reports/json/' + arg;
       } else if (uri[0].search('map') != -1 || uri[0].search('home') != -1 ){
-        url = Drupal.settings.basePath + 'reports/json/map/?' + 'field_category_tid=' + categoryCond + '&field_status_tid=' + statusCond;
+        // map view
+        url = Drupal.settings.basePath + 'reports/json/?' + 'field_category_tid=' + categoryCond + '&field_status_tid=' + statusCond;
       } else {
         url = Drupal.settings.basePath + 'reports/json?' + uri[1];
         categoryCond = mas.params.field_category_tid;
         statusCond = mas.params.field_status_tid;
       }
+
       $("#markersidebar >*").remove();
 
       $.getJSON(url, function(data){

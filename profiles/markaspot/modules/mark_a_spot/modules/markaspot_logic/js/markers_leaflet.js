@@ -2,15 +2,11 @@
  * Mark-a-Spot marker_leaflet.js
  *
  * Main Map-Application File with Leaflet Maps api
- * *
  *
- * @copyright  2012 Holger Kreis <holger@markaspot.org>
- * @link       http://mark-a-spot.org/
- * @version    2.1.2
  */
 
 var arg = "";
-var markerLayer, queryString ;
+var markerLayer, queryString;
 (function ($) {
   $(document).ready(function () {
     if ($('#markers-list-view #map').length != 0){
@@ -64,11 +60,19 @@ var markerLayer, queryString ;
 
     Drupal.Markaspot.maps[0] = new L.Map('map');
 
-    var cloudmadeUrl = 'https://ssl_tiles.cloudmade.com/'+ mas.cloudmade_api_key +'/22677/256/{z}/{x}/{y}.png',
-        cloudmadeAttribution = 'Map data &copy; 2012 OpenStreetMap contributors, Imagery &copy; 2012 CloudMade',
-        cloudmade = new L.TileLayer(cloudmadeUrl, {maxZoom: 18, attribution: cloudmadeAttribution});
 
-    Drupal.Markaspot.maps[0].setView(new L.LatLng(mas.markaspot_ini_lat, mas.markaspot_ini_lng), 13).addLayer(cloudmade);
+    if (mas.cloudmade_api_key) {
+      var url = 'https://ssl_tiles.cloudmade.com/'+ mas.cloudmade_api_key +'/22677/256/{z}/{x}/{y}.png';
+      var attribution = 'Map data &copy; 2013 OpenStreetMap contributors, Imagery &copy; 2013 CloudMade';
+    }
+
+    if (mas.osm_custom_tile_url) {
+      var url = mas.osm_custom_tile_url;
+      var attribution = mas.osm_custom_attribution;
+    }
+
+    layer = new L.TileLayer(url, {maxZoom: 18, attribution: attribution});
+    Drupal.Markaspot.maps[0].setView(new L.LatLng(mas.markaspot_ini_lat, mas.markaspot_ini_lng), 13).addLayer(layer);
 
     $("#markers-list").append("<ul>");
 
@@ -203,7 +207,7 @@ var markerLayer, queryString ;
             if (item.statusHex == element.hex || item.categoryHex == element.hex) {
               var awesomeColor = element.color;
               var awesomeIcon = (getToggle == 1) ? item.categoryIcon  : item.statusIcon;
-              var marker = new L.Marker(latlon, {icon: L.AwesomeMarkers.icon({icon: awesomeIcon, prefix: 'icon', markerColor: awesomeColor, spin: false}) });
+              var marker = new L.Marker(latlon, {icon: L.AwesomeMarkers.icon({icon: awesomeIcon, prefix: 'icon', color: awesomeColor, spin: false}) });
               marker.bindPopup(html)
               markerLayer.addLayer(marker);
               bounds.extend(latlon);

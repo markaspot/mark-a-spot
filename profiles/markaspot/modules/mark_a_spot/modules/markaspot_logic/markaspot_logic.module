@@ -99,19 +99,37 @@ function markaspot_logic_init() {
       'markaspot_zip' => variable_get('markaspot_zip'),
       'markaspot_ini_lat' => variable_get('markaspot_ini_lat'),
       'markaspot_ini_lng' => variable_get('markaspot_ini_lng'),
-      'cloudmade_api_key' => variable_get('cloudmade_api_key'),
-
+      // 'cloudmade_api_key' => variable_get('cloudmade_api_key'),
+      // 'osm_custom_tile_url' => variable_get('osm_custom_tile_url'),
+      // 'osm_custom_attribution' => variable_get('osm_custom_attribution'),
       'bbox_nw_lat' => variable_get('bbox_nw_lat'),
       'bbox_nw_lng' => variable_get('bbox_nw_lng'),
       'bbox_se_lat' => variable_get('bbox_se_lat'),
       'bbox_se_lng' => variable_get('bbox_se_lng'),
-
       'uri' => request_uri(),
       'node_type' => $type,
       //'countVotes' => markaspot_logic_getCountVotes(),
       'params' => $_GET)),
     'setting'
   );
+
+  if (variable_get('markaspot_map_type') == 1) {
+    drupal_add_js(array(
+      'mas' => array(
+        'cloudmade_api_key' => variable_get('cloudmade_api_key'),
+      )),
+      'setting'
+    );
+  } else {
+    drupal_add_js(array(
+      'mas' => array(
+        'osm_custom_tile_url' => variable_get('osm_custom_tile_url'),
+        'osm_custom_attribution' => variable_get('osm_custom_attribution'),
+      )),
+      'setting'
+    );
+  }
+
 
   drupal_add_js(drupal_get_path('module','markaspot_logic'). '/markaspot_logic.js');
   drupal_add_css(drupal_get_path('profile','markaspot') . '/libraries/Leaflet.awesome-markers/dist/leaflet.awesome-markers.css');
@@ -124,7 +142,7 @@ function markaspot_logic_init() {
     drupal_add_js(drupal_get_path('profile','markaspot')
      . '/libraries/spin.js/dist/spin.min.js', null);
 
-    if (variable_get('markaspot_map_type') != 1) {
+    if (variable_get('markaspot_map_type') == 0) {
 
       drupal_add_js('https://maps.google.com/maps/api/js?sensor=true&v=3.1.3', 'external');
       drupal_add_js(drupal_get_path('module', 'markaspot_logic') . '/js/markerclusterer.js', null);
@@ -263,7 +281,7 @@ function markaspot_logic_admin_settings() {
   '#type' => 'radios',
   '#title' => t('Map type'),
   '#default_value' => variable_get('markaspot_map_type', 0),
-  '#options' => array(t('Google Maps'), t('OSM')),
+  '#options' => array(t('Google Maps'), t('Cloudmade'), t('Other OSM'))
   );
   $form['types']['cloudmade_api_key'] = array (
     '#type' => 'textfield',
@@ -271,11 +289,17 @@ function markaspot_logic_admin_settings() {
     '#default_value' => variable_get('cloudmade_api_key'),
     '#description' => t('Insert your API Key here')
   );
-  $form['types']['custom_tile_url'] = array (
+  $form['types']['osm']['osm_custom_tile_url'] = array (
     '#type' => 'textfield',
     '#title' => t('Tile URL, if not from Cloudmade'),
-    '#default_value' => variable_get('custom_tile_url'),
+    '#default_value' => variable_get('osm_custom_tile_url', _markaspot_logic_defaults('osm_custom_tile_url')),
     '#description' => t('If you want to use a different tile service or https with cloudmade, enter the url pattern, e.g. http://{s}.somedomain.com/your-api-key/{z}/{x}/{y}.png')
+  );
+  $form['types']['osm']['osm_custom_attribution'] = array (
+    '#type' => 'textfield',
+    '#title' => t('Attribution Statement, if not from Cloudmade'),
+    '#default_value' => variable_get('osm_custom_attribution', _markaspot_logic_defaults('osm_custom_attribution')),
+    '#description' => t('If you use an alternative Operator for serving tiles show special attribution')
   );
 
   $form['bbox'] = array(
@@ -437,6 +461,10 @@ function _markaspot_logic_defaults($id) {
       return 'You can request a key here: http://api.mycity.gov/api_key/request';
     case 'open311_type':
       return 'production';
+    case 'osm_custom_tile_url':
+      return 'http://';
+    case 'osm_custom_attribution':
+      return 'Map Data © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
   }
 }
 
