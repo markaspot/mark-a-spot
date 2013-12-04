@@ -21,17 +21,17 @@ function markaspot_install_tasks_alter(&$tasks, $install_state){
 function markaspot_install_finished(&$install_state) {
 
   // saving taonomies for status
-  _createStatus();
+  markaspot_create_categories();
   // saving taxonomies for category
-  _createCategories();
+  markaspot_create_status();
   // creating example node
-  _createReports();
+  markaspot_create_reports();
   // activating blocks
-  _build_blocks();
+  markaspot_build_blocks();
   // deleting dummy entries
-  _delete_dummies();
+  markaspot_delete_dummies();
   // create slider image files
-   _createPages();
+  markaspot_create_pages();
 
   drupal_set_title(st('Mark-a-Spot installation complete'));
   $messages = drupal_set_message();
@@ -77,7 +77,7 @@ function get_term_id($termname){
   }
 }
 
-function _createStatus () {
+function markaspot_create_status () {
 
   // // Create taxonomy vocabulary for status.
   // taxonomy_vocabulary_save((object) array(
@@ -131,7 +131,7 @@ function _createStatus () {
 }
 
 
-function _createCategories() {
+function markaspot_create_categories() {
 
   // Get the vocabulary ID.
   $vid = db_query("SELECT vid FROM {taxonomy_vocabulary} WHERE machine_name = 'category'")->fetchField();
@@ -175,7 +175,7 @@ function _createCategories() {
 
 
 
-function _createReports(){
+function markaspot_create_reports(){
 
   // now creating initial report
   $nodes[0] = array('Garbage Collection', 'Lorem Ipsum Lorem ipsum dolor sit amet, consectetur ing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,  quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo', '50.8212596','6.8961028','Pingsdorfer Straße 88, 50321 Brühl','holger@markaspot.org','Litter Basket Complaint', 'Open', 'flickr_by_dancentury_garbage_collection_4585329947');
@@ -241,7 +241,7 @@ function _createReports(){
 
 
 
-function _createPages(){
+function markaspot_create_pages(){
   global $base_url;
   // now creating articles
   $nodes[0] = array('Open311', '
@@ -599,7 +599,7 @@ This overrides all other arguments.
 }
 
 
-function _build_blocks() {
+function markaspot_build_blocks() {
   _activate_block('markaspot_log', 'markaspot_activity', 'content', 'mas', 'node/*', '1', '5');
   _activate_block('markaspot_logic', 'taxonomy_category', 'sidebar_second', 'mas', 'map', '1', '0');
   _activate_block('markaspot_logic', 'taxonomy_status', 'sidebar_second', 'mas', 'map', '1', '0');
@@ -629,7 +629,7 @@ function _activate_block($module, $block, $region, $theme, $pages, $visibility, 
   ->execute();
 }
 
-function _delete_dummies(){
+function markaspot_delete_dummies(){
   // Get the vocabulary ID.
   $vid = db_query("SELECT vid FROM {taxonomy_vocabulary} WHERE machine_name = 'status'")->fetchField();
   $taxonomies = taxonomy_get_tree($vid, $parent = 0, $max_depth = 1, $load_entities = TRUE);

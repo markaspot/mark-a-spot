@@ -1,6 +1,6 @@
 name = Mark-a-Spot
 description = Install with commonly used features pre-configured.
-version = VERSION
+
 core = 7.x
 dependencies[] = block
 dependencies[] = entity

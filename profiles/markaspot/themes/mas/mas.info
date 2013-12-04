@@ -32,25 +32,25 @@ scripts[] = js/mas.js
 ; METHOD 1: Bootstrap Source Files
 ;**********************************
 
- scripts[] = 'bootstrap/js/bootstrap-affix.js'
- scripts[] = 'bootstrap/js/bootstrap-alert.js'
- scripts[] = 'bootstrap/js/bootstrap-button.js'
- scripts[] = 'bootstrap/js/bootstrap-carousel.js'
- scripts[] = 'bootstrap/js/bootstrap-collapse.js'
- scripts[] = 'bootstrap/js/bootstrap-dropdown.js'
- scripts[] = 'bootstrap/js/bootstrap-modal.js'
- scripts[] = 'bootstrap/js/bootstrap-tooltip.js'
- ;scripts[] = 'bootstrap/js/bootstrap-popover.js'
- scripts[] = 'bootstrap/js/bootstrap-scrollspy.js'
- scripts[] = 'bootstrap/js/bootstrap-transition.js'
- scripts[] = 'bootstrap/js/bootstrap-tab.js'
- scripts[] = 'bootstrap/js/bootstrap-typeahead.js'
+; scripts[] = 'bootstrap/js/bootstrap-affix.js'
+; scripts[] = 'bootstrap/js/bootstrap-alert.js'
+; scripts[] = 'bootstrap/js/bootstrap-button.js'
+; scripts[] = 'bootstrap/js/bootstrap-carousel.js'
+; scripts[] = 'bootstrap/js/bootstrap-collapse.js'
+; scripts[] = 'bootstrap/js/bootstrap-dropdown.js'
+; scripts[] = 'bootstrap/js/bootstrap-modal.js'
+; scripts[] = 'bootstrap/js/bootstrap-tooltip.js'
+; ;scripts[] = 'bootstrap/js/bootstrap-popover.js'
+; scripts[] = 'bootstrap/js/bootstrap-scrollspy.js'
+; scripts[] = 'bootstrap/js/bootstrap-transition.js'
+; scripts[] = 'bootstrap/js/bootstrap-tab.js'
+; scripts[] = 'bootstrap/js/bootstrap-typeahead.js'
 
 ; ; Settings inherited by base theme, uncomment to override.
 ; ;settings[toggle_name] = 0
 ; ;settings[toggle_search] = 1
 ; Disable the CDN as we are using our own source files.
- settings[cdn_bootstrap] = 0
+; settings[cdn_bootstrap] = 0
 
 
 settings[toggle_name] = 0

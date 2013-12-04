@@ -877,6 +877,10 @@ input[type="color"] {
   padding: 40px 0;
 }
 
+.admin-menu .mapheader {
+  height: 390px;
+}
+
 #map_wrapper_splash #start {
     background: none repeat scroll 0 0 #FFFFFF;
     display: block;

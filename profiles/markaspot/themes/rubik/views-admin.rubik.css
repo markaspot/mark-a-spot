@@ -48,7 +48,7 @@
 }
 
 /* Hide 'remove' checkboxes. This might be scoped too widely. */
-[class*="form-type-checkbox"][class*="remove"] {
+.form-type-checkbox.remove {
   display: none;
 }
 

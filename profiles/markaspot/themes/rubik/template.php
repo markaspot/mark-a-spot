@@ -2,9 +2,12 @@
 /*
  * Implements hook_preprocess_html().
  */
-function rubik_preprocess_html() {
+function rubik_preprocess_html(&$vars) {
   if (module_exists('views')) {
     drupal_add_css(drupal_get_path('module', 'views') . '/css/views-admin.seven.css', 'theme');
+  }
+  if (theme_get_setting('rubik_inline_field_descriptions')) {
+    $vars['classes_array'][] = 'rubik-inline-field-descriptions';
   }
 }
 
@@ -107,7 +110,7 @@ function rubik_theme() {
 function rubik_preprocess_page(&$vars) {
   // Show a warning if base theme is not present.
   if (!function_exists('tao_theme') && user_access('administer site configuration')) {
-    drupal_set_message(t('The Rubik theme requires the !tao base theme in order to work properly.', array('!tao' => l('Tao', 'http://code.developmentseed.org/tao'))), 'warning');
+    drupal_set_message(t('The Rubik theme requires the !tao base theme in order to work properly.', array('!tao' => l('Tao', 'http://drupal.org/project/tao'))), 'warning');
   }
 
   // Set a page icon class.
@@ -282,7 +285,9 @@ function rubik_preprocess_help_page(&$vars) {
  */
 function rubik_preprocess_node(&$vars) {
   $vars['layout'] = TRUE;
-  $vars['submitted'] = _rubik_submitted($vars['node']);
+  if ($vars['display_submitted']) {
+    $vars['submitted'] = _rubik_submitted($vars['node']);
+  }
 }
 
 /**
@@ -323,7 +328,7 @@ function rubik_preprocess_admin_block(&$vars) {
   }
   $vars['block']['localized_options']['html'] = TRUE;
   if (isset($vars['block']['link_title'])) {
-    $vars['block']['title'] = l("<span class='icon'></span>" . filter_xss_admin($vars['block']['link_title']), $vars['block']['href'], $vars['block']['localized_options']);
+    $vars['block']['title'] = l("<span class='icon'></span>" . filter_xss_admin($vars['block']['title']), $vars['block']['href'], $vars['block']['localized_options']);
   }
 
   if (empty($vars['block']['content'])) {
@@ -342,7 +347,7 @@ function rubik_breadcrumb($vars) {
     $item = menu_get_item();
     $end = end($vars['breadcrumb']);
     if ($end && strip_tags($end) !== $item['title']) {
-      $vars['breadcrumb'][] = "<strong>". check_plain($item['title']) ."</strong>";
+      $vars['breadcrumb'][] = check_plain($item['title']);
     }
   }
 
@@ -354,6 +359,13 @@ function rubik_breadcrumb($vars) {
 
   $depth = 0;
   foreach ($vars['breadcrumb'] as $link) {
+
+    // If the item isn't a link, surround it with a strong tag to format it like
+    // one.
+    if (!preg_match('/^<a/', $link) && !preg_match('/^<strong/', $link)) {
+      $link = '<strong>' . $link . '</strong>';
+    }
+
     $output .= "<span class='breadcrumb-link breadcrumb-depth-{$depth}'>{$link}</span>";
     $depth++;
   }

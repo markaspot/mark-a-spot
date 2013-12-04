@@ -7,17 +7,25 @@
 
 #branding .breadcrumb { float:right; }
 
-  #branding .breadcrumb a,
-  #branding .breadcrumb strong { float:right; }
+#branding .breadcrumb a,
+#branding .breadcrumb strong { float:right; }
 
-  #branding .breadcrumb .breadcrumb-link {
-    float:right;
-    padding-left:5px;
-    padding-right:0px;
-    background-image:url(images/sprite-rtl.png);
-    background-position:0% 100%;
-    }
+#branding .breadcrumb a, #branding .breadcrumb strong {
+  background: url(images/bleeds-rtl.png) 0 -60px no-repeat;
+}
 
+#branding ul.links a {
+  background: url(images/bleeds-rtl.png) 100% -30px no-repeat;
+}
+
+#branding ul.links a:hover { background-position:100% -90px; }
+
+#branding .breadcrumb-depth-0 a,
+    #branding .breadcrumb-depth-0 strong { padding-right:10px; }
+
+#branding .breadcrumb a:hover { background-position:0% -90px; }
+ul.primary-tabs.links li{float:left !important;}
+#branding .breadcrumb-link {float: right;}
 /**
  * Page title =========================================================
  */
@@ -33,6 +41,7 @@
 ul.primary-tabs {
   left:60px;
   right:auto;
+  float: left;
   }
 
 ul.primary-tabs li {
@@ -102,17 +111,18 @@ div.node { background-position:35% 0%; }
  * System =============================================================
  */
 .admin .right {
-  padding-left:0;
-  padding-right:5px;
-  float:left;
-  }
+padding-left: 0;
+padding-right: 5px;
+float: left;
+margin-left: 0 !important;
+}
 
 .admin .left {
-  padding-left:5px;
-  padding-right:0;
-  float:right;
-  }
-
+padding-left: 5px;
+padding-right: 0;
+float: right;
+margin-right: 0 !important;
+}
 /* admin/content/node & admin/user/user */
 #content dl.multiselect,
 #content dl.multiselect dt,
@@ -125,3 +135,17 @@ div.node { background-position:35% 0%; }
   margin-right:0px;
   float:right;
   }
+
+/* tabs and shortcut icons */
+#page-title .page-title {
+float: right;
+}
+
+.add-or-remove-shortcuts, .action-links {
+float: right;
+}
+
+.tabledrag-toggle-weight-wrapper {
+  float: left;
+  text-align: right;
+}

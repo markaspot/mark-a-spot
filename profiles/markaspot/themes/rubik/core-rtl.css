@@ -83,3 +83,8 @@ body.rubik #admin-toolbar a.menu-hover span.menu-description span.icon {
   left:auto;
   right:10px;
   }
+/* Primary tabs =============== 
+ul.links li, ul.links li a {
+  float:left;
+}
+*/

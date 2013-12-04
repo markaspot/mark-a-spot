@@ -42,7 +42,8 @@ libraries[chosen][directory_name] = chosen
 
 libraries[Leaflet.awesome-markers][type] = libraries
 libraries[Leaflet.awesome-markers][download][type] = git
-libraries[Leaflet.awesome-markers][download][url] = "https://github.com/lvoogdt/Leaflet.awesome-markers.git"
+libraries[Leaflet.awesome-markers][download][url] = "https://github.com/markaspot/Leaflet.awesome-markers.git"
+libraries[Leaflet.awesome-markers][download][branch] = additional-colors
 libraries[Leaflet.awesome-markers][directory_name] = Leaflet.awesome-markers
 
 libraries[Leaflet.markercluster][type] = libraries
@@ -51,14 +52,32 @@ libraries[Leaflet.markercluster][download][url] = "https://github.com/Leaflet/Le
 libraries[Leaflet.markercluster][directory_name] = Leaflet.markercluster
 
 libraries[Leaflet][type] = libraries
-libraries[Leaflet][download][type] = git
-libraries[Leaflet][download][url] = "https://github.com/Leaflet/Leaflet.git"
-libraries[Leaflet][directory_name] = Leaflet
+libraries[Leaflet][download][type] = file
+libraries[Leaflet][download][url] = "http://leaflet-cdn.s3.amazonaws.com/build/leaflet-0.7.zip"
+libraries[Leaflet][directory_name] = leaflet
 
 libraries[spin.js][type] = libraries
 libraries[spin.js][download][type] = git
 libraries[spin.js][download][url] = "https://github.com/fgnass/spin.js.git"
 libraries[spin.js][directory_name] = spin.js
+
+libraries[markaspot-font][type] = libraries
+libraries[markaspot-font][download][type] = git
+libraries[markaspot-font][download][url] = "https://github.com/markaspot/markaspot-font.git"
+libraries[markaspot-font][directory_name] = markaspot-font
+
+libraries[proxy][type] = libraries
+libraries[proxy][download][type] = git
+libraries[proxy][download][url] = "https://github.com/markaspot/Simple-php-proxy-script.git"
+libraries[proxy][download][branch] = osm-nominatim
+libraries[proxy][directory_name] = proxy
+
+libraries[bootstrap][download][type] = "get"
+;libraries[bootstrap][download][url] = "https://github.com/twbs/bootstrap/archive/v2.3.2.zip"
+libraries[bootstrap][download][url] = "http://getbootstrap.com/2.3.2/assets/bootstrap.zip"
+libraries[bootstrap][directory_name] = "bootstrap"
+libraries[bootstrap][destination] = themes/mas
+libraries[bootstrap][overwrite] = TRUE
 
 
 ; Themes

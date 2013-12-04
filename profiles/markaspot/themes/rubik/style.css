@@ -122,8 +122,8 @@ table th {
   #branding .breadcrumb-depth-7 { z-index:3; }
   #branding .breadcrumb-depth-8 { z-index:2; }
 
-  #branding .breadcrumb a,
-  #branding .breadcrumb strong {
+  #branding .breadcrumb-link > a,
+  #branding .breadcrumb-link > strong {
     color:#fff;
     font-weight:normal;
     float:left;
