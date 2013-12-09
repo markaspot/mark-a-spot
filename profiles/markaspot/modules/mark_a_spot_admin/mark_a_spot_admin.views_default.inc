@@ -219,6 +219,40 @@ function mark_a_spot_admin_views_default_views() {
 
   /* Display: Block */
   $handler = $view->new_display('block', 'Block', 'block');
+  $translatables['mark_a_spot_admin_comments'] = array(
+    t('Master'),
+    t('Neueste Kommentare'),
+    t('mehr'),
+    t('Anwenden'),
+    t('Zurücksetzen'),
+    t('Sortieren nach'),
+    t('Aufsteigend'),
+    t('Absteigend'),
+    t('Elemente pro Seite'),
+    t('- Alle -'),
+    t('Offset'),
+    t('« erste Seite'),
+    t('‹ vorherige Seite'),
+    t('nächste Seite ›'),
+    t('letzte Seite »'),
+    t('Content'),
+    t('gehört zu:'),
+    t('Nid'),
+    t('.'),
+    t(','),
+    t('Parent CID'),
+    t('Approved'),
+    t('<ul class="mas-admin action-links links clearfix">
+<li>[approve_comment]</li>
+<li>[replyto_comment]</li>
+<li>[edit_comment]</li>
+<li>[delete_comment]</li>
+</ul>'),
+    t('Page'),
+    t('more'),
+    t('Antworte an'),
+    t('Block'),
+  );
   $export['mark_a_spot_admin_comments'] = $view;
 
   $view = new view();
@@ -243,7 +277,6 @@ function mark_a_spot_admin_views_default_views() {
   $handler->display->display_options['query']['options']['query_comment'] = FALSE;
   $handler->display->display_options['exposed_form']['type'] = 'basic';
   $handler->display->display_options['exposed_form']['options']['submit_button'] = 'Submit';
-  $handler->display->display_options['exposed_form']['options']['reset_button_label'] = 'Reset';
   $handler->display->display_options['exposed_form']['options']['exposed_sorts_label'] = 'Sort';
   $handler->display->display_options['exposed_form']['options']['sort_asc_label'] = 'Aufsteigend';
   $handler->display->display_options['exposed_form']['options']['sort_desc_label'] = 'Absteigend';
@@ -367,208 +400,6 @@ function mark_a_spot_admin_views_default_views() {
     'report' => 'report',
   );
 
-  /* Display: MaS Reports Open */
-  $handler = $view->new_display('block', 'MaS Reports Open', 'block');
-  $handler->display->display_options['defaults']['title'] = FALSE;
-  $handler->display->display_options['title'] = 'Recent Reports';
-  $handler->display->display_options['defaults']['style_plugin'] = FALSE;
-  $handler->display->display_options['style_plugin'] = 'table';
-  $handler->display->display_options['style_options']['columns'] = array(
-    'edit_node' => 'edit_node',
-    'title' => 'title',
-    'name' => 'name',
-    'created' => 'created',
-    'field_category_hex' => 'field_category_hex',
-    'field_status_hex_1' => 'field_status_hex_1',
-    'field_status' => 'field_status',
-    'nothing' => 'nothing',
-    'nothing_1' => 'nothing_1',
-  );
-  $handler->display->display_options['style_options']['default'] = '-1';
-  $handler->display->display_options['style_options']['info'] = array(
-    'edit_node' => array(
-      'align' => '',
-      'separator' => '',
-      'empty_column' => 0,
-    ),
-    'title' => array(
-      'sortable' => 0,
-      'default_sort_order' => 'asc',
-      'align' => '',
-      'separator' => '',
-      'empty_column' => 0,
-    ),
-    'name' => array(
-      'sortable' => 0,
-      'default_sort_order' => 'asc',
-      'align' => '',
-      'separator' => '',
-      'empty_column' => 0,
-    ),
-    'created' => array(
-      'sortable' => 0,
-      'default_sort_order' => 'asc',
-      'align' => '',
-      'separator' => '',
-      'empty_column' => 0,
-    ),
-    'field_category_hex' => array(
-      'sortable' => 0,
-      'default_sort_order' => 'asc',
-      'align' => '',
-      'separator' => '',
-      'empty_column' => 0,
-    ),
-    'field_status_hex_1' => array(
-      'sortable' => 0,
-      'default_sort_order' => 'asc',
-      'align' => '',
-      'separator' => '',
-      'empty_column' => 0,
-    ),
-    'field_status' => array(
-      'sortable' => 0,
-      'default_sort_order' => 'asc',
-      'align' => '',
-      'separator' => '',
-      'empty_column' => 0,
-    ),
-    'nothing' => array(
-      'align' => '',
-      'separator' => '',
-      'empty_column' => 0,
-    ),
-    'nothing_1' => array(
-      'align' => '',
-      'separator' => '',
-      'empty_column' => 0,
-    ),
-  );
-  $handler->display->display_options['defaults']['style_options'] = FALSE;
-  $handler->display->display_options['defaults']['row_plugin'] = FALSE;
-  $handler->display->display_options['defaults']['row_options'] = FALSE;
-  $handler->display->display_options['defaults']['fields'] = FALSE;
-  /* Field: Content: Title */
-  $handler->display->display_options['fields']['title']['id'] = 'title';
-  $handler->display->display_options['fields']['title']['table'] = 'node';
-  $handler->display->display_options['fields']['title']['field'] = 'title';
-  $handler->display->display_options['fields']['title']['label'] = '';
-  $handler->display->display_options['fields']['title']['alter']['path'] = '[edit_node]';
-  $handler->display->display_options['fields']['title']['alter']['word_boundary'] = FALSE;
-  $handler->display->display_options['fields']['title']['alter']['ellipsis'] = FALSE;
-  $handler->display->display_options['fields']['title']['element_type'] = 'h4';
-  $handler->display->display_options['fields']['title']['element_label_colon'] = FALSE;
-  /* Field: User */
-  $handler->display->display_options['fields']['name']['id'] = 'name';
-  $handler->display->display_options['fields']['name']['table'] = 'users';
-  $handler->display->display_options['fields']['name']['field'] = 'name';
-  $handler->display->display_options['fields']['name']['relationship'] = 'uid';
-  $handler->display->display_options['fields']['name']['ui_name'] = 'User';
-  $handler->display->display_options['fields']['name']['label'] = '';
-  $handler->display->display_options['fields']['name']['exclude'] = TRUE;
-  $handler->display->display_options['fields']['name']['element_type'] = 'span';
-  $handler->display->display_options['fields']['name']['element_label_colon'] = FALSE;
-  $handler->display->display_options['fields']['name']['element_default_classes'] = FALSE;
-  /* Field: Content: Post date */
-  $handler->display->display_options['fields']['created']['id'] = 'created';
-  $handler->display->display_options['fields']['created']['table'] = 'node';
-  $handler->display->display_options['fields']['created']['field'] = 'created';
-  $handler->display->display_options['fields']['created']['label'] = '';
-  $handler->display->display_options['fields']['created']['exclude'] = TRUE;
-  $handler->display->display_options['fields']['created']['element_type'] = 'span';
-  $handler->display->display_options['fields']['created']['element_label_colon'] = FALSE;
-  $handler->display->display_options['fields']['created']['element_default_classes'] = FALSE;
-  $handler->display->display_options['fields']['created']['date_format'] = 'time ago';
-  /* Field: Taxonomy term: categoryHex */
-  $handler->display->display_options['fields']['field_category_hex']['id'] = 'field_category_hex';
-  $handler->display->display_options['fields']['field_category_hex']['table'] = 'field_data_field_category_hex';
-  $handler->display->display_options['fields']['field_category_hex']['field'] = 'field_category_hex';
-  $handler->display->display_options['fields']['field_category_hex']['relationship'] = 'field_status_tid';
-  $handler->display->display_options['fields']['field_category_hex']['label'] = '';
-  $handler->display->display_options['fields']['field_category_hex']['exclude'] = TRUE;
-  $handler->display->display_options['fields']['field_category_hex']['element_label_colon'] = FALSE;
-  /* Field: Taxonomy term: statusHex */
-  $handler->display->display_options['fields']['field_status_hex_1']['id'] = 'field_status_hex_1';
-  $handler->display->display_options['fields']['field_status_hex_1']['table'] = 'field_data_field_status_hex';
-  $handler->display->display_options['fields']['field_status_hex_1']['field'] = 'field_status_hex';
-  $handler->display->display_options['fields']['field_status_hex_1']['relationship'] = 'field_status_tid';
-  $handler->display->display_options['fields']['field_status_hex_1']['label'] = '';
-  $handler->display->display_options['fields']['field_status_hex_1']['exclude'] = TRUE;
-  $handler->display->display_options['fields']['field_status_hex_1']['element_label_colon'] = FALSE;
-  /* Field: Content: Status */
-  $handler->display->display_options['fields']['field_status']['id'] = 'field_status';
-  $handler->display->display_options['fields']['field_status']['table'] = 'field_data_field_status';
-  $handler->display->display_options['fields']['field_status']['field'] = 'field_status';
-  $handler->display->display_options['fields']['field_status']['label'] = '';
-  $handler->display->display_options['fields']['field_status']['exclude'] = TRUE;
-  $handler->display->display_options['fields']['field_status']['element_label_colon'] = FALSE;
-  /* Field: meta */
-  $handler->display->display_options['fields']['nothing_1']['id'] = 'nothing_1';
-  $handler->display->display_options['fields']['nothing_1']['table'] = 'views';
-  $handler->display->display_options['fields']['nothing_1']['field'] = 'nothing';
-  $handler->display->display_options['fields']['nothing_1']['ui_name'] = 'meta';
-  $handler->display->display_options['fields']['nothing_1']['label'] = '';
-  $handler->display->display_options['fields']['nothing_1']['alter']['text'] = '[name] [created]';
-  $handler->display->display_options['fields']['nothing_1']['element_label_colon'] = FALSE;
-  /* Field: Content: Has new content */
-  $handler->display->display_options['fields']['timestamp']['id'] = 'timestamp';
-  $handler->display->display_options['fields']['timestamp']['table'] = 'history';
-  $handler->display->display_options['fields']['timestamp']['field'] = 'timestamp';
-  $handler->display->display_options['fields']['timestamp']['label'] = '';
-  $handler->display->display_options['fields']['timestamp']['element_label_colon'] = FALSE;
-  /* Field: Content: Edit link */
-  $handler->display->display_options['fields']['edit_node']['id'] = 'edit_node';
-  $handler->display->display_options['fields']['edit_node']['table'] = 'views_entity_node';
-  $handler->display->display_options['fields']['edit_node']['field'] = 'edit_node';
-  $handler->display->display_options['fields']['edit_node']['label'] = '';
-  $handler->display->display_options['fields']['edit_node']['element_label_colon'] = FALSE;
-  $handler->display->display_options['defaults']['filter_groups'] = FALSE;
-  $handler->display->display_options['defaults']['filters'] = FALSE;
-  /* Filter criterion: Content: Type */
-  $handler->display->display_options['filters']['type']['id'] = 'type';
-  $handler->display->display_options['filters']['type']['table'] = 'node';
-  $handler->display->display_options['filters']['type']['field'] = 'type';
-  $handler->display->display_options['filters']['type']['value'] = array(
-    'report' => 'report',
-  );
-  /* Filter criterion: Content: Status (field_status) */
-  $handler->display->display_options['filters']['field_status_tid']['id'] = 'field_status_tid';
-  $handler->display->display_options['filters']['field_status_tid']['table'] = 'field_data_field_status';
-  $handler->display->display_options['filters']['field_status_tid']['field'] = 'field_status_tid';
-  $handler->display->display_options['filters']['field_status_tid']['value'] = array(
-    0 => '1',
-  );
-  $handler->display->display_options['filters']['field_status_tid']['expose']['operator_id'] = 'field_status_tid_op';
-  $handler->display->display_options['filters']['field_status_tid']['expose']['label'] = 'Status (field_status)';
-  $handler->display->display_options['filters']['field_status_tid']['expose']['operator'] = 'field_status_tid_op';
-  $handler->display->display_options['filters']['field_status_tid']['expose']['identifier'] = 'field_status_tid';
-  $handler->display->display_options['filters']['field_status_tid']['vocabulary'] = 'status';
-  /* Filter criterion: Content: Category (field_category) */
-  $handler->display->display_options['filters']['field_category_tid']['id'] = 'field_category_tid';
-  $handler->display->display_options['filters']['field_category_tid']['table'] = 'field_data_field_category';
-  $handler->display->display_options['filters']['field_category_tid']['field'] = 'field_category_tid';
-  $handler->display->display_options['filters']['field_category_tid']['value'] = array(
-    15 => '15',
-    18 => '18',
-    12 => '12',
-    31 => '31',
-    33 => '33',
-    17 => '17',
-    32 => '32',
-    16 => '16',
-    10 => '10',
-    11 => '11',
-  );
-  $handler->display->display_options['filters']['field_category_tid']['exposed'] = TRUE;
-  $handler->display->display_options['filters']['field_category_tid']['expose']['operator_id'] = 'field_category_tid_op';
-  $handler->display->display_options['filters']['field_category_tid']['expose']['label'] = 'Kategorie';
-  $handler->display->display_options['filters']['field_category_tid']['expose']['operator'] = 'field_category_tid_op';
-  $handler->display->display_options['filters']['field_category_tid']['expose']['identifier'] = 'field_category_open_tid';
-  $handler->display->display_options['filters']['field_category_tid']['expose']['remember'] = TRUE;
-  $handler->display->display_options['filters']['field_category_tid']['expose']['reduce'] = TRUE;
-  $handler->display->display_options['filters']['field_category_tid']['type'] = 'select';
-  $handler->display->display_options['filters']['field_category_tid']['vocabulary'] = 'category';
-
   /* Display: Mas Reports Solved */
   $handler = $view->new_display('block', 'Mas Reports Solved', 'block_1');
   $handler->display->display_options['defaults']['title'] = FALSE;
@@ -580,7 +411,6 @@ function mark_a_spot_admin_views_default_views() {
   $handler->display->display_options['pager']['options']['id'] = '2';
   $handler->display->display_options['pager']['options']['total_pages'] = '0';
   $handler->display->display_options['pager']['options']['expose']['items_per_page_label'] = 'Elemente pro Seite';
-  $handler->display->display_options['pager']['options']['expose']['items_per_page_options_all_label'] = '- All -';
   $handler->display->display_options['pager']['options']['tags']['first'] = '« erste Seite';
   $handler->display->display_options['pager']['options']['tags']['previous'] = '‹ vorherige Seite';
   $handler->display->display_options['pager']['options']['tags']['next'] = 'nächste Seite ›';
@@ -738,9 +568,8 @@ function mark_a_spot_admin_views_default_views() {
   $handler->display->display_options['filters']['field_status_tid']['table'] = 'field_data_field_status';
   $handler->display->display_options['filters']['field_status_tid']['field'] = 'field_status_tid';
   $handler->display->display_options['filters']['field_status_tid']['value'] = array(
-    3 => '3',
-    14 => '14',
-    13 => '13',
+    8 => '8',
+    7 => '7',
   );
   $handler->display->display_options['filters']['field_status_tid']['exposed'] = TRUE;
   $handler->display->display_options['filters']['field_status_tid']['expose']['operator_id'] = 'field_status_tid_op';
@@ -753,9 +582,6 @@ function mark_a_spot_admin_views_default_views() {
     2 => '2',
     1 => 0,
     3 => 0,
-    5 => 0,
-    4 => 0,
-    6 => 0,
   );
   $handler->display->display_options['filters']['field_status_tid']['expose']['reduce'] = TRUE;
   $handler->display->display_options['filters']['field_status_tid']['reduce_duplicates'] = TRUE;
@@ -871,7 +697,7 @@ function mark_a_spot_admin_views_default_views() {
   $handler->display->display_options['filters']['field_status_tid']['field'] = 'field_status_tid';
   $handler->display->display_options['filters']['field_status_tid']['operator'] = 'not';
   $handler->display->display_options['filters']['field_status_tid']['value'] = array(
-    0 => '3',
+    0 => '5',
   );
   $handler->display->display_options['filters']['field_status_tid']['vocabulary'] = 'status';
 
@@ -1142,8 +968,8 @@ function mark_a_spot_admin_views_default_views() {
   $handler->display->display_options['filters']['field_status_tid']['table'] = 'field_data_field_status';
   $handler->display->display_options['filters']['field_status_tid']['field'] = 'field_status_tid';
   $handler->display->display_options['filters']['field_status_tid']['value'] = array(
-    1 => '1',
-    2 => '2',
+    6 => '6',
+    5 => '5',
   );
   $handler->display->display_options['filters']['field_status_tid']['group'] = 1;
   $handler->display->display_options['filters']['field_status_tid']['exposed'] = TRUE;
@@ -1157,9 +983,6 @@ function mark_a_spot_admin_views_default_views() {
     2 => '2',
     1 => 0,
     3 => 0,
-    5 => 0,
-    4 => 0,
-    6 => 0,
   );
   $handler->display->display_options['filters']['field_status_tid']['expose']['reduce'] = TRUE;
   $handler->display->display_options['filters']['field_status_tid']['reduce_duplicates'] = TRUE;
@@ -1378,9 +1201,61 @@ function mark_a_spot_admin_views_default_views() {
   $handler->display->display_options['filters']['field_status_tid']['table'] = 'field_data_field_status';
   $handler->display->display_options['filters']['field_status_tid']['field'] = 'field_status_tid';
   $handler->display->display_options['filters']['field_status_tid']['value'] = array(
-    0 => '13',
+    0 => '8',
   );
   $handler->display->display_options['filters']['field_status_tid']['vocabulary'] = 'status';
+  $translatables['mark_a_spot_admin_reports'] = array(
+    t('Master'),
+    t('Active Content'),
+    t('mehr'),
+    t('Submit'),
+    t('Reset'),
+    t('Sort'),
+    t('Aufsteigend'),
+    t('Absteigend'),
+    t('Elemente pro Seite'),
+    t('- All -'),
+    t('Offset'),
+    t('« erste Seite'),
+    t('‹ vorherige Seite'),
+    t('nächste Seite ›'),
+    t('letzte Seite »'),
+    t('No results'),
+    t('Keine Ergebnisse für diesen Filter'),
+    t('author'),
+    t('term from field_status'),
+    t('<div class="status_[field_status_hex]">[field_status]</div>'),
+    t('[name] [created]'),
+    t('Mas Reports Solved'),
+    t('Closed Reports'),
+    t('more'),
+    t('Anliegen'),
+    t('Beitrag vom'),
+    t('Status'),
+    t('Bearbeiten (Archivieren)'),
+    t('Mas Reports Edited Recently'),
+    t('Recentrly edited reports'),
+    t('- Alle -'),
+    t('Zuletzt bearbeitet vor'),
+    t('Mas Reports Table Active'),
+    t('Anwenden'),
+    t('Zurücksetzen'),
+    t('Sortieren nach'),
+    t('Beitrag-Nummer'),
+    t('#[nid]'),
+    t('Beschreibung'),
+    t('Title'),
+    t('Category'),
+    t('Benutzer'),
+    t('Updated/commented date'),
+    t('<span class="meta-info"> [last_updated] Uhr </span>'),
+    t('Nid'),
+    t('Path'),
+    t('Beitrags-ID'),
+    t('Mas Reports archived'),
+    t('Archived reports'),
+    t('Bearbeiten'),
+  );
   $export['mark_a_spot_admin_reports'] = $view;
 
   return $export;
