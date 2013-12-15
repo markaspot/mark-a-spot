@@ -21,7 +21,7 @@ function mark_a_spot_strongarm() {
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'clean_url';
-  $strongarm->value = '1';
+  $strongarm->value = 1;
   $export['clean_url'] = $strongarm;
 
   $strongarm = new stdClass();
@@ -261,9 +261,58 @@ function mark_a_spot_strongarm() {
     'default_favicon' => 1,
     'favicon_path' => '',
     'favicon_upload' => '',
-    'bootstrap_rebuild_registry' => 0,
-    'cdn_bootstrap' => 0,
-    'cdn_bootstrap_version' => '2.3.1',
+    'general__active_tab' => 'edit-theme-settings',
+    'bootstrap__active_tab' => 'edit-advanced',
+    'bootstrap_breadcrumb' => '0',
+    'bootstrap_breadcrumb_home' => 0,
+    'bootstrap_breadcrumb_title' => 0,
+    'bootstrap_navbar_position' => '',
+    'bootstrap_navbar_inverse' => 0,
+    'bootstrap_region_well-navigation' => '',
+    'bootstrap_region_well-header' => '',
+    'bootstrap_region_well-highlighted' => '',
+    'bootstrap_region_well-help' => '',
+    'bootstrap_region_well-content' => '',
+    'bootstrap_region_well-sidebar_first' => '',
+    'bootstrap_region_well-sidebar_second' => '',
+    'bootstrap_region_well-footer' => '',
+    'bootstrap_region_well-page_top' => '',
+    'bootstrap_region_well-page_bottom' => '',
+    'bootstrap_anchors_fix' => 1,
+    'bootstrap_anchors_smooth_scrolling' => 1,
+    'bootstrap_popover_enabled' => 1,
+    'bootstrap_popover_animation' => 0,
+    'bootstrap_popover_html' => 0,
+    'bootstrap_popover_placement' => 'top',
+    'bootstrap_popover_selector' => '',
+    'bootstrap_popover_trigger' => array(
+      'click' => 0,
+      'hover' => 0,
+      'focus' => 0,
+      'manual' => 0,
+    ),
+    'bootstrap_popover_title' => '',
+    'bootstrap_popover_content' => '',
+    'bootstrap_popover_delay' => '',
+    'bootstrap_popover_container' => '',
+    'bootstrap_tooltip_enabled' => 1,
+    'bootstrap_tooltip_descriptions' => 0,
+    'bootstrap_tooltip_animation' => 0,
+    'bootstrap_tooltip_html' => 0,
+    'bootstrap_tooltip_placement' => 'top',
+    'bootstrap_tooltip_selector' => '',
+    'bootstrap_tooltip_trigger' => array(
+      'click' => 0,
+      'hover' => 0,
+      'focus' => 0,
+      'manual' => 0,
+    ),
+    'bootstrap_tooltip_delay' => '',
+    'bootstrap_tooltip_container' => '',
+    'bootstrap_cdn' => '3.0.2',
+    'bootstrap_bootswatch' => 'cerulean',
+    'bootstrap_rebuild_registry' => 1,
+    'bootstrap_toggle_jquery_error' => 1,
   );
   $export['theme_mas_settings'] = $strongarm;
 

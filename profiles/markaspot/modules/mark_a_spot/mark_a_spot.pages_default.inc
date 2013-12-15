@@ -454,12 +454,8 @@ function mark_a_spot_default_page_manager_pages() {
     $pane->configuration = array(
       'admin_title' => '',
       'title' => 'Reports ',
-      'body' => '<div class="span6">
-<p>Watch reports in your area.</p>
-</div>
-<div class="span6">
-<p class="well pagination-centered"><a class="btn btn-large btn-success" href="node/add/report"><i class="icon-bullhorn"> </i>Report a problem here.</a></p>
-</div>',
+      'body' => '<a class="btn btn-large btn-success pull-right" href="node/add/report"><i class="icon-bullhorn"></i> Report a problem here.</a>
+<p>Watch reports in your area.</p>',
       'format' => 'full_html',
       'substitute' => TRUE,
     );
@@ -469,7 +465,7 @@ function mark_a_spot_default_page_manager_pages() {
     );
     $pane->css = array(
       'css_id' => 'list-intro ',
-      'css_class' => 'row-fluid',
+      'css_class' => 'jumbotron',
     );
     $pane->extras = array();
     $pane->position = 0;
@@ -496,7 +492,7 @@ function mark_a_spot_default_page_manager_pages() {
     );
     $pane->css = array(
       'css_id' => '',
-      'css_class' => 'well',
+      'css_class' => '',
     );
     $pane->extras = array();
     $pane->position = 1;

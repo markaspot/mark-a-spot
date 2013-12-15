@@ -1,7 +1,12 @@
+/**
+ * This file should get overwritten if Method 1 is used. If Method 2 is chosen,
+ * remove this comment and start adding your styles to this file.
+ */
+
+
 html,
 body {
   height: 100%;
-  color: #222;
 }
 
 .field.field-name-body {
@@ -99,7 +104,7 @@ div.show-markers {
     display: none;
 }
 
-.span6.label {
+.label .col-md-6 {
   margin: 2px 2px 0 0;
   /* padding: 0; */
   min-height: 18px;
@@ -109,19 +114,16 @@ div.show-markers {
 .marker-status.col-8fe83b a {
   background: no-repeat scroll right center #8fe83b;
   color: green;
-  font-weight: 400;
 }
 .marker-status.col-cc0000,
 .marker-status.col-cc0000 a {
   background: no-repeat scroll right center #cc0000;
   color: #fff;
-  font-weight: 400;
 }
 .marker-status.col-ff6600,
 .marker-status.col-ff6600 a {
   background: no-repeat scroll right center #ff6600;
   color: yellow;
-  font-weight: 400;
 }
 
 
@@ -129,13 +131,10 @@ div.show-markers {
 .marker-status.col-8fe83b a {
     background: no-repeat scroll right center #8fe83b;
     color: green;
-    font-weight: 400
-
 }
 .marker-status.col-CCCCCC,
 .marker-status.col-CCCCCC a {
     color: #CCCCCC;
-    font-weight: 400
 }
 
 .marker-status.col-8B0000,
@@ -263,11 +262,11 @@ body.toolbar-drawer {
 }
 .region.region-footer {
   padding: 10px 30px;
-  color: #666;
+  /* color: #666; */
 }
 
 .region.region-footer a{
-  color: #434BAF;
+  /* color: #434BAF; */
 }
 
 
@@ -278,14 +277,10 @@ margin-bottom:0;
 float:right;
 }
 
-
-
 footer.footer .region.region-footer section.block-menu li a {
-color:#333;
 }
 
 footer.footer .region.region-footer section.block-menu li a:hover,footer.footer .region.region-footer section.block-menu li a:focus {
-color:#08c;
 text-decoration:underline;
 }
 
@@ -315,7 +310,7 @@ body.page-map  {
 
 .row.map-tools aside {
     width: 320px;
-    margin: auto;
+    margin: 20px 100px;
 }
 
 
@@ -338,16 +333,12 @@ top: 45px;
 div.marker-status {
   float: right;
 }
-span.marker-status {
-  display: inline-block;
-  width: 49%;
-}
-div.marker-status {
-  float: right;
-}
-span.marker-status {
+span.marker-status,
+span.marker-category {
   display: inline-block;
   width: 45%;
+  font-size: 85%;
+  margin: 0 10px 0 0;
 }
 
 .page-map .marker-status.col-8fe83b .page-map .marker-status.col-8fe83b a {
@@ -443,14 +434,14 @@ span.marker-status {
 /* Link styles (used on .masthead-links as well) */
 .mapheader a,
 .region-footer a {
-  color: rgba(255, 255, 255, 0.9);
-  -webkit-transition: all 0.2s ease-in-out;
+  /* color: rgba(255, 255, 255, 0.9); */
+  /* -webkit-transition: all 0.2s ease-in-out; */
   -moz-transition: all 0.2s ease-in-out;
   transition: all 0.2s ease-in-out;
 }
 .mapheader a:hover,
 .region-footer a:hover {
-  color: #8F8F8F;
+  /* color: #8F8F8F; */
   text-shadow: 0 0 10px rgba(255, 255, 255, 0.25);
 }
 
@@ -459,17 +450,6 @@ span.marker-status {
 
 .page-map .logo-area {
     display: none;
-}
-
-
-.page-map .logo.pull-left img {
-    margin: 5px 0 0 0;
-}
-
-
-.logo {
-  padding: 3px 0;
-  display: block;
 }
 
 
@@ -502,10 +482,6 @@ span.marker-status {
 
 .page-map .btn.btn-primary {
     width: 100px;
-}
-
-.page-map .btn.btn-primary.dropdown-toggle {
-    width: 30px;
 }
 
 .page-map .dropdown-menu > li > a {
@@ -547,6 +523,40 @@ span.marker-status {
 
   padding: 40px 0 0 40px;
 }
+
+
+/* CUSTOMIZE THE NAVBAR
+-------------------------------------------------- */
+
+/* Special class on .container surrounding .navbar, used for positioning it into place. */
+.front .navbar-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 20;
+}
+
+/* Flip around the padding for proper display in narrow viewports */
+.front .navbar-wrapper .container {
+  padding-left: 0;
+  padding-right: 0;
+}
+.front .navbar-wrapper .navbar {
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+
+.not-front .main-container.container.page {
+margin-top: 130px;
+}
+
+.front .main-container.container.page {
+margin-top: 100px;
+}
+
+
 /*gallery @front page*/
 
 
@@ -608,7 +618,6 @@ span.marker-status {
 
 .block-title.block-title {
     font-size: 1.1em;
-    color: #888;
     margin: 0;
     padding: 0;
     line-height: 1.5em;
@@ -616,7 +625,7 @@ span.marker-status {
 }
 
 .block {
-    padding: 5px 10px;
+    padding: 5px 0px;*/
 }
 
 div.view.view-recent-edits ul, .block-user ul  {
@@ -625,15 +634,18 @@ div.view.view-recent-edits ul, .block-user ul  {
     padding: 0;
 }
 
-
-.region-sidebar-second .well {
+.panel-pane.well,
+.region-sidebar-second .well,
+.block.block-system.well {
   /* background-image:  url('../images/squairy_light.png'); */
   /* background-image:  url('../images/white_bed_sheet.png'); */
   background: none;
   border: 0;
-  border-left: 1px solid #eee;
   box-shadow: none;
-  padding: 0 0 0 20px;
+}
+
+.region-sidebar-second .well {
+  /* border-left: 1px solid #eee; */
   /* margin: 0 0 0 10px; */
 }
 .panel-pane.pane-block.pane-views-exp-markers-report-list.well {
@@ -685,108 +697,6 @@ input[type="color"] {
           box-sizing: border-box;
 }
 
-/*.nav-tabs .active {
-    font-weight: 700;
-}
-
-.nav-tabs li{
-    margin: 20px 0
-}
-
-
-.nav-tabs li a{
-    margin: 10px 0;
-    font-weight: bold;
-}
-
-.tabs-left > .nav-tabs {
-    background: #fff;
-    margin-right: 0;
-    border-right: 1px solid #f5f5f5;
-
-}
-
-
-.tabs-left > .nav-tabs > li > a {
-  padding: 15px;
-  margin-right: -1px;
-  -webkit-border-radius: 2px 0 0 2px;
-  -moz-border-radius: 2px 0 0 2px;
-  border-radius: 2px 0 0 2px;
-  background: #fff;
-  border: 1;
-}
-.tabs-left > .nav-tabs > li > a:hover,
-.tabs-left > .nav-tabs > li > a:focus {
-  border-color: #eeeeee #dddddd #eeeeee #eeeeee;
-}
-
-.tabs-left > .nav-tabs > li > a{
-    background: #fff;
-    margin-right: 0;
-    border-right: 0px solid #f5f5f5;
-}
-
-.tabs-left > .nav-tabs li.active a{
-    background-color: #f5f5f5;
-    margin-right: 0
-}*/
-
-
-
-/*.nav-tabs {
-    border-bottom: 1px solid #f5f5f5;
-    margin: 0;
-}
-
-.nav-tabs .active {
-    font-weight: 700;
-}
-
-.nav-tabs li{
-    margin: 0px 0
-}
-
-
-.nav-tabs li a{
-    margin: 0px 0;
-    font-weight: bold;
-}
-
-.tabs-left > .nav-tabs {
-    background: #fff;
-    margin-right: 0;
-    border-right: 1px solid #f5f5f5;
-
-}
-
-
-.tabs-left > .nav-tabs > li > a {
-  padding: 15px;
-  margin-right: -1px;
-  -webkit-border-radius: 2px 0 0 2px;
-  -moz-border-radius: 2px 0 0 2px;
-  border-radius: 2px 0 0 2px;
-  background: #fff;
-  border: 1;
-}
-.tabs-left > .nav-tabs > li > a:hover,
-.tabs-left > .nav-tabs > li > a:focus {
-  border: 0px;
-  border-color: #fff #fff #fff #fff;
-}
-
-.tabs-left > .nav-tabs > li > a{
-    background: #fff;
-    margin-right: 0;
-    border-right: 0px solid #f5f5f5;
-}
-
-.tabs-left > .nav-tabs li.active a{
-    background-color: #f5f5f5;
-    margin-right: 0
-}
-*/
 
 
 #geolocation-help-8-0 {
@@ -877,10 +787,8 @@ input[type="color"] {
   padding: 40px 0;
 }
 
-.admin-menu .mapheader {
-  height: 390px;
-}
 
+/*
 #map_wrapper_splash #start {
     background: none repeat scroll 0 0 #FFFFFF;
     display: block;
@@ -891,18 +799,20 @@ input[type="color"] {
     top: 0;
     width: 100%;
     z-index: 0;
-}
+}*/
+
+
 #map_wrapper_splash {
     background: none repeat scroll 0 0 transparent;
     left: 0;
     position: absolute;
     top: 0;
     width: 100%;
-    height: 550px;
+    height: 344px;
     z-index: 39;
 }
 #map_wrapper_splash #map {
-    height: 500px;
+    height: 420px;
 }
 
 .front .navbar-wrapper {
@@ -913,18 +823,32 @@ input[type="color"] {
   z-index: 50;
 }
 
+.list {
+    margin: 20px;
+}
+.add {
+    margin: 20px;
+}
 
 div.add a h3,
 div.list a h3 {
-    font-size: 14px;
-    line-height: 28px;
-    /* margin: 10px; */
+    font-size: 18px;
+    /* line-height: 28px; */
+    margin: 10px 0;
 }
 
 .row-fluid.welcome .list,
 .row-fluid.welcome .add{
 
 margin: 10px 30px;}
+
+.page-map .navbar-wrapper {
+  position: fixed;
+  z-index: 34;
+  margin-top: 0px;
+  left: 0;
+  right: 0;
+}
 
 /* Responsive
 -------------------------------------------------- */
@@ -998,6 +922,10 @@ margin: 10px 30px;}
   .front .navbar-wrapper {
     top: 30px;
   }
+  .navbar-tray-open.navbar-horizontal .navbar-wrapper {
+    top: 80px;
+  }
+
   .stage h1 {
       font-size: 2.5em;
   }
@@ -1007,14 +935,7 @@ margin: 10px 30px;}
       line-height: 1.4em;
   }
 
-  .map .navbar-wrapper {
-    position: fixed;
-    z-index: 9998;
-    margin-top: 0px;
-    top: 0;
-    left: 0;
-    right: 0;
-  }
+
 
   .main-container {
     margin: 40px auto;
@@ -1048,6 +969,9 @@ margin: 10px 30px;}
   }
   /* Widen masthead and social buttons to fill body padding */
 
+  .col-md-4.col-md-offset-1.thumbnail {
+      display: none;
+  }
 
   .report .show-markers {
     display: block;
@@ -1062,8 +986,9 @@ margin: 10px 30px;}
 
   .page-map .row.map-tools {
     position: absolute;
-    top: 80px;
+    top: 40px;
   }
+
 
 
 
@@ -1080,17 +1005,20 @@ margin: 10px 30px;}
   }
 
   #map_wrapper_splash #map {
-    margin: 0 20px
+    margin: 0
   }
-
+  .navbar-tray-open.navbar-vertical .navbar-wrapper {
+    top: 40px;
+  }
 
  /* .welcome-text.well {
       padding: 2em 4em 2em 4em;
   }*/
 
-  .span5.offset1.thumbnail {
+  .col-md-4.col-md-offset-1.thumbnail {
       display: none;
   }
+
 
   .list,
   .add {
@@ -1166,7 +1094,6 @@ margin: 10px 30px;}
 
 
   .navbar-wrapper {
-    position: fixed;
     z-index: 9999;
     margin-top: 0px;
   }
@@ -1204,7 +1131,7 @@ margin: 10px 30px;}
   }
   .page-map .row.map-tools {
     position: absolute;
-    top: 80px;
+    top: 40px;
   }
   /*narrow form styles*/
   #geolocation-address-8-0 {
@@ -1223,6 +1150,7 @@ margin: 10px 30px;}
   }
 
 }
+
 
 /*  Font Awesome styles
     ------------------------------------------------------- */
@@ -1307,14 +1235,8 @@ a [class*=" icon-"] {
 .nav-pills [class*=" icon-"].icon-large {
   line-height: .9em;
 }
-li [class^="icon-"],
-.nav li [class^="icon-"],
-li [class*=" icon-"],
-.nav li [class*=" icon-"] {
-  display: inline-block;
-  width: 1.25em;
-  text-align: center;
-}
+
+
 li [class^="icon-"].icon-large,
 .nav li [class^="icon-"].icon-large,
 li [class*=" icon-"].icon-large,
@@ -1458,12 +1380,12 @@ ul.icons li [class*=" icon-"] {
   }
 }
 
-/* Admin Styles */
+/* Admin Styles with ember*/
 .page-map.admin-menu .navbar,
 .page-map.admin-menu #map,
 .page-map.admin-menu .map-tools
  {
-  margin: 30px 0;
+  /* margin: 30px 0;*/
 }
 
 .tab-content {

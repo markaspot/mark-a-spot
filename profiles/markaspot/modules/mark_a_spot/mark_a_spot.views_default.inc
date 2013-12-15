@@ -39,12 +39,9 @@ function mark_a_spot_views_default_views() {
   $handler->display->display_options['pager']['type'] = 'some';
   $handler->display->display_options['pager']['options']['items_per_page'] = '6';
   $handler->display->display_options['pager']['options']['offset'] = '0';
-  $handler->display->display_options['style_plugin'] = 'list';
-  $handler->display->display_options['style_options']['row_class'] = 'span3';
+  $handler->display->display_options['style_plugin'] = 'default';
   $handler->display->display_options['style_options']['default_row_class'] = FALSE;
   $handler->display->display_options['style_options']['row_class_special'] = FALSE;
-  $handler->display->display_options['style_options']['class'] = 'thumbnails';
-  $handler->display->display_options['style_options']['wrapper_class'] = 'gallery';
   $handler->display->display_options['row_plugin'] = 'fields';
   $handler->display->display_options['row_options']['inline'] = array(
     'title' => 'title',
@@ -56,13 +53,14 @@ function mark_a_spot_views_default_views() {
   $handler->display->display_options['fields']['field_image_1']['field'] = 'field_image';
   $handler->display->display_options['fields']['field_image_1']['label'] = '';
   $handler->display->display_options['fields']['field_image_1']['exclude'] = TRUE;
-  $handler->display->display_options['fields']['field_image_1']['element_class'] = 'thumbnail';
+  $handler->display->display_options['fields']['field_image_1']['element_class'] = 'img-responsive';
   $handler->display->display_options['fields']['field_image_1']['element_label_colon'] = FALSE;
   $handler->display->display_options['fields']['field_image_1']['element_default_classes'] = FALSE;
   $handler->display->display_options['fields']['field_image_1']['click_sort_column'] = 'fid';
   $handler->display->display_options['fields']['field_image_1']['settings'] = array(
     'image_style' => 'mas_medium',
     'image_link' => 'content',
+    'field_formatter_class' => 'img-responsive',
   );
   $handler->display->display_options['fields']['field_image_1']['group_column'] = 'fid';
   $handler->display->display_options['fields']['field_image_1']['delta_limit'] = '1';
@@ -85,7 +83,7 @@ function mark_a_spot_views_default_views() {
   $handler->display->display_options['fields']['nothing']['table'] = 'views';
   $handler->display->display_options['fields']['nothing']['field'] = 'nothing';
   $handler->display->display_options['fields']['nothing']['label'] = '';
-  $handler->display->display_options['fields']['nothing']['alter']['text'] = '    <div class="thumbnail">
+  $handler->display->display_options['fields']['nothing']['alter']['text'] = '    <div class="col-md-4 thumbnail">
       [field_image_1]
       <!-- h3>[title]</h3 -->
     </div>';
@@ -131,7 +129,7 @@ function mark_a_spot_views_default_views() {
     t('Sortieren nach'),
     t('Aufsteigend'),
     t('Absteigend'),
-    t('    <div class="thumbnail">
+    t('    <div class="col-md-4 thumbnail">
       [field_image_1]
       <!-- h3>[title]</h3 -->
     </div>'),

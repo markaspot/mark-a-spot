@@ -109,15 +109,7 @@ function _markaspot_open311_requests_index($page, $parameters) {
 
     //->range(0, 10)
 
-    ->addMetaData('account', user_load(1)); // Run the query as user 1.
-
-
-  // $query = db_select('node', 'n');
-  // $query = $query->extend('PagerDefault')->extend('TableSort');
-
-  // if(count($parameters) >= 1) {
-     // var_dump($parameters);
-     // limit param
+    ->addMetaData('account', user_load(1)); // Run the query as user 1
 
   // Checking for a limit parameter
   $limit = (isset($parameters['limit'])) ? $parameters['limit']:null;
@@ -292,6 +284,12 @@ function _request_map_node($request) {
   $node->modified = time();
 
 
+  $node_options = variable_get('node_options_report', array());
+
+  if($node_options['status'] != 1) {
+    $node->status = 0;
+  }
+
   $node->language = 'und'; // language - neutral
 
   // mapping the requested service code to taxonomy id
@@ -305,7 +303,7 @@ function _request_map_node($request) {
   $node->title = $service_code->name;
 
   // All incoming requests get status "open"
-  $node->field_status[$node->language][0]['tid'] = "1";
+  $node->field_status[$node->language][0]['tid'] = variable_get('open311_status_open_start', _markaspot_logic_defaults('open311_status_open_start'));
 
   $node->body[$node->language][0]['value'] = $request->description;
   $node->body[$node->language][0]['format']  = 'filtered_html';
@@ -372,7 +370,7 @@ function _tax_map_status($taxonomyId) {
   if (isset($term['status'])) {
     // declare all taxonomy-ids for status "open"
     // (could be "acknowledged", "edited", "in progress")
-    $status_open = array(1, 2);
+    $status_open = array(variable_get('open311_status_open', _markaspot_logic_defaults('open311_status_open')));
 
     if (in_array($term['status']->tid, $status_open)) {
       $status = 'open';
@@ -396,9 +394,9 @@ function _tax_map_status($taxonomyId) {
 
 function _status_map_tax($status) {
   if ($status == "open") {
-    $tids = array(1,2);
+    $tids = array(variable_get('open311_status_open', _markaspot_logic_defaults('open311_status_open')));
   } else {
-    $tids = array(3);
+    $tids = array(variable_get('open311_status_closed', _markaspot_logic_defaults('open311_status_closed')));
   }
   return $tids;
 }

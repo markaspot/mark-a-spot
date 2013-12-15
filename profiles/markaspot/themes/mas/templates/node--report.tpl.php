@@ -4,8 +4,8 @@
   $category = $node->field_category['und'][0]['taxonomy_term'];
   $status   = $node->field_status['und'][0]['taxonomy_term'];
   ?>
-  <div class="container">
-    <div class="span6">
+  <div class="row">
+    <div class="col-md-6">
       <header>
         <?php print render($title_prefix); ?>
         <?php if (!$page && $title): ?>
@@ -19,7 +19,7 @@
           </span>
         <?php endif; ?>
         <div class="cat-stat-wrapper">
-            <span class="label marker-category col-<?php echo $category->field_category_hex['und'][0]['value'] ?> span6"><i class="icon-li icon-<?php echo $category->field_category_icon['und'][0]['value'] ?> "></i> <?php echo $category->name?> </span> <span class="label marker-status col-<?php echo $status->field_status_hex['und'][0]['value'] ?> span6"><i class="icon-li icon-<?php echo $status->field_status_icon['und'][0]['value'] ?>"></i> <?php echo $status->name ?></span>
+            <span class="label marker-category col-<?php echo $category->field_category_hex['und'][0]['value'] ?> col-md-6"><i class="icon-li icon-<?php echo $category->field_category_icon['und'][0]['value'] ?> "></i> <?php echo $category->name?> </span> <span class="label marker-status col-<?php echo $status->field_status_hex['und'][0]['value'] ?> col-md-6"><i class="icon-li icon-<?php echo $status->field_status_icon['und'][0]['value'] ?>"></i> <?php echo $status->name ?></span>
         </div>
       </header>
       <?php
@@ -32,7 +32,7 @@
 
       ?>
     </div>
-    <div class="span5 offset1">
+    <div class="col-md-5 col-md-offset-1">
       <?php print render($content['field_geo']); ?>
     </div>
   </div>
@@ -45,10 +45,10 @@
     </footer>
   <?php endif; ?>
   <div class="container">
-    <div class="span6">
+    <div class="col-md-6">
       <?php print render($content['comments']); ?>
     </div>
-    <div class="span5 offset1">
+    <div class="col-md-5 col-md-offset-1">
       <?php print render($content['field_image']); ?>
     </div>
   </div>

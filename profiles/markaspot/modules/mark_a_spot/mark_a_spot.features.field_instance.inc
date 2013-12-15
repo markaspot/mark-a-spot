@@ -357,7 +357,9 @@ function mark_a_spot_field_default_field_instances() {
     'widget' => array(
       'active' => 1,
       'module' => 'options',
-      'settings' => array(),
+      'settings' => array(
+        'apply_chosen' => 0,
+      ),
       'type' => 'options_select',
       'weight' => 5,
     ),
@@ -440,6 +442,7 @@ function mark_a_spot_field_default_field_instances() {
           'map_scrollwheel' => 0,
           'map_style' => 22677,
           'map_zoomlevel' => 16,
+          'marker_icon' => 'profiles/markaspot/libraries/Leaflet/images/marker-icon.png',
         ),
         'type' => 'geolocation_cloudmade_osm_dynamic',
         'weight' => 1,
@@ -471,7 +474,7 @@ function mark_a_spot_field_default_field_instances() {
         'settings' => array(
           'cloudmade_api_key' => '165795623c424338ad9a8eb60484ef0e',
           'field_formatter_class' => 'thumbnail pull-left',
-          'leafletImagePath' => '/profiles/markaspot/libraries/Leaflet/images/',
+          'leafletImagePath' => 'profiles/markaspot/libraries/Leaflet/images/',
           'map_dimensions' => '100x100',
           'map_imageformat' => 'png',
           'map_style' => 22677,
@@ -508,7 +511,7 @@ function mark_a_spot_field_default_field_instances() {
         'settings' => array(
           'cloudmade_api_key' => '165795623c424338ad9a8eb60484ef0e',
           'field_formatter_class' => '',
-          'leafletImagePath' => '/profiles/markaspot/libraries/Leaflet/images/',
+          'leafletImagePath' => 'profiles/markaspot/libraries/Leaflet/images/',
           'map_dimensions' => '300x300',
           'map_height' => '67px',
           'map_imageformat' => 'png',
@@ -552,7 +555,7 @@ function mark_a_spot_field_default_field_instances() {
         'label' => 'hidden',
         'module' => 'image',
         'settings' => array(
-          'field_formatter_class' => '',
+          'field_formatter_class' => 'img-responsive',
           'image_link' => 'content',
           'image_style' => 'mas_medium',
         ),
@@ -743,7 +746,7 @@ function mark_a_spot_field_default_field_instances() {
     'bundle' => 'report',
     'default_value' => array(
       0 => array(
-        'tid' => 1,
+        'tid' => 5,
       ),
     ),
     'deleted' => 0,

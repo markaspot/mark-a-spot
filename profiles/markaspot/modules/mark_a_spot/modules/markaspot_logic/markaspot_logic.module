@@ -362,6 +362,21 @@ function markaspot_logic_admin_settings() {
       '#default_value' => variable_get('open311_changeset', _markaspot_logic_defaults('open311_changeset')),
       '#title' => t('Sortable field that specifies the last time this document was updated'),
     );
+    $form['open311']['open311_status_open_start'] = array(
+      '#type' => 'textfield',
+      '#default_value' => variable_get('open311_status_open_start', _markaspot_logic_defaults('open311_status_open_start')),
+      '#title' => t('Enter the Status term-id when creating reports'),
+    );
+    $form['open311']['open311_status_open'] = array(
+      '#type' => 'textfield',
+      '#default_value' => variable_get('open311_status_open', _markaspot_logic_defaults('open311_status_open')),
+      '#title' => t('Enter the Taxonomy term-ids for open reports (comma-separated)'),
+    );
+    $form['open311']['open311_status_closed'] = array(
+      '#type' => 'textfield',
+      '#default_value' => variable_get('open311_status_closed', _markaspot_logic_defaults('open311_status_closed')),
+      '#title' => t('Enter the Taxonomy term-ids for closed reports (comma-separated)'),
+    );
   }
   if (module_exists('markaspot_archive')){
     $form['archive'] = array(
@@ -455,6 +470,12 @@ function _markaspot_logic_defaults($id) {
       return '30';
     case 'open311_contact':
       return 'You can email or call for assistance api@mycity.org +1 (555) 555-5555';
+    case 'open311_status_open_start':
+      return '5';
+    case 'open311_status_open':
+      return '5,6';
+    case 'open311_status_closed':
+      return '7,8';
     case 'open311_changeset':
       return '2013-11-03 00:00';
     case 'open311_key_service':

@@ -96,7 +96,7 @@
       </span>
     <?php endif; ?>
     <div class="cat-stat-wrapper">
-        <span class="label marker-category col-<?php echo $category->field_category_hex['und'][0]['value'] ?> span6"><i class="icon-li icon-<?php echo $category->field_category_icon['und'][0]['value'] ?> "></i> <?php echo $category->name?> </span> <span class="label marker-status col-<?php echo $status->field_status_hex['und'][0]['value'] ?> span6"><i class="icon-li icon-<?php echo $status->field_status_icon['und'][0]['value'] ?>"></i> <?php echo $status->name ?></span>
+        <span class="label label-default marker-category col-<?php echo $category->field_category_hex['und'][0]['value'] ?> col-md-6"><i class="icon-li icon-<?php echo $category->field_category_icon['und'][0]['value'] ?> "></i> <?php echo $category->name?> </span> <span class="label marker-status col-<?php echo $status->field_status_hex['und'][0]['value'] ?> col-md-6"><i class="icon-li icon-<?php echo $status->field_status_icon['und'][0]['value'] ?>"></i> <?php echo $status->name ?></span>
     </div>
 
   </header>

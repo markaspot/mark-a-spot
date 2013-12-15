@@ -1,0 +1,11 @@
+name = Geolocation OSM
+description = Provides osm OSM Maps widgets and formaters for geolocation field.
+package = Geolocation
+core = 7.x
+dependencies[] = geolocation
+; Information added by drupal.org packaging script on 2012-04-10
+version = "7.x-1.0 Alpha"
+core = "7.x"
+project = "geolocation"
+datestamp = "1334089847"
+
