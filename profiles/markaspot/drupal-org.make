@@ -81,6 +81,5 @@ libraries[bootstrap][overwrite] = TRUE
 
 ; Themes
 projects[bootstrap][type] = "theme"
-projects[bootstrap][version] = 2.2
 projects[rubik][type] = "theme"
 projects[tao][type] = "theme"
