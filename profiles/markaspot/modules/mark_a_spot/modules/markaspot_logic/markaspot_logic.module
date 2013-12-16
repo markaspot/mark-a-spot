@@ -545,8 +545,8 @@ function markaspot_logic_contents($which_block) {
   switch ($which_block) {
     case 'taxonomy_category':
       $list_category  = null;
-      $list_category .= '<div class="btn-group dropdown"><button class="btn btn-primary" data-toggle="dropdown">'.t('Services').'</button>';
-      $list_category .= '<button class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>';
+      $list_category .= '<div class="btn-group dropdown"><button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">'.t('Services').' <span class="caret"></span></button>';
+
 
       $alter['html'] = TRUE;
       $alter['max_length'] = 125;
@@ -566,9 +566,7 @@ function markaspot_logic_contents($which_block) {
     break;
     case 'taxonomy_status':
       $list_status  = null;
-      $list_status .= '<div class="btn-group dropdown"><button class="btn btn-primary" data-toggle="dropdown">'.t('Status').'</button>';
-      $list_status .= '<button class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>';
-
+      $list_status .= '<div class="btn-group dropdown"><button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">'.t('Status').' <span class="caret"></span></button>';
 
       $alter['html'] = TRUE;
       $alter['max_length'] = 25;

@@ -420,8 +420,7 @@ span.marker-category {
 
 .page-map a.marker-status:hover,
 .page-map a.marker-category:hover {
-    color: #fff;
-    font-weight: 700
+    color: #000;
 }
 
 
@@ -824,10 +823,10 @@ input[type="color"] {
 }
 
 .list {
-    margin: 20px;
+    margin: 20px 0;
 }
 .add {
-    margin: 20px;
+    margin: 20px 0;
 }
 
 div.add a h3,
