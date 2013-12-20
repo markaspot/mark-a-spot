@@ -6,9 +6,9 @@ dependencies[] = views
 
 files[] = views/plugins/views_plugin_style_rdf.inc
 
-; Information added by drupal.org packaging script on 2013-10-19
+; Information added by Drupal.org packaging script on 2013-12-18
 version = "7.x-1.x-dev"
 core = "7.x"
 project = "views_datasource"
-datestamp = "1382164703"
+datestamp = "1387397305"
 

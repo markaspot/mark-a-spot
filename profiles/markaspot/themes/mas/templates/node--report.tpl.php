@@ -19,7 +19,7 @@
           </span>
         <?php endif; ?>
         <div class="cat-stat-wrapper">
-            <span class="label marker-category col-<?php echo $category->field_category_hex['und'][0]['value'] ?> col-md-6"><i class="icon-li icon-<?php echo $category->field_category_icon['und'][0]['value'] ?> "></i> <?php echo $category->name?> </span> <span class="label marker-status col-<?php echo $status->field_status_hex['und'][0]['value'] ?> col-md-6"><i class="icon-li icon-<?php echo $status->field_status_icon['und'][0]['value'] ?>"></i> <?php echo $status->name ?></span>
+            <span class="label label-default marker-category col-<?php echo $category->field_category_hex['und'][0]['value'] ?> col-md-6"><i class="icon-li icon-<?php echo $category->field_category_icon['und'][0]['value'] ?> "></i> <?php echo $category->name?> </span> <span class="label label-default marker-status col-<?php echo $status->field_status_hex['und'][0]['value'] ?> col-md-6"><i class="icon-li icon-<?php echo $status->field_status_icon['und'][0]['value'] ?>"></i> <?php echo $status->name ?></span>
         </div>
       </header>
       <?php
@@ -29,6 +29,7 @@
         hide($content['field_tags']);
         print render($content['body']);
         print render($content['field_address']);
+        print render($content['field_statement']);
 
       ?>
     </div>
@@ -44,7 +45,7 @@
       <?php print render($content['links']); ?>
     </footer>
   <?php endif; ?>
-  <div class="container">
+  <div class="row">
     <div class="col-md-6">
       <?php print render($content['comments']); ?>
     </div>

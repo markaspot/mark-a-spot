@@ -110,49 +110,12 @@ div.show-markers {
   min-height: 18px;
 }
 
-.marker-status.col-8fe83b,
-.marker-status.col-8fe83b a {
-  background: no-repeat scroll right center #8fe83b;
-  color: green;
-}
-.marker-status.col-cc0000,
-.marker-status.col-cc0000 a {
-  background: no-repeat scroll right center #cc0000;
-  color: #fff;
-}
-.marker-status.col-ff6600,
-.marker-status.col-ff6600 a {
-  background: no-repeat scroll right center #ff6600;
-  color: yellow;
-}
-
-
-.marker-status.col-8fe83b,
-.marker-status.col-8fe83b a {
-    background: no-repeat scroll right center #8fe83b;
-    color: green;
-}
-.marker-status.col-CCCCCC,
-.marker-status.col-CCCCCC a {
-    color: #CCCCCC;
-}
-
-.marker-status.col-8B0000,
-.marker-status.col-8B0000 a {
-    color: #8B0000;
-    font-weight: 700
-}
 
 .report header{
 margin: 10px 0;
 }
 
-.report .marker-status.col-ff6600,
- .marker-status.col-ff6600 a {
-    background: no-repeat scroll right center #ff6600;
-    color: yellow;
-    font-weight: 400
-}
+
 
 
 /* report detail */
@@ -336,12 +299,66 @@ div.marker-status {
 span.marker-status,
 span.marker-category {
   display: inline-block;
-  width: 45%;
+  width: 49%;
   font-size: 85%;
-  margin: 0 10px 0 0;
+  margin: 0 2px 0 0;
 }
 
-.page-map .marker-status.col-8fe83b .page-map .marker-status.col-8fe83b a {
+
+
+.marker-status.col-5F9EA0,
+.marker-status.col-5F9EA0 a {
+    background: no-repeat scroll right center #5F9EA0;
+    color: yellow;
+    font-weight: 400
+}
+
+.marker-status.col-ff6600,
+.marker-status.col-ff6600 a {
+    background: no-repeat scroll right center #ff6600;
+    color: yellow;
+    font-weight: 400
+}
+
+
+.marker-status.col-8fe83b,
+.marker-status.col-8fe83b a {
+  background: no-repeat scroll right center #8fe83b;
+  color: green;
+}
+
+.marker-status.col-cc0000,
+.marker-status.col-cc0000 a {
+  background: no-repeat scroll right center #cc0000;
+  color: #fff;
+}
+
+.marker-status.col-ff6600,
+.marker-status.col-ff6600 a {
+  background: no-repeat scroll right center #ff6600;
+  color: yellow;
+}
+
+.marker-status.col-8fe83b,
+.marker-status.col-8fe83b a {
+    background: no-repeat scroll right center #8fe83b;
+    color: green;
+}
+.marker-status.col-CCCCCC,
+.marker-status.col-CCCCCC a {
+    color: #CCCCCC;
+}
+
+.marker-status.col-8B0000,
+.marker-status.col-8B0000 a {
+    color: #8B0000;
+    font-weight: 700
+}
+
+
+
+.page-map .marker-status.col-8fe83b,
+.page-map .marker-status.col-8fe83b a {
   color: green;
   font-weight: 700;
 }
@@ -988,7 +1005,10 @@ margin: 10px 30px;}
     top: 40px;
   }
 
-
+.jumbotron {
+  padding-top: 20px;
+  padding-bottom: 40px;
+}
 
 
 }

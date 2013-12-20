@@ -164,7 +164,7 @@ var markerLayer, queryString;
 
 
             if (item.address){
-              html += '<div class="marker-address"><p>'+ item.address + '</br>'  + '</p></div><div><a class="infowindow-link" href="' + item.path + '">mehr lesen</a></span>';
+              html += '<div class="marker-address"><p>'+ item.address + '</br>'  + '</p></div><div><a class="infowindow-link" href="' + item.path + '">' + Drupal.t('read more') + '</a></span>';
             }
             /*
             if (item.Value){

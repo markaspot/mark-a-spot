@@ -7,7 +7,7 @@
     $('.geolocation-address-geocode, .geolocation-client-location, .geolocation-remove').addClass('btn');
 
     // Change hash for page-reload
-    $('.nav-tabs > li > a').on('shown', function(e) {
+    $('.nav-tabs > li > a').on('click', function(e) {
 
       window.location.hash = e.target.hash;
       if (e.target.hash === '#3--media')  {

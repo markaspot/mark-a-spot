@@ -47,6 +47,9 @@ function markaspot_install_finished(&$install_state) {
   // Remember the profile which was used.
   variable_set('install_profile', drupal_get_profile());
 
+  // clean Urls
+  variable_set('clean_url', 1);
+
   variable_set('chosen_minimum_single', 3);
 
 

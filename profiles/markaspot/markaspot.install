@@ -260,11 +260,8 @@ function markaspot_install() {
   module_enable($module_list, $enable_dependencies = TRUE);
 
   variable_set('jquery_update_jquery_version', '1.7');
-
-  // clean Urls
-  variable_set('clean_url', 1);
-
   // Setting some Mark-a-Spot default values
+
   variable_set('markaspot_zip', '50321');
   variable_set('markaspot_city', 'Brühl');
   variable_set('markaspot_country', 'Deutschland');
@@ -272,5 +269,8 @@ function markaspot_install() {
   variable_set('markaspot_ini_lng', '6.8961028');
   variable_set('markaspot_twittername', '@mascity');
   variable_set('markaspot_tweetSearch', 1);
+
+  variable_set('site_name', 'Track issues MaS-City');
+  variable_set('site_slogan', 'Report local problems in your area and track government fixing them');
 
 }

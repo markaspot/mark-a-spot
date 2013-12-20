@@ -57,7 +57,7 @@ function markaspot_default_content_block_view($delta = '') {
    */
     case 'welcome':
       $block['subject'] = t('Welcome to MaS-City');
-      $block['content'] = '<h1>'.t('Welcome to MaS-City').'</h1><p>'.t('Report local problems in your area and track government fixing them').'</p>';
+      $block['content'] = '<h1>'. variable_get('site_name', 'Track issues MaS-City') .'</h1><p>'. variable_get('site_slogan', 'Report local problems in your area and track government fixing them') . '</p>';
       break;
     case 'add_reports':
       $block['subject'] = t('Add Report');
