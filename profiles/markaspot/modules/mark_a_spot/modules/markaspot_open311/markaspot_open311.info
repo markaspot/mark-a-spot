@@ -5,6 +5,5 @@ package = "Mark-a-Spot"
 core = 7.x
 
 files[] = markaspot_open311.inc
-files[] = markaspot_open311_sd.inc
 files[] = markaspot_open311.module
 dependencies[] = "services"

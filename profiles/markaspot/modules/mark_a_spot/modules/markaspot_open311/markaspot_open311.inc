@@ -35,16 +35,38 @@ function _markaspot_open311_requests_create($data) {
   global $user;
   $data = (object) $data;
 
+  // could be more validation here
   if (!isset($data->email)) {
     return _process_services_error(t('Please provide a valid email address.'), 400);
   }
 
 
+  if (!isset($data->lat) || !isset($data->long)) {
+    return _process_services_error(t('Missing position parameters lat and long'), 400);
+  } else
+
+  $lat = $data->lat;
+  $lon = $data->long;
+  $nw = FALSE;
+  $se = FALSE;
+  $bbox = array(
+    'nw' => array('lat' => variable_get('bbox_nw_lat'), 'lng' => variable_get('bbox_nw_lng')),
+    'se' => array('lat' => variable_get('bbox_se_lat'), 'lng' => variable_get('bbox_se_lng')),
+  );
+
+  if  (($bbox['nw']['lat'] >= $lat) && ($bbox['nw']['lng'] <= $lon)) {
+   $nw = TRUE;
+  }
+  if  (($bbox['se']['lat'] <= $lat) && ($bbox['se']['lng'] >= $lon)) {
+   $se = TRUE;
+  }
+
+  if ($se == FALSE || $nw == FALSE) {
+    return _process_services_error(t('Your position is not located in our range of activity'), 400);
+  }
+
   if (!isset($data->service_code)) {
     return _process_services_error(t('Service_code missing or empty.'), 404);
-  }
-  if (!isset($data->lat) || !isset($data->long)) {
-    return _process_services_error(t('Missing position parameters lat and long'), $code);
   }
 
   // Check if submitted service code is in ServiceList:
@@ -52,6 +74,7 @@ function _markaspot_open311_requests_create($data) {
   foreach ($services as $service) {
     $services_available[] = $service['service_code'];
   }
+
   if (!in_array($data->service_code, $services_available)) {
     return services_error('Service_code was not found', 404);
   }
@@ -63,7 +86,11 @@ function _markaspot_open311_requests_create($data) {
   markaspot_open311_write_request($node);
 
   // we have the node-id
-  $service_request[0]['service_request_id'] = $node->nid;
+  if (module_exists('markaspot_uuid')) {
+    $service_request[0]['service_request_id'] = $node->uuid;
+  } else {
+    $service_request[0]['service_request_id'] = $node->id;
+  }
   $service_request[0]['service_notice'] = "";
   return $service_request;
 }
@@ -78,14 +105,33 @@ function _markaspot_open311_requests_create($data) {
  *
  */
 
-function _markaspot_open311_requests_retrieve($nid, $parameters) {
-   // added optional parameters achiving this:
-   // http://lists.open311.org/groups/discuss/messages/topic/AaxmrRLUHToO7jCQdjAXy
-   $node = node_load($nid);
-   $status = _tax_map_status($node->field_status['und'][0]["tid"]);
+function _markaspot_open311_requests_retrieve($id, $parameters) {
+  // added optional parameters achiving this:
+  // http://lists.open311.org/groups/discuss/messages/topic/AaxmrRLUHToO7jCQdjAXy
 
-   $service_requests[] = _node_map_request($node, $status, $parameters);
-   return $service_requests;
+  // using entity_load is slower than node_load()
+  // $entity = _uuid_services_entity_retrieve('node', $uuid);
+
+  if (module_exists('markaspot_uuid')) {
+    //  Get node->nid by uuid
+    $service_request_id = entity_get_id_by_uuid('node', array($id));
+
+    if(!empty($service_request_id[$id])) {
+      // load node with translated nid
+      $node = node_load($service_request_id[$id]);
+    } else {
+      return _process_services_error(t('Service request not found'), 404);
+    }
+  } else {
+    $node = node_load($id);
+  }
+
+  if ($node == false) {
+  } else {
+    $status = _tax_map_status($node->field_status['und'][0]["tid"]);
+  }
+  $service_requests[] = _node_map_request($node, $status, $parameters);
+  return $service_requests;
 
 }
 
@@ -212,8 +258,12 @@ function _markaspot_open311_services_retrieve($service_code) {
 
 function _node_map_request($node, $status, $parameters){
   //print_r($node,$parameters);
+  if(module_exists('markaspot_uuid')) {
+    $request['service_request_id'] = $node->uuid;
+  } else {
+    $request['service_request_id'] = $node->nid;
+  }
 
-  $request['service_request_id'] = intval($node->nid);
   $request['status'] = $status;
   if (isset($node->field_statement['und'][0]['value'])){
     $request['status_notes'] = $node->field_statement['und'][0]['value'];
@@ -260,7 +310,6 @@ function _node_map_request($node, $status, $parameters){
     $request['status_code'] = $node->field_status['und'][0]["tid"];
     $term['status_sub'] = taxonomy_term_load($node->field_status['und'][0]["tid"]);
     $request['status_sub'] = $term['status_sub']->name;
-
   }
 
   return $request;
@@ -327,7 +376,10 @@ function _request_map_node($request) {
 
   // Non Open311 compliant fields can be added here
   if(isset($parameters['extension'])) {
-    $node->field_common[$node->language]['value'] = $request->field_common['und'];
+    $request['status_code'] = $node->field_status[$node->language][0]["tid"];
+    $term['status_sub'] = taxonomy_term_load($node->field_status[$node->language][0]["tid"]);
+    $request['status_sub'] = $term['status_sub']->name;
+
   }
 
   $node->is_new = true;

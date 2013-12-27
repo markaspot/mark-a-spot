@@ -5,9 +5,9 @@
 
 
 jQuery(document).ready(function(){
-	$ = jQuery;
+  $ = jQuery;
 
-  // setting a located/unlocated report, 
+  // setting a located/unlocated report,
   // assuming unchanged lat will be general
   function clearfields(){
     $('#edit-field-geo-und-0-latitem > span').html(Drupal.settings.mas.markaspot_ini_lat);
@@ -20,7 +20,7 @@ jQuery(document).ready(function(){
   $('#edit-field-common-und').click(function() {
     if ($('#edit-field-common-und:checked')) {
       clearfields();
-    } 
+    }
    });
 
 

@@ -195,8 +195,11 @@ function mark_a_spot_views_default_views() {
       ),
     ),
   );
-  $handler->display->display_options['pager']['type'] = 'none';
+  $handler->display->display_options['pager']['type'] = 'full';
+  $handler->display->display_options['pager']['options']['items_per_page'] = '10';
   $handler->display->display_options['pager']['options']['offset'] = '0';
+  $handler->display->display_options['pager']['options']['id'] = '0';
+  $handler->display->display_options['pager']['options']['quantity'] = '9';
   $handler->display->display_options['style_plugin'] = 'default';
   $handler->display->display_options['style_options']['grouping'] = '';
   $handler->display->display_options['row_plugin'] = 'entity';
@@ -765,6 +768,115 @@ function mark_a_spot_views_default_views() {
   $handler->display->display_options['arguments']['field_status_tid']['summary']['format'] = 'default_summary';
   $handler->display->display_options['arguments']['field_status_tid']['summary_options']['items_per_page'] = '25';
   $handler->display->display_options['path'] = 'reports/json';
+
+  /* Display: JSON View */
+  $handler = $view->new_display('page', 'JSON View', 'page_1');
+  $handler->display->display_options['defaults']['hide_admin_links'] = FALSE;
+  $handler->display->display_options['defaults']['pager'] = FALSE;
+  $handler->display->display_options['pager']['type'] = 'none';
+  $handler->display->display_options['pager']['options']['offset'] = '0';
+  $handler->display->display_options['defaults']['style_plugin'] = FALSE;
+  $handler->display->display_options['style_plugin'] = 'views_json';
+  $handler->display->display_options['style_options']['plaintext_output'] = 1;
+  $handler->display->display_options['style_options']['remove_newlines'] = 0;
+  $handler->display->display_options['style_options']['jsonp_prefix'] = '';
+  $handler->display->display_options['style_options']['using_views_api_mode'] = 0;
+  $handler->display->display_options['style_options']['object_arrays'] = 0;
+  $handler->display->display_options['style_options']['numeric_strings'] = 0;
+  $handler->display->display_options['style_options']['bigint_string'] = 0;
+  $handler->display->display_options['style_options']['pretty_print'] = 0;
+  $handler->display->display_options['style_options']['unescaped_slashes'] = 0;
+  $handler->display->display_options['style_options']['unescaped_unicode'] = 0;
+  $handler->display->display_options['style_options']['char_encoding'] = array();
+  $handler->display->display_options['defaults']['style_options'] = FALSE;
+  $handler->display->display_options['defaults']['row_plugin'] = FALSE;
+  $handler->display->display_options['defaults']['row_options'] = FALSE;
+  $handler->display->display_options['exposed_block'] = TRUE;
+  $handler->display->display_options['defaults']['empty'] = FALSE;
+  $handler->display->display_options['defaults']['sorts'] = FALSE;
+  /* Sort criterion: Content: Post date */
+  $handler->display->display_options['sorts']['created']['id'] = 'created';
+  $handler->display->display_options['sorts']['created']['table'] = 'node';
+  $handler->display->display_options['sorts']['created']['field'] = 'created';
+  $handler->display->display_options['sorts']['created']['order'] = 'DESC';
+  $handler->display->display_options['defaults']['arguments'] = FALSE;
+  /* Contextual filter: Content: Nid */
+  $handler->display->display_options['arguments']['nid']['id'] = 'nid';
+  $handler->display->display_options['arguments']['nid']['table'] = 'node';
+  $handler->display->display_options['arguments']['nid']['field'] = 'nid';
+  $handler->display->display_options['arguments']['nid']['default_action'] = 'default';
+  $handler->display->display_options['arguments']['nid']['exception']['title'] = 'Alle';
+  $handler->display->display_options['arguments']['nid']['default_argument_type'] = 'fixed';
+  $handler->display->display_options['arguments']['nid']['default_argument_options']['argument'] = 'all';
+  $handler->display->display_options['arguments']['nid']['default_argument_skip_url'] = TRUE;
+  $handler->display->display_options['arguments']['nid']['summary']['number_of_records'] = '0';
+  $handler->display->display_options['arguments']['nid']['summary']['format'] = 'default_summary';
+  $handler->display->display_options['arguments']['nid']['summary_options']['items_per_page'] = '25';
+  /* Contextual filter: Content: Category (field_category) */
+  $handler->display->display_options['arguments']['field_category_tid']['id'] = 'field_category_tid';
+  $handler->display->display_options['arguments']['field_category_tid']['table'] = 'field_data_field_category';
+  $handler->display->display_options['arguments']['field_category_tid']['field'] = 'field_category_tid';
+  $handler->display->display_options['arguments']['field_category_tid']['exception']['title'] = 'Alle';
+  $handler->display->display_options['arguments']['field_category_tid']['default_argument_type'] = 'fixed';
+  $handler->display->display_options['arguments']['field_category_tid']['summary']['number_of_records'] = '0';
+  $handler->display->display_options['arguments']['field_category_tid']['summary']['format'] = 'default_summary';
+  $handler->display->display_options['arguments']['field_category_tid']['summary_options']['items_per_page'] = '25';
+  /* Contextual filter: Content: Status (field_status) */
+  $handler->display->display_options['arguments']['field_status_tid']['id'] = 'field_status_tid';
+  $handler->display->display_options['arguments']['field_status_tid']['table'] = 'field_data_field_status';
+  $handler->display->display_options['arguments']['field_status_tid']['field'] = 'field_status_tid';
+  $handler->display->display_options['arguments']['field_status_tid']['exception']['title'] = 'Alle';
+  $handler->display->display_options['arguments']['field_status_tid']['default_argument_type'] = 'fixed';
+  $handler->display->display_options['arguments']['field_status_tid']['summary']['number_of_records'] = '0';
+  $handler->display->display_options['arguments']['field_status_tid']['summary']['format'] = 'default_summary';
+  $handler->display->display_options['arguments']['field_status_tid']['summary_options']['items_per_page'] = '25';
+  $handler->display->display_options['defaults']['filter_groups'] = FALSE;
+  $handler->display->display_options['defaults']['filters'] = FALSE;
+  /* Filter criterion: Content: Published */
+  $handler->display->display_options['filters']['status']['id'] = 'status';
+  $handler->display->display_options['filters']['status']['table'] = 'node';
+  $handler->display->display_options['filters']['status']['field'] = 'status';
+  $handler->display->display_options['filters']['status']['value'] = 1;
+  $handler->display->display_options['filters']['status']['group'] = 0;
+  $handler->display->display_options['filters']['status']['expose']['operator'] = FALSE;
+  /* Filter criterion: Content: Type */
+  $handler->display->display_options['filters']['type']['id'] = 'type';
+  $handler->display->display_options['filters']['type']['table'] = 'node';
+  $handler->display->display_options['filters']['type']['field'] = 'type';
+  $handler->display->display_options['filters']['type']['value'] = array(
+    'report' => 'report',
+  );
+  $handler->display->display_options['filters']['type']['group'] = '0';
+  /* Filter criterion: Content: Category (field_category) */
+  $handler->display->display_options['filters']['field_category_tid']['id'] = 'field_category_tid';
+  $handler->display->display_options['filters']['field_category_tid']['table'] = 'field_data_field_category';
+  $handler->display->display_options['filters']['field_category_tid']['field'] = 'field_category_tid';
+  $handler->display->display_options['filters']['field_category_tid']['group'] = '0';
+  $handler->display->display_options['filters']['field_category_tid']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['field_category_tid']['expose']['operator_id'] = 'field_category_tid_op';
+  $handler->display->display_options['filters']['field_category_tid']['expose']['label'] = 'Service';
+  $handler->display->display_options['filters']['field_category_tid']['expose']['operator'] = 'field_category_tid_op';
+  $handler->display->display_options['filters']['field_category_tid']['expose']['identifier'] = 'field_category_tid';
+  $handler->display->display_options['filters']['field_category_tid']['expose']['remember_roles'] = array(
+    2 => '2',
+    1 => 0,
+    3 => 0,
+  );
+  $handler->display->display_options['filters']['field_category_tid']['type'] = 'select';
+  $handler->display->display_options['filters']['field_category_tid']['vocabulary'] = 'category';
+  /* Filter criterion: Content: Status (field_status) */
+  $handler->display->display_options['filters']['field_status_tid']['id'] = 'field_status_tid';
+  $handler->display->display_options['filters']['field_status_tid']['table'] = 'field_data_field_status';
+  $handler->display->display_options['filters']['field_status_tid']['field'] = 'field_status_tid';
+  $handler->display->display_options['filters']['field_status_tid']['group'] = '0';
+  $handler->display->display_options['filters']['field_status_tid']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['field_status_tid']['expose']['operator_id'] = 'field_status_tid_op';
+  $handler->display->display_options['filters']['field_status_tid']['expose']['label'] = 'Status';
+  $handler->display->display_options['filters']['field_status_tid']['expose']['operator'] = 'field_status_tid_op';
+  $handler->display->display_options['filters']['field_status_tid']['expose']['identifier'] = 'field_status_tid';
+  $handler->display->display_options['filters']['field_status_tid']['type'] = 'select';
+  $handler->display->display_options['filters']['field_status_tid']['vocabulary'] = 'status';
+  $handler->display->display_options['path'] = 'reports/json/map';
   $translatables['markers'] = array(
     t('Master'),
     t('Reports Mark-a-Spot'),
@@ -774,6 +886,13 @@ function mark_a_spot_views_default_views() {
     t('Sort by'),
     t('Asc'),
     t('Desc'),
+    t('Items per page'),
+    t('- All -'),
+    t('Offset'),
+    t('« first'),
+    t('‹ previous'),
+    t('next ›'),
+    t('last »'),
     t('term from field_category'),
     t('term from field_status'),
     t('author'),
@@ -800,9 +919,6 @@ function mark_a_spot_views_default_views() {
     t('List view'),
     t('more'),
     t('Elemente pro Seite'),
-    t('- All -'),
-    t('Offset'),
-    t('« first'),
     t('‹ previous Page'),
     t('next Page ›'),
     t('last Page »'),

@@ -3612,7 +3612,7 @@ textarea.input-group-sm > .input-group-btn > .btn {
 }
 .navbar {
   position: relative;
-  min-height: 50px;
+  min-height: 45px;
   margin-bottom: 20px;
   border: 1px solid transparent;
 }
@@ -3768,7 +3768,7 @@ textarea.input-group-sm > .input-group-btn > .btn {
 }
 .navbar-brand {
   float: left;
-  padding: 15px 15px;
+  padding: 12.5px 15px;
   font-size: 18px;
   line-height: 20px;
 }
@@ -3786,8 +3786,8 @@ textarea.input-group-sm > .input-group-btn > .btn {
   float: right;
   margin-right: 15px;
   padding: 9px 10px;
-  margin-top: 8px;
-  margin-bottom: 8px;
+  margin-top: 5.5px;
+  margin-bottom: 5.5px;
   background-color: transparent;
   border: 1px solid transparent;
   border-radius: 4px;
@@ -3807,7 +3807,7 @@ textarea.input-group-sm > .input-group-btn > .btn {
   }
 }
 .navbar-nav {
-  margin: 7.5px -15px;
+  margin: 6.25px -15px;
 }
 .navbar-nav > li > a {
   padding-top: 10px;
@@ -3845,8 +3845,8 @@ textarea.input-group-sm > .input-group-btn > .btn {
     float: left;
   }
   .navbar-nav > li > a {
-    padding-top: 15px;
-    padding-bottom: 15px;
+    padding-top: 12.5px;
+    padding-bottom: 12.5px;
   }
 }
 @media (min-width: 768px) {
@@ -3866,8 +3866,8 @@ textarea.input-group-sm > .input-group-btn > .btn {
   -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 1px 0 rgba(255, 255, 255, 0.1);
   -moz-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 1px 0 rgba(255, 255, 255, 0.1);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 1px 0 rgba(255, 255, 255, 0.1);
-  margin-top: 8px;
-  margin-bottom: 8px;
+  margin-top: 5.5px;
+  margin-bottom: 5.5px;
 }
 @media (min-width: 768px) {
   .navbar-form .form-group {
@@ -3924,13 +3924,13 @@ textarea.input-group-sm > .input-group-btn > .btn {
   right: 0;
 }
 .navbar-btn {
-  margin-top: 8px;
-  margin-bottom: 8px;
+  margin-top: 5.5px;
+  margin-bottom: 5.5px;
 }
 .navbar-text {
   float: left;
-  margin-top: 15px;
-  margin-bottom: 15px;
+  margin-top: 12.5px;
+  margin-bottom: 12.5px;
 }
 @media (min-width: 768px) {
   .navbar-text {
@@ -6253,8 +6253,10 @@ a.tabledrag-handle .handle {
 }
 div.error,
 table tr.error {
+  padding: 10px;
   background-color: #f2dede;
   color: #b94a48;
+  border-radius: 4px;
 }
 .control-group.error {
   background: none;
@@ -6590,9 +6592,31 @@ table .checkbox input[type="checkbox"] {
 .alert-danger a {
   color: #953b39;
 }
-.footer span {
+.field-label {
+  display: inline;
+  padding: .2em .6em .3em;
+  font-size: 75%;
+  font-weight: bold;
+  line-height: 1;
   color: #ffffff;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: .25em;
 }
-.footer .nav > li > a {
-  padding: 0px 15px;
+.field-label[href]:hover,
+.field-label[href]:focus {
+  color: #ffffff;
+  text-decoration: none;
+  cursor: pointer;
+}
+.field-label:empty {
+  display: none;
+}
+.field-label.label {
+  background-color: #999999;
+}
+.field-label.label[href]:hover,
+.field-label.label[href]:focus {
+  background-color: #808080;
 }

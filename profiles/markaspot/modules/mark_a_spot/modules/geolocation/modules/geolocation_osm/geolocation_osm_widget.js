@@ -300,8 +300,8 @@
           var tile_server = Drupal.settings.geolocation.settings.tile_server;
 
           Drupal.geolocation.maps[i] = new L.Map(document.getElementById("geolocation-map-" + i));
-          var osmUrl = tile_server + '/{z}/{x}/{y}.png',
-          osmAttribution = 'Map data &copy; 2012 OpenStreetMap contributors, Imagery &copy; 2012 osm',
+          var osmUrl = tile_server,
+          osmAttribution = 'Map data &copy; 2014 OpenStreetMap contributors, Imagery &copy; 2014 osm',
           osm = new L.TileLayer(osmUrl, {maxZoom: 18, attribution: osmAttribution});
 
           Drupal.geolocation.maps[i].setView(latLng, 16).addLayer(osm);

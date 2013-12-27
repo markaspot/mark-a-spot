@@ -20,7 +20,7 @@ function geolocation_osm_field_formatter_info() {
         'marker_icon' => $base_url . '/profiles/markaspot/libraries/Leaflet/images/marker-icon.png',
         'map_zoomlevel' => '15',
         'leafletImagePath' => $base_url . '/profiles/markaspot/libraries/Leaflet/images/',
-        'tile_server' => ''
+        'tile_server' => 'http://{s}.tile.osm.org/{z}/{x}/{y}.png'
       ),
     ),
     'geolocation_osm_dynamic' => array(
@@ -32,7 +32,7 @@ function geolocation_osm_field_formatter_info() {
         'marker_icon' => $base_url . '/profiles/markaspot/libraries/Leaflet/images/marker-icon.png',
         'leafletImagePath' => $base_url . '/profiles/markaspot/libraries/Leaflet/images/',
         'map_scrollwheel' => FALSE,
-        'tile_server' => ''
+        'tile_server' => 'http://{s}.tile.osm.org/{z}/{x}/{y}.png'
 
       ),
     ),
@@ -171,8 +171,7 @@ function geolocation_osm_field_formatter_settings_summary($field, $instance, $vi
       $summary .= '<strong>Scrollable:</strong> ' . $scrl . '<br />';
       break;
   }
-  $summary .= '<strong>osm API Key:</strong> ' . $settings['tile_server'] . '<br />';
-  $summary .= '<strong>Style-Id:</strong> ' . $settings['map_style'] . '<br />';
+  $summary .= '<strong>Tile Server:</strong> ' . $settings['tile_server'] . '<br />';
   $summary .= '<strong>Zoom:</strong> ' . $settings['map_zoomlevel'];
   if (!empty($settings['marker_icon'])) {
     $vars = array(
@@ -199,7 +198,6 @@ function geolocation_osm_field_formatter_view($entity_type, $entity, $field, $in
           'zoom' => $settings['map_zoomlevel'],
           'size' => $settings['map_dimensions'],
           'format' => $settings['map_imageformat'],
-          'styleid' => $settings['map_style'],
           'center' => $item['lat'] . ',' . $item['lng'],
           'markers' => 'size:mid|color:red|' . $item['lat'] . ',' . $item['lng'],
         );
@@ -208,7 +206,7 @@ function geolocation_osm_field_formatter_view($entity_type, $entity, $field, $in
           $query['markers'] = 'icon:' . $path . '|' . $query['markers'];
         }
         $variables = array(
-          'path' => url('http://staticmaps.osm.com/'.$settings['tile_server'].'/staticmap?', array('query' => $query)),
+          'path' => url('http://open.mapquestapi.com/staticmap/v4/getmap?', array('query' => $query)),
           'alt' => 'Geolocation',
           'attributes' => array('class' => 'geolocation-osm-osm-static'),
         );

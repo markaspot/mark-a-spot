@@ -1,4 +1,4 @@
-<header role="banner" id="page-header">
+<header role="banner" id="page-header" class="container">
   <?php print render($page['header']); ?>
 </header> <!-- /#header -->
 

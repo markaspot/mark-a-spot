@@ -125,7 +125,7 @@ var markerLayer, queryString;
         url = Drupal.settings.basePath + 'reports/json/' + arg;
       } else if (uri[0].search('map') != -1 || uri[0].search('home') != -1 ){
         // map view
-        url = Drupal.settings.basePath + 'reports/json/?' + 'field_category_tid=' + categoryCond + '&field_status_tid=' + statusCond;
+        url = Drupal.settings.basePath + 'reports/json/map?' + 'field_category_tid=' + categoryCond + '&field_status_tid=' + statusCond;
       } else {
         url = Drupal.settings.basePath + 'reports/json?' + uri[1];
         categoryCond = mas.params.field_category_tid;

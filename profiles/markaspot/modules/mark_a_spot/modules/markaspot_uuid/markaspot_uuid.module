@@ -1,0 +1,53 @@
+<?php
+
+/**
+ * Generates an universally unique identifier.
+ *
+ * This function first checks for the PECL alternative for generating
+ * universally unique identifiers. If that doesn't exist, then it falls back on
+ * PHP for generating that.
+ *
+ * @return
+ *   An UUID, made up of year, month and 8 hex digits.
+ * toDo: make this configurable
+ */
+function markaspot_uuid_generate_uuid() {
+
+  $callback = '_uuid_generate_mas';
+  return $callback();
+}
+
+function _uuid_generate_mas() {
+  // The field names refer to RFC 4122 section 4.1.2.
+  return sprintf('%04x%04x',
+    // 32 bits for "time_low".
+    mt_rand(0, 65535), mt_rand(0, 65535),
+    // 16 bits for "time_mid".
+    mt_rand(0, 65535)) . "-" . format_date(time(), 'custom', 'ym');
+}
+
+
+/**
+ * Implementation of hook_node_inset()
+ * Need to update the title field with UUID
+ * toDo: make this configurable
+ */
+
+function markaspot_uuid_node_insert($node) {
+  if ($node->type == 'report' && variable_get('uuid_title') == 1) {
+    $num_updated = db_update('node')
+    ->fields(array(
+      'title' => '#' . $node->uuid . " ". $node->title,
+    ))
+    ->condition('nid', $node->nid, '=')
+    ->execute();
+
+    $num_updated = db_update('node_revision')
+    ->fields(array(
+      'title' => '#' . $node->uuid . " ". $node->title,
+    ))
+    ->condition('nid', $node->nid, '=')
+    ->execute();
+  }
+}
+

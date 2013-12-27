@@ -22,6 +22,7 @@ function mark_a_spot_field_default_field_instances() {
         'module' => 'text',
         'settings' => array(
           'field_formatter_class' => '',
+          'semantic_field_format' => 0,
         ),
         'type' => 'text_default',
         'weight' => 0,
@@ -62,6 +63,7 @@ function mark_a_spot_field_default_field_instances() {
         'module' => 'text',
         'settings' => array(
           'field_formatter_class' => '',
+          'semantic_field_format' => '',
         ),
         'type' => 'text_default',
         'weight' => 2,
@@ -77,6 +79,7 @@ function mark_a_spot_field_default_field_instances() {
         'module' => 'text',
         'settings' => array(
           'field_formatter_class' => '',
+          'semantic_field_format' => 0,
         ),
         'type' => 'text_default',
         'weight' => 0,
@@ -86,6 +89,7 @@ function mark_a_spot_field_default_field_instances() {
         'module' => 'text',
         'settings' => array(
           'field_formatter_class' => '',
+          'semantic_field_format' => 0,
           'trim_length' => 300,
         ),
         'type' => 'text_trimmed',
@@ -96,6 +100,7 @@ function mark_a_spot_field_default_field_instances() {
         'module' => 'text',
         'settings' => array(
           'field_formatter_class' => '',
+          'semantic_field_format' => 0,
         ),
         'type' => 'text_default',
         'weight' => 0,
@@ -105,6 +110,7 @@ function mark_a_spot_field_default_field_instances() {
         'module' => 'text',
         'settings' => array(
           'field_formatter_class' => '',
+          'semantic_field_format' => 0,
         ),
         'type' => 'text_default',
         'weight' => 0,
@@ -114,9 +120,9 @@ function mark_a_spot_field_default_field_instances() {
         'module' => 'text',
         'settings' => array(
           'field_formatter_class' => '',
-          'trim_length' => 600,
+          'semantic_field_format' => 0,
         ),
-        'type' => 'text_trimmed',
+        'type' => 'text_default',
         'weight' => 1,
       ),
     ),
@@ -153,6 +159,7 @@ function mark_a_spot_field_default_field_instances() {
         'module' => 'text',
         'settings' => array(
           'field_formatter_class' => '',
+          'semantic_field_format' => '',
         ),
         'type' => 'text_default',
         'weight' => 5,
@@ -234,6 +241,7 @@ function mark_a_spot_field_default_field_instances() {
         'module' => 'file',
         'settings' => array(
           'field_formatter_class' => '',
+          'semantic_field_format' => 0,
         ),
         'type' => 'file_table',
         'weight' => 9,
@@ -249,6 +257,7 @@ function mark_a_spot_field_default_field_instances() {
         'module' => 'file',
         'settings' => array(
           'field_formatter_class' => '',
+          'semantic_field_format' => 0,
         ),
         'type' => 'file_table',
         'weight' => 3,
@@ -300,6 +309,7 @@ function mark_a_spot_field_default_field_instances() {
         'module' => 'taxonomy',
         'settings' => array(
           'field_formatter_class' => '',
+          'semantic_field_format' => '',
         ),
         'type' => 'taxonomy_term_reference_plain',
         'weight' => 3,
@@ -309,6 +319,7 @@ function mark_a_spot_field_default_field_instances() {
         'module' => 'taxonomy',
         'settings' => array(
           'field_formatter_class' => '',
+          'semantic_field_format' => 0,
         ),
         'type' => 'taxonomy_term_reference_plain',
         'weight' => 4,
@@ -318,6 +329,7 @@ function mark_a_spot_field_default_field_instances() {
         'module' => 'taxonomy',
         'settings' => array(
           'field_formatter_class' => '',
+          'semantic_field_format' => 0,
         ),
         'type' => 'taxonomy_term_reference_plain',
         'weight' => 4,
@@ -327,6 +339,7 @@ function mark_a_spot_field_default_field_instances() {
         'module' => 'taxonomy',
         'settings' => array(
           'field_formatter_class' => '',
+          'semantic_field_format' => 0,
         ),
         'type' => 'taxonomy_term_reference_link',
         'weight' => 4,
@@ -336,6 +349,7 @@ function mark_a_spot_field_default_field_instances() {
         'module' => 'taxonomy',
         'settings' => array(
           'field_formatter_class' => '',
+          'semantic_field_format' => 0,
         ),
         'type' => 'taxonomy_term_reference_link',
         'weight' => 2,
@@ -422,10 +436,10 @@ function mark_a_spot_field_default_field_instances() {
     'default_value' => array(
       0 => array(
         'address' => array(
-          'field' => 'Pingsdorfer Straße 94, 50321 Brühl',
+          'field' => 'Fritz-Wündisch-Straße 52, 50321 Brühl',
         ),
-        'lat' => 50.8212596,
-        'lng' => 6.8961028,
+        'lat' => '50.81834062114927',
+        'lng' => '6.8978047370910645',
       ),
     ),
     'deleted' => 0,
@@ -433,18 +447,18 @@ function mark_a_spot_field_default_field_instances() {
     'display' => array(
       'default' => array(
         'label' => 'hidden',
-        'module' => 'geolocation_cloudmade_osm',
+        'module' => 'geolocation_osm',
         'settings' => array(
-          'cloudmade_api_key' => '165795623c424338ad9a8eb60484ef0e',
           'field_formatter_class' => '',
           'leafletImagePath' => '/profiles/markaspot/libraries/Leaflet/images',
           'map_dimensions' => '100%x300px',
-          'map_scrollwheel' => 0,
-          'map_style' => 22677,
+          'map_scrollwheel' => FALSE,
           'map_zoomlevel' => 16,
           'marker_icon' => 'profiles/markaspot/libraries/Leaflet/images/marker-icon.png',
+          'semantic_field_format' => '',
+          'tile_server' => 'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
         ),
-        'type' => 'geolocation_cloudmade_osm_dynamic',
+        'type' => 'geolocation_osm_dynamic',
         'weight' => 1,
       ),
       'example_node_list' => array(
@@ -464,6 +478,7 @@ function mark_a_spot_field_default_field_instances() {
           'map_width' => '300px',
           'map_zoomlevel' => 17,
           'marker_icon' => '',
+          'semantic_field_format' => 0,
         ),
         'type' => 'geolocation_googlemaps_static',
         'weight' => 1,
@@ -480,6 +495,7 @@ function mark_a_spot_field_default_field_instances() {
           'map_style' => 22677,
           'map_zoomlevel' => 15,
           'marker_icon' => '',
+          'semantic_field_format' => 0,
         ),
         'type' => 'geolocation_cloudmade_osm_static',
         'weight' => 1,
@@ -495,6 +511,7 @@ function mark_a_spot_field_default_field_instances() {
           'map_width' => '300px',
           'map_zoomlevel' => 17,
           'marker_icon' => '',
+          'semantic_field_format' => 0,
         ),
         'type' => 'geolocation_googlemaps_static',
         'weight' => 1,
@@ -513,12 +530,11 @@ function mark_a_spot_field_default_field_instances() {
           'field_formatter_class' => '',
           'leafletImagePath' => 'profiles/markaspot/libraries/Leaflet/images/',
           'map_dimensions' => '300x300',
-          'map_height' => '67px',
           'map_imageformat' => 'png',
           'map_style' => 997,
-          'map_width' => '67px',
           'map_zoomlevel' => 13,
           'marker_icon' => '',
+          'semantic_field_format' => 0,
         ),
         'type' => 'geolocation_cloudmade_osm_static',
         'weight' => 2,
@@ -533,14 +549,16 @@ function mark_a_spot_field_default_field_instances() {
     ),
     'widget' => array(
       'active' => 1,
-      'module' => 'geolocation_cloudmade_osm',
+      'module' => 'geolocation_osm',
       'settings' => array(
+        'geocode_service' => 'http://nominatim.openstreetmap.org',
         'leafletImagePath' => '/profiles/markaspot/libraries/Leaflet/images',
         'marker_draggable' => 1,
         'nominatimEmail' => 'holger@markaspot.org',
         'scrollwheel' => 0,
+        'tile_server' => 'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
       ),
-      'type' => 'geolocation_cloudmade-osm',
+      'type' => 'geolocation_osm-osm',
       'weight' => 15,
     ),
   );
@@ -558,6 +576,7 @@ function mark_a_spot_field_default_field_instances() {
           'field_formatter_class' => 'img-responsive',
           'image_link' => 'content',
           'image_style' => 'mas_medium',
+          'semantic_field_format' => '',
         ),
         'type' => 'image',
         'weight' => 0,
@@ -569,6 +588,7 @@ function mark_a_spot_field_default_field_instances() {
           'field_formatter_class' => '',
           'image_link' => 'file',
           'image_style' => 'medium',
+          'semantic_field_format' => 0,
         ),
         'type' => 'image',
         'weight' => 2,
@@ -580,6 +600,7 @@ function mark_a_spot_field_default_field_instances() {
           'field_formatter_class' => 'thumbnail pull-left',
           'image_link' => '',
           'image_style' => 'mas_thumb',
+          'semantic_field_format' => 0,
         ),
         'type' => 'image',
         'weight' => 0,
@@ -591,6 +612,7 @@ function mark_a_spot_field_default_field_instances() {
           'field_formatter_class' => '',
           'image_link' => 'file',
           'image_style' => 'medium',
+          'semantic_field_format' => 0,
         ),
         'type' => 'image',
         'weight' => 2,
@@ -602,6 +624,7 @@ function mark_a_spot_field_default_field_instances() {
           'field_formatter_class' => '',
           'image_link' => 'file',
           'image_style' => 'medium',
+          'semantic_field_format' => 0,
         ),
         'type' => 'image',
         'weight' => 1,
@@ -613,6 +636,7 @@ function mark_a_spot_field_default_field_instances() {
           'field_formatter_class' => '',
           'image_link' => '',
           'image_style' => 'thumbnail',
+          'semantic_field_format' => 0,
         ),
         'type' => 'image',
         'weight' => 0,
@@ -705,6 +729,7 @@ function mark_a_spot_field_default_field_instances() {
         'module' => 'text',
         'settings' => array(
           'field_formatter_class' => '',
+          'semantic_field_format' => '',
         ),
         'type' => 'text_default',
         'weight' => 6,
@@ -757,6 +782,7 @@ function mark_a_spot_field_default_field_instances() {
         'module' => 'taxonomy',
         'settings' => array(
           'field_formatter_class' => '',
+          'semantic_field_format' => '',
         ),
         'type' => 'taxonomy_term_reference_plain',
         'weight' => 4,
@@ -766,6 +792,7 @@ function mark_a_spot_field_default_field_instances() {
         'module' => 'taxonomy',
         'settings' => array(
           'field_formatter_class' => '',
+          'semantic_field_format' => 0,
         ),
         'type' => 'taxonomy_term_reference_plain',
         'weight' => 5,
@@ -775,6 +802,7 @@ function mark_a_spot_field_default_field_instances() {
         'module' => 'taxonomy',
         'settings' => array(
           'field_formatter_class' => '',
+          'semantic_field_format' => 0,
         ),
         'type' => 'taxonomy_term_reference_plain',
         'weight' => 3,
@@ -784,6 +812,7 @@ function mark_a_spot_field_default_field_instances() {
         'module' => 'taxonomy',
         'settings' => array(
           'field_formatter_class' => '',
+          'semantic_field_format' => 0,
         ),
         'type' => 'taxonomy_term_reference_link',
         'weight' => 5,
@@ -793,6 +822,7 @@ function mark_a_spot_field_default_field_instances() {
         'module' => 'taxonomy',
         'settings' => array(
           'field_formatter_class' => '',
+          'semantic_field_format' => 0,
         ),
         'type' => 'taxonomy_term_reference_link',
         'weight' => 3,
@@ -838,6 +868,7 @@ function mark_a_spot_field_default_field_instances() {
         'module' => 'text',
         'settings' => array(
           'field_formatter_class' => '',
+          'semantic_field_format' => 0,
         ),
         'type' => 'text_default',
         'weight' => 1,
@@ -847,6 +878,7 @@ function mark_a_spot_field_default_field_instances() {
         'module' => 'text',
         'settings' => array(
           'field_formatter_class' => '',
+          'semantic_field_format' => 0,
         ),
         'type' => 'text_default',
         'weight' => 1,
@@ -883,6 +915,7 @@ function mark_a_spot_field_default_field_instances() {
         'module' => 'text',
         'settings' => array(
           'field_formatter_class' => '',
+          'semantic_field_format' => 0,
         ),
         'type' => 'text_default',
         'weight' => 4,
@@ -925,6 +958,7 @@ function mark_a_spot_field_default_field_instances() {
         'module' => 'text',
         'settings' => array(
           'field_formatter_class' => '',
+          'semantic_field_format' => 0,
         ),
         'type' => 'text_default',
         'weight' => 1,
@@ -934,6 +968,7 @@ function mark_a_spot_field_default_field_instances() {
         'module' => 'text',
         'settings' => array(
           'field_formatter_class' => '',
+          'semantic_field_format' => 0,
         ),
         'type' => 'text_default',
         'weight' => 1,
@@ -970,6 +1005,7 @@ function mark_a_spot_field_default_field_instances() {
         'module' => 'text',
         'settings' => array(
           'field_formatter_class' => '',
+          'semantic_field_format' => 0,
         ),
         'type' => 'text_default',
         'weight' => 3,
@@ -1006,6 +1042,7 @@ function mark_a_spot_field_default_field_instances() {
         'module' => 'taxonomy',
         'settings' => array(
           'field_formatter_class' => '',
+          'semantic_field_format' => 0,
         ),
         'type' => 'taxonomy_term_reference_link',
         'weight' => 2,
@@ -1075,6 +1112,7 @@ function mark_a_spot_field_default_field_instances() {
         'module' => 'text',
         'settings' => array(
           'field_formatter_class' => '',
+          'semantic_field_format' => 0,
         ),
         'type' => 'text_default',
         'weight' => 2,

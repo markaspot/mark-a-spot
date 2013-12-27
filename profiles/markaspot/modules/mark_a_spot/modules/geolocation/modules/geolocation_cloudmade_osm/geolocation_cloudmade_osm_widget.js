@@ -88,10 +88,17 @@
         Drupal.geolocation.maps[i].setView(new L.LatLng(result[0].lat,result[0].lon), i);
         Drupal.geolocation.setMapMarker(new L.LatLng(result[0].lat,result[0].lon), i);
         var street = result[0].address.road ? result[0].address.road : undefined;
-        var street = street ? street : result[0].address.pedestrian;
-        var street = result[0].address.house_number ? street  + ' ' + result[0].address.house_number : street;
-        var address = street + ', ' + result[0].address.postcode + ' ' + result[0].address.city;
-
+        street = street ? street : result[0].address.pedestrian;
+        street = street ? street : result[0].address.locality;
+        street = street ? street : result[0].address.pedestrian;
+        street = street ? street : result[0].address.cycleway;
+        street = result[0].address.house_number ? street  + ' ' + result[0].address.house_number : street;
+        var postcode = result[0].address.postcode ? result[0].address.postcode : "";
+        if (street != undefined && postcode) {
+          var address = street + ', ' + postcode + ' ' + result[0].address.city;
+        } else {
+          var address = result[0].address.city;
+        }
         $('#edit-field-geo-und-0-address-field').val(address);
         $('#geolocation-lat-' + i + ' input').attr('value', result[0].lat);
         $('#geolocation-lat-item-' + i + ' .geolocation-lat-item-value').html(result[0].lat);

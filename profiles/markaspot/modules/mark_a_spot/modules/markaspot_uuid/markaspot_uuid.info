@@ -1,0 +1,7 @@
+name = Mark-a-Spot UUID
+package = "Mark-a-Spot"
+core = 7.x
+description = Provides human readable UUIDs for issue numbers
+version = "7.x-1.0-dev"
+
+dependencies[] = uuid

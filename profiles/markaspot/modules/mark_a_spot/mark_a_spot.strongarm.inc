@@ -10,7 +10,6 @@
 function mark_a_spot_strongarm() {
   $export = array();
 
-
   $strongarm = new stdClass();
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
@@ -50,7 +49,7 @@ function mark_a_spot_strongarm() {
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'comment_report';
-  $strongarm->value = '1';
+  $strongarm->value = '2';
   $export['comment_report'] = $strongarm;
 
   $strongarm = new stdClass();
@@ -81,6 +80,12 @@ function mark_a_spot_strongarm() {
       'search_result' => array(
         'custom_settings' => FALSE,
       ),
+      'report_list' => array(
+        'custom_settings' => TRUE,
+      ),
+      'token' => array(
+        'custom_settings' => FALSE,
+      ),
     ),
     'extra_fields' => array(
       'form' => array(
@@ -95,6 +100,13 @@ function mark_a_spot_strongarm() {
     ),
   );
   $export['field_bundle_settings_node__report'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'language_content_type_report';
+  $strongarm->value = '0';
+  $export['language_content_type_report'] = $strongarm;
 
   $strongarm = new stdClass();
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
@@ -142,6 +154,19 @@ function mark_a_spot_strongarm() {
   $strongarm->value = 1;
   $export['node_submitted_report'] = $strongarm;
 
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'pathauto_node_pattern';
+  $strongarm->value = 'content/[node:title]';
+  $export['pathauto_node_pattern'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'pathauto_node_report_pattern';
+  $strongarm->value = 'reports/[node:uuid]';
+  $export['pathauto_node_report_pattern'] = $strongarm;
 
   return $export;
 }

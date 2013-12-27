@@ -378,6 +378,19 @@ function markaspot_logic_admin_settings() {
       '#title' => t('Enter the Taxonomy term-ids for closed reports (comma-separated)'),
     );
   }
+  if (module_exists('markaspot_uuid')){
+    $form['uuid'] = array (
+      '#type' => 'fieldset',
+      '#title' => t('UUID'),
+      '#description' => t('UUID Module is enabled and service requests are identified by an unique ID. For better usability when communicating on other channels, the ID can be ')
+    );
+    $form['uuid']['uuid_title'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Display UUID in title?'),
+      '#default_value' => variable_get('uuid_title',  _markaspot_logic_defaults('uuid_title'))
+    );
+  }
+
   if (module_exists('markaspot_archive')){
     $form['archive'] = array(
         '#type' => 'fieldset',
@@ -468,6 +481,8 @@ function _markaspot_logic_defaults($id) {
       return '6.937';
     case 'archive_days':
       return '30';
+    case 'uuid_title':
+      return 1;
     case 'open311_contact':
       return 'You can email or call for assistance api@mycity.org +1 (555) 555-5555';
     case 'open311_status_open_start':

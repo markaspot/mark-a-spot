@@ -35,8 +35,7 @@
             // Create map
             Drupal.geolocationosmOsm.maps[id] = new L.Map(this).setView([lat,lng],14);
             var markerLocation = latLng;
-            L.tileLayer('http://{s}.tile.osm.com/'+ instanceSettings.tile_server +'/'+  instanceSettings.map_style +'/256/{z}/{x}/{y}.png', {
-            // L.tileLayer('http://{s}.tile.osm.com/BC9A493B41014CAABB98F0471D759707/997/256/{z}/{x}/{y}.png', {
+            L.tileLayer(instanceSettings.tile_server, {
               attribution : 'Map data &copy; 2012 OpenStreetMap contributors, Imagery &copy; 2012 osm',
               maxZoom: 18
             }).addTo(Drupal.geolocationosmOsm.maps[id]);
