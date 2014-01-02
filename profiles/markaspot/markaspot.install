@@ -67,7 +67,7 @@ function markaspot_install() {
   // but not placed into variables.
   $enable = array(
     'theme_default' => 'mas',
-    'admin_theme' => 'rubik',
+    'admin_theme' => 'ember',
     //'zen'
   );
   theme_enable($enable);
@@ -84,7 +84,7 @@ function markaspot_install() {
 
   // Enable some standard blocks.
   $default_theme = variable_get('theme_default', 'mas');
-  $admin_theme = 'rubik';
+  $admin_theme = 'ember';
 
   $blocks = array(
     array(
@@ -249,9 +249,9 @@ function markaspot_install() {
   db_update('system')
     ->fields(array('status' => 1))
     ->condition('type', 'theme')
-    ->condition('name', 'rubik')
+    ->condition('name', 'ember')
     ->execute();
-  variable_set('admin_theme', 'rubik');
+  variable_set('admin_theme', 'ember');
   variable_set('node_admin_theme', '1');
 
 

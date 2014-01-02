@@ -6620,3 +6620,48 @@ table .checkbox input[type="checkbox"] {
 .field-label.label[href]:focus {
   background-color: #808080;
 }
+/*different form tab designs*/
+/*
+.tab-content.required-fields.group-report-form.field-group-bootstrap_fieldgroup_nav {
+    background: @gray-lighter;
+    padding: 10px;
+    border: 0;
+    color: @link-color;
+    border-radius: @input-border-radius;
+}
+.nav-tabs {
+    margin: 0;
+    border: 0;
+}
+
+.nav-tabs > li.active > a,
+.nav-tabs > li.active > a:hover,
+.nav-tabs > li.active > a:focus {
+  color: @link-color;
+  background: @gray-lighter;
+  border: 1px solid @gray-lighter;
+
+}
+
+.nav-tabs > li > a:hover {
+border-color: #EEE #EEE @gray-lighter;
+}
+
+*/
+/* Block */
+.block-title.block-title {
+  font-size: 1.1em;
+  margin: 0;
+  padding: 0;
+  line-height: 1.5em;
+  text-transform: uppercase;
+  color: #999999;
+}
+/* leaflet styles */
+.leaflet-container a {
+  color: #428bca;
+}
+.geolocation-address-geocode,
+.geolocation-client-location {
+  background-color: #428bca;
+}

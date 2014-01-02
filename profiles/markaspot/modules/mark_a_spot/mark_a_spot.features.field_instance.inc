@@ -143,7 +143,7 @@ function mark_a_spot_field_default_field_instances() {
         'summary_rows' => 5,
       ),
       'type' => 'text_textarea_with_summary',
-      'weight' => 6,
+      'weight' => -3,
     ),
   );
 
@@ -375,7 +375,7 @@ function mark_a_spot_field_default_field_instances() {
         'apply_chosen' => 0,
       ),
       'type' => 'options_select',
-      'weight' => 5,
+      'weight' => -4,
     ),
   );
 

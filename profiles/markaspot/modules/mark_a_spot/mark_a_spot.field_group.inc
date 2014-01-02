@@ -52,8 +52,7 @@ function mark_a_spot_field_group_info() {
     'weight' => '1',
     'children' => array(
       0 => 'field_address',
-      1 => 'field_common',
-      2 => 'field_geo',
+      1 => 'field_geo',
     ),
     'format_type' => 'bootstrap_fieldgroup_nav_item',
     'format_settings' => array(

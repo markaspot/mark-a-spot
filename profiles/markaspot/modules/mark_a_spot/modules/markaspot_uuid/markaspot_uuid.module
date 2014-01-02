@@ -1,4 +1,22 @@
 <?php
+/**
+ * @file
+ * This module provides hooks for altering the report form and custom UUID generator
+ * http://drupal.org/node/1588044
+ */
+
+
+/**
+ * Implements hook_form_alter().
+ */
+function markaspot_uuid_form_alter(&$form, &$form_state, $form_id) {
+  // Hide the title form field as it is generated via hook_insert
+  if ($form_id == 'report_node_form') {
+    $form['title']['#type'] = "hidden";
+    $form['title']['#required'] = FALSE;
+  }
+}
+
 
 /**
  * Generates an universally unique identifier.
@@ -7,7 +25,7 @@
  * universally unique identifiers. If that doesn't exist, then it falls back on
  * PHP for generating that.
  *
- * @return
+ * @return string
  *   An UUID, made up of year, month and 8 hex digits.
  * toDo: make this configurable
  */
@@ -17,6 +35,12 @@ function markaspot_uuid_generate_uuid() {
   return $callback();
 }
 
+/**
+ * Generating a human readable UUID (not really GUID).
+ *
+ * @return string
+ *   the UUID
+ */
 function _uuid_generate_mas() {
   // The field names refer to RFC 4122 section 4.1.2.
   return sprintf('%04x%04x',
@@ -28,26 +52,32 @@ function _uuid_generate_mas() {
 
 
 /**
- * Implementation of hook_node_inset()
+ * Implements hook_node_insert().
+ *
  * Need to update the title field with UUID
  * toDo: make this configurable
  */
-
 function markaspot_uuid_node_insert($node) {
-  if ($node->type == 'report' && variable_get('uuid_title') == 1) {
-    $num_updated = db_update('node')
-    ->fields(array(
-      'title' => '#' . $node->uuid . " ". $node->title,
-    ))
-    ->condition('nid', $node->nid, '=')
-    ->execute();
 
-    $num_updated = db_update('node_revision')
-    ->fields(array(
-      'title' => '#' . $node->uuid . " ". $node->title,
-    ))
-    ->condition('nid', $node->nid, '=')
-    ->execute();
+  if ($node->type == 'report' && variable_get('uuid_title') == 1) {
+
+    // Instead of contributed module auto entity_title:
+    // Get the service name by ID and update the title field.
+    $tid = $node->field_category[LANGUAGE_NONE][0]['tid'];
+    $service = taxonomy_term_load($tid);
+
+    db_update('node')
+      ->fields(array(
+        'title' => '#' . $node->uuid . " " . $service->name,
+      ))
+      ->condition('nid', $node->nid, '=')
+      ->execute();
+
+    db_update('node_revision')
+      ->fields(array(
+        'title' => '#' . $node->uuid . " " . $service->name,
+      ))
+      ->condition('nid', $node->nid, '=')
+      ->execute();
   }
 }
-

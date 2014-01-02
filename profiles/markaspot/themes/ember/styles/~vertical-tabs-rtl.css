@@ -1,0 +1,31 @@
+/* 
+   Optimal text line length for legibility is 65-75 characters. 
+   I add an extra 10 to compensate for the fact that ex 
+   (the height of the lower case "x", usually equal to it's width 
+   and therefor an average character) is narrower than the width of 
+   an uppercase letter and any given line will contain a few of them.
+   Apply in the style.scss file using "max-width" 
+*/
+/**
+ * Override of misc/vertical-tabs-rtl.css.
+ */
+div.vertical-tabs {
+  background: white url(../images/fc-rtl.png) repeat-y right 0;
+}
+
+div.vertical-tabs .vertical-tabs-list {
+  float: right;
+  margin: 0 0 -1px -100%;
+}
+
+div.vertical-tabs ul li.selected a,
+div.vertical-tabs ul li.selected a:hover,
+div.vertical-tabs ul li.selected a:focus,
+div.vertical-tabs ul li.selected a:active {
+  border-left-color: #fff;
+}
+
+div.vertical-tabs .vertical-tabs-panes {
+  margin: 0 265px 0 0;
+  padding: 10px 0 10px 15px;
+}

@@ -2,5 +2,3 @@ name = Mark-a-Spot Default Content
 package = "Mark-a-Spot"
 core = 7.x
 description = Blocks and default content
-version = "7.x-1.0-dev"
-

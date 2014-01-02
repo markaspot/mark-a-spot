@@ -2,7 +2,7 @@
  * @file
  * CSS for Mark-a-Spot admin theme adoption.
  */
- 
+
 
 #block-markaspot-stats-markaspot-stats ul  {
     list-style-type:none;
@@ -20,7 +20,7 @@
     padding: 0 0 0 40px;
 }
 
-#markaspot-admin .panel-2col-bricks, 
+#markaspot-admin .panel-2col-bricks,
 #markaspot-admin .panel-separator {
 margin: 0 0 3em 0;
 }
@@ -63,6 +63,11 @@ padding: 5px 10px;
 color: #333;
 text-shadow: white 0px 1px 0px;
 
+}
+
+
+.admin-menu .nav.required-fields.group-report-form {
+    display: none;
 }
 
 

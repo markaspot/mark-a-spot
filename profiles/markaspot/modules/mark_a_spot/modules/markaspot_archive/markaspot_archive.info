@@ -4,5 +4,4 @@ package = "Mark-a-Spot"
 
 core = 7.x
 
-files[] = markaspot_archive.module
 dependencies[] = "markaspot_logic"

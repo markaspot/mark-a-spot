@@ -1,4 +1,10 @@
 <?php
+/**
+ * @file
+ * Mark-a-Spot Log module.
+ * This module provides a log per report saving actions by
+ * citizens and adminstration
+ */
 
 /**
  * This module logs and shows logging of node (reports) actions.
@@ -7,37 +13,25 @@
  * @author Holger Kreis - holger@markaspot.org
  */
 
-
-
-function markaspot_log_permission(){
-    return array(
-    'administer maslogs' =>  array(
+/**
+ * Implements hook_permission().
+ */
+function markaspot_log_permission() {
+  return array(
+    'administer maslogs' => array(
       'title' => t('Administer Mark-a-Spot Logs'),
       'restrict access' => TRUE,
     ),
     'view maslogs' => array(
       'title' => t('View Mark-a-Spot Logs'),
-    )
+    ),
   );
 }
 
 
-function markaspot_log_page_title($maslog){
-  return $maslog->id;
-}
-
-function markaspot_log_page_view($maslog, $view_mode = 'full'){
-  $maslog->content = array();
-
-  // Build fields content.
-  field_attach_prepare_view('maslog', array($maslog->id => $maslog), $view_mode);
-  entity_prepare_view('maslog', array($maslog->id => $maslog));
-  $maslog->content += field_attach_view('maslog', $maslog, $view_mode);
-
-  return $maslog->content;
-}
-
-
+/**
+ * Implements hook_field_extra_fields().
+ */
 function markaspot_log_field_extra_fields() {
   $return = array();
   $return['maslog']['maslog'] = array(
@@ -55,13 +49,10 @@ function markaspot_log_field_extra_fields() {
 
 /**
  * Implements hook_block_info().
- *
- *
  */
-
 function markaspot_log_block_info() {
   $blocks['markaspot_activity'] = array(
-      'info' => t('Mark-a-Spot: Show Activity for a report'),
+    'info' => t('Mark-a-Spot: Show Activity for a report'),
   );
   return $blocks;
 }
@@ -69,7 +60,8 @@ function markaspot_log_block_info() {
 /**
  * Implements hook_block_view().
  *
- * This hook generates the contents of the blocks themselves.http://drupal.org/node/1104498
+ * This hook generates the contents of the blocks themselves.
+ * see http://drupal.org/node/1104498
  */
 function markaspot_log_block_view($delta = '') {
   $block = array();
@@ -80,9 +72,10 @@ function markaspot_log_block_view($delta = '') {
       if (user_access('view maslogs')) {
         $node = menu_get_object();
         // var_dump($node);
-        if(isset($node) && $node->type == "report") {
+        if (isset($node) && $node->type == "report") {
           $result = markaspot_log_get_log($node->nid);
-        } else {
+        }
+        else {
           return NULL;
         }
 
@@ -90,62 +83,67 @@ function markaspot_log_block_view($delta = '') {
 
         foreach ($result as $log) {
           $items[] = array(
-            'data' => '<span class="log-entry">'.$log->message.' </span><br/>'.t('<span class="meta-info">@time ago</span>', array('@time' => format_interval(REQUEST_TIME - $log->modified))));
+            'data' => '<span class="log-entry">' . $log->message . ' </span><br/>' . t('<span class="meta-info">@time ago</span>', array('@time' => format_interval(REQUEST_TIME - $log->modified))),
+          );
         }
-        if (empty($items)) { //No content in the last week.
+        if (empty($items)) {
+          // No content in the last week.
           $block['content'] = t('No log available.');
         }
         else {
-          //Pass data through theme function.
+          // Pass data through theme function.
           $block['content'] = theme('item_list', array(
-          'items' => $items));
+            'items' => $items,
+          ));
         }
       }
-    break;
+      break;
   }
   return $block;
 }
 
 
-
 /**
  * Creates Log entry according to role.
  *
- * @param obj $node
- * @return void
+ * @param object $node
+ *   The node object
  */
 function markaspot_log_node_insert($node) {
 
   $data = new stdClass();
 
-  // Preparing Logging to Mas_log table (don't think of watchdog)
+  // Preparing Logging to Mas_log table (don't think of watchdog):
   global $user;
 
-/*
-  if (!in_array('Citizen', $user->roles) &&
-    !(in_array('Management', $user->roles) || in_array('administrator', $user->roles))){
-    markaspot_log_add_role_to_user('Citizen', $user->uid);
-    $data->message = t('The User is now Citizen');
-  }
-*/
+  /*
+   * if (!in_array('Citizen', $user->roles) &&
+   *   !(in_array('Management', $user->roles) ||
+   *   in_array('administrator', $user->roles))){
+   *   markaspot_log_add_role_to_user('Citizen', $user->uid);
+   *   $data->message = t('The User is now Citizen');
+   *  }
+   */
 
+  if (!in_array('Management', $user->roles) || !in_array('administrator', $user->roles) && $node->type == 'report') {
 
-  if (!in_array('Management', $user->roles) || !in_array('administrator', $user->roles) && $node->type == 'report'){
-
-    if(isset($node->nid)) {
+    if (isset($node->nid)) {
       $data->message = t('The report has been edited by Citizen');
-    } else {
+    }
+    else {
 
       $data->message = t('The report has been created by Citizen');
     }
   }
 
   if (in_array('administrator', $user->roles) ||
-    in_array('Management', $user->roles) && $node->type == 'report'){
+    in_array('Management', $user->roles) && $node->type == 'report'
+  ) {
 
-    if(isset($node->nid)) {
+    if (isset($node->nid)) {
       $data->message = t('The report has been edited/created by Administration');
-    } else {
+    }
+    else {
       $data->message = t('The report has been created');
     }
   }
@@ -163,25 +161,23 @@ function markaspot_log_node_insert($node) {
 
 /**
  * Creates Log entry according to role.
- *
- * @param obj $node
- * @return void
  */
 function markaspot_log_node_update($node) {
   $data = new stdClass();
   global $user;
 
-  if (!in_array('Management', $user->roles) || !in_array('administrator', $user->roles) && $node->type == 'report'){
+  if (!in_array('Management', $user->roles) || !in_array('administrator', $user->roles) && $node->type == 'report') {
 
-    if($node->nid) {
+    if ($node->nid) {
       $data->message = t('The report has been edited by Citizen');
     }
   }
 
   if (in_array('administrator', $user->roles) ||
-    in_array('Management', $user->roles) && $node->type == 'report'){
+    in_array('Management', $user->roles) && $node->type == 'report'
+  ) {
 
-    if($node->nid) {
+    if ($node->nid) {
       $data->message = t('The report has been edited by Administration');
     }
   }
@@ -196,23 +192,28 @@ function markaspot_log_node_update($node) {
   markaspot_log_write_log($data);
 }
 
+/**
+ * Implements hook_comment_presave().
+ */
 function markaspot_log_comment_presave($comment) {
   $data = new stdClass();
 
-  // Preparing Logging to Mas_log table (don't think of watchdog)
+  // Preparing Logging to Mas_log table (don't think of watchdog):
   global $user;
 
+  if (!isset($comment->node_type)) {
+    $node = node_load($comment->nid);
+    $comment->node_type = 'comment_node_' . $node->type;
+  }
 
-
-  //print_r($user->roles);
-  if (in_array('Citizen', $user->roles) || in_array('anonymous user',$user->roles)){
+  if (in_array('Citizen', $user->roles) || in_array('anonymous user', $user->roles)) {
     $data->message = t('A comment has been created by Citizen');
   }
 
-
   if (in_array('administrator', $user->roles) ||
-    in_array('Management', $user->roles) && $node->type == 'report'){
-      $data->message = t('A comment has been created by Adminstration');
+    in_array('Management', $user->roles) && $comment->node_type == 'report'
+  ) {
+    $data->message = t('A comment has been created by Adminstration');
   }
 
   unset($data->nid);
@@ -222,34 +223,30 @@ function markaspot_log_comment_presave($comment) {
 
   $data->created = time();
   $data->modified = time();
-  /*
-print_r($data);
-  die;
-*/
-
-/*   Array ( [2] => authenticated user [3] => administrator ) stdClass Object ( [message] => A Comment has been created by Adminstration [uid] => 1 [nid] => 185 [created] => 1325696052 [modified] => 1325696052 ) */
 
   markaspot_log_write_log($data);
 }
 
 
-/*
- * Adds user to Citizen Role
+/**
+ * Adds user to Citizen Role.
  *
  * @param string $role_name
+ *   The role name
+ *
  * @param int $uid
- * @return void
+ *   The user id
  */
-function markaspot_log_add_role_to_user($role_name, $uid)  {
+function markaspot_log_add_role_to_user($role_name, $uid) {
   $results = db_select('users_roles', 'ur')
     ->fields('ur', array('rid'))
     ->condition('ur.uid', $uid)
     ->execute();
 
   $_add_to_user = TRUE;
-  if ($results->rowCount() > 0)  {
-    // check to see if the user already has this role assigned to them
-    foreach ($results as $rid)  {
+  if ($results->rowCount() > 0) {
+    // Check to see if the user already has this role assigned to them:
+    foreach ($results as $rid) {
       $name = user_role_load($rid->rid)->name;
       if ($name == $role_name) {
         $_add_to_user = FALSE;
@@ -257,10 +254,10 @@ function markaspot_log_add_role_to_user($role_name, $uid)  {
     }
   }
 
-  if ($_add_to_user)  {
+  if ($_add_to_user) {
     $rid = user_role_load_by_name($role_name)->rid;
     // var_dump(user_role_load_by_name($role_name));
-    $insert = db_insert('users_roles')
+    db_insert('users_roles')
       ->fields(array(
         'uid' => $uid,
         'rid' => $rid,
@@ -270,26 +267,27 @@ function markaspot_log_add_role_to_user($role_name, $uid)  {
 }
 
 
-
-/*
+/**
  * Gets log-entries object by nid.
  *
  * @param int $nid
+ *   The node id
+ *
  * @return object
+ *   $result
  */
 function markaspot_log_get_log($nid) {
-  $result = db_query('SELECT * FROM {markaspot_log} WHERE nid='.$nid);
+  $result = db_query('SELECT * FROM {markaspot_log} WHERE nid=' . $nid);
   return $result;
 }
 
 /**
- * Writes a log entry to the database
+ * Writes a log entry to the database.
  *
- * @param object $entry
- * @return void
+ * @param object $data
+ *   The comment entry
  */
 function markaspot_log_write_log($data) {
-  //$primary_key = !empty($data->id) ? array('id') : id;
   drupal_write_record('markaspot_log', $data);
 }
 
@@ -297,7 +295,7 @@ function markaspot_log_write_log($data) {
  * Deletes a note from the database.
  *
  * @param int $id
- * @return void
+ *   The Comment id
  */
 function markaspot_log_delete_log($id) {
   db_query("DELETE FROM {markaspot_log} WHERE id=%d", array(

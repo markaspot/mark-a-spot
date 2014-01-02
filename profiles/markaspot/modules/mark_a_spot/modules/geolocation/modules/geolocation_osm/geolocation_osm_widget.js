@@ -40,7 +40,7 @@
         format : 'json'
       }).done(function (result) {
         if (result) {
-            var street = result.address.construction ? result.address.construction : undefined;
+            var street = result.address.construction ? result.address.construction : "";
             street = street ? street : result.address.road;
             street = street ? street : result.address.pedestrian;
             street = street ? street : result.address.footway;
@@ -84,19 +84,21 @@
       if (result.length > 0) {
         Drupal.geolocation.maps[i].setView(new L.LatLng(result[0].lat,result[0].lon), i);
         Drupal.geolocation.setMapMarker(new L.LatLng(result[0].lat,result[0].lon), i);
-        var street = result[0].address.road ? result[0].address.road : undefined;
-        var street = street ? street : result[0].address.pedestrian;
-        var street = result[0].address.house_number ? street  + ' ' + result[0].address.house_number : street;
-        var address = street + ', ' + result[0].address.postcode + ' ' + result[0].address.city;
+        var street = result[0].address.road ? result[0].address.road : Drupal.t('Center');
+        street = street ? street : result[0].address.pedestrian;
+        street = street ? street : result[0].address.locality;
+        street = street ? street : result[0].address.pedestrian;
+        street = street ? street : result[0].address.cycleway;
+        street = result[0].address.house_number ? street  + ' ' + result[0].address.house_number : street;
+        postcode = result[0].address.postcode  ? result[0].address.postcode + " " : "";
+        var address = street + ', ' + postcode + result[0].address.city;
 
         $('#edit-field-geo-und-0-address-field').val(address);
         $('#geolocation-lat-' + i + ' input').attr('value', result[0].lat);
         $('#geolocation-lat-item-' + i + ' .geolocation-lat-item-value').html(result[0].lat);
         $('#geolocation-lng-' + i + ' input').attr('value', result[0].lon);
         $('#geolocation-lng-item-' + i + ' .geolocation-lng-item-value').html(result[0].lon);
-            // Drupal.geolocation.maps[i].setView(new L.LatLng(result.lat , result.lon),i);
-            // Drupal.geolocation.setMapMarker(new L.LatLng(result.lat , result.lon),i);
-        // Drupal.geolocation.codeLatLng(new L.LatLng(result[0].lat,result[0].lon), i, 'geocoder');
+
       }
       else {
         alert(Drupal.t("Sorry that address cannot be found"));
@@ -231,12 +233,6 @@
               Drupal.geolocation.codeAddress(i);
             }
           });
-          $('#geolocation-address-' + i + ' input').keypress(function(ev){
-            if(ev.which == 13){
-              ev.preventDefault();
-              Drupal.geolocation.codeAddress(i);
-            }
-          });
           $('#geolocation-address-geocode-' + i).click(function(e) {
             Drupal.geolocation.codeAddress(i);
           });
@@ -318,7 +314,7 @@
             Drupal.geolocation.codeLatLng(e.latlng, i, 'geocoder');
             Drupal.geolocation.setMapMarker(e.latlng, i);
           });
-        })
+        });
       });
     }
   };

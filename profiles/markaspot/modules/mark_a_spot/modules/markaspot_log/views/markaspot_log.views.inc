@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @file
  * This file has some views functions
@@ -16,21 +15,6 @@ function markaspot_log_views_data() {
     'title' => 'Mark-a-Spot Log entries',
     'help' => 'Log file entries',
   );
-
-  // $data['markaspot_log']['id'] = array(
-  //   'title' => t('ID'),
-  //   'help' => t('The unique ID'),
-  //   'field' => array(
-  //     'handler' => 'views_handler_field_numeric',
-  //     'click sortable' => TRUE,
-  //   ),
-  //   'filter' => array(
-  //     'handler' => 'views_handler_filter_numeric',
-  //   ),
-  //   'sort' => array(
-  //     'handler' => 'views_handler_sort',
-  //   ),
-  // );
 
   $data['markaspot_log']['nid'] = array(
     'title' => t('nid'),

@@ -1,4 +1,9 @@
 <?php
+/**
+ * @file
+ * This module provides content for the front page
+ */
+
 
 /**
  * Implements hook_block_info().
@@ -13,17 +18,17 @@ function markaspot_default_content_block_info() {
    */
   $blocks['welcome'] = array(
     'info' => t('Welcome Text for frontpage'),
-    'cache' => DRUPAL_NO_CACHE
+    'cache' => DRUPAL_NO_CACHE,
   );
 
   $blocks['add_reports'] = array(
     'info' => t('Add Button for frontpage'),
-    'cache' => DRUPAL_NO_CACHE
+    'cache' => DRUPAL_NO_CACHE,
   );
 
   $blocks['watch_reports'] = array(
     'info' => t('Watch Button for frontpage'),
-    'cache' => DRUPAL_NO_CACHE
+    'cache' => DRUPAL_NO_CACHE,
   );
 
   return $blocks;
@@ -36,36 +41,23 @@ function markaspot_default_content_block_view($delta = '') {
   $block = array();
 
   switch ($delta) {
-  /*
-   *case 'syndicate':
-   *  $block['subject'] = t('Syndicate');
-   *  $block['content'] = theme('feed_icon', array('url' => url('rss.xml'), 'title' => t('Syndicate')));
-   *  break;
-   *
-   *case 'recent':
-   *  if (user_access('access content')) {
-   *    $block['subject'] = t('Recent content');
-   *    if ($nodes = node_get_recent(variable_get('node_recent_block_count', 10))) {
-   *      $block['content'] = theme('node_recent_block', array(
-   *        'nodes' => $nodes,
-   *      ));
-   *    } else {
-   *      $block['content'] = t('No content available.');
-   *    }
-   *  }
-   *  break;
-   */
+
     case 'welcome':
       $block['subject'] = t('Welcome to MaS-City');
-      $block['content'] = '<h1>'. variable_get('site_name', 'Track issues MaS-City') .'</h1><p>'. variable_get('site_slogan', 'Report local problems in your area and track government fixing them') . '</p>';
+      $block['content'] = '<h1>' . variable_get('site_name', 'Track issues MaS-City') . '</h1><p>' .
+        variable_get('site_slogan', 'Report local problems in your area and track government fixing them') . '</p>';
       break;
+
     case 'add_reports':
       $block['subject'] = t('Add Report');
-      $block['content'] = '<div class="add"><a href="node/add/report" class="col-md-5 btn btn-primary btn-success"><h3><i class="icon-bullhorn"></i> '.t('Report Issue').'</h3>'.t('').'</a></div>';
+      $block['content'] = '<div class="add"><a href="node/add/report" class="col-md-5 btn btn-primary btn-success"><h3>
+        <i class="icon-bullhorn"></i> ' . t('Report Issue') . '</h3>' . '</a></div>';
       break;
+
     case 'watch_reports':
       $block['subject'] = t('Track Reports');
-      $block['content'] = ' <div class="list"><a href="list" class="col-md-5 col-md-offset-2 btn btn-primary btn-action"><h3><i class="icon-eye-open"></i> '.t('Track Issues').'</h3>'.t('').'</a></div>';
+      $block['content'] = '<div class="list"><a href="list" class="col-md-5 col-md-offset-2 btn btn-primary btn-action">
+        <h3><i class="icon-eye-open"></i> ' . t('Track Issues') . '</h3>' . '</a></div>';
       break;
   }
   return $block;

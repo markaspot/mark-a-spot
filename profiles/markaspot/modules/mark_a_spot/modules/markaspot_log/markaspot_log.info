@@ -5,7 +5,3 @@ description = Provides a logging block for civic and administrative activity on 
 version = "7.x-1.0-dev"
 
 dependencies[] = views
-
-files[] = views/markaspot_log_handler_field_tweet.inc
-files[] = views/markaspot_log_handler_field_source.inc
-files[] = views/markaspot_log_handler_field_fid.inc

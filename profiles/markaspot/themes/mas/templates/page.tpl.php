@@ -3,7 +3,7 @@
 </header> <!-- /#header -->
 
 <div class="navbar-wrapper">
-  <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+  <div class="navbar navbar-inverse" role="navigation">
     <div class="container">
       <div class="navbar-header">
        <?php if ($logo): ?>

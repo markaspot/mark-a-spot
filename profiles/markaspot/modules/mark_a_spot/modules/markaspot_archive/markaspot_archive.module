@@ -1,5 +1,12 @@
 <?php
 /**
+ * @file
+ * Mark-a-Spot Archive module.
+ * This module implements hook_cron to automatically archive reports
+ * after a certain period
+ */
+
+/**
  * Implements hook_cron().
  */
 function markaspot_archive_cron() {
@@ -14,7 +21,8 @@ function markaspot_archive_cron() {
    *
    *  // Long-running operation example, leveraging a queue:
    *  // Fetch feeds from other sites.
-   *  $result = db_query('SELECT * FROM {aggregator_feed} WHERE checked + refresh < :time AND refresh != :never', array(
+   *  $result = db_query('SELECT * FROM {aggregator_feed} WHERE checked +
+   *    refresh < :time AND refresh != :never', array(
    *    ':time' => REQUEST_TIME,
    *    ':never' => AGGREGATOR_CLEAR_NEVER,
    *  ));
@@ -23,12 +31,11 @@ function markaspot_archive_cron() {
    *    $queue->createItem($feed);
    *  }
    */
-   /* Your code here */
+  /* Your code here */
   $query = new EntityFieldQuery();
   $query->entityCondition('entity_type', 'node')
     ->propertyCondition('status', 1)
     ->propertyCondition('type', array('report'))
-//     ->propertyCondition('created', REQUEST_TIME - 3600, '>='); // created within the past 1 hour
     ->propertyOrderBy('created', 'DESC');
   $result = $query->execute();
 
@@ -36,13 +43,11 @@ function markaspot_archive_cron() {
 
   $period = variable_get('archive_days') * 86400;
 
-  foreach($nodes as $node){
-    if ($node->changed <= time() - $period && $node->field_status['und'][0]['tid'] == 3) {
-      $node->field_status['und'][0]['tid'] = "4";
+  foreach ($nodes as $node) {
+    if ($node->changed <= time() - $period && $node->field_status['und'][0]['tid'] == 7) {
+      $node->field_status['und'][0]['tid'] = "8";
       node_save($node);
     }
   }
 
 }
-
-
