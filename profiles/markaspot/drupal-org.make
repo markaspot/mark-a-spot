@@ -83,6 +83,14 @@ libraries[bootstrap][directory_name] = "bootstrap"
 libraries[bootstrap][destination] = "themes/mas"
 libraries[bootstrap][overwrite] = TRUE
 
+libraries[mapiconmaker][download][type] = "git"
+libraries[mapiconmaker][download][url] = "https://gist.github.com/8233528.git"
+libraries[mapiconmaker][directory_name] = "mapiconmaker"
+
+libraries[markerclusterer][download][type] = "get"
+libraries[markerclusterer][download][url] = "http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/src/markerclusterer_compiled.js"
+libraries[markerclusterer][directory_name] = "markerclusterer"
+
 
 ; Themes
 projects[bootstrap][type] = "theme"
