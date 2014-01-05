@@ -251,7 +251,8 @@ function markaspot_open311_requests_index($page, $parameters) {
 
 
 /**
- * Provides a list of acceptable 311 service types and their associated service codes.
+ * Provides a list of acceptable 311 service types and their associated
+ * service codes.
  * 
  * These request types can be unique to the city/jurisdiction.
  *
@@ -404,15 +405,16 @@ function request_map_node($request) {
 
   $node->body[$node->language][0]['value'] = $request->description;
   $node->body[$node->language][0]['format'] = 'filtered_html';
-
-  $node->field_address[$node->language][0]['value'] = $request->address_string;
+  if (isset($request->address_string)){
+    $node->field_address[$node->language][0]['value'] = $request->address_string;
+  }
   $node->field_geo[$node->language][0]['lat'] = $request->lat;
   $node->field_geo[$node->language][0]['lng'] = $request->long;
 
   $node->field_e_mail[$node->language][0]['value'] = $request->email;
 
   // File Handling:
-  if ($request->media_url != "") {
+  if (strstr($request->media_url, "http")) {
     $managed = TRUE;
     // Whether or not to create a Drupal file record:
     // define('FILE_EXISTS_REPLACE', 1)

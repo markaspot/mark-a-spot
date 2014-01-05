@@ -14,3 +14,11 @@ features[menu_custom][] = management
 features[page_manager_pages][] = page_admin
 features[views_view][] = mark_a_spot_admin_comments
 features[views_view][] = mark_a_spot_admin_reports
+
+
+; Information added by drush on 2014-01-05
+version = "7.x-2.x-dev"
+core = "7.x"
+project = "markaspot"
+datestamp = "1388910550"
+

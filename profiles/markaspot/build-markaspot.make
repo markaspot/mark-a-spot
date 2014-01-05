@@ -5,12 +5,12 @@ core = 7.x
 ; https://drupal.org/comment/8140319#comment-8140319
 ; The following change fixed the issue
 projects[drupal][type] = core
-projects[drupal][version] = 7.24
+projects[drupal][version] = 7.25
 projects[drupal][download][type] = get
-projects[drupal][download][url] = http://ftp.drupal.org/files/projects/drupal-7.24.tar.gz
+projects[drupal][download][url] = http://ftp.drupal.org/files/projects/drupal-7.25.tar.gz
 
 ; Mark-a-Spot Profile
 projects[markaspot][type] = profile
 projects[markaspot][download][type] = "git"
-projects[markaspot][download][url] = "https://github.com/markaspot/mark-a-spot.git"
-projects[markaspot][download][branch] = "7.x-2.x-dev"
+projects[markaspot][download][url] = "http://git.drupal.org/sandbox/markaspot/2031703.git"
+projects[markaspot][download][branch] = "7.x-2.x"

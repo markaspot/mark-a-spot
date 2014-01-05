@@ -9,3 +9,11 @@ core = "7.x"
 project = "geolocation"
 datestamp = "1334089847"
 
+
+
+; Information added by drush on 2014-01-05
+version = "7.x-2.x-dev"
+core = "7.x"
+project = "markaspot"
+datestamp = "1388910550"
+

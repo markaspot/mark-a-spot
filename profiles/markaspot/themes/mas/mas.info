@@ -69,3 +69,11 @@ scripts[] = 'js/mas.js'
 ; Method 2 uses BootstrapCDN, the only thing you might need to provide here
 ; is overrides to Bootstrap theme settings. Copy them here from the base theme
 ; to override.
+
+
+; Information added by drush on 2014-01-05
+version = "7.x-2.x-dev"
+core = "7.x"
+project = "markaspot"
+datestamp = "1388910550"
+

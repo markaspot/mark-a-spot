@@ -61,7 +61,7 @@ function markaspot_logic_validate($form, &$form_state) {
     else {
       // Fill the address field only, if it's not equal to the initial value:
       if ($form_state['values']['field_geo']['und'][0]['lat'] != variable_get('markaspot_ini_lat')) {
-        $form['values']['field_address']['und'][0]['value'] = $form['values']['field_geo']['und'][0]['address']['field'];
+        $form_state['values']['field_address']['und'][0]['value'] = $form_state['values']['field_geo']['und'][0]['address']['field'];
       }
       else {
         form_set_error('field_geo', t('Please enter a location, different from the default one'));
