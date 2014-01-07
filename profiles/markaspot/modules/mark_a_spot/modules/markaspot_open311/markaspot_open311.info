@@ -1,15 +1,13 @@
 name = Mark-a-Spot Open311 Server
 description = provides resources for an Open 311 endpoint
 package = "Mark-a-Spot"
-
-core = 7.x
-
+core = "7.x"
 dependencies[] = "services"
 
 
-; Information added by drush on 2014-01-05
+; Information added by drush on 2014-01-07
 version = "7.x-2.x-dev"
 core = "7.x"
 project = "markaspot"
-datestamp = "1388910550"
+datestamp = "1389111606"
 

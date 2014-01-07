@@ -6,15 +6,9 @@
  * the entity types.
  */
 
-/**
- * Implements hook_install().
- */
-function markaspot_tweet311_install() {
-
-}
 
 /**
- * Implements hook_install().
+ * Implements hook_uninstall().
  */
 function markaspot_tweet311_uninstall() {
   variable_del('markaspot_tweet311_user');
@@ -102,6 +96,5 @@ function markaspot_tweet311_schema() {
       'tweet_id' => array('tweet_id'),
     ),
   );
-
   return $schema;
 }

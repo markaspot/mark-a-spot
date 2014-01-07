@@ -20,7 +20,7 @@ function geolocation_osm_field_formatter_info() {
         'marker_icon' => $base_url . '/profiles/markaspot/libraries/Leaflet/images/marker-icon.png',
         'map_zoomlevel' => '15',
         'leafletImagePath' => $base_url . '/profiles/markaspot/libraries/Leaflet/images/',
-        'tile_server' => 'http://{s}.tile.osm.org/{z}/{x}/{y}.png'
+        'tile_server' => 'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
       ),
     ),
     'geolocation_osm_dynamic' => array(
@@ -32,8 +32,7 @@ function geolocation_osm_field_formatter_info() {
         'marker_icon' => $base_url . '/profiles/markaspot/libraries/Leaflet/images/marker-icon.png',
         'leafletImagePath' => $base_url . '/profiles/markaspot/libraries/Leaflet/images/',
         'map_scrollwheel' => FALSE,
-        'tile_server' => 'http://{s}.tile.osm.org/{z}/{x}/{y}.png'
-
+        'tile_server' => 'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
       ),
     ),
   );
@@ -51,27 +50,25 @@ function geolocation_osm_field_formatter_settings_form($field, $instance, $view_
   $element = array();
 
   // Implement some configuration options.
-  // http://code.google.com/intl/en/apis/maps/documentation/staticmaps/
   $element['map_dimensions'] = array(
     '#type' => 'textfield',
     '#title' => t('Map dimensions'),
     '#description' => t('Enter custom map dimensions, default is 300x300.'),
     '#default_value' => $settings['map_dimensions'],
   );
-
   $element['marker_icon'] = array(
     '#type' => 'textfield',
     '#title' => t('Marker icon'),
     '#description' => t('Set the path to the icon marker you wish to use. Path can be absolute (wicth http://) or relative to the Drupal instalation. If left blank, the default will be used'),
     '#default_value' => $settings['marker_icon'],
   );
-  $element['tile_server'] = array (
+  $element['tile_server'] = array(
     '#type' => 'textfield',
     '#title' => t('Tile Server'),
     '#description' => t('Insert the OSM tile server operator'),
     '#default_value' => $settings['tile_server'],
   );
-  $element['geocode_service'] = array (
+  $element['geocode_service'] = array(
     '#type' => 'textfield',
     '#title' => t('Geocoding URL'),
     '#description' => t('Insert the OSM geocoding server'),
@@ -87,7 +84,7 @@ function geolocation_osm_field_formatter_settings_form($field, $instance, $view_
           'png' => '8-bit PNG (default)',
           'png32' => '32-bit PNG',
           'gif' => 'GIF',
-          'jpg' => 'JPEG'
+          'jpg' => 'JPEG',
         ),
         '#description' => t('Choose an Image Format. jpg and jpg-baseline typically provide the smallest image size, though they do so through "lossy" compression which may degrade the image. gif, png8 and png32 provide lossless compression.'),
         '#default_value' => $settings['map_imageformat'],
@@ -95,7 +92,6 @@ function geolocation_osm_field_formatter_settings_form($field, $instance, $view_
       break;
 
     case 'geolocation_osm_dynamic':
-      // if supported, don't know yet
       $element['map_scrollwheel'] = array(
         '#type' => 'checkbox',
         '#title' => t('Scroll Zoom'),
@@ -194,7 +190,6 @@ function geolocation_osm_field_formatter_view($entity_type, $entity, $field, $in
     case 'geolocation_osm_static':
       foreach ($items as $delta => $item) {
         $query = array(
-          //'sensor' => 'false',
           'zoom' => $settings['map_zoomlevel'],
           'size' => $settings['map_dimensions'],
           'format' => $settings['map_imageformat'],
@@ -233,20 +228,10 @@ function geolocation_osm_field_formatter_view($entity_type, $entity, $field, $in
 
         // Attach CSS and JS files via FAPI '#attached'.
         $map_element['osm-osm']['#attached']['css'][] = drupal_get_path('module', 'geolocation_osm') . '/geolocation_osm.css';
-          // Attach CSS and JS files via FAPI '#attached'.
-
-
-        // Wont work:
-        // $map_element['osm-osm']['#attached']['css'][] = array(
-        //   'http://cdn.leafletjs.com/leaflet-0.4.4/leaflet.css',
-        //   'type' => 'external'
-        // );
-
 
         $map_element['osm-osm']['#attached']['js'][] = array(
-          'data' => drupal_get_path('profile','markaspot') . '/libraries/Leaflet/leaflet.js',
+          'data' => drupal_get_path('profile', 'markaspot') . '/libraries/Leaflet/leaflet.js',
           'type' => 'file',
-          //'scope' => 'footer',
         );
 
         $map_element['osm-osm']['#attached']['js'][] = array(
@@ -301,12 +286,6 @@ function geolocation_osm_field_widget_info() {
 function geolocation_osm_field_widget_settings_form($field, $instance) {
   $widget = $instance['widget'];
   $settings = $widget['settings'];
-  // $form['bing_api_key'] = array(
-  //   '#type' => 'textfield',
-  //   '#title' => t('Bing Geolocation API Key'),
-  //   '#description' => t('This module makes use of the bing geolocation api. Check http://msdn.microsoft.com/en-us/library/ff701713.aspx for more information. You have to sign up to obtain an API. Sart here: http://msdn.microsoft.com/en-us/library/ff428642.aspx '),
-  //   '#default_value' => isset($settings['bing_api_key']) ? $settings['bing_api_key'] : FALSE,
-  // );
 
   $form['tile_server'] = array(
     '#type' => 'textfield',
@@ -354,7 +333,7 @@ function geolocation_osm_field_widget_settings_form($field, $instance) {
 function geolocation_osm_field_widget_form(&$form, &$form_state, $field, $instance, $langcode, $items, $delta, $element) {
 
   $id = $instance['id'] . '-' . $delta;
-  // default NULL is not valid, so home is where the heart is ...
+  // Default NULL is not valid, so home is where the heart is ...
   $lat_value = isset($items[$delta]['lat']) ? $items[$delta]['lat'] : '50.93';
   $lng_value = isset($items[$delta]['lng']) ? $items[$delta]['lng'] : '6.96';
   $element += array(
@@ -374,7 +353,7 @@ function geolocation_osm_field_widget_form(&$form, &$form_state, $field, $instan
       $element['address']['field'] = array(
         '#type' => 'textfield',
         '#maxlength' => 120,
-        '#size' => 50
+        '#size' => 50,
       );
       $element['address']['geocode'] = array(
         '#prefix' => '<span id="geolocation-address-geocode-' . $id . '" class="geolocation-address-geocode">',
@@ -428,18 +407,9 @@ function geolocation_osm_field_widget_form(&$form, &$form_state, $field, $instan
 
       // Attach CSS and JS files via FAPI '#attached'.
       $element['osm-osm']['#attached']['css'][] = drupal_get_path('module', 'geolocation_osm') . '/geolocation_osm.css';
-        // Attach CSS and JS files via FAPI '#attached'.
-
-
-      // Wont work:
-      // $map_element['osm-osm']['#attached']['css'][] = array(
-      //   'http://cdn.leafletjs.com/leaflet-0.4.4/leaflet.css',
-      //   'type' => 'external'
-      // );
-
 
       $element['osm-osm']['#attached']['js'][] = array(
-        'data' => drupal_get_path('profile','markaspot') . '/libraries/Leaflet/leaflet.js',
+        'data' => drupal_get_path('profile', 'markaspot') . '/libraries/Leaflet/leaflet.js',
         'type' => 'file',
         'scope' => 'footer',
       );

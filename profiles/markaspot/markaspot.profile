@@ -90,7 +90,7 @@ function markaspot_install_finished(&$install_state) {
  *   The term id
  */
 
-function get_term_id($termname) {
+function markaspot_get_term_id($termname) {
   $terms = taxonomy_get_term_by_name($termname);
   foreach ($terms as $term) {
     if ($term->name == $termname) {
@@ -330,8 +330,8 @@ function markaspot_create_reports() {
     $node->field_geo[$node->language][0]['lng'] = $node_data[3];
     $node->field_address[$node->language][0]['value'] = $node_data[4];
     $node->field_e_mail[$node->language][0]['value'] = $node_data[5];
-    $node->field_category[$node->language][0]['tid'] = get_term_id($node_data[6]);
-    $node->field_status[$node->language][0]['tid'] = get_term_id($node_data[7]);
+    $node->field_category[$node->language][0]['tid'] = markaspot_get_term_id($node_data[6]);
+    $node->field_status[$node->language][0]['tid'] = markaspot_get_term_id($node_data[7]);
     $node->is_new = TRUE;
     $node->promote = 0;
     $filename = 'image_' . $node_data[8] . '.jpg';
@@ -681,21 +681,20 @@ function markaspot_create_pages() {
 
 
 function markaspot_build_blocks() {
-  _activate_block('markaspot_log', 'markaspot_activity', 'content', 'mas', 'node/*', '1', '5');
-  _activate_block('markaspot_logic', 'taxonomy_category', 'sidebar_second', 'mas', 'map', '1', '0');
-  _activate_block('markaspot_logic', 'taxonomy_status', 'sidebar_second', 'mas', 'map', '1', '0');
-  _activate_block('markaspot_logic', 'markaspot_map', 'sidebar_second', 'mas', 'map', '1', '0');
-  _activate_block('markaspot_unpubished', 'recent', 'sidebar_second', 'mas', '<front>', '1>', '1', '0');
-  _activate_block('system', 'navigation', 'sidebar_second', 'mas', '<front>' . "\n" . 'node/7' . "\n" . 'node/8', '1', '0');
-  _activate_block('menu', 'menu-secondary-navigation', 'footer', 'mas', 'admin' . "\n" . 'admin/*', '0', '0');
-  _activate_block('user', 'login', 'sidebar_second', 'mas', '<front>' . "\n" . 'node/7' . "\n" . 'node/8', '1', '0');
-  _activate_block('markaspot_default_content', 'welcome', 'content', 'mas', '<front>', '1', '0');
-  _activate_block('markaspot_stats', 'markaspot_stats', 'sidebar_second', 'mas', '<front>' . "\n" . 'node/7' . "\n" . 'node/8', '1', '0');
-  _activate_block('comment', 'recent', 'sidebar_second', 'mas', '<front>', '1', '0');
-  _activate_block('user', 'new', 'sidebar_second', 'mas', '<front>', '1', '0');
+  markaspot_activate_block('markaspot_log', 'markaspot_activity', 'content', 'mas', 'node/*', '1', '5');
+  markaspot_activate_block('markaspot_logic', 'taxonomy_category', 'sidebar_second', 'mas', 'map', '1', '0');
+  markaspot_activate_block('markaspot_logic', 'taxonomy_status', 'sidebar_second', 'mas', 'map', '1', '0');
+  markaspot_activate_block('markaspot_logic', 'markaspot_map', 'sidebar_second', 'mas', 'map', '1', '0');
+  markaspot_activate_block('system', 'navigation', 'sidebar_second', 'mas', '<front>' . "\n" . 'node/7' . "\n" . 'node/8', '1', '0');
+  markaspot_activate_block('menu', 'menu-secondary-navigation', 'footer', 'mas', 'admin' . "\n" . 'admin/*', '0', '0');
+  markaspot_activate_block('user', 'login', 'sidebar_second', 'mas', '<front>' . "\n" . 'node/7' . "\n" . 'node/8', '1', '0');
+  markaspot_activate_block('markaspot_default_content', 'welcome', 'content', 'mas', '<front>', '1', '0');
+  markaspot_activate_block('markaspot_stats', 'markaspot_stats', 'sidebar_second', 'mas', '<front>' . "\n" . 'node/7' . "\n" . 'node/8', '1', '0');
+  markaspot_activate_block('comment', 'recent', 'sidebar_second', 'mas', '<front>', '1', '0');
+  markaspot_activate_block('user', 'new', 'sidebar_second', 'mas', '<front>', '1', '0');
 }
 
-function _activate_block($module, $block, $region, $theme, $pages, $visibility, $weight) {
+function markaspot_activate_block($module, $block, $region, $theme, $pages, $visibility, $weight) {
   drupal_set_message("Activating block $module:$block\n");
   db_merge('block')
     ->key(array('theme' => $theme, 'delta' => $block, 'module' => $module))

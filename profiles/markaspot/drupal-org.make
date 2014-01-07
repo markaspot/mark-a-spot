@@ -21,24 +21,21 @@ projects[admin_menu][subdir] = "contrib"
 projects[field_formatter_settings][subdir] = "contrib"
 projects[field_formatter_class][subdir] = "contrib"
 projects[field_formatter_css_class][subdir] = "contrib"
+
 projects[twitter][subdir] = "contrib"
 projects[twitter][patch][2132231] = "https://drupal.org/files/issues/Twitter-add_geo_and_entities_Twitter_object_2132231-1_0.patch"
+
 projects[pathauto][subdir] = "contrib"
 projects[token][subdir] = "contrib"
 
 projects[uuid][subdir] = "contrib"
 projects[uuid][patch][2161375] = https://drupal.org/files/issues/custom_method_of_UUID_creation_2161375_1.patch
-projects[uuid][subdir] = "contrib"
-
 
 projects[oauth][subdir] = "contrib"
-
 projects[workbench][subdir] = "contrib"
 
 projects[chosen][subdir] = "contrib"
 projects[chosen][version] = 2.x-dev
-
-
 
 libraries[chosen][type] = libraries
 libraries[chosen][download][type] = get

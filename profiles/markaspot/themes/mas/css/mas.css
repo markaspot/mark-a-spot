@@ -42,7 +42,7 @@ body {
 
 #markers-list-view .report {
   min-height: 180px;
-  padding: 0 0 20px 0px;
+  padding: 0 0 20px 0;
   margin: 0 0 40px 40px;
   border-bottom: 1px solid #f2f2f2;
 }
@@ -106,7 +106,7 @@ div.show-markers {
 }
 
 .pull-left.thumbnail {
-  margin: 0 10px 0 0px;
+  margin: 0 10px 0 0;
 }
 
 .report .field-name-field-geo {
@@ -141,7 +141,7 @@ body.page-node div#map {
 }
 
 body.toolbar-drawer {
-  padding-top: 0px !important;
+  padding-top: 0 !important;
 }
 
 .report-log ul {
@@ -237,11 +237,6 @@ body.toolbar-drawer {
   color: #fff;
 }
 
-.region.region-footer a {
-  color: #fff;
-}
-
-
 /* Footer Menue */
 
 footer.footer .region.region-footer section.block-menu {
@@ -264,7 +259,6 @@ footer.footer .region.region-footer section.block-menu li a.active-trail {
 
 footer.footer .region.region-footer section.block-menu li {
   float: left;
-  margin-right: 20px;
   margin: 0;
 }
 
@@ -639,9 +633,8 @@ span.marker-category {
 }
 
 
-/* if you don't use the carousel, you may take a look at the page--front.tpl and find a block there */.
+/* if you don't use the carousel, you may take a look at the page--front.tpl and find a block there */
 .welcome-text.well{
-  margin: 30px;
   margin: 4px 0;
   background:none;
 }
@@ -659,10 +652,6 @@ span.marker-category {
     padding: 0;
     line-height: 1.5em;
     text-transform: uppercase;
-}
-
-.block {
-    padding: 5px 0px;*/
 }
 
 .panel-pane.well,
@@ -686,8 +675,8 @@ div.view.view-recent-edits ul, .block-user ul  {
 .navbar-fixed-top,
 .navbar-fixed-bottom,
 .navbar-static-top {
-  margin-left: 0px;
-  margin-right: 0px;
+  margin-left: 0;
+  margin-right: 0;
 }
 
 
@@ -767,7 +756,7 @@ float: none;
   color: #999;
   background: #fff;
   padding: 10px;
-  margin: 0px;
+  margin: 0;
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
   border-radius: 3px;
@@ -801,7 +790,7 @@ float: none;
 
 .fieldset-description, .description, .help-block {
     color: #999;
-    padding: 0px 0 10px 0;
+    padding: 0 0 10px 0;
     display:none
 }
 
@@ -902,7 +891,7 @@ margin: 10px 30px;}
 .page-map .navbar-wrapper {
   position: fixed;
   z-index: 34;
-  margin-top: 0px;
+  margin-top: 0;
   left: 0;
   right: 0;
 }
@@ -971,7 +960,7 @@ margin: 10px 30px;}
 }
 @media (min-width: 979px) {
   body {
-    padding-top: 0px;
+    padding-top: 0;
   }
 
   .front .navbar-wrapper {
@@ -1072,7 +1061,7 @@ margin: 10px 30px;}
 
 
    #map_wrapper_splash {
-    top: 0px;
+    top: 0;
   }
 
 
@@ -1083,7 +1072,7 @@ margin: 10px 30px;}
 
 
    .admin-menu #map_wrapper_splash {
-    top: 0px;
+    top: 0;
   }
 
 
@@ -1114,7 +1103,7 @@ margin: 10px 30px;}
   }
 
   .main-container {
-    margin: 0px auto;
+    margin: 0 auto;
   }
 
   .report img.pull-left.thumbnail {
@@ -1126,8 +1115,8 @@ margin: 10px 30px;}
   /* Tighten up footer */
   .footer {
     margin: 0 -20px;
-    padding-top: 0px;
-    padding-bottom: 0px;
+    padding-top: 0;
+    padding-bottom: 0;
   }
   .page-map .row.map-tools {
     position: absolute;
@@ -1145,7 +1134,7 @@ margin: 10px 30px;}
     margin-left: 0;
   }
   .panel-2col-stacked .panel-col-last .inside {
-  margin: 0 0 1em 0em;
+  margin: 0 0 1em 0;
   }
 }
 /* Landscape phones
@@ -1167,7 +1156,7 @@ margin: 10px 30px;}
 
   .navbar-wrapper {
     z-index: 9999;
-    margin-top: 0px;
+    margin-top: 0;
   }
 
   .navbar-fixed-top, .navbar-fixed-bottom {
@@ -1218,7 +1207,7 @@ margin: 10px 30px;}
     margin-left: 0;
   }
   .panel-2col-stacked .panel-col-last .inside {
-  margin: 0 0 1em 0em;
+  margin: 0 0 1em 0;
   }
 
 }
@@ -1281,7 +1270,7 @@ margin: 10px 30px;}
     100% {
         opacity: 1;
         -webkit-transform: translateY(0);
-    };
+    }
 }
 
 
@@ -1294,7 +1283,7 @@ margin: 10px 30px;}
     100% {
         opacity: 1;
         -moz-transform: translateY(0);
-    };
+    }
 }
 
 @-o-keyframes fadeInUp {
@@ -1306,7 +1295,7 @@ margin: 10px 30px;}
     100% {
         opacity: 1;
         -o-transform: translateY(0);
-    };
+    }
 }
 
 @keyframes fadeInUp {
@@ -1318,7 +1307,7 @@ margin: 10px 30px;}
     100% {
         opacity: 1;
         transform: translateY(0);
-    };
+    }
 }
 
 .fadeInUp {

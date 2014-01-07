@@ -1,7 +1,8 @@
 <?php
 /**
  * @file
- * This module provides hooks for altering the report form and custom UUID generator
+ * This module provides hooks for altering the report form and
+ * custom UUID generator
  * http://drupal.org/node/1588044
  */
 
@@ -31,7 +32,7 @@ function markaspot_uuid_form_alter(&$form, &$form_state, $form_id) {
  */
 function markaspot_uuid_generate_uuid() {
 
-  $callback = '_uuid_generate_mas';
+  $callback = 'markaspot_uuid_generate_mas';
   return $callback();
 }
 
@@ -41,7 +42,7 @@ function markaspot_uuid_generate_uuid() {
  * @return string
  *   the UUID
  */
-function _uuid_generate_mas() {
+function markaspot_uuid_generate_mas() {
 
   // First get the last inserted node-id
   $query = db_select('node');
@@ -53,7 +54,7 @@ function _uuid_generate_mas() {
     // 32 bits for "time_low".
     mt_rand(0, 65535),
     // 16 bits for "time_mid".
-    mt_rand(0, 65535)) . '-' .$countount;
+    mt_rand(0, 65535)) . '-' . $count;
 }
 
 

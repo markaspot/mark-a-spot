@@ -13,7 +13,7 @@
  * @param int $code
  *   The http status/error code
  */
-function process_services_error($message, $code) {
+function markaspot_open311_process_services_error($message, $code) {
   $error[] = array('code' => $code, 'description' => $message);
   services_error($message, $code, $error);
 }
@@ -56,11 +56,11 @@ function markaspot_open311_requests_create($data) {
 
   // Could be more validation here:
   if (!isset($data->email)) {
-    process_services_error(t('Please provide a valid email address.'), 400);
+    markaspot_open311_process_services_error(t('Please provide a valid email address.'), 400);
   }
 
   if (!isset($data->lat) || !isset($data->long)) {
-    process_services_error(t('Missing position parameters lat and long'), 400);
+    markaspot_open311_process_services_error(t('Missing position parameters lat and long'), 400);
   }
   else {
     $lat = $data->lat;
@@ -80,11 +80,11 @@ function markaspot_open311_requests_create($data) {
     }
 
     if ($se == FALSE || $nw == FALSE) {
-      process_services_error(t('Your position is not located in our range of activity'), 400);
+      markaspot_open311_process_services_error(t('Your position is not located in our range of activity'), 400);
     }
 
     if (!isset($data->service_code)) {
-      process_services_error(t('Service_code missing or empty.'), 404);
+      markaspot_open311_process_services_error(t('Service_code missing or empty.'), 404);
     }
 
     // Check if submitted service code is in ServiceList:
@@ -95,11 +95,11 @@ function markaspot_open311_requests_create($data) {
     }
 
     if (!in_array($data->service_code, $services_available)) {
-      process_services_error('Service_code was not found', 404);
+      markaspot_open311_process_services_error('Service_code was not found', 404);
     }
 
     // Map request to node object;
-    $node = request_map_node($data);
+    $node = markaspot_open311_request_map_node($data);
 
     // Then write to DB:
     markaspot_open311_write_request($node);
@@ -132,7 +132,7 @@ function markaspot_open311_requests_create($data) {
 function markaspot_open311_requests_retrieve($id, $parameters) {
   /*
    * Added optional parameters achiving this:
-   * http://lists.open311.org/groups/discuss/messages/topic/AaxmrRLUHToO7jCQdjAXy
+   * lists.open311.org/groups/discuss/messages/topic/AaxmrRLUHToO7jCQdjAXy
    *
    * Using entity_load is slower than node_load()
    *
@@ -148,7 +148,7 @@ function markaspot_open311_requests_retrieve($id, $parameters) {
       $node = node_load($service_request_id[$id]);
     }
     else {
-      process_services_error(t('Service request not found'), 404);
+      markaspot_open311_process_services_error(t('Service request not found'), 404);
     }
   }
   else {
@@ -161,9 +161,9 @@ function markaspot_open311_requests_retrieve($id, $parameters) {
   }
   else {
     $node->language = LANGUAGE_NONE;
-    $status = tax_map_status($node->field_status[$node->language][0]["tid"]);
+    $status = markaspot_open311_tax_map_status($node->field_status[$node->language][0]["tid"]);
   }
-  $service_requests[] = node_map_request($node, $status, $parameters);
+  $service_requests[] = markaspot_open311_node_map_request($node, $status, $parameters);
   return $service_requests;
 }
 
@@ -207,7 +207,7 @@ function markaspot_open311_requests_index($page, $parameters) {
   // Checking for service_code and map the code with taxonomy terms:
   if (isset($parameters['service_code'])) {
     // Get the service of the current node:
-    $tid = service_map_tax($parameters['service_code']);
+    $tid = markaspot_open311_service_map_tax($parameters['service_code']);
     $query->fieldCondition('field_category', 'tid', $tid);
   }
 
@@ -219,7 +219,7 @@ function markaspot_open311_requests_index($page, $parameters) {
   // Checking for status-parameter and map the code with taxonomy terms:
   if (isset($parameters['status'])) {
     // Get the service of the current node:
-    $tids = status_map_tax($parameters['status']);
+    $tids = markaspot_open311_status_map_tax($parameters['status']);
     $query->fieldCondition('field_status', 'tid', $tids, 'IN');
   }
 
@@ -242,8 +242,8 @@ function markaspot_open311_requests_index($page, $parameters) {
   foreach ($nodes as $node) {
     $node->language = LANGUAGE_NONE;
 
-    $status = tax_map_status($node->field_status[$node->language][0]["tid"]);
-    $requests[] = node_map_request($node, $status, $parameters);
+    $status = markaspot_open311_tax_map_status($node->field_status[$node->language][0]["tid"]);
+    $requests[] = markaspot_open311_node_map_request($node, $status, $parameters);
   }
 
   return $requests;
@@ -251,9 +251,8 @@ function markaspot_open311_requests_index($page, $parameters) {
 
 
 /**
- * Provides a list of acceptable 311 service types and their associated
- * service codes.
- * 
+ * Provides a list of acceptable 311 service types.
+ *
  * These request types can be unique to the city/jurisdiction.
  *
  * @param array $args
@@ -266,7 +265,7 @@ function markaspot_open311_services_index($args) {
   $services = array();
   $taxonomies = taxonomy_get_tree(1, $parent = 0, $max_depth = 1, $load_entities = TRUE);
   foreach ($taxonomies as $taxonomy_term) {
-    $services[] = tax_map_service($taxonomy_term);
+    $services[] = markaspot_open311_tax_map_service($taxonomy_term);
   }
   return $services;
 }
@@ -283,7 +282,7 @@ function markaspot_open311_services_index($args) {
  */
 function markaspot_open311_services_retrieve($service_code) {
   $taxonomy_term = taxonomy_term_load($service_code);
-  $service['service_definition'][] = tax_map_service($taxonomy_term);
+  $service['service_definition'][] = markaspot_open311_tax_map_service($taxonomy_term);
   return $service;
 }
 
@@ -305,7 +304,7 @@ function markaspot_open311_services_retrieve($service_code) {
  * @return object
  *   $request as single request
  */
-function node_map_request($node, $status, $parameters) {
+function markaspot_open311_node_map_request($node, $status, $parameters) {
   if (module_exists('markaspot_uuid')) {
     $request['service_request_id'] = $node->uuid;
   }
@@ -320,7 +319,7 @@ function node_map_request($node, $status, $parameters) {
   $term['category'] = taxonomy_term_load($node->field_category[$node->language][0]["tid"]);
 
   // Defining content of the status-field:
-  $status = tax_map_status($node->field_status[$node->language][0]["tid"]);
+  $status = markaspot_open311_tax_map_status($node->field_status[$node->language][0]["tid"]);
 
   if (isset($term['category'])) {
     $request['service_code'] = $term['category']->field_category_id[$node->language][0]['value'];
@@ -373,7 +372,7 @@ function node_map_request($node, $status, $parameters) {
  * @return object
  *   The node object
  */
-function request_map_node($request) {
+function markaspot_open311_request_map_node($request) {
   global $user;
 
   $node = new stdClass();
@@ -391,7 +390,7 @@ function request_map_node($request) {
 
   $node->language = LANGUAGE_NONE;
   // Mapping the requested service code to taxonomy id:
-  $tid = service_map_tax($request->service_code);
+  $tid = markaspot_open311_service_map_tax($request->service_code);
 
   // Applying term-name to title and it's taxonomyId to field_category
   $node->field_category[$node->language][0]['tid'] = $tid;
@@ -405,7 +404,7 @@ function request_map_node($request) {
 
   $node->body[$node->language][0]['value'] = $request->description;
   $node->body[$node->language][0]['format'] = 'filtered_html';
-  if (isset($request->address_string)){
+  if (isset($request->address_string)) {
     $node->field_address[$node->language][0]['value'] = $request->address_string;
   }
   $node->field_geo[$node->language][0]['lat'] = $request->lat;
@@ -451,7 +450,7 @@ function request_map_node($request) {
  * @return object
  *   $service: The service object
  */
-function tax_map_service($taxonomy_term) {
+function markaspot_open311_tax_map_service($taxonomy_term) {
   // $result=field_view_field('taxonomy_term',$term,'field_desired_field');
   $lang = LANGUAGE_NONE;
 
@@ -471,7 +470,7 @@ function tax_map_service($taxonomy_term) {
  *
  * geoReport v2 has only open and closed status
  */
-function tax_map_status($taxonomy_id) {
+function markaspot_open311_tax_map_status($taxonomy_id) {
   // Mapping Status to Open311 Status (open/closed)
   $term['status'] = taxonomy_term_load($taxonomy_id);
   if (isset($term['status'])) {
@@ -498,7 +497,7 @@ function tax_map_status($taxonomy_id) {
  * @return array
  *   The array of status term ids
  */
-function status_map_tax($status) {
+function markaspot_open311_status_map_tax($status) {
   if ($status == "open") {
     $tids = array(variable_get('open311_status_open', markaspot_logic_defaults('open311_status_open')));
   }
@@ -518,7 +517,7 @@ function status_map_tax($status) {
  * @return int
  *   The TaxonomyId
  */
-function service_map_tax($service_code) {
+function markaspot_open311_service_map_tax($service_code) {
 
   $query = new EntityFieldQuery();
 

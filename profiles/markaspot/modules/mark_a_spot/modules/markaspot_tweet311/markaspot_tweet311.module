@@ -3,10 +3,10 @@
 /**
  * @file
  * Provides content and text mapping and creating nodes from tweets
- * Most of the code taken from Twitter Import Module by fabianderijk http://drupal.org/user/278745
+ * Most of the code taken from Twitter Import Module
+ * by fabianderijk http://drupal.org/user/278745
  * http://drupal.org/project/twitter_import
  */
-
 
 /**
  * Implements hook_cron().
@@ -34,8 +34,8 @@ function _markaspot_tweet311_import_terms() {
     if (!module_exists('twitter')) {
       return FALSE;
     }
-    // Load the twitter module.
 
+    // Load the twitter module.
     module_load_include('inc', 'twitter');
     $account = twitter_account_load($account);
 
@@ -118,13 +118,14 @@ function _markaspot_tweet311_create_content($data, $usercheck = FALSE) {
     }
   }
   else {
-    drupal_set_message(check_plain(t('Error while importing Tweets; Code: ') . $data->code), 'error');
+    drupal_set_message(check_plain(t('Error while importing Tweets; Code:') .
+      " " . $data->code), 'error');
   }
 }
 
 
 /**
- * Get the profile pic from twitter if not already downloaded and not older than 1 week
+ * Get the profile pic from twitter if not already downloaded.
  */
 function _markaspot_tweet311_get_profile_pic($userid, $picurl) {
   $fid = FALSE;
@@ -161,6 +162,7 @@ function _markaspot_tweet311_get_profile_pic($userid, $picurl) {
  *   get the file id
  *
  * @return bool
+ *   No file
  */
 function _markaspot_tweet311_get_fid_from_uri($uri) {
   $query = db_select('file_managed', 'fm');
@@ -177,7 +179,6 @@ function _markaspot_tweet311_get_fid_from_uri($uri) {
 
 /**
  * Reformat urls.
- *
  */
 function _markaspot_tweet311_twitterify($ret, $target = '_blank') {
   $ret = preg_replace("#(^|[\n ])([\w]+?://[\w]+[^ \"\n\r\t< ]*)#", "\\1<a href=\"\\2\" target=\"" . $target . "\">\\2</a>", $ret);
@@ -220,7 +221,7 @@ function markaspot_tweet311_load_tweet($tid) {
  */
 function _markaspot_get_taxonomy($tweet) {
 
-  // Getting all servicecodes or hashes
+  // Getting all servicecodes or hashes.
   $taxonomies = taxonomy_get_tree(1, $parent = 0, $max_depth = 1, $load_entities = TRUE);
 
   foreach ($taxonomies as $taxonomy_term) {
@@ -261,7 +262,6 @@ function _markaspot_get_taxonomy($tweet) {
       else {
         $query
           ->fieldCondition('field_hash', 'value', '%' . $service_found . '%', 'LIKE');
-        // ->fieldCondition('field_hash', 'value', array($service_found), 'LIKE');
       }
       $taxonomy_found = $query->execute();
       $tid = array_keys($taxonomy_found["taxonomy_term"]);
@@ -288,7 +288,7 @@ function _markaspot_tweet311_map_node($tweet, $twitter_user) {
   $node = new stdClass();
   $node->language = 'und';
 
-  $user = _twitter_create_user_from_tweet($twitter_user);
+  $user = _markaspot_tweet311_twitter_create_user_from_tweet($twitter_user);
 
   // Loading the taxonomy term by requested hashed #service_code or #hash-tag:
   $service = _markaspot_get_taxonomy($tweet);
@@ -333,7 +333,7 @@ function _markaspot_tweet311_map_node($tweet, $twitter_user) {
 
 
 /**
- * Get the profile pic from twitter if not already downloaded and not older than 1 week.
+ * Get the profile pic from twitter.
  */
 function _markaspot_tweet311_get_tweet_pic($picurl) {
 
@@ -374,7 +374,7 @@ function _markaspot_tweet311_get_tweet_pic($picurl) {
  * @return bool
  *   The user object
  */
-function _twitter_create_user_from_tweet($username) {
+function _markaspot_tweet311_twitter_create_user_from_tweet($username) {
 
   // Check if user is already registered:
   if (!db_query("SELECT COUNT(*) FROM {users} WHERE name = :name", array(':name' => $username))->fetchField()) {
@@ -395,57 +395,4 @@ function _twitter_create_user_from_tweet($username) {
   }
   return $user;
 
-}
-
-
-/**
- * Returns field values as actual entities where possible.
- *
- * Also allows selection of individual items to be returned
- */
-function field_fetch_field_values($entity_type, $entity, $field_name, $get_delta = NULL, $get_key = NULL) {
-  $values = array();
-  if (isset($entity->$field_name) && !empty($entity->$field_name)) {
-    foreach (field_get_items($entity_type, $entity, $field_name) as $delta => $item) {
-      $value = $item;
-      $keys = array_keys($item);
-      if (count($keys) == 1) {
-        $key = $keys[0];
-        switch ($key) {
-          case 'nid':
-            $value = array_shift(entity_load('node', array($item[$key])));
-            break;
-
-          case 'uid':
-            $value = array_shift(entity_load('user', array($item[$key])));
-            break;
-
-          case 'tid':
-            $value = array_shift(entity_load('taxonomy_term', array($item[$key])));
-            break;
-
-          case 'vid':
-            $value = array_shift(entity_load('taxonomy_vocabulary', array($item[$key])));
-            break;
-
-          case 'value':
-            $value = $item['value'];
-            break;
-        }
-      }
-      else {
-        if ($get_key && isset($item[$get_key])) {
-          $value = $item[$get_key];
-        }
-        elseif (array_key_exists('value', $item)) {
-          $value = isset($item['safe_value']) ? $item['safe_value'] : $item['value'];
-        }
-      }
-      $values[$delta] = $value;
-    }
-  }
-  if (is_numeric($get_delta)) {
-    return isset($values[$get_delta]) ? $values[$get_delta] : NULL;
-  }
-  return $values;
 }
