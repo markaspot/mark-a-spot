@@ -6,9 +6,9 @@ description = Provides a logging block for civic and administrative activity on 
 dependencies[] = views
 
 
-; Information added by drush on 2014-01-07
+; Information added by drush on 2014-01-08
 version = "7.x-2.x-dev"
 core = "7.x"
 project = "markaspot"
-datestamp = "1389111606"
+datestamp = "1389186530"
 
