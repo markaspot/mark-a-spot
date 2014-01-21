@@ -23,9 +23,9 @@ In case you want to run the system with Cloudmade OSM, you may choose the Cloudm
 
 ## Open311 GeoReport Resources
 
-http://yourserver/georeport/services.format (xml/json)
-http://yourserver/georeport/requests.format (xml/json)
-http://yourserver/georeport/discovery.format (xml/json)
+http://yourserver/georeport/v2/services.format (xml/json)
+http://yourserver/georeport/v2/requests.format (xml/json)
+http://yourserver/georeport/v2/discovery.format (xml/json)
 
 ## Contact
 Holger Kreis | @markaspot | http://mark-a-spot.org
