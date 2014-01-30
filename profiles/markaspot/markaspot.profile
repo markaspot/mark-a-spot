@@ -1,9 +1,7 @@
 <?php
 /**
  * @file
- *
  * Profile File, handling Install tasks.
- *
  */
 
 /**
@@ -20,17 +18,17 @@ function markaspot_form_install_configure_form_alter(&$form, $form_state) {
  * Implements hook_install_tasks_alter().
  *
  * Allows the profile to alter the site configuration form.
- *
  */
 function markaspot_install_tasks_alter(&$tasks, $install_state) {
   $tasks['install_finished']['function'] = 'markaspot_install_finished';
 }
 
 /**
- * Create default Content:
+ * Create default Content.
  *
  * @param string $install_state
  *   An array of information about the current installation state.
+ *
  * @return string
  *   Message on Complete
  */
@@ -83,13 +81,12 @@ function markaspot_install_finished(&$install_state) {
 /**
  * Get term names.
  *
- * @param $termname
+ * @param string $termname
  *   Term-name
  *
- * @return int $term->tic
- *   The term id
+ * @return int
+ *   $term->tic The term id
  */
-
 function markaspot_get_term_id($termname) {
   $terms = taxonomy_get_term_by_name($termname);
   foreach ($terms as $term) {
@@ -108,34 +105,70 @@ function markaspot_create_status() {
   $vid = db_query("SELECT vid FROM {taxonomy_vocabulary} WHERE machine_name = 'status'")->fetchField();
 
   // Define the terms, with description and color:
-  $terms[0] = array('Open', 'This is just a description which should be
-    replaced', 'cc0000', 'pause');
-  $terms[1] = array('In progress', 'This is just a description which
-    should be replaced', 'ff6600', 'play');
-  $terms[3] = array('Solved', 'This is just a description which
-    should be replaced', '8fe83b', 'checkmark');
-  $terms[4] = array('Archive', 'This is just a description which
-    should be replaced', '5F9EA0', 'drawer');
+  $terms[0] = array(
+    'Open',
+    'This is just a description which should be replaced',
+    'cc0000',
+    'pause',
+  );
+  $terms[1] = array(
+    'In progress',
+    'This is just a description which should be replaced',
+    'ff6600',
+    'play',
+  );
+  $terms[3] = array(
+    'Solved',
+    'This is just a description which should be replaced',
+    '8fe83b',
+    'checkmark',
+  );
+  $terms[4] = array(
+    'Archive',
+    'This is just a description which should be replaced',
+    '5F9EA0',
+    'drawer',
+  );
 
   // You may customize those entries:
-  $terms[5] = array('dummy', 'This is just a description which
-    should be replaced', '8fe83b', '');
-  $terms[6] = array('dummy', 'This is just a description which
-    should be replaced', '8fe83b', '');
-  $terms[7] = array('dummy', 'This is just a description which
-    should be replaced', '8fe83b', '');
-  $terms[8] = array('dummy', 'This is just a description which
-    should be replaced', '8fe83b', '');
-  $terms[9] = array('dummy', 'This is just a description which
-    should be replaced', '8fe83b', '');
+  $terms[5] = array(
+    'dummy',
+    'This is just a description which should be replaced',
+    '8fe83b',
+    '',
+  );
+  $terms[6] = array(
+    'dummy',
+    'This is just a description which should be replaced',
+    '8fe83b',
+    '',
+  );
+  $terms[7] = array(
+    'dummy',
+    'This is just a description which should be replaced',
+    '8fe83b',
+    '',
+  );
+  $terms[8] = array(
+    'dummy',
+    'This is just a description which should be replaced',
+    '8fe83b',
+    '',
+  );
+  $terms[9] = array(
+    'dummy',
+    'This is just a description which should be replaced',
+    '8fe83b',
+    '',
+  );
 
   foreach ($terms as $parent) {
     // Create the parent term.
     $term['vid'] = $vid;
     $term['name'] = $parent[0];
     $term['description'] = $parent[1];
-    $term['field_status_hex']['und'][0]['value'] = $parent[2];
-    $term['field_status_icon']['und'][0]['value'] = $parent[3];
+    $term['field_status_hex'][LANGUAGE_NONE][0]['value'] = $parent[2];
+    $term['field_status_icon'][LANGUAGE_NONE][0]['value'] = $parent[3];
 
     $status = taxonomy_term_save((object) $term);
     switch ($status) {
@@ -187,16 +220,12 @@ function markaspot_create_categories() {
   );
   $terms[3] = array(
     'Building Construction Complaint',
-    'Dangerous Buildings and Vacant Property Operations historically has
-      been known for the demolition of dangerous buildings, but recent
-      adjustments in service delivery are focusing on inventorying
-      vacant structures',
+    'Dangerous Buildings and Vacant Property Operations historically has been known for the demolition of dangerous buildings, but recent adjustments in service delivery are focusing on inventorying vacant structures',
     '013',
     'graffiti, demolition',
     '006400',
     'office',
   );
-
 
   foreach ($terms as $parent) {
     // Create the parent term.
@@ -204,10 +233,10 @@ function markaspot_create_categories() {
 
     $term['name'] = $parent[0];
     $term['description'] = $parent[1];
-    $term['field_category_id']['und'][0]['value'] = $parent[2];
-    $term['field_hash']['und'][0]['value'] = $parent[3];
-    $term['field_category_hex']['und'][0]['value'] = $parent[4];
-    $term['field_category_icon']['und'][0]['value'] = $parent[5];
+    $term['field_category_id'][LANGUAGE_NONE][0]['value'] = $parent[2];
+    $term['field_hash'][LANGUAGE_NONE][0]['value'] = $parent[3];
+    $term['field_category_hex'][LANGUAGE_NONE][0]['value'] = $parent[4];
+    $term['field_category_icon'][LANGUAGE_NONE][0]['value'] = $parent[5];
 
     // taxonomy_term_save((object)$term);
     // $term = ;
@@ -295,8 +324,7 @@ function markaspot_create_reports() {
 
   $nodes[5] = array(
     'Garbage collection',
-    'Lorem Ipsum Lorem ipsum dolor sit amet, consectetur ing elit, sed do eiusmod tempor incididunt ut labore et dolore
-      magna aliqua. Ut enim ad minim veniam,  quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo',
+    'Lorem Ipsum Lorem ipsum dolor sit amet, consectetur ing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,  quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo',
     '50.826873',
     ' 6.900167',
     'Centre, 50321 Brühl',
@@ -305,7 +333,6 @@ function markaspot_create_reports() {
     'Solved',
     'flickr_by_realname_garbage-tonal-decay',
   );
-
 
   foreach ($nodes as $node_data) {
     // Create a new node object:
@@ -319,11 +346,11 @@ function markaspot_create_reports() {
     $nid++;
 
     $node->title = $node_data[0];
-    $node->language = 'und';
+    $node->language = LANGUAGE_NONE;
 
     $node->uid = 1;
     $node->nid = $nid;
-    $node->language = 'und';
+    $node->language = LANGUAGE_NONE;
     $node->body[$node->language][0]['value'] = $node_data[1];
     $node->body[$node->language][0]['format'] = 'filtered_html';
     $node->field_geo[$node->language][0]['lat'] = $node_data[2];
@@ -351,302 +378,23 @@ function markaspot_create_reports() {
 }
 
 /**
- * Create Specification and About Pages:
+ * Create Specification and About Pages.
  */
 function markaspot_create_pages() {
   global $base_url;
   // Now creating articles:
   $nodes[0] = array(
     'Open311',
-    '<p>
-      <img src="/profiles/markaspot/themes/mas/images/open311georeportv2-type1.png" alt="Open311 Logo" style="width:300px; margin: 0 0 0 10px; height:114px;float:right">
-        Open311 is a form of technology that provides open channels of communication for issues that concern public space and public services. Primarily, Open311 refers to a standardized protocol for location-based collaborative issue-tracking.
-    </p>
-    <p>
-      By offering free web API access to an existing 311 service, Open311 is an evolution of the phone-based 311 systems that many cities in North America offer. [taken from <a href="http://open311.org/learn/"> Open311 Learn </a>]
-    </p>
-    <p>
-      Mark-a-Spot comes with a built-in GeoReport Server. See how it works:
-    </p>
-    <h3>Services</h3>
-    <table class="spec-table">
-      <tbody>
-        <tr>
-          <th scope="row">
-              Purpose
-          </th>
-          <td>
-              Provide a list of acceptable 311 service request types and their associated service codes. These request types can be unique to the city/jurisdiction.
-          </td>
-        </tr>
-        <tr>
-          <th scope="row">
-                URL
-          </th>
-          <td><a href="' . $base_url . '/georeport/v2/services.xml">' . $base_url . '/georeport/v2/services.[format]</a></td>
-        </tr>
-        <tr>
-          <th scope="row">
-                Sample URL
-          </th>
-            <td>
-                <a href="' . $base_url . '/georeport/v2/services.xml">
-                    ' . $base_url . '/georeport/v2/services.xml
-                </a>
-            </td>
-        </tr>
-        <tr>
-          <th scope="row">
-              Formats
-          </th>
-          <td>
-              XML / JSON
-          </td>
-        </tr>
-        <tr>
-          <th scope="row">
-              HTTP Method
-          </th>
-          <td>
-              GET
-          </td>
-        </tr>
-        <tr>
-          <th scope="row">
-              Requires API Key
-          </th>
-          <td>
-              No
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <h3>
-        Requests
-    </h3>
-    <table class="spec-table">
-      <tbody>
-        <tr>
-          <th scope="row">
-              Purpose
-          </th>
-          <td>
-              Query the current status of multiple requests
-          </td>
-        </tr>
-        <tr>
-            <th scope="row">
-                URL
-            </th>
-            <td>
-                <a href="' . $base_url . '/georeport/v2/requests.json">
-                    ' . $base_url . '/georeport/v2/requests.[format]
-                </a>
-            </td>
-        </tr>
-        <tr>
-            <th scope="row">
-                Sample URL
-            </th>
-            <td>
-                <a href="' . $base_url . '/georeport/v2/requests.json?start_date=' . date("Y-n-j") . '">
-                ' . $base_url . '/georeport/v2/requests.json?start_date=' . date("Y-n-j") . '...
-                </a>
-            </td>
-        </tr>
-        <tr>
-            <th scope="row">
-                Formats
-            </th>
-            <td>
-                XML, JSON
-            </td>
-        </tr>
-        <tr>
-            <th scope="row">
-                HTTP Method
-            </th>
-            <td>
-                GET
-            </td>
-        </tr>
-        <tr>
-            <th scope="row">
-                Requires API Key
-            </th>
-            <td>
-                No
-            </td>
-        </tr>
-      </tbody>
-    </table>
-    <h4>
-        Optionale Parameter
-    </h4>
-    <table class="spec-table arguments-table">
-      <tbody>
-        <tr>
-            <th>
-                Field Name
-            </th>
-            <th class="spec-description">
-                Description
-            </th>
-            <th class="spec-requirements">
-                Notes &amp; Requirements
-            </th>
-        </tr>
-
-        <tr>
-          <td class="field">
-            <dl>
-              <dt>
-                service_code
-                <br/>
-              </dt>
-            </dl>
-          </td>
-          <td>
-              Specify the service type by calling the unique ID of the service_code.
-          </td>
-          <td>
-              This defaults to all service codes when not declared; can be declared multiple times, comma delimited
-          </td>
-        </tr>
-        <tr>
-          <td class="field">
-            <dl>
-                <dt>
-                    start_date
-                    <br/>
-                </dt>
-            </dl>
-          </td>
-          <td>
-              Earliest datetime to include in search. When provided with end_date, allows one to search for requests which have a requested_datetime that matches a given range, but may not span more than 90 days.
-          </td>
-          <td>
-              When not specified, the range defaults to most recent 90 days. Must use w3 format, eg 2010-01-01T00:00:00Z.
-          </td>
-        </tr>
-        <tr>
-          <td class="field">
-            <dl>
-              <dt>
-                  end_date
-                  <br/>
-              </dt>
-            </dl>
-          </td>
-          <td>
-              Latest datetime to include in search. When provided with start_date, allows one to search for requests which have a requested_datetime that matches a given range, but may not span more than 90 days.
-          </td>
-          <td>
-              When not specified, the range defaults to most recent 90 days. Must use w3 format, eg 2010-01-01T00:00:00Z.
-          </td>
-        </tr>
-        <tr>
-          <td class="field">
-            <dl>
-              <dt>
-                  status
-                  <br/>
-              </dt>
-            </dl>
-          </td>
-            <td>
-                Allows one to search for requests which have a specific status. This defaults to all statuses; can be declared multiple times, comma delimited;
-            </td>
-            <td>
-                Options:
-          <span class="strict-value">
-            open
-          </span>
-                ,
-          <span class="strict-value">
-            closed
-          </span>
-            </td>
-        </tr>
-      </tbody>
-    </table>
-    <h3>
-        Single Request
-    </h3>
-    <table class="spec-table">
-      <tbody>
-        <tr>
-          <th scope="row">
-              Purpose
-          </th>
-          <td>
-              Query the current status of an individual request
-          </td>
-        </tr>
-        <tr>
-          <th scope="row">
-              URL
-          </th>
-          <td>
-              <a href="' . $base_url . '/georeport/v2/requests/2.xml">
-                  ' . $base_url . '/georeport/v2/request/#ID.[format]
-              </a>
-          </td>
-        </tr>
-        <tr>
-          <th scope="row">
-              Sample URL
-          </th>
-            <td><a href="' . $base_url . '/georeport/v2/requests/' . variable_get('node_uuid') . '.json">' . $base_url . '/georeport/v2/requests/' . variable_get('node_uuid') . '.json</a></td>
-        </tr>
-        <tr>
-          <th scope="row">
-              Formats
-          </th>
-          <td>
-              XML, JSON
-          </td>
-        </tr>
-        <tr>
-          <th scope="row">
-              HTTP Method
-          </th>
-          <td>
-              GET
-          </td>
-        </tr>
-        <tr>
-          <th scope="row">
-              Requires API Key
-          </th>
-          <td>
-              No
-          </td>
-        </tr>
-      </tbody>
-    </table>',
+    '<p> <img src="/profiles/markaspot/themes/mas/images/open311georeportv2-type1.png" alt="Open311 Logo" style="width:300px; margin: 0 0 0 10px; height:114px;float:right"> Open311 is a form of technology that provides open channels of communication for issues that concern public space and public services. Primarily, Open311 refers to a standardized protocol for location-based collaborative issue-tracking. </p> <p> By offering free web API access to an existing 311 service, Open311 is an evolution of the phone-based 311 systems that many cities in North America offer. [taken from <a href="http://open311.org/learn/"> Open311 Learn </a>] </p> <p> Mark-a-Spot comes with a built-in GeoReport Server. See how it works: </p> <h3>Services</h3> <table class="spec-table"> <tbody> <tr> <th scope="row"> Purpose </th> <td> Provide a list of acceptable 311 service request types and their associated service codes. These request types can be unique to the city/jurisdiction. </td> </tr> <tr> <th scope="row"> URL </th> <td><a href="' . $base_url . '/georeport/v2/services.xml">' . $base_url . '/georeport/v2/services.[format]</a></td> </tr> <tr> <th scope="row"> Sample URL </th> <td> <a href="' . $base_url . '/georeport/v2/services.xml"> ' . $base_url . '/georeport/v2/services.xml </a> </td> </tr> <tr> <th scope="row"> Formats </th> <td> XML / JSON </td> </tr> <tr> <th scope="row"> HTTP Method </th> <td> GET </td> </tr> <tr> <th scope="row"> Requires API Key </th> <td> No </td> </tr> </tbody> </table> <h3> Requests </h3> <table class="spec-table"> <tbody> <tr> <th scope="row"> Purpose </th> <td> Query the current status of multiple requests </td> </tr> <tr> <th scope="row"> URL </th> <td> <a href="' . $base_url . '/georeport/v2/requests.json"> ' . $base_url . '/georeport/v2/requests.[format] </a> </td> </tr> <tr> <th scope="row"> Sample URL </th> <td> <a href="' . $base_url . '/georeport/v2/requests.json?start_date=' . date("Y-n-j") . '"> ' . $base_url . '/georeport/v2/requests.json?start_date=' . date("Y-n-j") . '... </a> </td> </tr> <tr> <th scope="row"> Formats </th> <td> XML, JSON </td> </tr> <tr> <th scope="row"> HTTP Method </th> <td> GET </td> </tr> <tr> <th scope="row"> Requires API Key </th> <td> No </td> </tr> </tbody> </table> <h4> Optionale Parameter </h4> <table class="spec-table arguments-table"> <tbody> <tr> <th> Field Name </th> <th class="spec-description"> Description </th> <th class="spec-requirements"> Notes &amp; Requirements </th> </tr> <tr> <td class="field"> <dl> <dt> service_code <br/> </dt> </dl> </td> <td> Specify the service type by calling the unique ID of the service_code. </td> <td> This defaults to all service codes when not declared; can be declared multiple times, comma delimited </td> </tr> <tr> <td class="field"> <dl> <dt> start_date <br/> </dt> </dl> </td> <td> Earliest datetime to include in search. When provided with end_date, allows one to search for requests which have a requested_datetime that matches a given range, but may not span more than 90 days. </td> <td> When not specified, the range defaults to most recent 90 days. Must use w3 format, eg 2010-01-01T00:00:00Z. </td> </tr> <tr> <td class="field"> <dl> <dt> end_date <br/> </dt> </dl> </td> <td> Latest datetime to include in search. When provided with start_date, allows one to search for requests which have a requested_datetime that matches a given range, but may not span more than 90 days. </td> <td> When not specified, the range defaults to most recent 90 days. Must use w3 format, eg 2010-01-01T00:00:00Z. </td> </tr> <tr> <td class="field"> <dl> <dt> status <br/> </dt> </dl> </td> <td> Allows one to search for requests which have a specific status. This defaults to all statuses; can be declared multiple times, comma delimited; </td> <td> Options: <span class="strict-value"> open </span> , <span class="strict-value"> closed </span> </td> </tr> </tbody> </table> <h3> Single Request </h3> <table class="spec-table"> <tbody> <tr> <th scope="row"> Purpose </th> <td> Query the current status of an individual request </td> </tr> <tr> <th scope="row"> URL </th> <td> <a href="' . $base_url . '/georeport/v2/requests/2.xml"> ' . $base_url . '/georeport/v2/request/#ID.[format] </a> </td> </tr> <tr> <th scope="row"> Sample URL </th> <td><a href="' . $base_url . '/georeport/v2/requests/' . variable_get('node_uuid') . '.json">' . $base_url . '/georeport/v2/requests/' . variable_get('node_uuid') . '.json</a></td> </tr> <tr> <th scope="row"> Formats </th> <td> XML, JSON </td> </tr> <tr> <th scope="row"> HTTP Method </th> <td> GET </td> </tr> <tr> <th scope="row"> Requires API Key </th> <td> No </td> </tr> </tbody> </table>',
     'slider_2',
   );
 
   // Now creating initial report:
   $nodes[1] = array(
     'About this platform',
-    '<p>This platform is based on <a href="http://markaspot.de/en">Mark-a-Spot</a>, a Drupal distribution for public issue reporting or other geobased crowdsourcing.</p>
-     <p>This text can be easily changed and <a href="?q=node/8/edit">customized</a>. If you feel like giving attribution, please leave a link to <a href="http://mark-a-spot.org">mark-a-spot.org</a> somewhere.</p>
-
-     <p>If you need any help with customizing this platform, like theming, extending or even integrating it in your SOA infrastructure, please <a href="http://markaspot.de/en/contact">get in touch with us</a>.</p>
-     <h3>Photo credits</h3>
-     <ul>
-     <li>Garbage Collection by Dan Century (Flickr)</li>
-     <li>Garbage Collection by Tonal Decay (Flickr)</li>
-     <li>Abandoned Car by Mike Baird (Flickr)</li>
-     <li>Abandoned Car by Thomas Brandt (Flickr)</li>
-     <li>Graffiti by striatic (Flickr)</li>
-     <li>River Tree by Astonishing / photocase.com</li>
-     </ul>',
+    '<p>This platform is based on <a href="http://markaspot.de/en">Mark-a-Spot</a>, a Drupal distribution for public issue reporting or other geobased crowdsourcing.</p> <p>This text can be easily changed and <a href="?q=node/8/edit">customized</a>. If you feel like giving attribution, please leave a link to <a href="http://mark-a-spot.org">mark-a-spot.org</a> somewhere.</p> <p>If you need any help with customizing this platform, like theming, extending or even integrating it in your SOA infrastructure, please <a href="http://markaspot.de/en/contact">get in touch with us</a>.</p> <h3>Photo credits</h3> <ul> <li>Garbage Collection by Dan Century (Flickr)</li> <li>Garbage Collection by Tonal Decay (Flickr)</li> <li>Abandoned Car by Mike Baird (Flickr)</li> <li>Abandoned Car by Thomas Brandt (Flickr)</li> <li>Graffiti by striatic (Flickr)</li> <li>River Tree by Astonishing / photocase.com</li> </ul>',
     'slider_1',
   );
-
 
   foreach ($nodes as $node_data) {
     $node = new stdClass();
@@ -656,10 +404,10 @@ function markaspot_create_pages() {
     $nid++;
 
     $node->title = $node_data[0];
-    $node->language = 'und';
+    $node->language = LANGUAGE_NONE;
     $node->uid = 1;
     $node->nid = $nid;
-    $node->language = 'und';
+    $node->language = LANGUAGE_NONE;
     $node->body[$node->language][0]['value'] = $node_data[1];
     $node->body[$node->language][0]['format'] = 'full_html';
 
@@ -671,7 +419,7 @@ function markaspot_create_pages() {
     $file = file_save_data($image, 'public://' . $filename, FILE_EXISTS_RENAME);
     $node->field_image = array(LANGUAGE_NONE => array('0' => (array) $file));
 
-    if ($node = node_submit($node)) { // Prepare node for saving
+    if ($node = node_submit($node)) {
       node_save($node);
       drupal_set_message(t('Created Page node "%node."', array('%node' => $node->title)));
 
@@ -679,7 +427,9 @@ function markaspot_create_pages() {
   }
 }
 
-
+/**
+ * Building Blocks with enabled modules.
+ */
 function markaspot_build_blocks() {
   markaspot_activate_block('markaspot_log', 'markaspot_activity', 'content', 'mas', 'node/*', '1', '5');
   markaspot_activate_block('markaspot_logic', 'taxonomy_category', 'sidebar_second', 'mas', 'map', '1', '0');
@@ -693,7 +443,9 @@ function markaspot_build_blocks() {
   markaspot_activate_block('comment', 'recent', 'sidebar_second', 'mas', '<front>', '1', '0');
   markaspot_activate_block('user', 'new', 'sidebar_second', 'mas', '<front>', '1', '0');
 }
-
+/**
+ * Activate blocks.
+ */
 function markaspot_activate_block($module, $block, $region, $theme, $pages, $visibility, $weight) {
   drupal_set_message("Activating block $module:$block\n");
   db_merge('block')
@@ -703,22 +455,21 @@ function markaspot_activate_block($module, $block, $region, $theme, $pages, $vis
       'pages' => $pages,
       'status' => (int) ($region != BLOCK_REGION_NONE),
       'visibility' => $visibility,
-      'weight' => $weight
+      'weight' => $weight,
     ))
     ->execute();
 }
-
+/**
+ * Delete dummies after installation.
+ */
 function markaspot_delete_dummies() {
   // Get the vocabulary ID.
   $vid = db_query("SELECT vid FROM {taxonomy_vocabulary} WHERE machine_name = 'status'")->fetchField();
   $taxonomies = taxonomy_get_tree($vid, $parent = 0, $max_depth = 1, $load_entities = TRUE);
 
   foreach ($taxonomies as $term) {
-    //print_r($term->name);
     if ($term->name == 'dummy') {
-      // we can not delete via taxonomy_term_delete($term);
       db_delete('taxonomy_term_data')->condition('tid', $term->tid)->execute();
     }
   }
 }
-

@@ -55,6 +55,5 @@ function mark_a_spot_default_content_menu_default_menu_links() {
   t('About');
   t('Open311');
 
-
   return $menu_links;
 }

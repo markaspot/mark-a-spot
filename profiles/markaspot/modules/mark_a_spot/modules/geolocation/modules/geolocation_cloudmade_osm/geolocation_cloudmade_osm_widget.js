@@ -75,10 +75,8 @@
      */
     mas = Drupal.settings.mas;
 
-    var address = $('#edit-field-geo-und-0-address-field').val() + ", " + mas.markaspot_city + ", " + "Deutschland";
+    var address = $('#edit-field-geo-und-0-address-field').val() + ", " + mas.markaspot_city;
     // Mark-a-Spot End
-    // var url = 'http://where.yahooapis.com/geocode?';
-    // $.getJSON(url  + 'q="+address+"&flags=J&callback=ws_results&output=jso', {
 
     var url = Drupal.settings.basePath + 'profiles/markaspot/libraries/proxy/src/search';
     $.getJSON(url + '?q=' + address + '&bounded=1&addressdetails=1&viewbox=' + mas.bbox_nw_lng + ',' + mas.bbox_nw_lat + ',' + mas.bbox_se_lng + ',' + mas.bbox_se_lat + ' &json_callback=?', {

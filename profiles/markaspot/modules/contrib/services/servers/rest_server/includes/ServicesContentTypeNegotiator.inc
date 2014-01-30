@@ -84,7 +84,7 @@ class ServicesContentTypeNegotiator implements ServicesContentTypeNegotiatorInte
     }
 
     // Get the best matching format, default to json
-    $response_format = 'json';
+    $response_format = variable_get('rest_server_default_response_format', 'json');
     $http_accept = $context->getServerVariable('HTTP_ACCEPT');
     if (!empty($http_accept)) {
       $mime = $this->mimeParse();

@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @file
  * Default theme implementation for comments.
@@ -67,33 +66,36 @@
   <?php endif; ?>
 
   <?php print render($title_prefix); ?>
-  <h3<?php print $title_attributes; ?>><?php print $title ?></h3>
+    <h3<?php print $title_attributes; ?>><?php print $title ?></h3>
   <?php print render($title_suffix); ?>
 
-  <div class="submitted mas">
-    <?php print $permalink; ?>
-    <?php print str_replace(' ( )', '', $submitted); ?>
-  </div>
-
-  <div class="content"<?php print $content_attributes; ?>>
-    <?php
-      // We hide the comments and links now so that we can render them later.
-      hide($content['links']);
-      print render($content);
-    ?>
-
-    <?php if ($signature): ?>
-    <div class="user-signature clearfix">
-      <?php print $signature ?>
+    <div class="submitted mas">
+      <?php print $permalink; ?>
+      <?php print str_replace(' ( )', '', $submitted); ?>
     </div>
-    <?php endif; ?>
-  </div>
+
+    <div class="content"<?php print $content_attributes; ?>>
+      <?php
+        // We hide the comments and links now so that we can render them later.
+        hide($content['links']);
+        print render($content);
+      ?>
+
+      <?php if ($signature): ?>
+      <div class="user-signature clearfix">
+        <?php print $signature ?>
+      </div>
+      <?php endif; ?>
+    </div>
 
  <?php
   global $user;
-    if ($user->uid <= 0) {
+ ?>
+ <?php if ($user->uid <= 0): ?>
+    <?php
       hide($content['links']['#links']['comment-reply']);
-    }
-    print render($content['links'])
-  ?>
+      print render($content['links'])
+    ?>
+ <?php endif; ?>
+
 </div>

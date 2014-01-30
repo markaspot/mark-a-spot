@@ -1,7 +1,6 @@
 <?php
 /**
  * @file
- *
  * Available variables:
  * - $title: the (sanitized) title of the node.
  * - $content: An array of node items. Use render($content) to print them all,
@@ -79,8 +78,8 @@
 <article id="node-<?php print $node->nid; ?>" class="report <?php print $classes; ?> clearfix"<?php print $attributes; ?>>
 
 <?php
-  $category = $node->field_category['und'][0]['taxonomy_term'];
-  $status   = $node->field_status['und'][0]['taxonomy_term'];
+  $category = $node->field_category[LANGUAGE_NONE][0]['taxonomy_term'];
+  $status   = $node->field_status[LANGUAGE_NONE][0]['taxonomy_term'];
 ?>
 
   <header class="clearfix">
@@ -96,7 +95,7 @@
       </span>
     <?php endif; ?>
     <div class="cat-stat-wrapper">
-        <span class="label label-default marker-category col-<?php echo $category->field_category_hex['und'][0]['value'] ?> col-md-6"><i class="icon-li icon-<?php echo $category->field_category_icon['und'][0]['value'] ?> "></i> <?php echo $category->name?> </span> <span class="label marker-status col-<?php echo $status->field_status_hex['und'][0]['value'] ?> col-md-6"><i class="icon-li icon-<?php echo $status->field_status_icon['und'][0]['value'] ?>"></i> <?php echo $status->name ?></span>
+        <span class="label label-default marker-category col-<?php echo $category->field_category_hex[LANGUAGE_NONE][0]['value'] ?> col-md-6"><i class="icon-li icon-<?php echo $category->field_category_icon[LANGUAGE_NONE][0]['value'] ?> "></i> <?php echo $category->name?> </span> <span class="label marker-status col-<?php echo $status->field_status_hex[LANGUAGE_NONE][0]['value'] ?> col-md-6"><i class="icon-li icon-<?php echo $status->field_status_icon[LANGUAGE_NONE][0]['value'] ?>"></i> <?php echo $status->name ?></span>
     </div>
 
   </header>

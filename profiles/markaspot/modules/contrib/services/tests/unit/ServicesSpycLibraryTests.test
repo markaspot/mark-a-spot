@@ -26,7 +26,7 @@ class ServicesSpycLibraryTests extends DrupalUnitTestCase {
     $makefile_content = file_get_contents($makefile_path);
     // libraries[spyc][download][url] = "https://raw.github.com/mustangostang/spyc/79f61969f63ee77e0d9460bc254a27a671b445f3/spyc.php"
     $matches = array();
-    preg_match('/libraries\[spyc\]\[download\]\[url\] = "(.*)"/', $makefile_content, $matches);
+    preg_match('/libraries\[spyc\]\[download\]\[url\] = (.*)/', $makefile_content, $matches);
     $spyc_library_url = $matches[1];
     $spyc_library_content = file_get_contents($spyc_library_url);
 

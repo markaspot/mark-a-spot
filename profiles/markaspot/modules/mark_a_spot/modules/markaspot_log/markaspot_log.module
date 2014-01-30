@@ -3,7 +3,7 @@
  * @file
  * Mark-a-Spot Log module.
  * This module provides a log per report saving actions by
- * citizens and adminstration
+ * citizens and administration
  */
 
 /**
@@ -277,7 +277,8 @@ function markaspot_log_add_role_to_user($role_name, $uid) {
  *   $result
  */
 function markaspot_log_get_log($nid) {
-  $result = db_query('SELECT * FROM {markaspot_log} WHERE nid=' . $nid);
+  $result = db_query('SELECT * FROM {markaspot_log} WHERE nid = :nid', array(
+    ':nid' => $nid));
   return $result;
 }
 
@@ -298,14 +299,14 @@ function markaspot_log_write_log($data) {
  *   The Comment id
  */
 function markaspot_log_delete_log($id) {
-  db_query("DELETE FROM {markaspot_log} WHERE id=%d", array(
+  db_query("DELETE FROM {markaspot_log} WHERE id = %d", array(
     ':id' => $id,
   ));
 }
 
 
 /**
- * Implements of hook_views_api().
+ * Implements hook_views_api().
  */
 function markaspot_log_views_api() {
   return array(

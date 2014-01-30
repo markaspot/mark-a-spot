@@ -20,6 +20,5 @@ function mark_a_spot_default_content_menu_default_menu_custom() {
   // Included for use with string extractors like potx.
   t('Secondary Navigation');
 
-
   return $menus;
 }

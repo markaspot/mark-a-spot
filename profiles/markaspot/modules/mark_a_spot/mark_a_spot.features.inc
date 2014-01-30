@@ -92,7 +92,7 @@ function mark_a_spot_node_info() {
     'report' => array(
       'name' => t('Report'),
       'base' => 'node_content',
-      'description' => t('Mark-a-Spot reports '),
+      'description' => t('Mark-a-Spot reports'),
       'has_title' => '1',
       'title_label' => t('Title'),
       'help' => t('Describe the issue you found'),

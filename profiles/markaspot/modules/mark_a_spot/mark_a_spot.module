@@ -4,4 +4,4 @@
  * Code for the masReport feature.
  */
 
-include_once('mark_a_spot.features.inc');
+include_once 'mark_a_spot.features.inc';

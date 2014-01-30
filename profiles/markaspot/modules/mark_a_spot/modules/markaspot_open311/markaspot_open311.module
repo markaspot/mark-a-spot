@@ -15,7 +15,6 @@ function markaspot_open311_rest_server_response_formatters_alter(&$formatters) {
   $formatters['json']['mime types'][0] = 'application/json';
 }
 
-
 class Open311XMLFormatter implements ServicesFormatterInterface {
 
   /**
@@ -28,6 +27,12 @@ class Open311XMLFormatter implements ServicesFormatterInterface {
    *   The XML Tree
    */
   public function render($data) {
+
+    if (!is_array($data)) {
+      $message = $data;
+      $data = array();
+      $data[0] = array("code" => "500", "message" => $message);
+    }
 
     $doc = new DOMDocument('1.0', 'utf-8');
     $root = new stdClass();
@@ -142,11 +147,11 @@ function _markaspot_open311_access($op, $args) {
 
   switch ($op) {
     case 'view':
-      $access = user_access('View published content');
+      $access = user_access('access content');
       break;
 
     case 'create':
-      $access = user_access('Report: Create new content');
+      $access = user_access('create report content');
       break;
   }
 

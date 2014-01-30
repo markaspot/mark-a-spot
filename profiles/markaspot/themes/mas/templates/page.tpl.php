@@ -1,10 +1,17 @@
+<?php
+/**
+ * @file
+ * Page template for Mark-a-Spot
+ */
+?>
 <header role="banner" id="page-header" class="container">
   <?php print render($page['header']); ?>
 </header> <!-- /#header -->
 
 <div class="navbar-wrapper">
-  <div class="navbar navbar-inverse" role="navigation">
-    <div class="container">
+  <div class="container">
+    <div class="navbar navbar-inverse" role="navigation">
+      <div class="container">
       <div class="navbar-header">
        <?php if ($logo): ?>
           <a class="logo navbar-btn pull-left" href="<?php print $front_page; ?>" title="<?php print t('Home'); ?>">

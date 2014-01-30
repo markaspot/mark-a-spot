@@ -7,18 +7,16 @@
  */
 
 /**
- * Implements hook_form_alter().
+ * Implements hook_form_FORM_ID_alter().
  */
-function markaspot_logic_form_alter(&$form, &$form_state, $form_id) {
+function markaspot_logic_form_report_node_form_alter(&$form, &$form_state, $form_id) {
   global $user;
-  if ($form_id == 'report_node_form') {
-    $form['field_address']['und'][0]['value']['#type'] = "hidden";
-    // Registered users' mail will be prefilled:
-    if (isset($user->mail) && arg(0) == 'node' && arg(1) == 'add') {
-      $form['field_e_mail']['und'][0]['value']['#default_value'] = $user->mail;
-    }
-    $form['#validate'][] = 'markaspot_logic_validate';
+  $form['field_address'][LANGUAGE_NONE][0]['value']['#type'] = "hidden";
+  // Registered users' mail will be prefilled:
+  if (isset($user->mail) && arg(0) == 'node' && arg(1) == 'add') {
+    $form['field_e_mail'][LANGUAGE_NONE][0]['value']['#default_value'] = $user->mail;
   }
+  $form['#validate'][] = 'markaspot_logic_validate';
 }
 
 /**
@@ -26,15 +24,15 @@ function markaspot_logic_form_alter(&$form, &$form_state, $form_id) {
  */
 function markaspot_logic_validate($form, &$form_state) {
 
-  $mail = $form_state['values']['field_e_mail']['und'][0]['value'];
+  $mail = $form_state['values']['field_e_mail'][LANGUAGE_NONE][0]['value'];
 
   if (!valid_email_address($mail)) {
     form_set_error('field_e_mail', t('Please enter a valid e-mail address.'));
   }
 
   /* Bounding Box */
-  $lat = $form_state['values']['field_geo']['und'][0]['lat'];
-  $lon = $form_state['values']['field_geo']['und'][0]['lng'];
+  $lat = $form_state['values']['field_geo'][LANGUAGE_NONE][0]['lat'];
+  $lon = $form_state['values']['field_geo'][LANGUAGE_NONE][0]['lng'];
   $nw = FALSE;
   $se = FALSE;
   $bbox = array(
@@ -49,7 +47,7 @@ function markaspot_logic_validate($form, &$form_state) {
     $se = TRUE;
   }
 
-  if (!strstr($form_state['values']['field_geo']['und'][0]['address']['field'], variable_get('markaspot_city'))) {
+  if (!strstr($form_state['values']['field_geo'][LANGUAGE_NONE][0]['address']['field'], variable_get('markaspot_city'))) {
     form_set_error('field_geo', t('The string given for "City" is not valid'));
   }
   else {
@@ -60,8 +58,8 @@ function markaspot_logic_validate($form, &$form_state) {
     }
     else {
       // Fill the address field only, if it's not equal to the initial value:
-      if ($form_state['values']['field_geo']['und'][0]['lat'] != variable_get('markaspot_ini_lat')) {
-        $form_state['values']['field_address']['und'][0]['value'] = $form_state['values']['field_geo']['und'][0]['address']['field'];
+      if ($form_state['values']['field_geo'][LANGUAGE_NONE][0]['lat'] != variable_get('markaspot_ini_lat')) {
+        $form_state['values']['field_address'][LANGUAGE_NONE][0]['value'] = $form_state['values']['field_geo'][LANGUAGE_NONE][0]['address']['field'];
       }
       else {
         form_set_error('field_geo', t('Please enter a location, different from the default one'));
@@ -72,18 +70,6 @@ function markaspot_logic_validate($form, &$form_state) {
 }
 
 /**
- * Implements hook_node_presave().
- */
-function markaspot_node_presave($node) {
-  /*
-  if ($node->title == "") {
-  $node->title = $node->field_address["und"][0]["value"];
-  }
-  */
-}
-
-
-/**
  * Implements hook_css_alter().
  */
 function markaspot_logic_css_alter(&$css) {
@@ -91,20 +77,19 @@ function markaspot_logic_css_alter(&$css) {
 }
 
 /**
- * Implements hook_init().
+ * Implements hook_page_build().
  *
  * - adds some php information to js
  * - adds css
  * - needs refactoring for leaflet
  */
-function markaspot_logic_init() {
+function markaspot_logic_page_build(&$page) {
   $node = menu_get_object();
   $type = (isset($node)) ? $node->type : NULL;
   drupal_add_js(array(
     'mas' => array(
       'markaspot_address' => variable_get('markaspot_address'),
       'markaspot_city' => variable_get('markaspot_city'),
-      'markaspot_zip' => variable_get('markaspot_zip'),
       'markaspot_ini_lat' => variable_get('markaspot_ini_lat'),
       'markaspot_ini_lng' => variable_get('markaspot_ini_lng'),
       'bbox_nw_lat' => variable_get('bbox_nw_lat'),
@@ -446,9 +431,6 @@ function markaspot_logic_defaults($id) {
     case 'markaspot_address':
       return 'Pingsdorfer Straße 88, 50321 Brühl, Deutschland';
 
-    case 'markaspot_zip':
-      return '50321';
-
     case 'markaspot_city':
       return 'Brühl';
 
@@ -579,9 +561,9 @@ function markaspot_logic_contents($which_block) {
       $list_category .= '<li class="marker-category-wrapper-all">' . l(t('All'), '', array('attributes' => array('class' => 'map-menue-all marker-category'))) . '</li>';
       $taxonomies = taxonomy_get_tree(1, $parent = 0, $max_depth = 1, $load_entities = TRUE);
       foreach ($taxonomies as $term) {
-        $list_category .= '<li class="marker-status-wrapper">' . l('<span class="icon-' . $term->field_category_icon['und'][0]['value'] . '"></span> ' . views_trim_text($alter, $term->name), 'taxonomy/term/' . $term->tid, array(
+        $list_category .= '<li class="marker-status-wrapper">' . l('<span class="icon-' . $term->field_category_icon[LANGUAGE_NONE][0]['value'] . '"></span> ' . views_trim_text($alter, $term->name), 'taxonomy/term/' . $term->tid, array(
             'attributes' => array(
-              'class' => 'map-menue marker-category col-' . $term->field_category_hex['und'][0]['value'],
+              'class' => 'map-menue marker-category col-' . $term->field_category_hex[LANGUAGE_NONE][0]['value'],
               'id' => 'tax-' . $term->tid,
             ),
             'html' => TRUE,
@@ -606,9 +588,9 @@ function markaspot_logic_contents($which_block) {
 
       $taxonomies = taxonomy_get_tree(2, $parent = 0, $max_depth = 1, $load_entities = TRUE);
       foreach ($taxonomies as $term) {
-        $list_status .= '<li class="marker-status-wrapper">' . l('<span class="icon-' . $term->field_status_icon['und'][0]['value'] . '"></span> ' . views_trim_text($alter, $term->name), 'taxonomy/term/' . $term->tid, array(
+        $list_status .= '<li class="marker-status-wrapper">' . l('<span class="icon-' . $term->field_status_icon[LANGUAGE_NONE][0]['value'] . '"></span> ' . views_trim_text($alter, $term->name), 'taxonomy/term/' . $term->tid, array(
             'attributes' => array(
-              'class' => 'map-menue marker-status col-' . $term->field_status_hex['und'][0]['value'],
+              'class' => 'map-menue marker-status col-' . $term->field_status_hex[LANGUAGE_NONE][0]['value'],
               'id' => 'tax-' . $term->tid,
             ),
             'html' => TRUE,

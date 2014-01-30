@@ -8,14 +8,12 @@
 
 
 /**
- * Implements hook_form_alter().
+ * Implements hook_form_FORM_ID_alter().
  */
-function markaspot_uuid_form_alter(&$form, &$form_state, $form_id) {
+function markaspot_uuid_form_report_node_form_alter(&$form, &$form_state, $form_id) {
   // Hide the title form field as it is generated via hook_insert
-  if ($form_id == 'report_node_form') {
-    $form['title']['#type'] = "hidden";
-    $form['title']['#required'] = FALSE;
-  }
+  $form['title']['#type'] = "hidden";
+  $form['title']['#required'] = FALSE;
 }
 
 

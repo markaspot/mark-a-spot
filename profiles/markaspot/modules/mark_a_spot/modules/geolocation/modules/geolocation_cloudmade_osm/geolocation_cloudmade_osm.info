@@ -5,9 +5,9 @@ core = "7.x"
 dependencies[] = geolocation
 
 
-; Information added by drush on 2014-01-08
+; Information added by drush on 2014-01-19
 version = "7.x-2.x-dev"
 core = "7.x"
 project = "markaspot"
-datestamp = "1389186530"
+datestamp = "1390111459"
 

@@ -1,7 +1,13 @@
 <?php
 
 /**
- * @file Documentation about Services alter hooks.
+ * @file Documentation about Services alter hooks and variables.
+ */
+
+/**
+ * Variables.
+ *
+ * 'rest_server_default_response_format' default value 'json' -- default response format for REST server.
  */
 
 /**

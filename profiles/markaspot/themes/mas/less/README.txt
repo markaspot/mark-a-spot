@@ -18,7 +18,7 @@ The `./less/fixes.less` file contains various Bootstrap and Drupal fixes. It
 may contain a few enhancements, feel free to edit this file as you see fit.
 
 The following files are relatively blank (they may contain some code for the
-inital sub-theme), but this is where you will actually spend most of your time
+initial sub-theme), but this is where you will actually spend most of your time
 specifying specific styling for your sites configuration.
 ```
 ./less/header.less

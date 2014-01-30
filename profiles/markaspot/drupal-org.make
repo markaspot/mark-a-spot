@@ -37,6 +37,12 @@ projects[workbench][subdir] = "contrib"
 projects[chosen][subdir] = "contrib"
 projects[chosen][version] = 2.x-dev
 
+projects[geolocation_osm][type] = module
+projects[geolocation_osm][download][type] = git
+projects[geolocation_osm][download][branch] = "master"
+projects[geolocation_osm][subdir] = "contrib"
+projects[geolocation_osm][download][url] = "http://git.drupal.org/sandbox/markaspot/2182047.git"
+
 libraries[chosen][type] = libraries
 libraries[chosen][download][type] = get
 libraries[chosen][download][url] = "https://github.com/harvesthq/chosen/releases/download/1.0.0/chosen_v1.0.0.zip"
@@ -55,7 +61,7 @@ libraries[Leaflet.markercluster][directory_name] = Leaflet.markercluster
 
 libraries[Leaflet][type] = libraries
 libraries[Leaflet][download][type] = file
-libraries[Leaflet][download][url] = "http://leaflet-cdn.s3.amazonaws.com/build/leaflet-0.7.zip"
+libraries[Leaflet][download][url] = "http://leaflet-cdn.s3.amazonaws.com/build/leaflet-0.7.2.zip"
 libraries[Leaflet][directory_name] = Leaflet
 
 libraries[spin.js][type] = libraries
@@ -75,7 +81,7 @@ libraries[proxy][download][branch] = osm-nominatim
 libraries[proxy][directory_name] = proxy
 
 libraries[bootstrap][download][type] = "get"
-libraries[bootstrap][download][url] = "https://github.com/twbs/bootstrap/archive/v3.0.2.zip"
+libraries[bootstrap][download][url] = "https://github.com/twbs/bootstrap/archive/v3.0.3.zip"
 libraries[bootstrap][directory_name] = "bootstrap"
 libraries[bootstrap][destination] = "themes/mas"
 libraries[bootstrap][overwrite] = TRUE

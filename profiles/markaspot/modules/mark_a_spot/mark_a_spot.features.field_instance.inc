@@ -89,7 +89,6 @@ function mark_a_spot_field_default_field_instances() {
         'module' => 'text',
         'settings' => array(
           'field_formatter_class' => '',
-          'semantic_field_format' => 0,
           'trim_length' => 300,
         ),
         'type' => 'text_trimmed',
@@ -329,7 +328,6 @@ function mark_a_spot_field_default_field_instances() {
         'module' => 'taxonomy',
         'settings' => array(
           'field_formatter_class' => '',
-          'semantic_field_format' => 0,
         ),
         'type' => 'taxonomy_term_reference_plain',
         'weight' => 4,
@@ -457,6 +455,7 @@ function mark_a_spot_field_default_field_instances() {
           'marker_icon' => 'profiles/markaspot/libraries/Leaflet/images/marker-icon.png',
           'semantic_field_format' => '',
           'tile_server' => 'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
+          'tile_server_dynamic' => 'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
         ),
         'type' => 'geolocation_osm_dynamic',
         'weight' => 1,
@@ -485,19 +484,18 @@ function mark_a_spot_field_default_field_instances() {
       ),
       'report_list' => array(
         'label' => 'hidden',
-        'module' => 'geolocation_cloudmade_osm',
+        'module' => 'geolocation_osm',
         'settings' => array(
-          'cloudmade_api_key' => '165795623c424338ad9a8eb60484ef0e',
           'field_formatter_class' => 'thumbnail pull-left',
           'leafletImagePath' => 'profiles/markaspot/libraries/Leaflet/images/',
           'map_dimensions' => '100x100',
           'map_imageformat' => 'png',
-          'map_style' => 22677,
+          'map_key' => '',
           'map_zoomlevel' => 15,
           'marker_icon' => '',
-          'semantic_field_format' => 0,
+          'tile_server_static' => 'http://dev.openstreetmap.de/staticmap/staticmap.php',
         ),
-        'type' => 'geolocation_cloudmade_osm_static',
+        'type' => 'geolocation_osm_static',
         'weight' => 1,
       ),
       'search_result' => array(
@@ -524,19 +522,21 @@ function mark_a_spot_field_default_field_instances() {
       ),
       'teaser' => array(
         'label' => 'hidden',
-        'module' => 'geolocation_cloudmade_osm',
+        'module' => 'geolocation_osm',
         'settings' => array(
           'cloudmade_api_key' => '165795623c424338ad9a8eb60484ef0e',
           'field_formatter_class' => '',
           'leafletImagePath' => 'profiles/markaspot/libraries/Leaflet/images/',
           'map_dimensions' => '300x300',
           'map_imageformat' => 'png',
+          'map_key' => '',
           'map_style' => 997,
           'map_zoomlevel' => 13,
           'marker_icon' => '',
           'semantic_field_format' => 0,
+          'tile_server_static' => 'http://dev.openstreetmap.de/staticmap/',
         ),
-        'type' => 'geolocation_cloudmade_osm_static',
+        'type' => 'geolocation_osm_static',
         'weight' => 2,
       ),
     ),
@@ -600,7 +600,6 @@ function mark_a_spot_field_default_field_instances() {
           'field_formatter_class' => 'thumbnail pull-left',
           'image_link' => '',
           'image_style' => 'mas_thumb',
-          'semantic_field_format' => 0,
         ),
         'type' => 'image',
         'weight' => 0,
@@ -802,7 +801,6 @@ function mark_a_spot_field_default_field_instances() {
         'module' => 'taxonomy',
         'settings' => array(
           'field_formatter_class' => '',
-          'semantic_field_format' => 0,
         ),
         'type' => 'taxonomy_term_reference_plain',
         'weight' => 3,
@@ -1182,7 +1180,7 @@ function mark_a_spot_field_default_field_instances() {
   t('Image');
   t('Notify User?');
   t('Place your report');
-  t('Please leave an e-Mail address, so that we can contact you, in case you don\'t want to register');
+  t('Please leave an e-Mail address, so that we can contact you');
   t('Report details');
   t('Status');
   t('StatusId');

@@ -199,7 +199,7 @@ var markerLayer, queryString;
                 var awesomeColor = element.color;
                 var awesomeIcon = (getToggle == 1) ? item.categoryIcon : item.statusIcon;
                 var marker = new L.Marker(latlon, {icon: L.AwesomeMarkers.icon({icon: awesomeIcon, prefix: 'icon', markerColor: awesomeColor, spin: false}) });
-                marker.bindPopup(html)
+                marker.bindPopup(html);
                 markerLayer.addLayer(marker);
                 bounds.extend(latlon);
               }
@@ -216,7 +216,6 @@ var markerLayer, queryString;
 
 function hideMarkers() {
   Drupal.Markaspot.maps[0].removeLayer(markerLayer);
-  return;
 };
 
 function bindInfoWindow(marker, map, infoWindow, html) {

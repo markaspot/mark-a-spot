@@ -39,7 +39,7 @@
         var hash = $('a:contains(2.)').attr('href');
          // animate
         $('html, body').animate({
-           scrollTop: $(hash).offset().top -30
+           scrollTop: $(hash).offset().top - 30
          }, 600, function(){
            window.location.hash = hash;
         });
@@ -49,7 +49,7 @@
         var hash = $('a:contains(3.)').attr('href');
          // animate
         $('html, body').animate({
-           scrollTop: $(hash).offset().top -30
+           scrollTop: $(hash).offset().top - 30
          }, 600, function(){
            window.location.hash = hash;
          });

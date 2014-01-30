@@ -1,0 +1,12 @@
+name = Geolocation OSM
+description = Provides osm OSM Maps widgets and formaters for geolocation field.
+package = Geolocation
+dependencies[] = geolocation
+core = "7.x"
+
+
+; Information added by drush on 2014-01-30
+version = "master-dev"
+project = "geolocation_osm"
+datestamp = "1391063169"
+

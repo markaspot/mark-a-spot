@@ -3,14 +3,13 @@
  * remove this comment and start adding your styles to this file.
  */
 
-
 html,
 body {
   height: 100%;
 }
 
 .page-node .field.field-name-body,
-.page-node .field.field-name-field-address{
+.page-node .field.field-name-field-address {
   margin: 30px 0;
   font-size: 1.1em;
 }
@@ -34,10 +33,11 @@ body {
 #map img {
   max-width: inherit;
 }
+
 /* report design */
 
 .pane-views-exp-markers-report-list {
-    margin: 10px 0 40px 0;
+  margin: 10px 0 40px 0;
 }
 
 #markers-list-view .report {
@@ -123,9 +123,6 @@ div.show-markers {
   margin: 10px 0;
 }
 
-
-
-
 /* report detail */
 .node-report .row-fluid {
   margin-top: 10px;
@@ -161,6 +158,7 @@ body.toolbar-drawer {
 .block-title.block-title {
   font-size: 2em;
 }
+
 /* Map Styles*/
 #block-markaspot-logic-taxonomy-category,
 #block-markaspot-logic-taxonomy-status {
@@ -229,11 +227,8 @@ body.toolbar-drawer {
   display: none;
 }
 
-.footer {
-}
-
 .region.region-footer {
-  padding: 10px 30px;
+  padding: 10px 15px;
   color: #fff;
 }
 
@@ -249,7 +244,8 @@ footer.footer .region.region-footer section.block-menu li a {
   padding: 0 20px;
 }
 
-footer.footer .region.region-footer section.block-menu li a:hover,footer.footer .region.region-footer section.block-menu li a:focus {
+footer.footer .region.region-footer section.block-menu li a:hover,
+footer.footer .region.region-footer section.block-menu li a:focus {
   text-decoration: underline;
 }
 
@@ -263,7 +259,7 @@ footer.footer .region.region-footer section.block-menu li {
 }
 
 body.page-map {
-/*  padding: 20px;*/;
+  /*  padding: 20px;*/;
 }
 
 .page-map .row.map-tools {
@@ -311,7 +307,7 @@ span.marker-category {
 
 .marker-status.col-5F9EA0,
 .marker-status.col-5F9EA0 a {
-  background: no-repeat scroll right center #5F9EA0;
+  background: no-repeat scroll right center #5f9ea0;
   color: yellow;
   font-weight: 400;
 }
@@ -349,12 +345,12 @@ span.marker-category {
 
 .marker-status.col-CCCCCC,
 .marker-status.col-CCCCCC a {
-  color: #CCCCCC;
+  color: #cccccc;
 }
 
 .marker-status.col-8B0000,
 .marker-status.col-8B0000 a {
-  color: #8B0000;
+  color: #8b0000;
   font-weight: 700;
 }
 
@@ -376,8 +372,8 @@ span.marker-category {
   font-weight: 700;
 }
 
-.page-map  .marker-status.col-8fe83b
-.page-map  .marker-status.col-8fe83b a {
+.page-map .marker-status.col-8fe83b,
+.page-map .marker-status.col-8fe83b a {
   color: green;
   font-weight: 700;
 }
@@ -388,39 +384,40 @@ span.marker-category {
   font-weight: 700;
 }
 
-.page-map  .marker-status.col-ff6600,
-.page-map  .marker-status.col-ff6600 a {
+.page-map .marker-status.col-ff6600,
+.page-map .marker-status.col-ff6600 a {
   color: #ff6600;
   font-weight: 700;
 }
 
 .page-map .marker-category.col-00008B,
 .page-map .marker-category.col-00008B a {
-  color: #00008B;
+  color: #00008b;
   font-weight: 700;
 }
 
 .page-map .marker-category.col-0000FF,
 .page-map .marker-category.col-0000FF a {
-  color: #0000FF;
+  color: #0000ff;
   font-weight: 700;
 }
 
 .page-map .marker-category.col-5F9EA0,
 .page-map .marker-category.col-5F9EA0 a {
-  color: #5F9EA0;
+  color: #5f9ea0;
   font-weight: 700;
 }
 
 .page-map .marker-status.col-5F9EA0,
 .page-map .marker-status.col-5F9EA0 a {
   background: none;
-  color: #5F9EA0;
+  color: #5f9ea0;
   font-weight: 400;
 }
+
 .page-map .marker-category.col-8B0000,
 .page-map .marker-category.col-8B0000 a {
-  color: #8B0000;
+  color: #8b0000;
   font-weight: 700;
 }
 
@@ -432,13 +429,13 @@ span.marker-category {
 
 .page-map .marker-category.col-871F78,
 .page-map .marker-category.col-871F78 a {
-  color: #871F78;
+  color: #871f78;
   font-weight: 700;
 }
 
 .page-map .marker-category.col-FFA500,
 .page-map .marker-category.col-FFA500 a {
-  color: #FFA500;
+  color: #ffa500;
   font-weight: 700;
 }
 
@@ -452,12 +449,10 @@ span.marker-category {
   color: #000;
 }
 
-
 /* Jumbotrons
 -------------------------------------------------- */
 /* Base class
 ------------------------- */
-
 
 /* Link styles (used on .masthead-links as well) */
 .mapheader a,
@@ -473,7 +468,6 @@ span.marker-category {
   /* color: #8F8F8F; */
   text-shadow: 0 0 10px rgba(255, 255, 255, 0.25);
 }
-
 
 /* map @map-page*/
 
@@ -495,11 +489,10 @@ span.marker-category {
   display: block;
 }
 
-
-
 /* Map Styles*/
 
-#block-markaspot-logic-taxonomy-category, #block-markaspot-logic-taxonomy-status {
+#block-markaspot-logic-taxonomy-category,
+#block-markaspot-logic-taxonomy-status {
   margin: 11px 40px 0 0;
   background: none;
   opacity: 0.8;
@@ -512,15 +505,16 @@ span.marker-category {
   float: left;
 }
 
-#block-markaspot-logic-taxonomy-category:hover, #block-markaspot-logic-taxonomy-status:hover {
+#block-markaspot-logic-taxonomy-category:hover,
+#block-markaspot-logic-taxonomy-status:hover {
   opacity: 1;
   border: none;
   box-shadow: none;
 }
 
-.page-map  .span3 {
+.page-map .span3 {
   width: 100px;
-    /* margin: 79px; */;
+  /* margin: 79px; */;
 }
 
 .page-map .btn.btn-primary {
@@ -560,7 +554,6 @@ span.marker-category {
   padding: 40px 0 0 40px;
 }
 
-
 /* CUSTOMIZE THE NAVBAR
 -------------------------------------------------- */
 
@@ -573,25 +566,12 @@ span.marker-category {
   z-index: 20;
 }
 
-/* Flip around the padding for proper display in narrow viewports */
-.front .navbar-wrapper .container {
-  padding-left: 0;
-  padding-right: 0;
-}
-
-.front .navbar-wrapper .navbar {
-  padding-left: 15px;
-  padding-right: 15px;
-}
 
 .front .main-container.container.page {
   margin-top: 100px;
 }
 
-
 /*gallery @front page*/
-
-
 
 .front .gallery {
   margin: 10px 0;
@@ -604,7 +584,7 @@ span.marker-category {
 .page-header {
   padding-bottom: 9px;
   margin: 0 0 20px;
-  border-bottom: 1px solid #EEE;
+  border-bottom: 1px solid #eee;
 }
 
 .row.welcome {
@@ -632,26 +612,25 @@ span.marker-category {
   z-index: -1;
 }
 
-
 /* if you don't use the carousel, you may take a look at the page--front.tpl and find a block there */
-.welcome-text.well{
+.welcome-text.well {
   margin: 4px 0;
-  background:none;
+  background: none;
 }
 
 .region.region-sidebar-second h3 {
-    margin: 10px 0 0 0;
-    padding: 0;
-    font-size: 1em;
-    line-height: 1.5em;
+  margin: 10px 0 0 0;
+  padding: 0;
+  font-size: 1em;
+  line-height: 1.5em;
 }
 
 .block-title.block-title {
-    font-size: 1.1em;
-    margin: 0;
-    padding: 0;
-    line-height: 1.5em;
-    text-transform: uppercase;
+  font-size: 1.1em;
+  margin: 0;
+  padding: 0;
+  line-height: 1.5em;
+  text-transform: uppercase;
 }
 
 .panel-pane.well,
@@ -664,13 +643,12 @@ span.marker-category {
   box-shadow: none;
 }
 
-div.view.view-recent-edits ul, .block-user ul  {
-    list-style: none;
-    margin: 0;
-    padding: 0;
+div.view.view-recent-edits ul,
+.block-user ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
-
-
 
 .navbar-fixed-top,
 .navbar-fixed-bottom,
@@ -679,7 +657,6 @@ div.view.view-recent-edits ul, .block-user ul  {
   margin-right: 0;
 }
 
-
 /* Form styles */
 
 .form-control.form-select {
@@ -687,17 +664,15 @@ div.view.view-recent-edits ul, .block-user ul  {
 
   -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.005);
   -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.005);
-  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.005);}
-
-.form-text {
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.005);
 }
 
 #edit-body-und-0-format {
-    display:none;
+  display: none;
 }
 
 .control-label {
-    font-weight: 700;
+  font-weight: 700;
 }
 
 select,
@@ -720,12 +695,12 @@ input[type="color"] {
   width: 100%;
   min-height: 30px;
   -webkit-box-sizing: border-box;
-     -moz-box-sizing: border-box;
-          box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 .geolocation-address .form-type-textfield {
-float: none;
+  float: none;
 }
 
 .geolocation-address {
@@ -742,16 +717,15 @@ float: none;
   border-radius: 3px;
 }
 
-
-.geolocation-address-geocode, .geolocation-client-location {
-  color: #FFF;
+.geolocation-address-geocode,
+.geolocation-client-location {
+  color: #fff;
   padding: 2px 10px 3px 10px;
   cursor: pointer;
   margin: 2px 0 0 4px;
 }
 
-
-.geolocation-help  {
+.geolocation-help {
   font-size: 0.9em;
   color: #999;
   background: #fff;
@@ -766,6 +740,7 @@ float: none;
   width: 265px;
   right: 10px;
 }
+
 .geolocation-help:before {
   font-family: 'Markaspot';
   speak: none;
@@ -777,7 +752,7 @@ float: none;
   line-height: 1;
   -webkit-font-smoothing: antialiased;
   content: "\e005";
-  float:right;
+  float: right;
 }
 
 .geolocation-map {
@@ -785,49 +760,51 @@ float: none;
 }
 
 .geolocation-remove {
-  display:none;
+  display: none;
 }
 
-.fieldset-description, .description, .help-block {
-    color: #999;
-    padding: 0 0 10px 0;
-    display:none
+.fieldset-description,
+.description,
+.help-block {
+  color: #999;
+  padding: 0 0 10px 0;
+  display: none;
 }
 
 .group-tab1 a {
-    font-size: 2em;
+  font-size: 2em;
 }
+
 .nav.field-group-bootstrap_fieldgroup_nav.group-tab1.required-fields.nav-pills {
-    border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
 }
+
 .page-node-add .well {
-    background: none;
-    border: none;
-    box-shadow: none;
-    padding: 0;
+  background: none;
+  border: none;
+  box-shadow: none;
+  padding: 0;
 }
 
-.geolocation-lng-item, .geolocation-lat-item {
-    display:none
+.geolocation-lng-item,
+.geolocation-lat-item {
+  display: none;
 }
-
-
-
 
 .mapheader {
-
   color: #fff;
   text-align: center;
-  text-shadow: 0 1px 3px rgba(0,0,0,.4), 0 0 30px rgba(0,0,0,.075);
-   /* IE9 SVG, needs conditional override of 'filter' to 'none' */
+  text-shadow: 0 1px 3px rgba(0, 0, 0, .4), 0 0 30px rgba(0, 0, 0, .075);
+  /* IE9 SVG, needs conditional override of 'filter' to 'none' */
   background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMTAwJSI+CiAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjMWU1Nzk5IiBzdG9wLW9wYWNpdHk9IjEiLz4KICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzdkYjllOCIgc3RvcC1vcGFjaXR5PSIwIi8+CiAgPC9saW5lYXJHcmFkaWVudD4KICA8cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSJ1cmwoI2dyYWQtdWNnZy1nZW5lcmF0ZWQpIiAvPgo8L3N2Zz4=);
-  background: -moz-linear-gradient(-45deg, rgba(30,87,153,1) 0%, rgba(125,185,232,0) 100%); /* FF3.6+ */
-  background: -webkit-gradient(linear, left top, right bottom, color-stop(0%,rgba(30,87,153,1)), color-stop(100%,rgba(125,185,232,0))); /* Chrome,Safari4+ */
-  background: -webkit-linear-gradient(-45deg, rgba(30,87,153,1) 0%,rgba(125,185,232,0) 100%); /* Chrome10+,Safari5.1+ */
-  background: -o-linear-gradient(-45deg, rgba(30,87,153,1) 0%,rgba(125,185,232,0) 100%); /* Opera 11.10+ */
-  background: -ms-linear-gradient(-45deg, rgba(30,87,153,1) 0%,rgba(125,185,232,0) 100%); /* IE10+ */
-  background: linear-gradient(135deg, rgba(30,87,153,1) 0%,rgba(125,185,232,0) 100%); /* W3C */
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#1e5799', endColorstr='#007db9e8',GradientType=1 ); /* IE6-8 fallback on horizontal gradient */  /*http://www.colorzilla.com/gradient-editor/*/
+  background: -moz-linear-gradient(-45deg, rgba(30, 87, 153, 1) 0%, rgba(125, 185, 232, 0) 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, right bottom, color-stop(0%, rgba(30, 87, 153, 1)), color-stop(100%, rgba(125, 185, 232, 0))); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(-45deg, rgba(30, 87, 153, 1) 0%, rgba(125, 185, 232, 0) 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(-45deg, rgba(30, 87, 153, 1) 0%, rgba(125, 185, 232, 0) 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(-45deg, rgba(30, 87, 153, 1) 0%, rgba(125, 185, 232, 0) 100%); /* IE10+ */
+  background: linear-gradient(135deg, rgba(30, 87, 153, 1) 0%, rgba(125, 185, 232, 0) 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#1e5799', endColorstr='#007db9e8', GradientType=1); /* IE6-8 fallback on horizontal gradient */
+  /*http://www.colorzilla.com/gradient-editor/*/
   box-shadow: 0 2px 2px -2px #232323;
   -moz-box-shadow: 0 1px 10px -2px #232323;
   -webkit-box-shadow: 0 1px 10px -4px #232323;
@@ -838,28 +815,26 @@ float: none;
   padding: 40px 0;
 }
 
-.admin-menu .mapheader{
-  margin-top: 29px
+.admin-menu .mapheader {
+  margin-top: 29px;
 }
-
-
 
 #map_wrapper_splash {
-    background: none repeat scroll 0 0 transparent;
-    left: 0;
-    position: absolute;
-    top: 70px;
-    width: 100%;
-    z-index: 39;
+  background: none repeat scroll 0 0 transparent;
+  left: 0;
+  position: absolute;
+  top: 70px;
+  width: 100%;
+  z-index: 39;
 }
+
 #map_wrapper_splash #map {
-    height: 348px;
+  height: 348px;
 }
 
 .admin-menu #map_wrapper_splash {
-    top: 100px;
+  top: 100px;
 }
-
 
 .front .navbar-wrapper {
   position: absolute;
@@ -870,23 +845,24 @@ float: none;
 }
 
 .list {
-    margin: 20px 0;
+  margin: 20px 0;
 }
+
 .add {
-    margin: 20px 0;
+  margin: 20px 0;
 }
 
 div.add a h3,
 div.list a h3 {
-    font-size: 18px;
-    /* line-height: 28px; */
-    margin: 10px 0;
+  font-size: 18px;
+  /* line-height: 28px; */
+  margin: 10px 0;
 }
 
 .row-fluid.welcome .list,
-.row-fluid.welcome .add{
-
-margin: 10px 30px;}
+.row-fluid.welcome .add {
+  margin: 10px 30px;
+}
 
 .page-map .navbar-wrapper {
   position: fixed;
@@ -902,31 +878,33 @@ margin: 10px 30px;}
 ------------------------- */
 @media (min-width: 1200px) {
   /* Remove any padding from the body */
-  body {
-    /*padding-top: 0;*/
-  }
+
 
   .report .show-markers {
     display: block;
   }
+
   .report img.pull-left.thumbnail {
     display: none;
   }
 
   div.add a h3,
   div.list a h3 {
-      font-size: 1.5em;
+    font-size: 1.5em;
   }
+
   .stage h1 {
-      font-size: 3.5em;
+    font-size: 3.5em;
   }
+
   .stage p {
-      font-size: 2em;
-      margin: 2em;
-      line-height: 1.4em;
+    font-size: 2em;
+    margin: 2em;
+    line-height: 1.4em;
   }
 
 }
+
 /* Desktop
 ------------------------- */
 @media (max-width: 979px) {
@@ -935,16 +913,10 @@ margin: 10px 30px;}
     padding-top: 0;
   }
 
-  /* Unfloat brand */
-  body > .navbar-fixed-top .brand {
-/*    float: left;
-    margin-left: 0;
-    padding-left: 10px;
-    padding-right: 10px;*/
-  }
   .navbar-fixed-top {
-  margin-bottom: 0;
+    margin-bottom: 0;
   }
+
   /* Inline-block quick links for more spacing */
   .quick-links li {
     display: inline-block;
@@ -954,10 +926,12 @@ margin: 10px 30px;}
   .report .show-markers {
     display: block;
   }
+
   .report img.pull-left.thumbnail {
     display: none;
   }
 }
+
 @media (min-width: 979px) {
   body {
     padding-top: 0;
@@ -966,20 +940,20 @@ margin: 10px 30px;}
   .front .navbar-wrapper {
     top: 60px;
   }
+
   .navbar-tray-open.navbar-horizontal .navbar-wrapper {
     top: 80px;
   }
 
   .stage h1 {
-      font-size: 2.5em;
+    font-size: 2.5em;
   }
+
   .stage p {
-      font-size: 1.5em;
-      margin: 1em;
-      line-height: 1.4em;
+    font-size: 1.5em;
+    margin: 1em;
+    line-height: 1.4em;
   }
-
-
 
   .main-container {
     margin: 40px auto;
@@ -989,20 +963,18 @@ margin: 10px 30px;}
   .report .show-markers {
     display: block;
   }
+
   .report img.pull-left.thumbnail {
     display: none;
   }
 
-
-
   /* Form Transitions*/
 
-
 }
+
 /* Tablet to desktop
 ------------------------- */
 @media (min-width: 768px) and (max-width: 979px) {
-
 
   .front .navbar-wrapper {
     top: 90px;
@@ -1012,18 +984,20 @@ margin: 10px 30px;}
   body {
     padding-top: 0;
   }
-  /* Widen masthead and social buttons to fill body padding */
 
+  /* Widen masthead and social buttons to fill body padding */
   .col-md-4.col-md-offset-1.thumbnail {
-      display: none;
+    display: none;
   }
 
   .report .show-markers {
     display: block;
   }
+
   .report img.pull-left.thumbnail {
     display: none;
   }
+
   /* Tighten up footer */
   .footer {
     margin: 0 -20px;
@@ -1039,8 +1013,8 @@ margin: 10px 30px;}
     padding-bottom: 40px;
   }
 
-
 }
+
 /* Tablet
 ------------------------- */
 @media (max-width: 767px) {
@@ -1050,52 +1024,57 @@ margin: 10px 30px;}
     font-size: 120%;
   }
 
-
   #page-header {
-      display: none;
+    display: none;
+  }
+
+
+  /* Flip around the padding for proper display in narrow viewports */
+  .navbar-wrapper .container {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .navbar-wrapper .navbar {
+    padding-left: 15px;
+    padding-right: 15px;
   }
 
   #edit-submit {
-      width: 100%;
+    width: 100%;
   }
 
-
-   #map_wrapper_splash {
+  #map_wrapper_splash {
     top: 0;
   }
-
 
   .not-front .logo.navbar-btn.pull-left,
   .front .logo.navbar-btn.pull-left {
     display: block;
   }
 
-
-   .admin-menu #map_wrapper_splash {
+  .admin-menu #map_wrapper_splash {
     top: 0;
   }
-
 
   .front .logo.navbar-btn.pull-left {
     display: block;
   }
 
-
   #map_wrapper_splash #map {
-    margin: 0
+    margin: 0;
   }
+
   .navbar-tray-open.navbar-vertical .navbar-wrapper {
     top: 40px;
   }
 
- /* .welcome-text.well {
-      padding: 2em 4em 2em 4em;
-  }*/
-
+  /* .welcome-text.well {
+       padding: 2em 4em 2em 4em;
+   }*/
   .col-md-4.col-md-offset-1.thumbnail {
-      display: none;
+    display: none;
   }
-
 
   .list,
   .add {
@@ -1109,210 +1088,197 @@ margin: 10px 30px;}
   .report img.pull-left.thumbnail {
     display: none;
   }
+
   .report .show-markers {
     display: block;
   }
+
   /* Tighten up footer */
   .footer {
-    margin: 0 -20px;
+    margin: 0;
     padding-top: 0;
     padding-bottom: 0;
   }
+
   .page-map .row.map-tools {
     position: absolute;
     top: 40px;
   }
 
   table td {
-    word-wrap:break-word;
+    word-wrap: break-word;
   }
-
 
   /* Report design small */
   #markers-list-view .report {
     padding: 0;
     margin-left: 0;
   }
+
   .panel-2col-stacked .panel-col-last .inside {
-  margin: 0 0 1em 0;
+    margin: 0 0 1em 0;
   }
 }
+
 /* Landscape phones
 ------------------------- */
 @media (max-width: 480px) {
-
 
   /* Change up some type stuff */
   h2 small {
     display: block;
   }
 
-
   .mapheader .btn {
     display: block;
     margin: 5px auto;
   }
-
 
   .navbar-wrapper {
     z-index: 9999;
     margin-top: 0;
   }
 
-  .navbar-fixed-top, .navbar-fixed-bottom {
+  .navbar-fixed-top,
+  .navbar-fixed-bottom {
     position: fixed;
   }
 
-  /* Tighten up footer */
-  .footer {
-    margin: 0 -20px;
-  }
   /* Container and Map Handling in List View */
   .panel-col-first.panel-panel {
     display: none;
   }
 
   .report .field-name-field-geo {
-      display: block;
+    display: block;
   }
 
   .panel-col-last.panel-panel {
     width: 100%;
   }
+
   #markers-list-view .report {
     padding: 0 0 20px 0;
   }
+
   .report div.pull-left.thumbnail,
   .report img.pull-left.thumbnail {
     display: block;
     margin: 0 10px 0 0;
   }
+
   .report .show-markers {
     display: none;
   }
+
   .page-map .row.map-tools {
     position: absolute;
     top: 40px;
   }
+
   /*narrow form styles*/
   #geolocation-address-8-0 {
     width: 100%;
     float: none;
   }
 
-
   /* Report design small */
   #markers-list-view .report {
     padding: 0;
     margin-left: 0;
   }
+
   .panel-2col-stacked .panel-col-last .inside {
-  margin: 0 0 1em 0;
+    margin: 0 0 1em 0;
   }
 
 }
 
-
-
-
-/* Admin Styles with ember*/
-.page-map.admin-menu .navbar,
-.page-map.admin-menu #map,
-.page-map.admin-menu .map-tools
- {
-  /* margin: 30px 0;*/
-}
-
 .tab-content {
-    padding: 10px 3px;
+  padding: 10px 3px;
 }
 
-
-
-.tab-content>.tab-pane {
-    -webkit-animation-duration: 0;
-    -moz-animation-duration: 0;
-    -o-animation-duration: 0;
-    animation-duration: 0;
-    -webkit-animation-fill-mode: both;
-    -moz-animation-fill-mode: both;
-    -o-animation-fill-mode: both;
-    animation-fill-mode: both;
-    -webkit-backface-visibility: visible!important;
-    -webkit-animation-name: fadeInUp;
-    -moz-backface-visibility: visible!important;
-    -moz-animation-name: fadeInUp;
-    -o-backface-visibility: visible!important;
-    -o-animation-name: fadeInUp;
-    backface-visibility: visible!important;
-    animation-name: fadeInUp;
+.tab-content > .tab-pane {
+  -webkit-animation-duration: 0;
+  -moz-animation-duration: 0;
+  -o-animation-duration: 0;
+  animation-duration: 0;
+  -webkit-animation-fill-mode: both;
+  -moz-animation-fill-mode: both;
+  -o-animation-fill-mode: both;
+  animation-fill-mode: both;
+  -webkit-backface-visibility: visible !important;
+  -webkit-animation-name: fadeInUp;
+  -moz-backface-visibility: visible !important;
+  -moz-animation-name: fadeInUp;
+  -o-backface-visibility: visible !important;
+  -o-animation-name: fadeInUp;
+  backface-visibility: visible !important;
+  animation-name: fadeInUp;
 }
 
-.tab-content>.tab-pane {
-    -webkit-animation-duration: 1.5s;
-    -moz-animation-duration: 1.5s;
-    -o-animation-duration: 1.5s;
-    animation-duration: 1.5s;
-    -webkit-animation-fill-mode: both;
-    -moz-animation-fill-mode: both;
-    -o-animation-fill-mode: both;
-    animation-fill-mode: both;
+.tab-content > .tab-pane {
+  -webkit-animation-duration: 1.5s;
+  -moz-animation-duration: 1.5s;
+  -o-animation-duration: 1.5s;
+  animation-duration: 1.5s;
+  -webkit-animation-fill-mode: both;
+  -moz-animation-fill-mode: both;
+  -o-animation-fill-mode: both;
+  animation-fill-mode: both;
 }
-
-
 
 @-webkit-keyframes fadeInUp {
-    0% {
-        opacity: 0;
-        -webkit-transform: translateY(10px);
-    }
+  0% {
+    opacity: 0;
+    -webkit-transform: translateY(10px);
+  }
 
-    100% {
-        opacity: 1;
-        -webkit-transform: translateY(0);
-    }
+  100% {
+    opacity: 1;
+    -webkit-transform: translateY(0);
+  }
 }
 
-
 @-moz-keyframes fadeInUp {
-    0% {
-        opacity: 0;
-        -moz-transform: translateY(10px);
-    }
+  0% {
+    opacity: 0;
+    -moz-transform: translateY(10px);
+  }
 
-    100% {
-        opacity: 1;
-        -moz-transform: translateY(0);
-    }
+  100% {
+    opacity: 1;
+    -moz-transform: translateY(0);
+  }
 }
 
 @-o-keyframes fadeInUp {
-    0% {
-        opacity: 0;
-        -o-transform: translateY(10px);
-    }
+  0% {
+    opacity: 0;
+    -o-transform: translateY(10px);
+  }
 
-    100% {
-        opacity: 1;
-        -o-transform: translateY(0);
-    }
+  100% {
+    opacity: 1;
+    -o-transform: translateY(0);
+  }
 }
 
 @keyframes fadeInUp {
-    0% {
-        opacity: 0;
-        transform: translateY(10px);
-    }
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
 
-    100% {
-        opacity: 1;
-        transform: translateY(0);
-    }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .fadeInUp {
-    -webkit-animation-name: fadeInUp;
-    -moz-animation-name: fadeInUp;
-    -o-animation-name: fadeInUp;
-    animation-name: fadeInUp;
+  -webkit-animation-name: fadeInUp;
+  -moz-animation-name: fadeInUp;
+  -o-animation-name: fadeInUp;
+  animation-name: fadeInUp;
 }

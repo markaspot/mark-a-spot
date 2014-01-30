@@ -50,7 +50,7 @@ function markaspot_open311_discovery() {
  *   The service request response
  */
 function markaspot_open311_requests_create($data) {
-  global $user;
+
   $data = (object) $data;
   $service_request = array();
 
@@ -157,9 +157,7 @@ function markaspot_open311_requests_retrieve($id, $parameters) {
 
   }
 
-  if ($node == FALSE) {
-  }
-  else {
+  if ($node == TRUE) {
     $node->language = LANGUAGE_NONE;
     $status = markaspot_open311_tax_map_status($node->field_status[$node->language][0]["tid"]);
   }
@@ -185,14 +183,10 @@ function markaspot_open311_requests_retrieve($id, $parameters) {
  *   An array of all requests for this jurisdiction
  */
 function markaspot_open311_requests_index($page, $parameters) {
-  global $user;
-
   $query = new EntityFieldQuery();
   $query->entityCondition('entity_type', 'node')
     ->entityCondition('bundle', 'report')
     ->propertyCondition('status', 1)
-
-    // ->range(0, 10)
     ->addMetaData('account', user_load(1));
   // Run the query as user 1.
   // Checking for a limit parameter:
@@ -220,7 +214,7 @@ function markaspot_open311_requests_index($page, $parameters) {
   if (isset($parameters['status'])) {
     // Get the service of the current node:
     $tids = markaspot_open311_status_map_tax($parameters['status']);
-    $query->fieldCondition('field_status', 'tid', $tids, 'IN');
+    $query->fieldCondition('field_status', 'tid', $tids);
   }
 
   // start_date param or travel back to 1970
@@ -233,17 +227,24 @@ function markaspot_open311_requests_index($page, $parameters) {
   $query->propertyOrderBy('created', $direction = 'DESC');
 
   $result = $query->execute();
-  $nodes = array_keys($result['node']);
 
-  $nodes = node_load_multiple($nodes);
   $requests = FALSE;
 
-  // Now exploring nodes matching other parameters:
-  foreach ($nodes as $node) {
-    $node->language = LANGUAGE_NONE;
+  if ($result) {
+    $nodes = array_keys($result['node']);
+    $nodes = node_load_multiple($nodes);
 
-    $status = markaspot_open311_tax_map_status($node->field_status[$node->language][0]["tid"]);
-    $requests[] = markaspot_open311_node_map_request($node, $status, $parameters);
+    // Now exploring nodes matching other parameters:
+    foreach ($nodes as $node) {
+      $node->language = LANGUAGE_NONE;
+
+      $status = markaspot_open311_tax_map_status($node->field_status[$node->language][0]["tid"]);
+      $requests[] = markaspot_open311_node_map_request($node, $status, $parameters);
+    }
+  }
+  else {
+    markaspot_open311_process_services_error(t('No service requests found'), 404);
+
   }
 
   return $requests;
@@ -312,14 +313,14 @@ function markaspot_open311_node_map_request($node, $status, $parameters) {
     $request['service_request_id'] = $node->nid;
   }
 
+  // Defining content of the status-field:
+  $status = markaspot_open311_tax_map_status($node->field_status[$node->language][0]["tid"]);
   $request['status'] = $status;
+
   if (isset($node->field_statement[$node->language][0]['value'])) {
     $request['status_notes'] = $node->field_statement[$node->language][0]['value'];
   }
   $term['category'] = taxonomy_term_load($node->field_category[$node->language][0]["tid"]);
-
-  // Defining content of the status-field:
-  $status = markaspot_open311_tax_map_status($node->field_status[$node->language][0]["tid"]);
 
   if (isset($term['category'])) {
     $request['service_code'] = $term['category']->field_category_id[$node->language][0]['value'];
@@ -473,10 +474,9 @@ function markaspot_open311_tax_map_service($taxonomy_term) {
 function markaspot_open311_tax_map_status($taxonomy_id) {
   // Mapping Status to Open311 Status (open/closed)
   $term['status'] = taxonomy_term_load($taxonomy_id);
+
   if (isset($term['status'])) {
-
     $status_open = explode(',', variable_get('open311_status_open', markaspot_logic_defaults('open311_status_open')));
-
     if (in_array($term['status']->tid, $status_open)) {
       $status = 'open';
     }
@@ -499,11 +499,12 @@ function markaspot_open311_tax_map_status($taxonomy_id) {
  */
 function markaspot_open311_status_map_tax($status) {
   if ($status == "open") {
-    $tids = array(variable_get('open311_status_open', markaspot_logic_defaults('open311_status_open')));
+    $tids = explode(',', variable_get('open311_status_open', markaspot_logic_defaults('open311_status_open')));
   }
   else {
-    $tids = array(variable_get('open311_status_closed', markaspot_logic_defaults('open311_status_closed')));
+    $tids = explode(',', variable_get('open311_status_closed', markaspot_logic_defaults('open311_status_closed')));
   }
+
   return $tids;
 }
 

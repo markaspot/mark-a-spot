@@ -184,7 +184,7 @@ var markerLayer, queryString;
               $("#markersidebar").append(li);
             }
             $('#marker_' + item.nid).hover(function () {
-              $(this).css('background-color', '#ccddee')
+              $(this).css('background-color', '#ccddee');
               $(this).animate({ backgroundColor: "black" }, 1000);
               google.maps.event.trigger(GoogleMarker, 'click');
             });

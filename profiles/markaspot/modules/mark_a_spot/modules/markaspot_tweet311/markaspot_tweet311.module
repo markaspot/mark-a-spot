@@ -118,8 +118,7 @@ function _markaspot_tweet311_create_content($data, $usercheck = FALSE) {
     }
   }
   else {
-    drupal_set_message(check_plain(t('Error while importing Tweets; Code:') .
-      " " . $data->code), 'error');
+    drupal_set_message(t('Error while importing Tweets; Code: @code', array('@code' => $data->code)), 'error');
   }
 }
 
@@ -222,7 +221,7 @@ function markaspot_tweet311_load_tweet($tid) {
 function _markaspot_get_taxonomy($tweet) {
 
   // Getting all servicecodes or hashes.
-  $taxonomies = taxonomy_get_tree(1, $parent = 0, $max_depth = 1, $load_entities = TRUE);
+  $taxonomies = taxonomy_get_tree(1, 0, 1, TRUE);
 
   foreach ($taxonomies as $taxonomy_term) {
     if (variable_get('markaspot_tweetSearch') == 1) {

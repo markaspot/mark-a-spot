@@ -24,13 +24,13 @@ class ServicesRESTServerFactory {
   }
 
   public function getRESTServer() {
-    $content_type_negotiator = self::getContentTypeNegotiator();
+    $content_type_negotiator = $this->getContentTypeNegotiator();
     $context = $this->getContext();
     $resources = $this->getResources();
     $parsers = $this->getParsers();
     $formatters = $this->getFormatters();
 
-    $class_name = self::$class_name;
+    $class_name = static::$class_name;
     return new $class_name($context, $content_type_negotiator, $resources, $parsers, $formatters);
   }
 

@@ -1,3 +1,9 @@
+<?php
+/**
+ * @file
+ * Front page template for Mark-a-Spot
+ */
+?>
 <header role="banner" id="page-header" class="container">
   <?php print render($page['header']); ?>
 </header> <!-- /#header -->
@@ -62,8 +68,8 @@
       <div class="col-md-7">
         <div class="welcome-text well">
           <?php
-            // if you don't want bootstrap carousel to welcome visitors
-            // you can use this block
+            // If you don't want bootstrap carousel to welcome visitors
+            // you can use this block:
             $block = module_invoke('markaspot_default_content', 'block_view', 'welcome');
             print render($block['content']);
           ?>
@@ -125,8 +131,8 @@
           <?php print t('Reports with Media'); ?>
         </h3>
         <?php
-          $viewName = 'Gallery';
-          print views_embed_view($viewName);
+          $view_name = 'Gallery';
+          print views_embed_view($view_name);
         ?>
       </div>
     </section>

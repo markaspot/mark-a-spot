@@ -411,8 +411,16 @@ function _services_access_value($data, $fields) {
 function _services_authenticate_user($controller, $endpoint, $args, $options) {
   if (!isset($options['skip_authentication']) || !$options['skip_authentication']) {
     foreach ($endpoint->authentication as $auth_module => $auth_settings) {
-      if (!empty($auth_settings) && $auth_error = services_auth_invoke($auth_module, 'authenticate_call', $auth_settings, $controller, $args)) {
-        return services_error($auth_error, 401);
+      if (!empty($auth_settings)) {
+        // Add in the auth module's endpoint settings if present.
+        if (isset($controller['endpoint'][$auth_module])) {
+          if(is_array($auth_settings)) {
+              $auth_settings += $controller['endpoint'][$auth_module];
+          }
+        }
+        if ($auth_error = services_auth_invoke($auth_module, 'authenticate_call', $auth_settings, $controller, $args)) {
+          return services_error($auth_error, 401);
+        }
       }
     }
   }

@@ -1,4 +1,8 @@
 <?php
+/**
+ * @file
+ * Enables modules and site configuration for a standard site installation.
+ */
 
 /**
  * Implements hook_install().
@@ -62,13 +66,11 @@ function markaspot_install() {
   $full_html_format = (object) $full_html_format;
   filter_format_save($full_html_format);
 
-
   // Any themes without keys here will get numeric keys and so will be enabled,
   // but not placed into variables.
   $enable = array(
     'theme_default' => 'mas',
     'admin_theme' => 'ember',
-    //'zen'
   );
   theme_enable($enable);
 
@@ -78,9 +80,8 @@ function markaspot_install() {
     }
   }
 
-  // Disable the default Bartik theme
+  // Disable the default Bartik theme.
   theme_disable(array('bartik'));
-
 
   // Enable some standard blocks.
   $default_theme = variable_get('theme_default', 'mas');
@@ -129,17 +130,6 @@ function markaspot_install() {
       'cache' => -1,
     ),
 
-    // array(
-    //   'module' => 'menu',
-    //   'delta' => 'menu-secondary-navigation',
-    //   'theme' => $default_theme,
-    //   'status' => 1,
-    //   'weight' => 10,
-    //   'region' => 'footer',
-    //   'pages' => '',
-    //   'cache' => -1,
-    // ),
-
     array(
       'module' => 'system',
       'delta' => 'main',
@@ -159,9 +149,20 @@ function markaspot_install() {
       'region' => 'help',
       'pages' => '',
       'cache' => -1,
+    ),
+  );
+  $query = db_insert('block')->fields(
+    array(
+      'module',
+      'delta',
+      'theme',
+      'status',
+      'weight',
+      'region',
+      'pages',
+      'cache',
     )
   );
-  $query = db_insert('block')->fields(array('module', 'delta', 'theme', 'status', 'weight', 'region', 'pages', 'cache'));
   foreach ($blocks as $block) {
     $query->values($block);
   }
@@ -197,7 +198,6 @@ function markaspot_install() {
     node_add_body_field($type);
   }
 
-
   // Default "Basic page" to not be promoted and have comments disabled.
   variable_set('node_options_page', array('status'));
   variable_set('comment_page', COMMENT_NODE_HIDDEN);
@@ -211,14 +211,25 @@ function markaspot_install() {
   variable_set('user_picture_file_size', '800');
   variable_set('user_picture_style', 'thumbnail');
 
-
   // Allow visitor account creation with administrative approval.
   variable_set('user_register', USER_REGISTER_VISITORS);
 
   // Enable default permissions for system roles.
   $filtered_html_permission = filter_permission_name($filtered_html_format);
-  user_role_grant_permissions(DRUPAL_ANONYMOUS_RID, array('access content', 'access comments', $filtered_html_permission));
-  user_role_grant_permissions(DRUPAL_AUTHENTICATED_RID, array('access content', 'access comments', 'post comments', 'skip comment approval', $filtered_html_permission));
+  user_role_grant_permissions(DRUPAL_ANONYMOUS_RID, array(
+    'access content',
+    'access comments',
+    $filtered_html_permission,
+    )
+  );
+  user_role_grant_permissions(DRUPAL_AUTHENTICATED_RID, array(
+    'access content',
+    'access comments',
+    'post comments',
+    'skip comment approval',
+    $filtered_html_permission,
+    )
+  );
 
   // Create a default role for site administrators, with all available permissions assigned.
   $admin_role = new stdClass();
@@ -236,7 +247,7 @@ function markaspot_install() {
 
   // Create a Home link in the main menu.
   $item = array(
-    'link_title' => st('Home'),
+    'link_title' => 'Home',
     'link_path' => '<front>',
     'menu_name' => 'main-menu',
   );
@@ -254,14 +265,12 @@ function markaspot_install() {
   variable_set('admin_theme', 'ember');
   variable_set('node_admin_theme', '1');
 
-
-  // enable some modules
+  // Enable some modules.
   $module_list = array('jquery_update');
-  module_enable($module_list, $enable_dependencies = TRUE);
+  module_enable($module_list);
 
   variable_set('jquery_update_jquery_version', '1.7');
-  // Setting some Mark-a-Spot default values
-
+  // Setting some Mark-a-Spot default values.
   variable_set('markaspot_zip', '50321');
   variable_set('markaspot_city', 'Brühl');
   variable_set('markaspot_country', 'Deutschland');
