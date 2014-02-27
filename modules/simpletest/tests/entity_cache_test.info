@@ -6,8 +6,8 @@ core = 7.x
 dependencies[] = entity_cache_test_dependency
 hidden = TRUE
 
-; Information added by Drupal.org packaging script on 2014-01-03
-version = "7.25"
+; Information added by Drupal.org packaging script on 2014-01-15
+version = "7.26"
 project = "drupal"
-datestamp = "1388709506"
+datestamp = "1389815930"
 

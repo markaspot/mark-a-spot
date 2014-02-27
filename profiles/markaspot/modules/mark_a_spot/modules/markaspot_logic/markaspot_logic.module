@@ -98,7 +98,7 @@ function markaspot_logic_page_build(&$page) {
     ),
   ), 'setting');
 
-  if (variable_get('markaspot_map_type') == 1) {
+  if (variable_get('markaspot_logic_map_type') == 1) {
     drupal_add_js(array(
       'mas' => array(
         'cloudmade_api_key' => variable_get('markaspot_logic_cloudmade_api_key'),

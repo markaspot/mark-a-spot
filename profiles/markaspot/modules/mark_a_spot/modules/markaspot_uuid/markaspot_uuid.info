@@ -7,8 +7,8 @@ dependencies[] = uuid
 
 
 ; Information added by drush on 2014-02-27
-version = "7.x-2.4-beta+71-dev"
+version = "7.x-2.4-beta+72-dev"
 core = "7.x"
 project = "markaspot"
-datestamp = "1393476229"
+datestamp = "1393479627"
 

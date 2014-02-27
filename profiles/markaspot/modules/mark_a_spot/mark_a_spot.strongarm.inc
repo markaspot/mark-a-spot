@@ -111,9 +111,9 @@ function mark_a_spot_strongarm() {
   $strongarm = new stdClass();
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
-  $strongarm->name = 'markaspot_map_type';
+  $strongarm->name = 'markaspot_logic_map_type';
   $strongarm->value = '2';
-  $export['markaspot_map_type'] = $strongarm;
+  $export['markaspot_logic_map_type'] = $strongarm;
 
   $strongarm = new stdClass();
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */

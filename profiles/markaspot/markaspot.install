@@ -271,6 +271,7 @@ function markaspot_install() {
 
   variable_set('jquery_update_jquery_version', '1.7');
   // Setting some Mark-a-Spot default values.
+  variable_set('markaspot_logic_map_type', '2');
   variable_set('markaspot_logic_zip', '50321');
   variable_set('markaspot_logic_city', 'Brühl');
   variable_set('markaspot_logic_country', 'Deutschland');

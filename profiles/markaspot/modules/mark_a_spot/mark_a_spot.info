@@ -115,7 +115,7 @@ features[variable][] = comment_report
 features[variable][] = comment_subject_field_report
 features[variable][] = field_bundle_settings_node__report
 features[variable][] = language_content_type_report
-features[variable][] = markaspot_map_type
+features[variable][] = markaspot_logic_map_type
 features[variable][] = menu_options_report
 features[variable][] = menu_parent_report
 features[variable][] = node_options_report
@@ -128,8 +128,8 @@ features[views_view][] = markers
 
 
 ; Information added by drush on 2014-02-27
-version = "7.x-2.4-beta+71-dev"
+version = "7.x-2.4-beta+72-dev"
 core = "7.x"
 project = "markaspot"
-datestamp = "1393476229"
+datestamp = "1393479627"
 
