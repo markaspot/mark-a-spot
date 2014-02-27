@@ -390,9 +390,11 @@ function _comment_resource_access($op = 'view', $args = array()) {
     case 'view':
       // Check if the user has access to comments
       return user_access('access comments');
-    case 'create':
     case 'delete':
+      return user_access('administer comments');
     case 'edit':
+      return comment_access('edit', $comment);
+    case 'create':
       // Check if the user may post comments, node has comments enabled
       // and that the user has access to the node.
       return user_access('post comments') && ($node->comment == COMMENT_NODE_OPEN);

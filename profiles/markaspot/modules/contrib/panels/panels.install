@@ -47,7 +47,27 @@ function panels_requirements_install() {
 function panels_schema() {
   // This should always point to our 'current' schema. This makes it relatively easy
   // to keep a record of schema as we make changes to it.
-  return panels_schema_4();
+  return panels_schema_5();
+}
+
+function panels_schema_5() {
+  $schema = panels_schema_4();
+
+  $schema['panels_display']['fields']['uuid'] = array(
+    'type' => 'char',
+    'length' => '36',
+  );
+  $schema['panels_display']['export']['key'] = 'uuid';
+  $schema['panels_display']['export']['key name'] = 'UUID';
+
+  $schema['panels_pane']['fields']['uuid'] = array(
+    'type' => 'char',
+    'length' => '36',
+  );
+  $schema['panels_pane']['export']['key'] = 'uuid';
+  $schema['panels_pane']['export']['key name'] = 'UUID';
+
+  return $schema;
 }
 
 function panels_schema_4() {
@@ -331,6 +351,8 @@ function panels_schema_3() {
     'primary key' => array('lid'),
   );
 
+  $schema['cache_panels'] = drupal_get_schema_unprocessed('system', 'cache');
+
   return $schema;
 }
 
@@ -374,4 +396,84 @@ function panels_update_7301() {
   }
 
   return t('panels_pane.lock field already existed, update skipped.');
+}
+
+/**
+ * Adding universally unique identifiers to panels.
+ */
+function panels_update_7302() {
+  // Load the schema.
+  $schema = panels_schema_5();
+  $msg = array();
+
+  // Add the uuid column to the pane table.
+  $table = 'panels_pane';
+  $field = 'uuid';
+  // Due to a previous failure, the column may already exist:
+  if (!db_field_exists($table, $field)) {
+    $spec = $schema[$table]['fields'][$field];
+    db_add_field($table, $field, $spec);
+    $msg[] = t('Added panels_pane.uuid column.');
+  }
+
+  // Add the uuid column to the display table.
+  $table = 'panels_display';
+  $field = 'uuid';
+  // Due to a previous failure, the column may already exist:
+  if (!db_field_exists($table, $field)) {
+    $spec = $schema[$table]['fields'][$field];
+    db_add_field($table, $field, $spec);
+    $msg[] = t('Added panels_display.uuid column.');
+  }
+
+  if (empty($msg)) {
+    $msg[] = t('UUID column already present in the panels_display & panels_pane tables.');
+  }
+
+  // Update all DB-based panes & displays to ensure that they all contain a UUID.
+  $display_dids = db_select('panels_display')
+    ->fields('panels_display', array('did'))
+    ->condition(db_or()
+      ->condition('uuid', '')
+      ->isNull('uuid')
+    )
+    ->execute()
+    ->fetchCol();
+
+  // Check the panes as well, for paranoia.
+  $pane_dids = db_select('panels_pane')
+    ->distinct()
+    ->fields('panels_pane', array('did'))
+    ->condition(db_or()
+      ->condition('uuid', '')
+      ->isNull('uuid')
+    )
+    ->execute()
+    ->fetchCol();
+
+  $dids = array_unique(array_merge($display_dids, $pane_dids));
+
+  if ($displays = panels_load_displays($dids)) {
+    foreach ($displays as $display) {
+      // A display save also triggers pane saves.
+      panels_save_display($display);
+    }
+    $msg[] = t('Generated UUIDs for database-based panel displays and panes.');
+  }
+  else {
+    $msg[] = t('No database-based panel displays or panes for which to generate UUIDs.');
+  }
+
+  return implode("\n", $msg);
+}
+
+/**
+ * Add a custom cache table for Panels.
+ */
+function panels_update_7303() {
+  $table_name = 'cache_panels';
+  if (!db_table_exists($table_name)) {
+    $schema = drupal_get_schema_unprocessed('system', 'cache');
+    db_create_table($table_name, $schema);
+  }
 }

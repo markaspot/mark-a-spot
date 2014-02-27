@@ -10,22 +10,24 @@
  * Implements hook_cron().
  */
 function markaspot_archive_cron() {
+
+  $period = variable_get('markaspot_logic_archive_days') * 86400;
+
   $query = new EntityFieldQuery();
   $query->entityCondition('entity_type', 'node')
     ->propertyCondition('status', 1)
     ->propertyCondition('type', array('report'))
+    ->propertyCondition('changed', time() - $period, '<=')
+    ->fieldCondition('field_status', 'tid', 7)
     ->propertyOrderBy('created', 'DESC');
   $result = $query->execute();
 
-  $nodes = node_load_multiple(array_keys($result['node']));
+  if ($result) {
+    $nodes = node_load_multiple(array_keys($result['node']));
 
-  $period = variable_get('archive_days') * 86400;
-
-  foreach ($nodes as $node) {
-    if ($node->changed <= time() - $period && $node->field_status['und'][0]['tid'] == 7) {
-      $node->field_status['und'][0]['tid'] = "8";
+    foreach ($nodes as $node) {
+      $node->field_status[LANGUAGE_NONE][0]['tid'] = "8";
       node_save($node);
     }
   }
-
 }

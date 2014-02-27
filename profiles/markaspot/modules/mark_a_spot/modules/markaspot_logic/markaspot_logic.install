@@ -1,0 +1,34 @@
+<?php
+
+/**
+ * @file
+ * Install, uninstall, and update functions for markaspot_logic.module.
+ */
+
+/**
+ * Implements hook_uninstall().
+ */
+function markaspot_logic_uninstall() {
+  variable_del('markaspot_logic_ini_lat');
+  variable_del('markaspot_logic_ini_lng');
+  variable_del('markaspot_logic_markaspot_address');
+  variable_del('markaspot_logic_city');
+  variable_del('markaspot_logic_country');
+  variable_del('markaspot_logic_twittername');
+  variable_del('markaspot_logic_ini_tweetSearch');
+  variable_del('markaspot_logic_bbox_nw_lat');
+  variable_del('markaspot_logic_bbox_nw_lng');
+  variable_del('markaspot_logic_box_se_lat');
+  variable_del('markaspot_logic_bbox_se_lng');
+  variable_del('markaspot_logic_archive_days');
+  variable_del('markaspot_logic_uuid_title');
+  variable_del('markaspot_logic_open311_contact');
+  variable_del('markaspot_logic_open311_status_open_start');
+  variable_del('markaspot_logic_open311_status_open');
+  variable_del('markaspot_logic_open311_status_closed');
+  variable_del('markaspot_logic_open311_changeset');
+  variable_del('markaspot_logic_open311_key_service');
+  variable_del('markaspot_logic_open311_type');
+  variable_del('markaspot_logic_osm_custom_tile_url');
+  variable_del('markaspot_logic_osm_custom_attribution');
+}

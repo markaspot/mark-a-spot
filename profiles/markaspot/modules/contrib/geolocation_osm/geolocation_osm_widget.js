@@ -69,41 +69,38 @@
     // Nominatim
     // http://wiki.openstreetmap.org/wiki/Nominatim_usage_policy
     //
-    /**
-     * Mark-a-Spot Integration: Fill input with formatted address again
-     */
+
     mas = Drupal.settings.mas;
 
-    var address = $('#edit-field-geo-und-0-address-field').val() + ", " + mas.markaspot_city;
+    var address = $('#edit-field-geo-und-0-address-field').val();
     // Mark-a-Spot End
     var nominatimEmail = Drupal.settings.geolocation.settings.nominatimEmail;
     var url = Drupal.settings.geolocation.settings.geocode_service + '/search';
     $.getJSON(url + '?email=' + nominatimEmail + '&q=' + address + '&bounded=1&addressdetails=1&viewbox=' + mas.bbox_nw_lng + ',' + mas.bbox_nw_lat + ',' + mas.bbox_se_lng + ',' + mas.bbox_se_lat + ' &json_callback=?', {
       format: 'json'
     }).done(function (result) {
-        if (result.length > 0) {
-          Drupal.geolocation.maps[i].setView(new L.LatLng(result[0].lat, result[0].lon), i);
-          Drupal.geolocation.setMapMarker(new L.LatLng(result[0].lat, result[0].lon), i);
-          var street = result[0].address.road ? result[0].address.road : Drupal.t('Center');
-          street = street ? street : result[0].address.pedestrian;
-          street = street ? street : result[0].address.locality;
-          street = street ? street : result[0].address.pedestrian;
-          street = street ? street : result[0].address.cycleway;
-          street = result[0].address.house_number ? street + ' ' + result[0].address.house_number : street;
-          postcode = result[0].address.postcode ? result[0].address.postcode + " " : "";
-          var address = street + ', ' + postcode + result[0].address.city;
+      if (result.length > 0) {
+        Drupal.geolocation.setMapMarker(new L.LatLng(result[0].lat, result[0].lon), i);
+        var street = result[0].address.road ? result[0].address.road : Drupal.t('Center');
+        street = street ? street : result[0].address.pedestrian;
+        street = street ? street : result[0].address.locality;
+        street = street ? street : result[0].address.pedestrian;
+        street = street ? street : result[0].address.cycleway;
+        street = result[0].address.house_number ? street + ' ' + result[0].address.house_number : street;
+        postcode = result[0].address.postcode ? result[0].address.postcode + " " : "";
+        var address = street + ', ' + postcode + result[0].address.city;
 
-          $('#edit-field-geo-und-0-address-field').val(address);
-          $('#geolocation-lat-' + i + ' input').attr('value', result[0].lat);
-          $('#geolocation-lat-item-' + i + ' .geolocation-lat-item-value').html(result[0].lat);
-          $('#geolocation-lng-' + i + ' input').attr('value', result[0].lon);
-          $('#geolocation-lng-item-' + i + ' .geolocation-lng-item-value').html(result[0].lon);
+        $('#edit-field-geo-und-0-address-field').val(address);
+        $('#geolocation-lat-' + i + ' input').attr('value', result[0].lat);
+        $('#geolocation-lat-item-' + i + ' .geolocation-lat-item-value').html(result[0].lat);
+        $('#geolocation-lng-' + i + ' input').attr('value', result[0].lon);
+        $('#geolocation-lng-item-' + i + ' .geolocation-lng-item-value').html(result[0].lon);
 
-        }
-        else {
-          alert(Drupal.t("Sorry that address cannot be found"));
-        }
-      });
+      }
+      else {
+        alert(Drupal.t("Sorry that address cannot be found"));
+      }
+    });
   };
 
   /**
@@ -261,7 +258,7 @@
           latLng = new L.LatLng(lat, lng);
 
           // Create map
-          var tile_server = Drupal.settings.geolocation.settings.tile_server;
+          var tile_server = Drupal.settings.geolocation.settings.tile_server_dynamic;
 
           Drupal.geolocation.maps[i] = new L.Map(document.getElementById("geolocation-map-" + i));
           var osmUrl = tile_server,

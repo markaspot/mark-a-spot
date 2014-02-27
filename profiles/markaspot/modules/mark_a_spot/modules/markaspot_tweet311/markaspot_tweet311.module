@@ -106,10 +106,10 @@ function _markaspot_tweet311_create_content($data, $usercheck = FALSE) {
               $node = _markaspot_tweet311_map_node($tweet, $tweet->user->screen_name);
               if (isset($node)) {
                 node_save($node);
-                drupal_set_message(t("Tweet imported with Hashtag"));
+                watchdog('markaspot_tweet311', 'Tweet imported with Hashtag', array(), WATCHDOG_INFO);
               }
               else {
-                drupal_set_message(t("Tweet found but no matching Hashtag"));
+                watchdog('markaspot_tweet311', 'Tweet found but no matching Hashtag', array(), WATCHDOG_INFO);
               }
             }
           }
@@ -390,7 +390,7 @@ function _markaspot_tweet311_twitter_create_user_from_tweet($username) {
   }
   else {
     // Yes, we have $username;
-    $user = user_load_by_name(check_plain($username));
+    $user = user_load_by_name($username);
   }
   return $user;
 

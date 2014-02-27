@@ -242,7 +242,7 @@ class ServicesResourceNodetests extends ServicesWebTestCase {
 
     $responseArray = $this->servicesPost($this->endpoint->path . '/node', array('node' => $node));
 
-    $this->assertTrue($responseArray['code'] == 401, 'User with not sufficient permissions cannot create node', 'NodeResource: Create');
+    $this->assertTrue($responseArray['code'] == 403, 'User with not sufficient permissions cannot create node', 'NodeResource: Create');
   }
 
   /**

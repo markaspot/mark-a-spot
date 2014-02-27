@@ -290,9 +290,6 @@ Drupal.flexible.splitter = function($splitter) {
       // if not moving the right side, adjust the parent padding instead.
       splitter.parent.css('padding-left', (splitter.left_padding - moved) + 'px');
       splitter.left.parent().css('margin-left', (splitter.left_parent + moved) + 'px');
-      if (jQuery.browser.msie) {
-        splitter.left.parent().css('left', splitter.currentLeft);
-      }
     }
     return false;
   };

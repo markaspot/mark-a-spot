@@ -45,7 +45,7 @@ function markaspot_uuid_generate_mas() {
   // First get the last inserted node-id
   $query = db_select('node');
   $query->addExpression('COUNT(*)');
-  $count = $query->execute()->fetchField();
+  $count = $query->execute()->fetchField() + 1;
   // Assuming other entities will be less frequently generated.
   // Taxonomies should still be unique.
   return sprintf('%04x',

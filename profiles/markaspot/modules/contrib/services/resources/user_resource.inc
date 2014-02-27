@@ -352,8 +352,8 @@ function _user_resource_update($uid, $account) {
     }
   }
 
-  // Prepare values of roles.
-  if (!isset($account['roles'])) {
+  // Prepare values of roles. Check user's permission before allowing changes to roles.
+  if (!isset($account['roles']) || !user_access('administer users')) {
     $account['roles'] = $account_loaded->roles;
   }
   foreach ($account['roles'] as $key => $value) {

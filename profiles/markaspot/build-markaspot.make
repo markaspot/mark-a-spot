@@ -12,5 +12,5 @@ projects[drupal][download][url] = http://ftp.drupal.org/files/projects/drupal-7.
 ; Mark-a-Spot Profile
 projects[markaspot][type] = profile
 projects[markaspot][download][type] = "git"
-projects[markaspot][download][url] = "http://git.drupal.org/sandbox/markaspot/2031703.git"
+projects[markaspot][download][url] = "http://git.drupal.org/project/markaspot.git"
 projects[markaspot][download][branch] = "7.x-2.x"

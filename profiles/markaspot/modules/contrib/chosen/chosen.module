@@ -134,7 +134,10 @@ function chosen_library() {
     'website' => 'http://drupal.org/project/chosen',
     'version' => '1.0',
     'js' => array(
-      $module_path . '/chosen.js' => array(),
+      $module_path . '/chosen.js' => array(
+        'group' => JS_DEFAULT,
+        'weight' => 100,
+      ),
       array(
         'data' => array(
           'chosen' => array(

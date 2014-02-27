@@ -477,6 +477,7 @@ function panels_common_get_allowed_layout_object($module_name) {
  * Get the allowed layouts for the given module.
  */
 function panels_common_get_allowed_layouts($module_name) {
+  ctools_include('plugins', 'panels');
   $available_layouts = panels_get_layouts();
   if (empty($module_name)) {
     return $available_layouts;

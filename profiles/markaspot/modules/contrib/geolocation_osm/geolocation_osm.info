@@ -5,8 +5,15 @@ dependencies[] = geolocation
 core = "7.x"
 
 
-; Information added by drush on 2014-01-30
+; Information added by drush on 2014-02-04
 version = "master-dev"
 project = "geolocation_osm"
-datestamp = "1391063169"
+datestamp = "1391531178"
+
+
+
+; Information added by drush on 2014-02-27
+version = "master-dev"
+project = "geolocation_osm"
+datestamp = "1393476246"
 

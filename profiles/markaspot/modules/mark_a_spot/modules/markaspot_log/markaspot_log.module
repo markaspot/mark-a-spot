@@ -295,13 +295,11 @@ function markaspot_log_write_log($data) {
 /**
  * Deletes a note from the database.
  *
- * @param int $id
- *   The Comment id
+ * @param int $lid
+ *   The Log id
  */
-function markaspot_log_delete_log($id) {
-  db_query("DELETE FROM {markaspot_log} WHERE id = %d", array(
-    ':id' => $id,
-  ));
+function markaspot_log_delete_log($lid) {
+  db_delete('node')->condition('id', $lid)->execute();
 }
 
 
