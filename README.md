@@ -19,13 +19,18 @@ http://yourserver/admin/structure/types/manage/report/fields
 http://yourserver/admin/config/system/mark_a_spot
 3. Make sure that clean urls are supported and active: http://yourserver/?q=admin/config/search/clean-urls
 
-In case you want to run the system with Cloudmade OSM, you may choose the Cloudmade Geolocation Widget and switch to Cloudmade's map tiles in the Mark-a-Spot configuration screen. You will need an Cloudmade API Key for that.
+In case you want to run the system with OSM, you may choose the OSM Geolocation Widget.
+In addition to that switch to OSM map tiles in the Mark-a-Spot configuration screen.
+
+You can choose a Map Tile Server Operator of your choice and any Nominatim-similar geocoder (e.g. Mapquest)
 
 ## Open311 GeoReport Resources
 
-http://yourserver/georeport/services.format (xml/json)
-http://yourserver/georeport/requests.format (xml/json)
-http://yourserver/georeport/discovery.format (xml/json)
+The Open311 Page which will be created during installation process (check footer link) provides more information. Anyway you will find the endpoint and it's resources here:
+
+http://yourserver/georeport/v2/services.format (xml/json)
+http://yourserver/georeport/v2/requests.format (xml/json)
+http://yourserver/georeport/v2/discovery.format (xml/json)
 
 ## Contact
 Holger Kreis | @markaspot | http://mark-a-spot.org
