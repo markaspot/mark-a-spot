@@ -63,7 +63,6 @@ function mark_a_spot_field_default_field_instances() {
         'module' => 'text',
         'settings' => array(
           'field_formatter_class' => '',
-          'semantic_field_format' => '',
         ),
         'type' => 'text_default',
         'weight' => 2,
@@ -158,7 +157,6 @@ function mark_a_spot_field_default_field_instances() {
         'module' => 'text',
         'settings' => array(
           'field_formatter_class' => '',
-          'semantic_field_format' => '',
         ),
         'type' => 'text_default',
         'weight' => 5,
@@ -308,7 +306,6 @@ function mark_a_spot_field_default_field_instances() {
         'module' => 'taxonomy',
         'settings' => array(
           'field_formatter_class' => '',
-          'semantic_field_format' => '',
         ),
         'type' => 'taxonomy_term_reference_plain',
         'weight' => 3,
@@ -448,13 +445,11 @@ function mark_a_spot_field_default_field_instances() {
         'module' => 'geolocation_osm',
         'settings' => array(
           'field_formatter_class' => '',
-          'leafletImagePath' => '/profiles/markaspot/libraries/Leaflet/images',
+          'leafletImagePath' => '/profiles/markaspot/libraries/leaflet/images',
           'map_dimensions' => '100%x300px',
-          'map_scrollwheel' => FALSE,
+          'map_scrollwheel' => 1,
           'map_zoomlevel' => 16,
-          'marker_icon' => 'profiles/markaspot/libraries/Leaflet/images/marker-icon.png',
-          'semantic_field_format' => '',
-          'tile_server' => 'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
+          'marker_icon' => 'profiles/markaspot/libraries/leaflet/images/marker-icon.png',
           'tile_server_dynamic' => 'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
         ),
         'type' => 'geolocation_osm_dynamic',
@@ -487,7 +482,7 @@ function mark_a_spot_field_default_field_instances() {
         'module' => 'geolocation_osm',
         'settings' => array(
           'field_formatter_class' => 'thumbnail pull-left',
-          'leafletImagePath' => 'profiles/markaspot/libraries/Leaflet/images/',
+          'leafletImagePath' => 'profiles/markaspot/libraries/leaflet/images/',
           'map_dimensions' => '100x100',
           'map_imageformat' => 'png',
           'map_key' => '',
@@ -526,7 +521,7 @@ function mark_a_spot_field_default_field_instances() {
         'settings' => array(
           'cloudmade_api_key' => '165795623c424338ad9a8eb60484ef0e',
           'field_formatter_class' => '',
-          'leafletImagePath' => 'profiles/markaspot/libraries/Leaflet/images/',
+          'leafletImagePath' => 'profiles/markaspot/libraries/leaflet/images/',
           'map_dimensions' => '300x300',
           'map_imageformat' => 'png',
           'map_key' => '',
@@ -551,14 +546,16 @@ function mark_a_spot_field_default_field_instances() {
       'active' => 1,
       'module' => 'geolocation_osm',
       'settings' => array(
+        'bbox' => '6.832,50.8464,6.937,50.8043',
         'geocode_service' => 'http://nominatim.openstreetmap.org',
-        'leafletImagePath' => '/profiles/markaspot/libraries/Leaflet/images',
+        'leafletImagePath' => '/profiles/markaspot/libraries/leaflet/images',
         'marker_draggable' => 1,
         'nominatimEmail' => 'holger@markaspot.org',
         'scrollwheel' => 0,
-        'tile_server' => 'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
+        'tile_server_dynamic' => 'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
+        'tile_server_static' => '',
       ),
-      'type' => 'geolocation_osm-osm',
+      'type' => 'geolocation_osm',
       'weight' => 15,
     ),
   );
@@ -576,7 +573,6 @@ function mark_a_spot_field_default_field_instances() {
           'field_formatter_class' => 'img-responsive',
           'image_link' => 'content',
           'image_style' => 'mas_medium',
-          'semantic_field_format' => '',
         ),
         'type' => 'image',
         'weight' => 0,
@@ -728,7 +724,6 @@ function mark_a_spot_field_default_field_instances() {
         'module' => 'text',
         'settings' => array(
           'field_formatter_class' => '',
-          'semantic_field_format' => '',
         ),
         'type' => 'text_default',
         'weight' => 6,
@@ -781,7 +776,6 @@ function mark_a_spot_field_default_field_instances() {
         'module' => 'taxonomy',
         'settings' => array(
           'field_formatter_class' => '',
-          'semantic_field_format' => '',
         ),
         'type' => 'taxonomy_term_reference_plain',
         'weight' => 4,
@@ -835,7 +829,7 @@ function mark_a_spot_field_default_field_instances() {
     'entity_type' => 'node',
     'field_name' => 'field_status',
     'label' => 'Status',
-    'required' => 0,
+    'required' => 1,
     'settings' => array(
       'user_register_form' => FALSE,
     ),
@@ -1180,7 +1174,7 @@ function mark_a_spot_field_default_field_instances() {
   t('Image');
   t('Notify User?');
   t('Place your report');
-  t('Please leave an e-Mail address, so that we can contact you');
+  t('Please leave an e-Mail address, so that we can contact you, in case you don\'t want to register');
   t('Report details');
   t('Status');
   t('StatusId');

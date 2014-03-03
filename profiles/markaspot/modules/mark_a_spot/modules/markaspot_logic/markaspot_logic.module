@@ -11,6 +11,7 @@
  */
 function markaspot_logic_form_report_node_form_alter(&$form, &$form_state, $form_id) {
   global $user;
+  unset($form['field_status'][LANGUAGE_NONE]['#options']['_none']);
   $form['field_address'][LANGUAGE_NONE][0]['value']['#type'] = "hidden";
   // Registered users' mail will be prefilled:
   if (isset($user->mail) && arg(0) == 'node' && arg(1) == 'add') {
@@ -129,8 +130,8 @@ function markaspot_logic_page_build(&$page) {
       drupal_add_js(drupal_get_path('module', 'markaspot_logic') . '/js/markers_googlemaps.js', NULL);
     }
     else {
-      drupal_add_css(drupal_get_path('profile', 'markaspot') . '/libraries/Leaflet/leaflet.css');
-      drupal_add_css(drupal_get_path('profile', 'markaspot') . '/libraries/Leaflet/leaflet.ie.css', array(
+      drupal_add_css(drupal_get_path('profile', 'markaspot') . '/libraries/leaflet/leaflet.css');
+      drupal_add_css(drupal_get_path('profile', 'markaspot') . '/libraries/leaflet/leaflet.ie.css', array(
         'group' => CSS_THEME,
         'browsers' => array(
           'IE' => 'lte IE 8',
@@ -147,8 +148,7 @@ function markaspot_logic_page_build(&$page) {
         ),
       ));
 
-      drupal_add_js(drupal_get_path('profile', 'markaspot') . '/libraries/Leaflet/leaflet.js');
-
+      drupal_add_js(drupal_get_path('profile', 'markaspot') . '/libraries/leaflet/leaflet.js');
       drupal_add_js(drupal_get_path('module', 'markaspot_logic') . '/js/markers_leaflet.js');
       drupal_add_js(drupal_get_path('profile', 'markaspot') . '/libraries/Leaflet.awesome-markers/dist/leaflet.awesome-markers.min.js', NULL);
 
