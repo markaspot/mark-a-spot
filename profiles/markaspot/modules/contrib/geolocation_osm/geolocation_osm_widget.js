@@ -41,10 +41,11 @@
       }).done(function (result) {
           if (result) {
             var street = result.address.construction ? result.address.construction : "";
+            street = street ? street : result.address.cycleway;
             street = street ? street : result.address.road;
             street = street ? street : result.address.pedestrian;
             street = street ? street : result.address.footway;
-            var street = result.address.house_number ? street + ' ' + result.address.house_number : street;
+            street = result.address.house_number ? street + ' ' + result.address.house_number : street;
             var address = street + ', ' + result.address.postcode + ' ' + result.address.city;
 
             $('#edit-field-geo-und-0-address-field').val(address);
@@ -80,7 +81,7 @@
     }).done(function (result) {
         if (result.length > 0) {
           Drupal.geolocation.setMapMarker(new L.LatLng(result[0].lat, result[0].lon), i);
-          var street = result[0].address.road ? result[0].address.road : Drupal.t('Center');
+          var street = result[0].address.road ? result[0].address.road : Drupal.t('City Center');
           street = street ? street : result[0].address.pedestrian;
           street = street ? street : result[0].address.locality;
           street = street ? street : result[0].address.pedestrian;

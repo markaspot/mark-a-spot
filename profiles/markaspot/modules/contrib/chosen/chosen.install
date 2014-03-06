@@ -62,3 +62,20 @@ function chosen_update_7201() {
   variable_set('chosen_minimum_multiple', $chosen_minimum);
   variable_del('chosen_minimum');
 }
+
+/**
+ * Fix variables that should be integers and not strings.
+ */
+function chosen_update_7202() {
+  $variables = array(
+    'chosen_minimum_single',
+    'chosen_minimum_multiple',
+    'chosen_disable_search_threshold',
+  );
+  foreach ($variables as $variable) {
+    $value = variable_get($variable, 0);
+    if (!is_numeric($value)) {
+      variable_set($variable, 0);
+    }
+  }
+}

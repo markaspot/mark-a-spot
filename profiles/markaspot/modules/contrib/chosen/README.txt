@@ -9,10 +9,6 @@ Chosen uses the Chosen jQuery plugin to make your <select> elements more user-fr
   2. Download and enable the module.
   3. Configure at Administer > Configuration > User interface > Chosen (requires administer site configuration permission)
 
--- DEPENDENCIES --
-
-  - jQuery Update - Chosen library is having some trouble with jquery <= 1.6, therefore we decided to make jquery_update as a dependency.
-
 -- INSTALLATION VIA DRUSH --
 
  A Drush command is provided for easy installation of the Chosen plugin.

@@ -21,25 +21,28 @@ function chosen_admin_settings($form, &$form_state) {
   $form['chosen_minimum_single'] = array(
     '#type' => 'select',
     '#title' => t('Minimum number of options for single select'),
-    '#options' => drupal_map_assoc(array_merge(array('0' => t('Always Apply')), range(1, 25))),
+    '#options' => array_merge(array('0' => t('Always apply')), drupal_map_assoc(range(1, 25))),
     '#default_value' => variable_get('chosen_minimum_single', 20),
-    '#description' => t('The minimum number of options to apply Chosen for single select fields. Example : choosing 10 will only apply Chosen if the number of options is greater or equal to 10.')
+    '#description' => t('The minimum number of options to apply Chosen for single select fields. Example : choosing 10 will only apply Chosen if the number of options is greater or equal to 10.'),
+    '#chosen' => FALSE,
   );
 
   $form['chosen_minimum_multiple'] = array(
     '#type' => 'select',
     '#title' => t('Minimum number of options for multi select'),
-    '#options' => drupal_map_assoc(array_merge(array('0' => t('Always Apply')), range(1, 25))),
+    '#options' => array_merge(array('0' => t('Always apply')), drupal_map_assoc(range(1, 25))),
     '#default_value' => variable_get('chosen_minimum_multiple', 20),
-    '#description' => t('The minimum number of options to apply Chosen for multi select fields. Example : choosing 10 will only apply Chosen if the number of options is greater or equal to 10.')
+    '#description' => t('The minimum number of options to apply Chosen for multi select fields. Example : choosing 10 will only apply Chosen if the number of options is greater or equal to 10.'),
+    '#chosen' => FALSE,
   );
 
   $form['chosen_disable_search_threshold'] = array(
     '#type' => 'select',
     '#title' => t('Minimum number to show Search on Single Select'),
-    '#options' => drupal_map_assoc(array_merge(array('0' => 'Never Apply'), range(1, 25))),
+    '#options' => array_merge(array('0' => t('Never apply')), drupal_map_assoc(range(1, 25))),
     '#default_value' => variable_get('chosen_disable_search_threshold', 0),
-    '#description' => t('The minimum number of options to apply Chosen search box. Example : choosing 10 will only apply Chosen search if the number of options is greater or equal to 10.')
+    '#description' => t('The minimum number of options to apply Chosen search box. Example : choosing 10 will only apply Chosen search if the number of options is greater or equal to 10.'),
+    '#chosen' => FALSE,
   );
 
   $form['chosen_minimum_width'] = array(
@@ -51,7 +54,7 @@ function chosen_admin_settings($form, &$form_state) {
     '#default_value' => variable_get('chosen_minimum_width', 200),
     '#description' => t('The minimum width of the Chosen widget.'),
   );
-  
+
   $form['chosen_jquery_selector'] = array(
     '#type' => 'textarea',
     '#title' => t('Apply Chosen to the following elements'),

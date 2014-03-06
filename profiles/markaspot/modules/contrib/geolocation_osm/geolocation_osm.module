@@ -391,7 +391,7 @@ function geolocation_osm_field_widget_info() {
  * Implements hook_field_widget_settings_form().
  */
 function geolocation_osm_field_widget_settings_form($field, $instance) {
-  $widget = $instance['display']['default'];
+  $widget = $instance['widget'];
   $settings = $widget['settings'];
   $form['tile_server_dynamic'] = array(
     '#type' => 'textfield',

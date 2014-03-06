@@ -2,53 +2,54 @@
   Drupal.behaviors.chosen = {
     attach: function(context, settings) {
       settings.chosen = settings.chosen || Drupal.settings.chosen;
-      var minWidth = settings.chosen.minimum_width;
-      var minOptionsSingle = settings.chosen.minimum_single;
-      var minOptionsMultiple = settings.chosen.minimum_multiple;
-      var minOptions;
-      // Define options.
-      var multiple = Drupal.settings.chosen.multiple;
-      var maxSelectedOptions = Drupal.settings.chosen.max_selected_options;
-      var options = {};
 
       // Prepare selector and add unwantend selectors.
       var selector = settings.chosen.selector;
 
+      // Function to prepare all the options together for the chosen() call.
+      var getElementOptions = function (element) {
+        var options = $.extend({}, settings.chosen.options);
+
+        // The width default option is considered the minimum width, so this
+        // must be evaluated for every option.
+        if ($(element).width() < settings.chosen.minimum_width) {
+          options.width = settings.chosen.minimum_width + 'px';
+        }
+        else {
+          options.width = $(element).width() + 'px';
+        }
+
+        // Some field widgets have cardinality, so we must respect that.
+        // @see chosen_pre_render_select()
+        if ($(element).attr('multiple') && $(element).data('cardinality')) {
+          options.max_selected_options = $(element).data('cardinality');
+        }
+
+        return options;
+      };
+
       $(selector, context)
-         .not('#field-ui-field-overview-form select, #field-ui-display-overview-form select, .wysiwyg, .draggable select[name$="[weight]"], .draggable select[name$="[position]"]') //disable chosen on field ui
+        .not('#field-ui-field-overview-form select, #field-ui-display-overview-form select, .wysiwyg, .draggable select[name$="[weight]"], .draggable select[name$="[position]"], .chosen-disabled') //disable chosen on field ui
+        .filter(function() {
+          // Filter out select widgets that do not meet the minimum number of
+          // options.
+          var minOptions = $(this).attr('multiple') ? settings.chosen.minimum_multiple : settings.chosen.minimum_single;
+          if (!minOptions) {
+            // Zero value means no minimum.
+            return true;
+          }
+          else {
+            return $(this).find('option').length >= minOptions;
+          }
+        })
         .each(function() {
-          var name = $(this).attr('name');
-          options = {};
-          options.disable_search = Drupal.settings.chosen.disable_search;
-          options.disable_search_threshold = settings.chosen.disable_search_threshold;
-          options.search_contains = settings.chosen.search_contains;
-          options.placeholder_text_multiple = settings.chosen.placeholder_text_multiple;
-          options.placeholder_text_single = settings.chosen.placeholder_text_single;
-          options.no_results_text = settings.chosen.no_results_text;
-          options.inherit_select_classes = true;
-
-          minOptions = minOptionsSingle;
-          if (multiple[name] !== false) {
-            minOptions = minOptionsMultiple;
-          }
-
-          if (maxSelectedOptions[name] !== false) {
-           options.max_selected_options = maxSelectedOptions[name];
-          }
-
-          if ($(this).find('option').size() >= minOptions || minOptions == 'Always Apply') {
-            options = $.extend(options, {
-              width: (($(this).width() < minWidth) ? minWidth : $(this).width()) + 'px'
-            });
-            $(this).chosen(options);
-          }
+          options = getElementOptions(this);
+          $(this).chosen(options);
       });
 
       // Enable chosen for widgets.
-      $('select.chosen-widget', context).each(function() {
-        options = $.extend(options, {
-          width: (($(this).width() < minWidth) ? minWidth : $(this).width()) + 'px'
-        });
+      $('select.chosen-enabled, select.chosen-widget', context).each(function() {
+        options = getElementOptions(this);
         $(this).chosen(options);
       });
     }
