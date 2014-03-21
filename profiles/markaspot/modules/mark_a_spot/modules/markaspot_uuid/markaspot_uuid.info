@@ -1,14 +1,14 @@
 name = Mark-a-Spot UUID
 package = "Mark-a-Spot"
-description = Provides human readable UUIDs for issue numbers
+description = Provides Open311 service names as automatic node titles and human readable UUIDs for issue numbers
 core = "7.x"
 
 dependencies[] = uuid
 
 
-; Information added by drush on 2014-03-06
-version = "7.x-2.4-beta+77-dev"
+; Information added by drush on 2014-03-21
+version = "7.x-2.4-beta+94-dev"
 core = "7.x"
 project = "markaspot"
-datestamp = "1394131578"
+datestamp = "1395385674"
 

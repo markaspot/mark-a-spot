@@ -431,7 +431,7 @@ function markaspot_create_pages() {
  * Building Blocks with enabled modules.
  */
 function markaspot_build_blocks() {
-  markaspot_activate_block('markaspot_log', 'markaspot_activity', 'content', 'mas', 'node/*', '1', '5');
+  markaspot_activate_block('views', 'report_log-report_log', 'content', 'mas', 'node/*', '1', '5');
   markaspot_activate_block('markaspot_logic', 'taxonomy_category', 'sidebar_second', 'mas', 'map', '1', '0');
   markaspot_activate_block('markaspot_logic', 'taxonomy_status', 'sidebar_second', 'mas', 'map', '1', '0');
   markaspot_activate_block('markaspot_logic', 'markaspot_map', 'sidebar_second', 'mas', 'map', '1', '0');
@@ -458,6 +458,17 @@ function markaspot_activate_block($module, $block, $region, $theme, $pages, $vis
       'weight' => $weight,
     ))
     ->execute();
+  if($block == "report_log-report_log"){
+    $query = db_insert('block_node_type')->fields(array('type', 'module', 'delta'));
+    $query->values(
+      array(
+        'type' => 'report',
+        'module' => 'views',
+        'delta' => 'report_log-report_log',
+      )
+    );
+    $query->execute();
+  }
 }
 /**
  * Delete dummies after installation.
@@ -469,7 +480,7 @@ function markaspot_delete_dummies() {
 
   foreach ($taxonomies as $term) {
     if ($term->name == 'dummy') {
-      db_delete('taxonomy_term_data')->condition('tid', $term->tid)->execute();
+      taxonomy_term_delete($term->tid);
     }
   }
 }

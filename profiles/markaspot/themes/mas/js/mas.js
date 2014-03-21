@@ -5,6 +5,11 @@
 
     $('.geolocation-address-geocode, .geolocation-client-location, .geolocation-remove').addClass('btn');
 
+    // Hide form input's address on focus.
+    $('.geolocation-address input').focus(function(){
+      this.value = '';
+    });
+
     $('.nav-tabs > li > a').on('click', function(e) {
 
       hash = e.target.hash;

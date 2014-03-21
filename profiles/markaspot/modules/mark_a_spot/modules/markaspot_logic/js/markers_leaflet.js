@@ -139,10 +139,7 @@ var markerLayer, queryString;
         trail: 60,
         shadow: false,
         hwaccel: false,
-        className: 'spinner',
-        zIndex: 2e9,
-        top: 'auto',
-        left: 'auto'
+        className: 'spinner'
       };
       var spinner = new Spinner(opts).spin(target);
 

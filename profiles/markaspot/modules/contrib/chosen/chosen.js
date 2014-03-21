@@ -28,8 +28,21 @@
         return options;
       };
 
+      // Process elements that have opted-in for Chosen.
+      // @todo Remove support for the deprecated chosen-widget class.
+      $('select.chosen-enable, select.chosen-widget', context).once('chosen', function() {
+        options = getElementOptions(this);
+        $(this).chosen(options);
+      });
+
       $(selector, context)
-        .not('#field-ui-field-overview-form select, #field-ui-display-overview-form select, .wysiwyg, .draggable select[name$="[weight]"], .draggable select[name$="[position]"], .chosen-disabled') //disable chosen on field ui
+        // Disabled on:
+        // - Field UI
+        // - WYSIWYG elements
+        // - Tabledrag weights
+        // - Elements that have opted-out of Chosen
+        // - Elements already processed by Chosen
+        .not('#field-ui-field-overview-form select, #field-ui-display-overview-form select, .wysiwyg, .draggable select[name$="[weight]"], .draggable select[name$="[position]"], .chosen-disable, .chosen-processed')
         .filter(function() {
           // Filter out select widgets that do not meet the minimum number of
           // options.
@@ -42,16 +55,10 @@
             return $(this).find('option').length >= minOptions;
           }
         })
-        .each(function() {
+        .once('chosen', function() {
           options = getElementOptions(this);
           $(this).chosen(options);
-      });
-
-      // Enable chosen for widgets.
-      $('select.chosen-enabled, select.chosen-widget', context).each(function() {
-        options = getElementOptions(this);
-        $(this).chosen(options);
-      });
+        });
     }
   };
 })(jQuery);

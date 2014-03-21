@@ -52,6 +52,12 @@ libraries[Leaflet.awesome-markers][download][url] = "https://github.com/markaspo
 libraries[Leaflet.awesome-markers][download][branch] = additional-colors
 libraries[Leaflet.awesome-markers][directory_name] = Leaflet.awesome-markers
 
+libraries[Leaflet.draw][type] = libraries
+libraries[Leaflet.draw][download][type] = git
+libraries[Leaflet.draw][download][url] = "https://github.com/Leaflet/Leaflet.draw.git"
+libraries[Leaflet.draw][directory_name] = Leaflet.draw
+
+
 libraries[Leaflet.markercluster][type] = libraries
 libraries[Leaflet.markercluster][download][type] = git
 libraries[Leaflet.markercluster][download][url] = "https://github.com/Leaflet/Leaflet.markercluster.git"
@@ -79,7 +85,7 @@ libraries[proxy][download][branch] = osm-nominatim
 libraries[proxy][directory_name] = proxy
 
 libraries[bootstrap][download][type] = "get"
-libraries[bootstrap][download][url] = "https://github.com/twbs/bootstrap/archive/v3.0.3.zip"
+libraries[bootstrap][download][url] = "https://github.com/twbs/bootstrap/archive/v3.1.1.zip"
 libraries[bootstrap][directory_name] = "bootstrap"
 libraries[bootstrap][destination] = "themes/mas"
 libraries[bootstrap][overwrite] = TRUE

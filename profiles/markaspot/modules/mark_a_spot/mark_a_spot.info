@@ -25,7 +25,6 @@ dependencies[] = markaspot_archive
 dependencies[] = markaspot_default_content
 dependencies[] = markaspot_logic
 dependencies[] = markaspot_open311
-dependencies[] = markaspot_uuid
 dependencies[] = menu
 dependencies[] = node
 dependencies[] = number
@@ -127,9 +126,9 @@ features[views_view][] = Gallery
 features[views_view][] = markers
 
 
-; Information added by drush on 2014-03-06
-version = "7.x-2.4-beta+77-dev"
+; Information added by drush on 2014-03-21
+version = "7.x-2.4-beta+94-dev"
 core = "7.x"
 project = "markaspot"
-datestamp = "1394131578"
+datestamp = "1395385674"
 

@@ -32,15 +32,17 @@ dependencies[] = field_formatter_css_class
 dependencies[] = bootstrap_fieldgroup
 dependencies[] = better_exposed_filters
 dependencies[] = mark_a_spot
+dependencies[] = markaspot_uuid
 dependencies[] = mark_a_spot_admin
 dependencies[] = mark_a_spot_default_content
+dependencies[] = mark_a_spot_log
 dependencies[] = twitter
 dependencies[] = chosen
 
 
-; Information added by drush on 2014-03-06
-version = "7.x-2.4-beta+77-dev"
+; Information added by drush on 2014-03-21
+version = "7.x-2.4-beta+94-dev"
 core = "7.x"
 project = "markaspot"
-datestamp = "1394131578"
+datestamp = "1395385674"
 

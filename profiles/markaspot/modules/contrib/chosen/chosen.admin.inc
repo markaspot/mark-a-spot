@@ -24,7 +24,6 @@ function chosen_admin_settings($form, &$form_state) {
     '#options' => array_merge(array('0' => t('Always apply')), drupal_map_assoc(range(1, 25))),
     '#default_value' => variable_get('chosen_minimum_single', 20),
     '#description' => t('The minimum number of options to apply Chosen for single select fields. Example : choosing 10 will only apply Chosen if the number of options is greater or equal to 10.'),
-    '#chosen' => FALSE,
   );
 
   $form['chosen_minimum_multiple'] = array(
@@ -33,7 +32,6 @@ function chosen_admin_settings($form, &$form_state) {
     '#options' => array_merge(array('0' => t('Always apply')), drupal_map_assoc(range(1, 25))),
     '#default_value' => variable_get('chosen_minimum_multiple', 20),
     '#description' => t('The minimum number of options to apply Chosen for multi select fields. Example : choosing 10 will only apply Chosen if the number of options is greater or equal to 10.'),
-    '#chosen' => FALSE,
   );
 
   $form['chosen_disable_search_threshold'] = array(
@@ -42,7 +40,6 @@ function chosen_admin_settings($form, &$form_state) {
     '#options' => array_merge(array('0' => t('Never apply')), drupal_map_assoc(range(1, 25))),
     '#default_value' => variable_get('chosen_disable_search_threshold', 0),
     '#description' => t('The minimum number of options to apply Chosen search box. Example : choosing 10 will only apply Chosen search if the number of options is greater or equal to 10.'),
-    '#chosen' => FALSE,
   );
 
   $form['chosen_minimum_width'] = array(

@@ -570,7 +570,7 @@ function mark_a_spot_field_default_field_instances() {
         'label' => 'hidden',
         'module' => 'image',
         'settings' => array(
-          'field_formatter_class' => 'img-responsive',
+          'field_formatter_class' => 'img-thumbnail',
           'image_link' => 'content',
           'image_style' => 'mas_medium',
         ),
@@ -900,7 +900,7 @@ function mark_a_spot_field_default_field_instances() {
     'bundle' => 'category',
     'default_value' => NULL,
     'deleted' => 0,
-    'description' => '',
+    'description' => 'Please check http://yourserver.com/profiles/markaspot/libraries/markaspot-font/ for an overview',
     'display' => array(
       'default' => array(
         'label' => 'above',
@@ -916,7 +916,7 @@ function mark_a_spot_field_default_field_instances() {
     'entity_type' => 'taxonomy_term',
     'field_name' => 'field_category_icon',
     'label' => 'category_icon',
-    'required' => 0,
+    'required' => 1,
     'settings' => array(
       'text_processing' => 0,
       'user_register_form' => FALSE,
@@ -1174,6 +1174,7 @@ function mark_a_spot_field_default_field_instances() {
   t('Image');
   t('Notify User?');
   t('Place your report');
+  t('Please check http://yourserver.com/profiles/markaspot/libraries/markaspot-font/ for an overview');
   t('Please leave an e-Mail address, so that we can contact you, in case you don\'t want to register');
   t('Report details');
   t('Status');

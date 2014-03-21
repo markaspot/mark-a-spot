@@ -33,45 +33,67 @@ function markaspot_logic_validate($form, &$form_state) {
     form_set_error('field_e_mail', t('Please enter a valid e-mail address.'));
   }
 
+  $validate_cities = explode(",", variable_get('markaspot_logic_city'));
+
+  // Transform cities into a readable string.
+  if (count(array_keys($validate_cities)) > 1) {
+    $last_element = array_pop($validate_cities);
+    $area = implode(", ", $validate_cities);
+    $area = $area . ' ' . t('or') . ' ' . $last_element;
+  }
+  else {
+    $area = $validate_cities[0];
+  }
+  // Iterate through all strings.
+  $valid = array();
+
+  foreach ($validate_cities as $validate_city) {
+    $valid[] = strstr($form_state['values']['field_geo'][LANGUAGE_NONE][0]['address']['field'], $validate_city) ? TRUE : FALSE;
+  }
+
+  if (!in_array(TRUE, $valid)) {
+    form_set_error('field_geo', t('Sorry, we only operate in the following areas: @area', array('@area' => $area)));
+  }
+
   /* Bounding Box */
   $lat = $form_state['values']['field_geo'][LANGUAGE_NONE][0]['lat'];
   $lon = $form_state['values']['field_geo'][LANGUAGE_NONE][0]['lng'];
-  $nw = FALSE;
-  $se = FALSE;
+
+  $north_west = FALSE;
+  $south_east = FALSE;
+
   $bbox = array(
-    'nw' => array('lat' => variable_get('markaspot_logic_bbox_nw_lat'), 'lng' => variable_get('markaspot_logic_bbox_nw_lng')),
-    'se' => array('lat' => variable_get('markaspot_logic_bbox_se_lat'), 'lng' => variable_get('markaspot_logic_bbox_se_lng')),
+    'nw' => array(
+      'lat' => variable_get('markaspot_logic_bbox_nw_lat'),
+      'lng' => variable_get('markaspot_logic_bbox_nw_lng'),
+    ),
+    'se' => array(
+      'lat' => variable_get('markaspot_logic_bbox_se_lat'),
+      'lng' => variable_get('markaspot_logic_bbox_se_lng'),
+    ),
   );
 
   if (($bbox['nw']['lat'] >= $lat) && ($bbox['nw']['lng'] <= $lon)) {
-    $nw = TRUE;
+    $north_west = TRUE;
   }
   if (($bbox['se']['lat'] <= $lat) && ($bbox['se']['lng'] >= $lon)) {
-    $se = TRUE;
+    $south_east = TRUE;
   }
 
-  if (!strstr($form_state['values']['field_geo'][LANGUAGE_NONE][0]['address']['field'], variable_get('markaspot_logic_city'))) {
-    form_set_error('field_geo', t('The string given for "City" is not valid'));
+  if ($south_east == FALSE || $north_west == FALSE) {
+    form_set_error('field_geo', t('The position does not seem to be inside a valid bounding box in @area',
+      array('@area' => $area)));
   }
   else {
-    if ($se == FALSE || $nw == FALSE) {
-
-      form_set_error('field_geo', t('The position does not seem to be inside a valid bounding box in @city',
-        array('@city' => variable_get('markaspot_logic_city'))));
+    // Fill the address field only, if it's not equal to the initial value:
+    if ($form_state['values']['field_geo'][LANGUAGE_NONE][0]['lat'] != variable_get('markaspot_logic_ini_lat')) {
+      $form_state['values']['field_address'][LANGUAGE_NONE][0]['value'] = $form_state['values']['field_geo'][LANGUAGE_NONE][0]['address']['field'];
     }
     else {
-      // Fill the address field only, if it's not equal to the initial value:
-      if ($form_state['values']['field_geo'][LANGUAGE_NONE][0]['lat'] != variable_get('markaspot_logic_ini_lat')) {
-        $form_state['values']['field_address'][LANGUAGE_NONE][0]['value'] = $form_state['values']['field_geo'][LANGUAGE_NONE][0]['address']['field'];
-      }
-      else {
-        form_set_error('field_geo', t('Please enter a location, different from the default one'));
-      }
+      form_set_error('field_geo', t('Please enter a location, different from the default one'));
     }
   }
-
 }
-
 
 /**
  * Implements hook_page_build().
@@ -115,7 +137,6 @@ function markaspot_logic_page_build(&$page) {
     ), 'setting');
   }
 
-  drupal_add_js(drupal_get_path('module', 'markaspot_logic') . '/markaspot_logic.js');
   drupal_add_css(drupal_get_path('profile', 'markaspot') . '/libraries/Leaflet.awesome-markers/dist/leaflet.awesome-markers.css');
   drupal_add_css(drupal_get_path('profile', 'markaspot') . '/libraries/markaspot-font/style.css');
 
@@ -123,7 +144,6 @@ function markaspot_logic_page_build(&$page) {
     drupal_add_js(drupal_get_path('profile', 'markaspot') . '/libraries/spin.js/spin.js', NULL);
 
     if (variable_get('markaspot_logic_map_type') == 0) {
-
       drupal_add_js('https://maps.google.com/maps/api/js?sensor=true&v=3.13', 'external');
       drupal_add_js(drupal_get_path('profile', 'markaspot') . '/libraries/markerclusterer/markerclusterer_compiled.js', NULL);
       drupal_add_js(drupal_get_path('profile', 'markaspot') . '/libraries/mapiconmaker/mapiconmaker.js', NULL);
@@ -151,11 +171,21 @@ function markaspot_logic_page_build(&$page) {
       drupal_add_js(drupal_get_path('profile', 'markaspot') . '/libraries/leaflet/leaflet.js');
       drupal_add_js(drupal_get_path('module', 'markaspot_logic') . '/js/markers_leaflet.js');
       drupal_add_js(drupal_get_path('profile', 'markaspot') . '/libraries/Leaflet.awesome-markers/dist/leaflet.awesome-markers.min.js', NULL);
-
       drupal_add_js(drupal_get_path('profile', 'markaspot') . '/libraries/Leaflet.markercluster/dist/leaflet.markercluster.js', NULL);
 
     }
   }
+
+  if (strstr(current_path(), 'system/mark_a_spot')) {
+    drupal_add_css(drupal_get_path('profile', 'markaspot') . '/libraries/leaflet/leaflet.css');
+    drupal_add_js(drupal_get_path('profile', 'markaspot') . '/libraries/leaflet/leaflet.js');
+    drupal_add_js(drupal_get_path('profile', 'markaspot') . '/libraries/Leaflet.draw/dist/leaflet.draw.js', NULL);
+    drupal_add_css(drupal_get_path('profile', 'markaspot') . '/libraries/Leaflet.draw/dist/leaflet.draw.css');
+    drupal_add_js(drupal_get_path('module', 'markaspot_logic') . '/js/markaspot_logic.js');
+    drupal_add_css(drupal_get_path('module', 'markaspot_logic') . '/css/markaspot_logic.css');
+
+  };
+
   drupal_add_css(drupal_get_path('module', 'custom') . '/css/custom.css', array(
     'group' => CSS_DEFAULT,
     'every_page' => TRUE,
@@ -218,12 +248,11 @@ function markaspot_logic_admin_settings() {
   );
 
   $form['general']['markaspot_logic_city'] = array(
-    '#type' => 'textfield',
-    '#title' => t('City'),
+    '#type' => 'textarea',
+    '#title' => t('Validation of City Name Strings'),
     '#default_value' => variable_get('markaspot_logic_city', markaspot_logic_defaults('markaspot_logic_city')),
     '#size' => '16',
-    '#maxlength' => 16,
-    '#description' => t('Insert the municipality'),
+    '#description' => t('Insert a comma separated list of valid names, this installation is built for, eg. "New York, NY, Big Apple"'),
   );
 
   $form['general']['markaspot_logic_ini_lat'] = array(
@@ -242,10 +271,15 @@ function markaspot_logic_admin_settings() {
     '#maxlength' => 32,
     '#description' => t('Insert the initial longitude'),
   );
+  $form['types'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Map Types'),
+    '#collapsible' => TRUE,
+  );
   $form['types']['markaspot_logic_map_type'] = array(
     '#type' => 'radios',
     '#title' => t('Map type'),
-    '#default_value' => variable_get('markaspot_logic_map_type', markaspot_logic_defaults('markaspot_logic_map_type')),
+    '#default_value' => variable_get('markaspot_logic_map_type', 0),
     '#options' => array(t('Google Maps'), t('Cloudmade'), t('Other OSM')),
   );
   $form['types']['markaspot_logic_cloudmade_api_key'] = array(
@@ -268,10 +302,11 @@ function markaspot_logic_admin_settings() {
   );
 
   $form['bbox'] = array(
+    '#suffix' => '<div id="map-wrapper"><div id="settings-map"></div></div>',
     '#type' => 'fieldset',
     '#title' => t('Bounding Box'),
     '#collapsible' => TRUE,
-    '#description' => t('Define an area within all reports will be based on a valid location'),
+    '#description' => t('Draw a rectancle (click on the black box) in the map to mark the boundaries for valid reports'),
   );
 
   $form['bbox']['markaspot_logic_bbox_nw_lat'] = array(
@@ -344,17 +379,32 @@ function markaspot_logic_admin_settings() {
     );
   }
   if (module_exists('markaspot_uuid')) {
-    $form['markaspot_logic_uuid'] = array(
+    $form['uuid'] = array(
       '#type' => 'fieldset',
-      '#title' => t('UUID'),
-      '#description' => t('UUID Module is enabled and service requests are identified by an unique ID. For better
-        usability when communicating on other channels, the ID can be customized'),
+      '#title' => t('Auto Title and UUID'),
+      '#collapsible' => TRUE,
+      '#description' => t('The Mark-a-Spot UUID Module is enabled, so that service requests are "auto-titled" with the chosen service name
+        plus an unique ID. This can be useful in an Open311 service oriented architecture.
+        You can <a href="@module-page#edit-modules-mark-a-spot">disable</a> this module at any time, if you prefer user-generated node titles.', array('@module-page' => url('admin/modules'))),
     );
     $form['uuid']['markaspot_logic_uuid_title'] = array(
       '#type' => 'checkbox',
       '#title' => t('Display UUID in title?'),
       '#default_value' => variable_get('markaspot_logic_uuid_title', markaspot_logic_defaults('markaspot_logic_uuid_title')),
     );
+    $form['uuid']['markaspot_logic_title_pattern'] = array(
+      '#type' => 'radios',
+      '#title' => t('How should titles appear in report nodes?'),
+      '#default_value' => variable_get('markaspot_logic_title_pattern', markaspot_logic_defaults('markaspot_logic_title_pattern')),
+      '#options' => array(t('Service Name #3e80-67'), t('#3e80-67 Service Name')),
+    );
+    $form['uuid']['markaspot_logic_uuid_pattern'] = array(
+      '#type' => 'radios',
+      '#title' => t('Choose the UUID pattern.'),
+      '#default_value' => variable_get('markaspot_logic_uuid_pattern', markaspot_logic_defaults('markaspot_logic_uuid_pattern')),
+      '#options' => array(t('#3e80-67'), t('#3e8031-67'), t('#3e8031b0-67')),
+    );
+
   }
 
   if (module_exists('markaspot_archive')) {
@@ -429,7 +479,7 @@ function markaspot_logic_defaults($id) {
       return 'Pingsdorfer Straße 88, 50321 Brühl, Deutschland';
 
     case 'markaspot_logic_city':
-      return 'Brühl';
+      return 'Brühl, Erftstadt';
 
     case 'markaspot_logic_country':
       return 'Deutschland';
@@ -457,6 +507,12 @@ function markaspot_logic_defaults($id) {
 
     case 'markaspot_logic_uuid_title':
       return 1;
+
+    case 'markaspot_logic_uuid_pattern':
+      return 0;
+
+    case 'markaspot_logic_title_pattern':
+      return 0;
 
     case 'markaspot_logic_map_type':
       return 2;

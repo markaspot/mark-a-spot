@@ -3,12 +3,10 @@ package = "Mark-a-Spot"
 core = 7.x
 description = Provides a logging block for civic and administrative activity on reports
 
-dependencies[] = views
 
-
-; Information added by drush on 2014-03-06
-version = "7.x-2.4-beta+77-dev"
+; Information added by drush on 2014-03-21
+version = "7.x-2.4-beta+94-dev"
 core = "7.x"
 project = "markaspot"
-datestamp = "1394131578"
+datestamp = "1395385674"
 

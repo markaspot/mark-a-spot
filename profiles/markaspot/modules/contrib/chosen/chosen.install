@@ -79,3 +79,21 @@ function chosen_update_7202() {
     }
   }
 }
+
+/**
+ * Update any option_select widgets with an empty Chosen setting to the 'No preference' Chosen setting.
+ */
+function chosen_update_7203() {
+  $field_names = db_query("SELECT field_name FROM {field_config_instance} WHERE data LIKE :widget", array(':widget' => '%' . db_like('options_select') . '%' . db_like('apply_chosen') . '%'))->fetchCol();
+  if (empty($field_names)) {
+    return;
+  }
+
+  $instances = field_read_instances(array('field_name' => $field_names));
+  foreach ($instances as $instance) {
+    if ($instance['widget']['type'] == 'options_select' && empty($instance['widget']['settings']['apply_chosen'])) {
+      $instance['widget']['settings']['apply_chosen'] = '';
+      field_update_instance($instance);
+    }
+  }
+}

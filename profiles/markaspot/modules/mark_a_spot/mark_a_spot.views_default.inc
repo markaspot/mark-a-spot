@@ -60,7 +60,7 @@ function mark_a_spot_views_default_views() {
   $handler->display->display_options['fields']['field_image_1']['settings'] = array(
     'image_style' => 'mas_medium',
     'image_link' => 'content',
-    'field_formatter_class' => 'img-responsive',
+    'field_formatter_class' => 'img-thumbnail',
   );
   $handler->display->display_options['fields']['field_image_1']['group_column'] = 'fid';
   $handler->display->display_options['fields']['field_image_1']['delta_limit'] = '1';
@@ -83,7 +83,7 @@ function mark_a_spot_views_default_views() {
   $handler->display->display_options['fields']['nothing']['table'] = 'views';
   $handler->display->display_options['fields']['nothing']['field'] = 'nothing';
   $handler->display->display_options['fields']['nothing']['label'] = '';
-  $handler->display->display_options['fields']['nothing']['alter']['text'] = '    <div class="col-md-4 thumbnail">
+  $handler->display->display_options['fields']['nothing']['alter']['text'] = '    <div class="col-md-4">
       [field_image_1]
       <!-- h3>[title]</h3 -->
     </div>';

@@ -57,7 +57,7 @@
     </div>
     <div class="col-md-5 col-md-offset-1 ">
       <?php if (!empty($content['field_image'])): ?>
-      <div class="thumbnail">
+      <div class="node-gallery">
         <?php print render($content['field_image']); ?>
       </div>
       <?php endif; ?>

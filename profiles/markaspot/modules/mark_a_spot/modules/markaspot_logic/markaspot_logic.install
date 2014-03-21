@@ -22,6 +22,8 @@ function markaspot_logic_uninstall() {
   variable_del('markaspot_logic_bbox_se_lng');
   variable_del('markaspot_logic_archive_days');
   variable_del('markaspot_logic_uuid_title');
+  variable_del('markaspot_logic_uuid_pattern');
+  variable_del('markaspot_logic_title_pattern');
   variable_del('markaspot_logic_open311_contact');
   variable_del('markaspot_logic_open311_status_open_start');
   variable_del('markaspot_logic_open311_status_open');

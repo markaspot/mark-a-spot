@@ -116,37 +116,34 @@ function markaspot_log_node_insert($node) {
   // Preparing Logging to Mas_log table (don't think of watchdog):
   global $user;
 
-  /*
-   * if (!in_array('Citizen', $user->roles) &&
-   *   !(in_array('Management', $user->roles) ||
-   *   in_array('administrator', $user->roles))){
-   *   markaspot_log_add_role_to_user('Citizen', $user->uid);
-   *   $data->message = t('The User is now Citizen');
-   *  }
-   */
-
-  if (!in_array('Management', $user->roles) || !in_array('administrator', $user->roles) && $node->type == 'report') {
-
-    if (isset($node->nid)) {
-      $data->message = t('The report has been edited by Citizen');
-    }
-    else {
-
-      $data->message = t('The report has been created by Citizen');
-    }
+  if (!in_array('administrator', $user->roles) ||
+    !in_array('Management', $user->roles) || !in_array('City Admin', $user->roles)) {
+    $data = array(
+      'message' => t('The report has been created by Citizen'),
+      'level'  => 'danger',
+      'css_class'   => 'edit',
+    );
   }
 
   if (in_array('administrator', $user->roles) ||
-    in_array('Management', $user->roles) && $node->type == 'report'
-  ) {
+    in_array('Management', $user->roles) || in_array('City Admin', $user->roles)) {
 
     if (isset($node->nid)) {
-      $data->message = t('The report has been edited/created by Administration');
+      $data = array(
+        'message' => t('The report has been edited/created by Administration'),
+        'level'  => 'warning',
+        'css_class'   => 'edit',
+      );
     }
     else {
-      $data->message = t('The report has been created');
+      $data = array(
+        'message' => t('The report has been created.'),
+        'level'  => 'danger',
+        'css_class'   => 'edit',
+      );
     }
   }
+  $data = (object) $data;
 
   unset($data->nid);
 
@@ -155,6 +152,7 @@ function markaspot_log_node_insert($node) {
 
   $data->created = time();
   $data->modified = time();
+
   markaspot_log_write_log($data);
 }
 
@@ -169,18 +167,26 @@ function markaspot_log_node_update($node) {
   if (!in_array('Management', $user->roles) || !in_array('administrator', $user->roles) && $node->type == 'report') {
 
     if ($node->nid) {
-      $data->message = t('The report has been edited by Citizen');
+      $data = array(
+        'message' => t('The report has been edited by Citizen'),
+        'level'  => 'warning',
+        'css_class'   => 'edit',
+      );
     }
   }
 
   if (in_array('administrator', $user->roles) ||
-    in_array('Management', $user->roles) && $node->type == 'report'
-  ) {
+    in_array('Management', $user->roles) || in_array('City Admin', $user->roles)) {
 
     if ($node->nid) {
-      $data->message = t('The report has been edited by Administration');
+      $data = array(
+        'message' => t('The report has been edited by City Administration'),
+        'level'  => 'success',
+        'css_class'   => 'check',
+      );
     }
   }
+  $data = (object) $data;
 
   unset($data->nid);
 
@@ -207,14 +213,22 @@ function markaspot_log_comment_presave($comment) {
   }
 
   if (in_array('Citizen', $user->roles) || in_array('anonymous user', $user->roles)) {
-    $data->message = t('A comment has been created by Citizen');
+    $data = array(
+      'message' => t('A comment has been created by Citizen'),
+      'level'  => 'danger',
+      'css_class'   => 'comment',
+    );
   }
 
   if (in_array('administrator', $user->roles) ||
-    in_array('Management', $user->roles) && $comment->node_type == 'report'
-  ) {
-    $data->message = t('A comment has been created by Adminstration');
+    in_array('Management', $user->roles) || in_array('City Admin', $user->roles)) {
+    $data = array(
+      'message' => t('A comment has been created by City Administration'),
+      'level'  => 'warning',
+      'css_class'   => 'comment',
+    );
   }
+  $data = (object) $data;
 
   unset($data->nid);
 
