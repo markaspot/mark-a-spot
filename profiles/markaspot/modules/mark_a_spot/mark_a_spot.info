@@ -11,6 +11,7 @@ dependencies[] = bootstrap_fieldgroup
 dependencies[] = ctools
 dependencies[] = entity
 dependencies[] = features
+dependencies[] = field_formatter_css_class
 dependencies[] = field_group
 dependencies[] = field_permissions
 dependencies[] = field_ui
@@ -18,6 +19,7 @@ dependencies[] = file
 dependencies[] = geolocation
 dependencies[] = geolocation_googlemaps
 dependencies[] = geolocation_osm
+dependencies[] = geophp
 dependencies[] = image
 dependencies[] = list
 dependencies[] = locale
@@ -39,6 +41,7 @@ dependencies[] = text
 dependencies[] = token
 dependencies[] = views
 dependencies[] = views_content
+dependencies[] = views_geojson
 dependencies[] = views_json
 features[ctools][] = field_group:field_group:1
 features[ctools][] = page_manager:pages_default:1
@@ -126,9 +129,9 @@ features[views_view][] = Gallery
 features[views_view][] = markers
 
 
-; Information added by drush on 2014-03-21
-version = "7.x-2.4-beta+94-dev"
+; Information added by drush on 2014-05-01
+version = "7.x-2.4-beta+121-dev"
 core = "7.x"
 project = "markaspot"
-datestamp = "1395385674"
+datestamp = "1398955878"
 

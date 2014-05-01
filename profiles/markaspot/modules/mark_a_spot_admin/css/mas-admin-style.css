@@ -183,3 +183,15 @@ input.fluid {
 .print-footer {
   display: none;
 }
+
+#geolocation-address-geocode-7-0 {
+  display: inline;
+  padding: 5px;
+  /* margin: 5px; */
+  float: left;
+}
+
+.views-field-uuid {
+  width: 60px;
+  text-align: right;
+}

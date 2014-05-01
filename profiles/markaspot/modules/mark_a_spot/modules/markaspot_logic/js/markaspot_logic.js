@@ -6,9 +6,9 @@
 (function ($) {
   $(document).ready(function(){
     var mas = Drupal.settings.mas;
-    var cloudmadeUrl = 'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
-      cloudmade = new L.TileLayer(cloudmadeUrl, {maxZoom: 18}),
-      map = new L.Map('settings-map', {layers: [cloudmade], center: new L.LatLng(mas.markaspot_ini_lat, mas.markaspot_ini_lng), zoom: 15 });
+    var tileUrl = 'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
+      osm = new L.TileLayer(tileUrl, {maxZoom: 18}),
+      map = new L.Map('settings-map', {layers: [osm], center: new L.LatLng(mas.markaspot_ini_lat, mas.markaspot_ini_lng), zoom: 15 });
 
     var drawnItems = new L.FeatureGroup();
     map.addLayer(drawnItems);
@@ -28,6 +28,7 @@
       }
     });
     map.addControl(drawControl);
+    L.control.locate().addTo(map);
 
     map.on('draw:edited', function (e) {
       var layers = e.layers;
@@ -53,5 +54,3 @@
     }
   });
 })(jQuery);
-
-

@@ -1,0 +1,12 @@
+name = Mark-a-Spot Radar
+description = Checking existent reports nearby while locating own report on the map
+core = 7.x
+package = Mark-a-Spot
+
+
+; Information added by drush on 2014-05-01
+version = "7.x-2.4-beta+121-dev"
+core = "7.x"
+project = "markaspot"
+datestamp = "1398955878"
+

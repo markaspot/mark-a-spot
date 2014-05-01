@@ -6,7 +6,7 @@
  */
 
 var arg = "";
-var markerLayer, queryString;
+var markerLayer;
 (function ($) {
   $(document).ready(function () {
     if ($('#markers-list-view #map').length != 0) {
@@ -29,9 +29,7 @@ var markerLayer, queryString;
     Drupal.Markaspot = new Object();
     Drupal.Markaspot.maps = new Array();
     Drupal.Markaspot.markers = new Array();
-    var categoryCond = mas.params.field_category_tid;
-    var statusCond = mas.params.field_status_tid;
-    var queryString = mas.params.q.split('?');
+
     var pathId = mas.params.q.split('/');
 
     /**
@@ -41,12 +39,12 @@ var markerLayer, queryString;
 
     switch (pathId[0]) {
       case "map":
-        readData(1, arg, "All", "All");
+        readData(1, "All", "All");
         arg = '';
         break;
 
       case "list":
-        readData(2, "list", "All", "All");
+        readData(2, "All", "All");
         break;
 
       case "admin":
@@ -54,49 +52,59 @@ var markerLayer, queryString;
     }
 
     var initialLatLng = new L.LatLng(mas.markaspot_ini_lat, mas.markaspot_ini_lng);
+    var mapType = mas.markaspot_map_type;
 
     Drupal.Markaspot.maps[0] = new L.Map('map');
 
-    if (mas.cloudmade_api_key) {
-      var url = 'https://ssl_tiles.cloudmade.com/' + mas.cloudmade_api_key + '/22677/256/{z}/{x}/{y}.png';
-      var attribution = 'Map data &copy; 2013 OpenStreetMap contributors, Imagery &copy; 2013 CloudMade';
-    } else {
-      var url = mas.osm_custom_tile_url;
-      var attribution = mas.osm_custom_attribution;
+    switch (mapType){
+      case '0':
+        var attribution = mas.osm_custom_attribution;
+        var layer = new L.Google('ROADMAP');
+        break;
+
+      case '1':
+        var tiles = 'https://{s}.tiles.mapbox.com/v3/' + mas.mapbox_map_id + '/{z}/{x}/{y}.png';
+        var attribution = '<a href="http://www.mapbox.com/about/maps/" target="_blank">Terms &amp; Feedback</a>';
+        var layer = new L.TileLayer(tiles, {maxZoom: 18, attribution: attribution});
+        break;
+
+      case '2':
+        var tiles = mas.osm_custom_tile_url;
+        var attribution = mas.osm_custom_attribution;
+        var layer = new L.TileLayer(tiles, {maxZoom: 18, attribution: attribution});
+
     }
 
-    layer = new L.TileLayer(url, {maxZoom: 18, attribution: attribution});
     Drupal.Markaspot.maps[0].setView(new L.LatLng(mas.markaspot_ini_lat, mas.markaspot_ini_lng), 13).addLayer(layer);
 
-    $("#markers-list").append("<ul>");
 
     /**Sidebar Marker-functions*/
 
-    $("#block-markaspot-logic-taxonomy-category ul li a.map-menue").click(function (e) {
+    $("#block-markaspot-logic-taxonomy-category .map-menue").click(function (e) {
       e.preventDefault();
       hideMarkers();
-      readData(1, arg, getTaxId(this.id), "All");
+      readData(1, getTaxId(this.id), "All");
       return false;
     });
 
-    $("#block-markaspot-logic-taxonomy-status ul li a.map-menue").click(function (e) {
+    $("#block-markaspot-logic-taxonomy-status .map-menue").click(function (e) {
       e.preventDefault();
       hideMarkers();
-      readData(2, arg, "All", getTaxId(this.id));
+      readData(2, "All", getTaxId(this.id));
       return false;
     });
 
-    $("#block-markaspot-logic-taxonomy-category ul li a.map-menue-all").click(function (e) {
+    $("#block-markaspot-logic-taxonomy-category .map-menue-all").click(function (e) {
       e.preventDefault();
       hideMarkers();
-      readData(1, arg, "All", "All");
+      readData(1, "All", "All");
       return false;
     });
 
-    $("#block-markaspot-logic-taxonomy-status ul li a.map-menue-all").click(function (e) {
+    $("#block-markaspot-logic-taxonomy-status .map-menue-all").click(function (e) {
       e.preventDefault();
       hideMarkers();
-      readData(2, arg, "All", "All");
+      readData(2, "All", "All");
       return false;
     });
 
@@ -105,130 +113,88 @@ var markerLayer, queryString;
       return id[1];
     }
 
-    function readData(getToggle, arg, categoryCond, statusCond) {
-      // markerLayer = new L.LayerGroup();
+    function readData(getToggle, categoryCond, statusCond) {
+
       markerLayer = new L.MarkerClusterGroup({disableClusteringAtZoom: 15, maxClusterRadius: 40 });
 
       uri = mas.uri.split('?');
+      url = Drupal.settings.basePath + 'reports/geojson/map?' + uri[1];
 
-      if (mas.node_type == "report") {
-        url = Drupal.settings.basePath + 'reports/json/' + arg;
-      } else if (uri[0].search('node/') != -1) {
-        url = Drupal.settings.basePath + 'reports/json/' + arg;
-      } else if (uri[0].search('map') != -1 || uri[0].search('home') != -1) {
-        // map view
-        url = Drupal.settings.basePath + 'reports/json/map?' + 'field_category_tid=' + categoryCond + '&field_status_tid=' + statusCond;
-      } else {
-        url = Drupal.settings.basePath + 'reports/json?' + uri[1];
-        categoryCond = mas.params.field_category_tid;
-        statusCond = mas.params.field_status_tid;
-      }
-      // $("#markersidebar >*").remove();
-      // $('#map').showLoading({'indicatorZIndex':2,'overlayZIndex':1, 'parent': '#map'});
+      // Spinner injection.
       var target = document.getElementById('map');
-      var opts = {
-        lines: 13,
-        length: 20,
-        width: 10,
-        radius: 30,
-        corners: 1,
-        rotate: 0,
-        direction: 1,
-        color: '#000',
-        speed: 2,
-        trail: 60,
-        shadow: false,
-        hwaccel: false,
-        className: 'spinner'
-      };
-      var spinner = new Spinner(opts).spin(target);
+      var spinner = new Spinner().spin(target);
 
-      $.getJSON(url,function (data) {
-      }).success(function (data) {
-        }).done(function (data) {
-          spinner.stop();
-          data = data.nodes;
+      $.getJSON(url).done(function (data) {
 
-          points = [];
-          var bounds = new L.LatLngBounds(initialLatLng);
+        spinner.stop();
+        bounds = new L.LatLngBounds(initialLatLng);
 
-          //var infoWindow = new google.maps.InfoWindow;
+        if (!data.features && mas.node_type == 'report') {
+          // invoke a message box or something less permanent than an alert box later
+          alert(Drupal.t('No reports found for this category/status'));
+        }
 
-          if (!data[0] && mas.node_type == 'report') {
-            // invoke a message box or something less permanent than an alert box later
-            alert(Drupal.t('No reports found for this category/status'));
+        $.each(data.features, function (markers, item) {
+
+          var latlon = new L.LatLng(item.geometry.coordinates[0], item.geometry.coordinates[1]);
+          item = item.properties;
+          var html = '<div class="marker-title"><h4><a class="infowindow-link" href="' + item.path + '">' + item.name + '</a></h4><span class="meta-info date">' + item.created + '</span></div>';
+          if (item.field_address) {
+            html += '<div class="marker-address"><p>' + item.field_address + '</p></div>';
+            html += '<div><a class="infowindow-link" href="' + item.path + '">' + Drupal.t('read more') + '</a></div>';
           }
 
-          $.each(data, function (markers, item) {
-            item = item.node;
-            var latlon = new L.LatLng(item.positionLat, item.positionLng);
-            var html = '<div class="marker-title"><h4><a class="infowindow-link" href="' + item.path + '">' + item.title + '</a></h4><span class="meta-info date">' + item.created + '</span></div>';
-            if (item.address) {
-              html += '<div class="marker-address"><p>' + item.address + '</p></div>';
-              html += '<div><a class="infowindow-link" href="' + item.path + '">mehr lesen</a></div>';
-            }
-            if (getToggle == 1) {
-              colors = [
-                {"color": "red", "hex": "FF0000"},
-                {"color": "darkred", "hex": "8B0000" },
-                {"color": "orange", "hex": "FFA500" },
-                {"color": "green", "hex": "008000"},
-                {"color": "darkgreen", "hex": "006400"},
-                {"color": "blue", "hex": "0000FF"},
-                {"color": "darkblue", "hex": "00008B"},
-                {"color": "purple", "hex": "800080"},
-                {"color": "darkpurple", "hex": "871F78"},
-                {"color": "cadetblue", "hex": "5F9EA0"},
-              ]
-            }
-            if (getToggle == 2) {
-              colors = [
-                {"color": "red", "hex": "cc0000"},
-                {"color": "green", "hex": "8fe83b"},
-                {"color": "orange", "hex": "ff6600"},
-                {"color": "cadetblue", "hex": "5F9EA0"},
+          if (getToggle == 1) {
+            var colors = [
+              {"color": "red", "hex": "FF0000"},
+              {"color": "darkred", "hex": "8B0000" },
+              {"color": "orange", "hex": "FFA500" },
+              {"color": "green", "hex": "008000"},
+              {"color": "darkgreen", "hex": "006400"},
+              {"color": "blue", "hex": "0000FF"},
+              {"color": "darkblue", "hex": "00008B"},
+              {"color": "purple", "hex": "800080"},
+              {"color": "darkpurple", "hex": "871F78"},
+              {"color": "cadetblue", "hex": "5F9EA0"}
+            ]
+          }
+          if (getToggle == 2) {
+            var colors = [
+              {"color": "red", "hex": "cc0000"},
+              {"color": "green", "hex": "8fe83b"},
+              {"color": "orange", "hex": "ff6600"},
+              {"color": "cadetblue", "hex": "5F9EA0"}
 
-              ]
-            }
+            ]
+          }
 
-            $.each(colors, function (key, element) {
-              if (item.statusHex == element.hex || item.categoryHex == element.hex) {
-                var awesomeColor = element.color;
-                var awesomeIcon = (getToggle == 1) ? item.categoryIcon : item.statusIcon;
-                var marker = new L.Marker(latlon, {icon: L.AwesomeMarkers.icon({icon: awesomeIcon, prefix: 'icon', markerColor: awesomeColor, spin: false}) });
-                marker.bindPopup(html);
-                markerLayer.addLayer(marker);
-                bounds.extend(latlon);
-              }
-            });
-            var fn = markerClickFn(latlon, html);
-            $('#marker_' + item.nid).on('hover', fn);
+          $.each(colors, function (key, element) {
+            if (item.field_status_hex == element.hex || item.field_category_hex == element.hex) {
+              var awesomeColor = element.color;
+              var awesomeIcon = (getToggle == 1) ? item.field_category_icon : item.field_status_icon;
+              var marker = new L.Marker(latlon, {icon: L.AwesomeMarkers.icon({icon: awesomeIcon, prefix: 'icon', markerColor: awesomeColor, spin: false}) });
+
+              marker.bindPopup(html);
+              markerLayer.addLayer(marker);
+              bounds.extend(latlon);
+            }
           });
-          Drupal.Markaspot.maps[0].addLayer(markerLayer);
-          // Drupal.Markaspot.maps[0].fitBounds(bounds);
+          var fn = markerClickFn(latlon, html);
+          $('#marker_' + item.nid).on('hover', fn);
         });
-    }
+        Drupal.Markaspot.maps[0].addLayer(markerLayer);
+        // Drupal.Markaspot.maps[0].fitBounds(bounds);
+      });
+     }
   });
 })(jQuery);
 
 function hideMarkers() {
   Drupal.Markaspot.maps[0].removeLayer(markerLayer);
-};
-
-function bindInfoWindow(marker, map, infoWindow, html) {
-  google.maps.event.addListener(marker, 'click', function () {
-    Drupal.Markaspot.maps[0].setView(marker.getPosition());
-    Drupal.Markaspot.maps[0].setZoom(15);
-    infoWindow.setContent(html);
-    infoWindow.open(map, marker);
-  });
 }
 
 function markerClickFn(latlon, html) {
   return function () {
-
-    Drupal.Markaspot.maps[0].panTo(latlon);
-    Drupal.Markaspot.maps[0].setZoom(16);
     Drupal.Markaspot.maps[0].closePopup();
 
     popup = new L.Popup();
@@ -236,6 +202,7 @@ function markerClickFn(latlon, html) {
     popup.setLatLng(latlon);
     popup.setContent(html);
 
+    Drupal.Markaspot.maps[0].panTo(latlon);
     Drupal.Markaspot.maps[0].openPopup(popup);
   };
 }

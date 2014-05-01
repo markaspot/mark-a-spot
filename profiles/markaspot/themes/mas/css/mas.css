@@ -475,7 +475,7 @@ span.marker-category {
 
 #page-header {
   height: 70px;
-  background: url('../logo.png') 15px 50% no-repeat;
+  background: url('../images/logo-small.png') 15px 50% no-repeat;
 }
 
 .page-map #page-header {
@@ -702,8 +702,13 @@ input[type="color"] {
 }
 
 .geolocation-address .form-type-textfield {
-  float: none;
+  width: 60%;
 }
+
+div#edit-field-geo-und-0-address label{
+  display:block
+}
+
 
 .geolocation-address {
   background: rgba(255, 255, 255, 0.6);
@@ -874,6 +879,11 @@ div.list a h3 {
   right: 0;
 }
 
+.report .img-thumbnail {
+  margin: 0 10px 10px 0;
+}
+
+
 /* Responsive
 -------------------------------------------------- */
 /* Desktop large
@@ -917,6 +927,10 @@ div.list a h3 {
 
   .navbar-fixed-top {
     margin-bottom: 0;
+  }
+
+  .col-md-4.col-md-offset-1.thumbnail {
+    display: none;
   }
 
   /* Inline-block quick links for more spacing */
@@ -987,7 +1001,6 @@ div.list a h3 {
     padding-top: 0;
   }
 
-  /* Widen masthead and social buttons to fill body padding */
   .col-md-4.col-md-offset-1.thumbnail {
     display: none;
   }
@@ -998,11 +1011,6 @@ div.list a h3 {
 
   .report img.pull-left.thumbnail {
     display: none;
-  }
-
-  /* Tighten up footer */
-  .footer {
-    margin: 0 -20px;
   }
 
   .page-map .row.map-tools {

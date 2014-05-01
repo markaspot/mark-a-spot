@@ -11,16 +11,16 @@
 <div class="navbar-wrapper">
   <div class="container">
     <div class="navbar navbar-inverse" role="navigation">
-      <div class="container">
-      <div class="navbar-header">
-       <?php if ($logo): ?>
-          <a class="logo navbar-btn pull-left" href="<?php print $front_page; ?>" title="<?php print t('Home'); ?>">
-            <img src="<?php print $logo; ?>" alt="<?php print t('Home'); ?>" />
-          </a>
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <?php if ($logo): ?>
+            <a class="logo navbar-btn pull-left" href="<?php print $front_page; ?>" title="<?php print t('Home'); ?>">
+              <img src="<?php print $logo; ?>" alt="<?php print t('Home'); ?>" />
+            </a>
           <?php endif; ?>
 
           <?php if (!empty($site_name)): ?>
-          <a class="name navbar-brand" href="<?php print $front_page; ?>" title="<?php print t('Home'); ?>"><?php print $site_name; ?></a>
+            <a class="name navbar-brand" href="<?php print $front_page; ?>" title="<?php print t('Home'); ?>"><?php print $site_name; ?></a>
           <?php endif; ?>
 
           <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
@@ -32,8 +32,9 @@
           </button>
         </div>
 
+
         <?php if (!empty($primary_nav) || !empty($secondary_nav) || !empty($page['navigation'])): ?>
-          <div class="navbar-collapse collapse">
+          <div class="collapse navbar-collapse">
             <nav role="navigation">
               <?php if (!empty($primary_nav)): ?>
                 <?php print render($primary_nav); ?>
@@ -51,7 +52,6 @@
     </div>
   </div>
 </div>
-
 <div class="main-container container page">
 
   <div class="row">

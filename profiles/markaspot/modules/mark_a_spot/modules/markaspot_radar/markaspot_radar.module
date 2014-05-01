@@ -1,0 +1,63 @@
+<?php
+/**
+ * @file
+ * Mark-a-Spot Radar module.
+ * This module visualizes already reported service requests as clickable
+ * points directly into the map.
+ */
+
+/**
+ * Implements hook_page_build().
+ */
+function markaspot_radar_page_build(&$page) {
+
+  $type = (isset($node)) ? $node->type : NULL;
+
+  if (arg(1) == 'add' || arg(2) == "edit" && ($type != "page")) {
+    drupal_add_css(drupal_get_path('profile', 'markaspot') . '/libraries/Leaflet.awesome-markers/dist/leaflet.awesome-markers.css');
+    drupal_add_css(drupal_get_path('profile', 'markaspot') . '/libraries/markaspot-font/style.css');
+    drupal_add_js(drupal_get_path('profile', 'markaspot') . '/libraries/Leaflet.awesome-markers/dist/leaflet.awesome-markers.min.js', array('scope' => 'footer', 'weight' => 7));
+    drupal_add_js(drupal_get_path('profile', 'markaspot') . '/libraries/Leaflet.markercluster/dist/leaflet.markercluster.js', array('scope' => 'footer', 'weight' => 6));
+    drupal_add_js(drupal_get_path('module', 'markaspot_radar') . '/markaspot_radar.js', array('scope' => 'footer', 'weight' => 5));
+    drupal_add_css(drupal_get_path('module', 'markaspot_radar') . '/radar.css');
+
+  }
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function markaspot_radar_form_report_node_form_alter(&$form, &$form_state, $form_id) {
+
+  $form['field_geo'][LANGUAGE_NONE]['#prefix'] = '<div id="field-geo-add-more-wrapper"><div class="field-geo-radar"><i class="icon-eye-open"></i> ' . t('Check other reports by tapping or clicking the nearby circles') . '</div>';
+}
+
+/**
+ * Implements hook_views_query_alter().
+ */
+function markaspot_radar_views_query_alter(&$view, &$query) {
+
+  if ($view->current_display == 'geojson'){
+    $params = drupal_get_query_parameters();
+    if (isset($params['nwLat'])){
+      $query->add_where(0,
+        db_and()
+          ->condition("field_data_field_geo.field_geo_lat", $params['nwLat'], '<=')
+          ->condition("field_data_field_geo.field_geo_lng", $params['nwLng'], '>=')
+          ->condition("field_data_field_geo.field_geo_lat", $params['seLat'], '>=')
+          ->condition("field_data_field_geo.field_geo_lng", $params['seLng'], '<=')
+      );
+    }
+  }
+  // dpm($view);
+
+}
+
+function markaspot_radar_field_widget_geolocation_osm_form_alter(&$element, &$form_state, $context) {
+  $element['address']['#description'] = t('Please also check the surroundings by clicking nearby circles.');
+  // Add a css class to widget form elements for all fields of type mytype.
+  if ($context['field']['type'] == '') {
+    // Be sure not to overwrite existing attributes.
+    $element['#attributes']['class'][] = 'myclass';
+  }
+}

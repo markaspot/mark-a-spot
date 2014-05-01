@@ -85,7 +85,7 @@ function mark_a_spot_views_default_views() {
   $handler->display->display_options['fields']['nothing']['label'] = '';
   $handler->display->display_options['fields']['nothing']['alter']['text'] = '    <div class="col-md-4">
       [field_image_1]
-      <!-- h3>[title]</h3 -->
+      <h5>[title]</h5>
     </div>';
   $handler->display->display_options['fields']['nothing']['element_label_colon'] = FALSE;
   /* Sort criterion: Content: Post date */
@@ -129,9 +129,9 @@ function mark_a_spot_views_default_views() {
     t('Sortieren nach'),
     t('Aufsteigend'),
     t('Absteigend'),
-    t('    <div class="col-md-4 thumbnail">
+    t('    <div class="col-md-4">
       [field_image_1]
-      <!-- h3>[title]</h3 -->
+      <h5>[title]</h5>
     </div>'),
     t('Block'),
     t('more'),
@@ -196,7 +196,7 @@ function mark_a_spot_views_default_views() {
     ),
   );
   $handler->display->display_options['pager']['type'] = 'full';
-  $handler->display->display_options['pager']['options']['items_per_page'] = '10';
+  $handler->display->display_options['pager']['options']['items_per_page'] = '0';
   $handler->display->display_options['pager']['options']['offset'] = '0';
   $handler->display->display_options['pager']['options']['id'] = '0';
   $handler->display->display_options['pager']['options']['quantity'] = '9';
@@ -204,10 +204,6 @@ function mark_a_spot_views_default_views() {
   $handler->display->display_options['style_options']['grouping'] = '';
   $handler->display->display_options['row_plugin'] = 'entity';
   $handler->display->display_options['row_options']['view_mode'] = 'report_list';
-  /* Header: Global: Text area */
-  $handler->display->display_options['header']['area']['id'] = 'area';
-  $handler->display->display_options['header']['area']['table'] = 'views';
-  $handler->display->display_options['header']['area']['field'] = 'area';
   /* Relationship: Content: Category (field_category) */
   $handler->display->display_options['relationships']['field_category_tid']['id'] = 'field_category_tid';
   $handler->display->display_options['relationships']['field_category_tid']['table'] = 'field_data_field_category';
@@ -240,17 +236,6 @@ function mark_a_spot_views_default_views() {
   $handler->display->display_options['fields']['created']['field'] = 'created';
   $handler->display->display_options['fields']['created']['label'] = 'created';
   $handler->display->display_options['fields']['created']['date_format'] = 'long';
-  /* Field: Content: Status */
-  $handler->display->display_options['fields']['field_status']['id'] = 'field_status';
-  $handler->display->display_options['fields']['field_status']['table'] = 'field_data_field_status';
-  $handler->display->display_options['fields']['field_status']['field'] = 'field_status';
-  $handler->display->display_options['fields']['field_status']['label'] = 'statusTitle';
-  $handler->display->display_options['fields']['field_status']['alter']['text'] = 'Status: [field_status]';
-  $handler->display->display_options['fields']['field_status']['element_type'] = '0';
-  $handler->display->display_options['fields']['field_status']['element_class'] = 'marker-status col-[field_status_hex]';
-  $handler->display->display_options['fields']['field_status']['element_label_colon'] = FALSE;
-  $handler->display->display_options['fields']['field_status']['hide_alter_empty'] = FALSE;
-  $handler->display->display_options['fields']['field_status']['type'] = 'taxonomy_term_reference_plain';
   /* Field: Status Hex Value */
   $handler->display->display_options['fields']['field_status_hex']['id'] = 'field_status_hex';
   $handler->display->display_options['fields']['field_status_hex']['table'] = 'field_data_field_status_hex';
@@ -291,15 +276,6 @@ function mark_a_spot_views_default_views() {
   $handler->display->display_options['fields']['field_geo_2']['click_sort_column'] = 'lng';
   $handler->display->display_options['fields']['field_geo_2']['type'] = 'geolocation_longitude';
   $handler->display->display_options['fields']['field_geo_2']['group_column'] = 'lat';
-  /* Field: Taxonomy term: categoryId */
-  $handler->display->display_options['fields']['field_category_id']['id'] = 'field_category_id';
-  $handler->display->display_options['fields']['field_category_id']['table'] = 'field_data_field_category_id';
-  $handler->display->display_options['fields']['field_category_id']['field'] = 'field_category_id';
-  $handler->display->display_options['fields']['field_category_id']['relationship'] = 'field_category_tid';
-  $handler->display->display_options['fields']['field_category_id']['settings'] = array(
-    'thousand_separator' => ' ',
-    'prefix_suffix' => 1,
-  );
   /* Field: address */
   $handler->display->display_options['fields']['field_address']['id'] = 'field_address';
   $handler->display->display_options['fields']['field_address']['table'] = 'field_data_field_address';
@@ -317,24 +293,6 @@ function mark_a_spot_views_default_views() {
   $handler->display->display_options['fields']['path']['field'] = 'path';
   $handler->display->display_options['fields']['path']['ui_name'] = 'Path';
   $handler->display->display_options['fields']['path']['label'] = 'path';
-  /* Field: User Nickname */
-  $handler->display->display_options['fields']['name']['id'] = 'name';
-  $handler->display->display_options['fields']['name']['table'] = 'users';
-  $handler->display->display_options['fields']['name']['field'] = 'name';
-  $handler->display->display_options['fields']['name']['relationship'] = 'uid';
-  $handler->display->display_options['fields']['name']['ui_name'] = 'User Nickname';
-  $handler->display->display_options['fields']['name']['label'] = 'userNickname';
-  $handler->display->display_options['fields']['name']['element_default_classes'] = FALSE;
-  $handler->display->display_options['fields']['name']['overwrite_anonymous'] = TRUE;
-  $handler->display->display_options['fields']['name']['anonymous_text'] = 'Gast';
-  /* Field: created timestamp */
-  $handler->display->display_options['fields']['created_1']['id'] = 'created_1';
-  $handler->display->display_options['fields']['created_1']['table'] = 'node';
-  $handler->display->display_options['fields']['created_1']['field'] = 'created';
-  $handler->display->display_options['fields']['created_1']['ui_name'] = 'created timestamp';
-  $handler->display->display_options['fields']['created_1']['label'] = 'timestamp';
-  $handler->display->display_options['fields']['created_1']['date_format'] = 'custom';
-  $handler->display->display_options['fields']['created_1']['custom_date_format'] = 'U';
   /* Field: Status Icon */
   $handler->display->display_options['fields']['field_status_icon']['id'] = 'field_status_icon';
   $handler->display->display_options['fields']['field_status_icon']['table'] = 'field_data_field_status_icon';
@@ -709,127 +667,144 @@ function mark_a_spot_views_default_views() {
   $handler->display->display_options['exposed_block'] = TRUE;
   $handler->display->display_options['path'] = 'reports/rss';
 
-  /* Display: JSON View */
-  $handler = $view->new_display('page', 'JSON View', 'page_2');
-  $handler->display->display_options['defaults']['hide_admin_links'] = FALSE;
-  $handler->display->display_options['defaults']['style_plugin'] = FALSE;
-  $handler->display->display_options['style_plugin'] = 'views_json';
-  $handler->display->display_options['style_options']['plaintext_output'] = 1;
-  $handler->display->display_options['style_options']['remove_newlines'] = 0;
-  $handler->display->display_options['style_options']['jsonp_prefix'] = '';
-  $handler->display->display_options['style_options']['using_views_api_mode'] = 0;
-  $handler->display->display_options['style_options']['object_arrays'] = 0;
-  $handler->display->display_options['style_options']['numeric_strings'] = 0;
-  $handler->display->display_options['style_options']['bigint_string'] = 0;
-  $handler->display->display_options['style_options']['pretty_print'] = 0;
-  $handler->display->display_options['style_options']['unescaped_slashes'] = 0;
-  $handler->display->display_options['style_options']['unescaped_unicode'] = 0;
-  $handler->display->display_options['style_options']['char_encoding'] = array();
-  $handler->display->display_options['defaults']['style_options'] = FALSE;
-  $handler->display->display_options['defaults']['row_plugin'] = FALSE;
-  $handler->display->display_options['defaults']['row_options'] = FALSE;
-  $handler->display->display_options['exposed_block'] = TRUE;
-  $handler->display->display_options['defaults']['empty'] = FALSE;
-  $handler->display->display_options['defaults']['sorts'] = FALSE;
-  /* Sort criterion: Content: Post date */
-  $handler->display->display_options['sorts']['created']['id'] = 'created';
-  $handler->display->display_options['sorts']['created']['table'] = 'node';
-  $handler->display->display_options['sorts']['created']['field'] = 'created';
-  $handler->display->display_options['sorts']['created']['order'] = 'DESC';
-  $handler->display->display_options['defaults']['arguments'] = FALSE;
-  /* Contextual filter: Content: Nid */
-  $handler->display->display_options['arguments']['nid']['id'] = 'nid';
-  $handler->display->display_options['arguments']['nid']['table'] = 'node';
-  $handler->display->display_options['arguments']['nid']['field'] = 'nid';
-  $handler->display->display_options['arguments']['nid']['default_action'] = 'default';
-  $handler->display->display_options['arguments']['nid']['exception']['title'] = 'Alle';
-  $handler->display->display_options['arguments']['nid']['default_argument_type'] = 'fixed';
-  $handler->display->display_options['arguments']['nid']['default_argument_options']['argument'] = 'all';
-  $handler->display->display_options['arguments']['nid']['default_argument_skip_url'] = TRUE;
-  $handler->display->display_options['arguments']['nid']['summary']['number_of_records'] = '0';
-  $handler->display->display_options['arguments']['nid']['summary']['format'] = 'default_summary';
-  $handler->display->display_options['arguments']['nid']['summary_options']['items_per_page'] = '25';
-  /* Contextual filter: Content: Category (field_category) */
-  $handler->display->display_options['arguments']['field_category_tid']['id'] = 'field_category_tid';
-  $handler->display->display_options['arguments']['field_category_tid']['table'] = 'field_data_field_category';
-  $handler->display->display_options['arguments']['field_category_tid']['field'] = 'field_category_tid';
-  $handler->display->display_options['arguments']['field_category_tid']['exception']['title'] = 'Alle';
-  $handler->display->display_options['arguments']['field_category_tid']['default_argument_type'] = 'fixed';
-  $handler->display->display_options['arguments']['field_category_tid']['summary']['number_of_records'] = '0';
-  $handler->display->display_options['arguments']['field_category_tid']['summary']['format'] = 'default_summary';
-  $handler->display->display_options['arguments']['field_category_tid']['summary_options']['items_per_page'] = '25';
-  /* Contextual filter: Content: Status (field_status) */
-  $handler->display->display_options['arguments']['field_status_tid']['id'] = 'field_status_tid';
-  $handler->display->display_options['arguments']['field_status_tid']['table'] = 'field_data_field_status';
-  $handler->display->display_options['arguments']['field_status_tid']['field'] = 'field_status_tid';
-  $handler->display->display_options['arguments']['field_status_tid']['exception']['title'] = 'Alle';
-  $handler->display->display_options['arguments']['field_status_tid']['default_argument_type'] = 'fixed';
-  $handler->display->display_options['arguments']['field_status_tid']['summary']['number_of_records'] = '0';
-  $handler->display->display_options['arguments']['field_status_tid']['summary']['format'] = 'default_summary';
-  $handler->display->display_options['arguments']['field_status_tid']['summary_options']['items_per_page'] = '25';
-  $handler->display->display_options['path'] = 'reports/json';
-
-  /* Display: JSON View */
-  $handler = $view->new_display('page', 'JSON View', 'page_1');
-  $handler->display->display_options['defaults']['hide_admin_links'] = FALSE;
+  /* Display: GeoJSON List */
+  $handler = $view->new_display('page', 'GeoJSON List', 'geojson');
   $handler->display->display_options['defaults']['pager'] = FALSE;
-  $handler->display->display_options['pager']['type'] = 'none';
+  $handler->display->display_options['pager']['type'] = 'full';
+  $handler->display->display_options['pager']['options']['items_per_page'] = '10';
   $handler->display->display_options['pager']['options']['offset'] = '0';
+  $handler->display->display_options['pager']['options']['id'] = '0';
+  $handler->display->display_options['pager']['options']['quantity'] = '9';
   $handler->display->display_options['defaults']['style_plugin'] = FALSE;
-  $handler->display->display_options['style_plugin'] = 'views_json';
-  $handler->display->display_options['style_options']['plaintext_output'] = 1;
-  $handler->display->display_options['style_options']['remove_newlines'] = 0;
+  $handler->display->display_options['style_plugin'] = 'views_geojson';
+  $handler->display->display_options['style_options']['data_source']['value'] = 'latlon';
+  $handler->display->display_options['style_options']['data_source']['latitude'] = 'field_geo_2';
+  $handler->display->display_options['style_options']['data_source']['longitude'] = 'field_geo_1';
+  $handler->display->display_options['style_options']['data_source']['wkt'] = 'title';
+  $handler->display->display_options['style_options']['data_source']['name_field'] = 'title';
+  $handler->display->display_options['style_options']['data_source']['description_field'] = '';
   $handler->display->display_options['style_options']['jsonp_prefix'] = '';
   $handler->display->display_options['style_options']['using_views_api_mode'] = 0;
-  $handler->display->display_options['style_options']['object_arrays'] = 0;
-  $handler->display->display_options['style_options']['numeric_strings'] = 0;
-  $handler->display->display_options['style_options']['bigint_string'] = 0;
-  $handler->display->display_options['style_options']['pretty_print'] = 0;
-  $handler->display->display_options['style_options']['unescaped_slashes'] = 0;
-  $handler->display->display_options['style_options']['unescaped_unicode'] = 0;
-  $handler->display->display_options['style_options']['char_encoding'] = array();
   $handler->display->display_options['defaults']['style_options'] = FALSE;
   $handler->display->display_options['defaults']['row_plugin'] = FALSE;
   $handler->display->display_options['defaults']['row_options'] = FALSE;
-  $handler->display->display_options['exposed_block'] = TRUE;
-  $handler->display->display_options['defaults']['empty'] = FALSE;
-  $handler->display->display_options['defaults']['sorts'] = FALSE;
-  /* Sort criterion: Content: Post date */
-  $handler->display->display_options['sorts']['created']['id'] = 'created';
-  $handler->display->display_options['sorts']['created']['table'] = 'node';
-  $handler->display->display_options['sorts']['created']['field'] = 'created';
-  $handler->display->display_options['sorts']['created']['order'] = 'DESC';
-  $handler->display->display_options['defaults']['arguments'] = FALSE;
-  /* Contextual filter: Content: Nid */
-  $handler->display->display_options['arguments']['nid']['id'] = 'nid';
-  $handler->display->display_options['arguments']['nid']['table'] = 'node';
-  $handler->display->display_options['arguments']['nid']['field'] = 'nid';
-  $handler->display->display_options['arguments']['nid']['default_action'] = 'default';
-  $handler->display->display_options['arguments']['nid']['exception']['title'] = 'Alle';
-  $handler->display->display_options['arguments']['nid']['default_argument_type'] = 'fixed';
-  $handler->display->display_options['arguments']['nid']['default_argument_options']['argument'] = 'all';
-  $handler->display->display_options['arguments']['nid']['default_argument_skip_url'] = TRUE;
-  $handler->display->display_options['arguments']['nid']['summary']['number_of_records'] = '0';
-  $handler->display->display_options['arguments']['nid']['summary']['format'] = 'default_summary';
-  $handler->display->display_options['arguments']['nid']['summary_options']['items_per_page'] = '25';
-  /* Contextual filter: Content: Category (field_category) */
-  $handler->display->display_options['arguments']['field_category_tid']['id'] = 'field_category_tid';
-  $handler->display->display_options['arguments']['field_category_tid']['table'] = 'field_data_field_category';
-  $handler->display->display_options['arguments']['field_category_tid']['field'] = 'field_category_tid';
-  $handler->display->display_options['arguments']['field_category_tid']['exception']['title'] = 'Alle';
-  $handler->display->display_options['arguments']['field_category_tid']['default_argument_type'] = 'fixed';
-  $handler->display->display_options['arguments']['field_category_tid']['summary']['number_of_records'] = '0';
-  $handler->display->display_options['arguments']['field_category_tid']['summary']['format'] = 'default_summary';
-  $handler->display->display_options['arguments']['field_category_tid']['summary_options']['items_per_page'] = '25';
-  /* Contextual filter: Content: Status (field_status) */
-  $handler->display->display_options['arguments']['field_status_tid']['id'] = 'field_status_tid';
-  $handler->display->display_options['arguments']['field_status_tid']['table'] = 'field_data_field_status';
-  $handler->display->display_options['arguments']['field_status_tid']['field'] = 'field_status_tid';
-  $handler->display->display_options['arguments']['field_status_tid']['exception']['title'] = 'Alle';
-  $handler->display->display_options['arguments']['field_status_tid']['default_argument_type'] = 'fixed';
-  $handler->display->display_options['arguments']['field_status_tid']['summary']['number_of_records'] = '0';
-  $handler->display->display_options['arguments']['field_status_tid']['summary']['format'] = 'default_summary';
-  $handler->display->display_options['arguments']['field_status_tid']['summary_options']['items_per_page'] = '25';
+  $handler->display->display_options['defaults']['fields'] = FALSE;
+  /* Field: Content: Title */
+  $handler->display->display_options['fields']['title']['id'] = 'title';
+  $handler->display->display_options['fields']['title']['table'] = 'node';
+  $handler->display->display_options['fields']['title']['field'] = 'title';
+  $handler->display->display_options['fields']['title']['label'] = '';
+  $handler->display->display_options['fields']['title']['alter']['word_boundary'] = FALSE;
+  $handler->display->display_options['fields']['title']['alter']['ellipsis'] = FALSE;
+  $handler->display->display_options['fields']['title']['element_label_colon'] = FALSE;
+  /* Field: Content: Post date */
+  $handler->display->display_options['fields']['created']['id'] = 'created';
+  $handler->display->display_options['fields']['created']['table'] = 'node';
+  $handler->display->display_options['fields']['created']['field'] = 'created';
+  $handler->display->display_options['fields']['created']['label'] = '';
+  $handler->display->display_options['fields']['created']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['created']['date_format'] = 'short';
+  /* Field: Status Hex Value */
+  $handler->display->display_options['fields']['field_status_hex']['id'] = 'field_status_hex';
+  $handler->display->display_options['fields']['field_status_hex']['table'] = 'field_data_field_status_hex';
+  $handler->display->display_options['fields']['field_status_hex']['field'] = 'field_status_hex';
+  $handler->display->display_options['fields']['field_status_hex']['relationship'] = 'field_status_tid';
+  $handler->display->display_options['fields']['field_status_hex']['ui_name'] = 'Status Hex Value';
+  $handler->display->display_options['fields']['field_status_hex']['label'] = '';
+  $handler->display->display_options['fields']['field_status_hex']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['field_status_hex']['hide_alter_empty'] = FALSE;
+  $handler->display->display_options['fields']['field_status_hex']['settings'] = array(
+    'field_formatter_class' => '',
+  );
+  /* Field: Taxonomy term: categoryHex */
+  $handler->display->display_options['fields']['field_category_hex']['id'] = 'field_category_hex';
+  $handler->display->display_options['fields']['field_category_hex']['table'] = 'field_data_field_category_hex';
+  $handler->display->display_options['fields']['field_category_hex']['field'] = 'field_category_hex';
+  $handler->display->display_options['fields']['field_category_hex']['relationship'] = 'field_category_tid';
+  $handler->display->display_options['fields']['field_category_hex']['label'] = '';
+  $handler->display->display_options['fields']['field_category_hex']['alter']['alter_text'] = TRUE;
+  $handler->display->display_options['fields']['field_category_hex']['element_class'] = '[field_category_hex]';
+  $handler->display->display_options['fields']['field_category_hex']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['field_category_hex']['hide_alter_empty'] = FALSE;
+  $handler->display->display_options['fields']['field_category_hex']['type'] = 'text_plain';
+  $handler->display->display_options['fields']['field_category_hex']['settings'] = array(
+    'field_formatter_class' => '',
+  );
+  /* Field: Position Latitude */
+  $handler->display->display_options['fields']['field_geo_1']['id'] = 'field_geo_1';
+  $handler->display->display_options['fields']['field_geo_1']['table'] = 'field_data_field_geo';
+  $handler->display->display_options['fields']['field_geo_1']['field'] = 'field_geo';
+  $handler->display->display_options['fields']['field_geo_1']['ui_name'] = 'Position Latitude';
+  $handler->display->display_options['fields']['field_geo_1']['label'] = '';
+  $handler->display->display_options['fields']['field_geo_1']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['field_geo_1']['hide_alter_empty'] = FALSE;
+  $handler->display->display_options['fields']['field_geo_1']['click_sort_column'] = 'lat';
+  $handler->display->display_options['fields']['field_geo_1']['type'] = 'geolocation_latitude';
+  $handler->display->display_options['fields']['field_geo_1']['settings'] = array(
+    'field_formatter_class' => '',
+  );
+  $handler->display->display_options['fields']['field_geo_1']['group_column'] = 'lat';
+  /* Field: Position Longitude */
+  $handler->display->display_options['fields']['field_geo_2']['id'] = 'field_geo_2';
+  $handler->display->display_options['fields']['field_geo_2']['table'] = 'field_data_field_geo';
+  $handler->display->display_options['fields']['field_geo_2']['field'] = 'field_geo';
+  $handler->display->display_options['fields']['field_geo_2']['ui_name'] = 'Position Longitude';
+  $handler->display->display_options['fields']['field_geo_2']['label'] = '';
+  $handler->display->display_options['fields']['field_geo_2']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['field_geo_2']['hide_alter_empty'] = FALSE;
+  $handler->display->display_options['fields']['field_geo_2']['click_sort_column'] = 'lng';
+  $handler->display->display_options['fields']['field_geo_2']['type'] = 'geolocation_longitude';
+  $handler->display->display_options['fields']['field_geo_2']['settings'] = array(
+    'field_formatter_class' => '',
+  );
+  $handler->display->display_options['fields']['field_geo_2']['group_column'] = 'lat';
+  /* Field: address */
+  $handler->display->display_options['fields']['field_address']['id'] = 'field_address';
+  $handler->display->display_options['fields']['field_address']['table'] = 'field_data_field_address';
+  $handler->display->display_options['fields']['field_address']['field'] = 'field_address';
+  $handler->display->display_options['fields']['field_address']['ui_name'] = 'address';
+  $handler->display->display_options['fields']['field_address']['label'] = '';
+  $handler->display->display_options['fields']['field_address']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['field_address']['element_default_classes'] = FALSE;
+  $handler->display->display_options['fields']['field_address']['type'] = 'text_plain';
+  $handler->display->display_options['fields']['field_address']['settings'] = array(
+    'field_formatter_class' => '',
+  );
+  /* Field: Path */
+  $handler->display->display_options['fields']['path']['id'] = 'path';
+  $handler->display->display_options['fields']['path']['table'] = 'node';
+  $handler->display->display_options['fields']['path']['field'] = 'path';
+  $handler->display->display_options['fields']['path']['ui_name'] = 'Path';
+  $handler->display->display_options['fields']['path']['label'] = '';
+  $handler->display->display_options['fields']['path']['element_label_colon'] = FALSE;
+  /* Field: Status Icon */
+  $handler->display->display_options['fields']['field_status_icon']['id'] = 'field_status_icon';
+  $handler->display->display_options['fields']['field_status_icon']['table'] = 'field_data_field_status_icon';
+  $handler->display->display_options['fields']['field_status_icon']['field'] = 'field_status_icon';
+  $handler->display->display_options['fields']['field_status_icon']['relationship'] = 'field_status_tid';
+  $handler->display->display_options['fields']['field_status_icon']['ui_name'] = 'Status Icon';
+  $handler->display->display_options['fields']['field_status_icon']['label'] = '';
+  $handler->display->display_options['fields']['field_status_icon']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['field_status_icon']['settings'] = array(
+    'field_formatter_class' => '',
+  );
+  /* Field: Category icon */
+  $handler->display->display_options['fields']['field_category_icon']['id'] = 'field_category_icon';
+  $handler->display->display_options['fields']['field_category_icon']['table'] = 'field_data_field_category_icon';
+  $handler->display->display_options['fields']['field_category_icon']['field'] = 'field_category_icon';
+  $handler->display->display_options['fields']['field_category_icon']['relationship'] = 'field_category_tid';
+  $handler->display->display_options['fields']['field_category_icon']['ui_name'] = 'Category icon';
+  $handler->display->display_options['fields']['field_category_icon']['label'] = '';
+  $handler->display->display_options['fields']['field_category_icon']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['field_category_icon']['settings'] = array(
+    'field_formatter_class' => '',
+  );
+  /* Field: Content: Nid */
+  $handler->display->display_options['fields']['nid']['id'] = 'nid';
+  $handler->display->display_options['fields']['nid']['table'] = 'node';
+  $handler->display->display_options['fields']['nid']['field'] = 'nid';
+  $handler->display->display_options['fields']['nid']['label'] = '';
+  $handler->display->display_options['fields']['nid']['element_label_colon'] = FALSE;
   $handler->display->display_options['defaults']['filter_groups'] = FALSE;
   $handler->display->display_options['defaults']['filters'] = FALSE;
   /* Filter criterion: Content: Published */
@@ -876,7 +851,187 @@ function mark_a_spot_views_default_views() {
   $handler->display->display_options['filters']['field_status_tid']['expose']['identifier'] = 'field_status_tid';
   $handler->display->display_options['filters']['field_status_tid']['type'] = 'select';
   $handler->display->display_options['filters']['field_status_tid']['vocabulary'] = 'status';
-  $handler->display->display_options['path'] = 'reports/json/map';
+  $handler->display->display_options['path'] = 'reports/geojson';
+
+  /* Display: GeoJSON Map */
+  $handler = $view->new_display('page', 'GeoJSON Map', 'page_3');
+  $handler->display->display_options['defaults']['style_plugin'] = FALSE;
+  $handler->display->display_options['style_plugin'] = 'views_geojson';
+  $handler->display->display_options['style_options']['data_source']['value'] = 'latlon';
+  $handler->display->display_options['style_options']['data_source']['latitude'] = 'field_geo_2';
+  $handler->display->display_options['style_options']['data_source']['longitude'] = 'field_geo_1';
+  $handler->display->display_options['style_options']['data_source']['wkt'] = 'title';
+  $handler->display->display_options['style_options']['data_source']['name_field'] = 'title';
+  $handler->display->display_options['style_options']['data_source']['description_field'] = '';
+  $handler->display->display_options['style_options']['jsonp_prefix'] = '';
+  $handler->display->display_options['style_options']['using_views_api_mode'] = 0;
+  $handler->display->display_options['defaults']['style_options'] = FALSE;
+  $handler->display->display_options['defaults']['row_plugin'] = FALSE;
+  $handler->display->display_options['defaults']['row_options'] = FALSE;
+  $handler->display->display_options['defaults']['fields'] = FALSE;
+  /* Field: Content: Title */
+  $handler->display->display_options['fields']['title']['id'] = 'title';
+  $handler->display->display_options['fields']['title']['table'] = 'node';
+  $handler->display->display_options['fields']['title']['field'] = 'title';
+  $handler->display->display_options['fields']['title']['label'] = '';
+  $handler->display->display_options['fields']['title']['alter']['word_boundary'] = FALSE;
+  $handler->display->display_options['fields']['title']['alter']['ellipsis'] = FALSE;
+  $handler->display->display_options['fields']['title']['element_label_colon'] = FALSE;
+  /* Field: Content: Post date */
+  $handler->display->display_options['fields']['created']['id'] = 'created';
+  $handler->display->display_options['fields']['created']['table'] = 'node';
+  $handler->display->display_options['fields']['created']['field'] = 'created';
+  $handler->display->display_options['fields']['created']['label'] = '';
+  $handler->display->display_options['fields']['created']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['created']['date_format'] = 'short';
+  /* Field: Status Hex Value */
+  $handler->display->display_options['fields']['field_status_hex']['id'] = 'field_status_hex';
+  $handler->display->display_options['fields']['field_status_hex']['table'] = 'field_data_field_status_hex';
+  $handler->display->display_options['fields']['field_status_hex']['field'] = 'field_status_hex';
+  $handler->display->display_options['fields']['field_status_hex']['relationship'] = 'field_status_tid';
+  $handler->display->display_options['fields']['field_status_hex']['ui_name'] = 'Status Hex Value';
+  $handler->display->display_options['fields']['field_status_hex']['label'] = '';
+  $handler->display->display_options['fields']['field_status_hex']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['field_status_hex']['hide_alter_empty'] = FALSE;
+  $handler->display->display_options['fields']['field_status_hex']['settings'] = array(
+    'field_formatter_class' => '',
+  );
+  /* Field: Taxonomy term: categoryHex */
+  $handler->display->display_options['fields']['field_category_hex']['id'] = 'field_category_hex';
+  $handler->display->display_options['fields']['field_category_hex']['table'] = 'field_data_field_category_hex';
+  $handler->display->display_options['fields']['field_category_hex']['field'] = 'field_category_hex';
+  $handler->display->display_options['fields']['field_category_hex']['relationship'] = 'field_category_tid';
+  $handler->display->display_options['fields']['field_category_hex']['label'] = '';
+  $handler->display->display_options['fields']['field_category_hex']['alter']['alter_text'] = TRUE;
+  $handler->display->display_options['fields']['field_category_hex']['element_class'] = '[field_category_hex]';
+  $handler->display->display_options['fields']['field_category_hex']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['field_category_hex']['hide_alter_empty'] = FALSE;
+  $handler->display->display_options['fields']['field_category_hex']['type'] = 'text_plain';
+  $handler->display->display_options['fields']['field_category_hex']['settings'] = array(
+    'field_formatter_class' => '',
+  );
+  /* Field: Position Latitude */
+  $handler->display->display_options['fields']['field_geo_1']['id'] = 'field_geo_1';
+  $handler->display->display_options['fields']['field_geo_1']['table'] = 'field_data_field_geo';
+  $handler->display->display_options['fields']['field_geo_1']['field'] = 'field_geo';
+  $handler->display->display_options['fields']['field_geo_1']['ui_name'] = 'Position Latitude';
+  $handler->display->display_options['fields']['field_geo_1']['label'] = '';
+  $handler->display->display_options['fields']['field_geo_1']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['field_geo_1']['hide_alter_empty'] = FALSE;
+  $handler->display->display_options['fields']['field_geo_1']['click_sort_column'] = 'lat';
+  $handler->display->display_options['fields']['field_geo_1']['type'] = 'geolocation_latitude';
+  $handler->display->display_options['fields']['field_geo_1']['settings'] = array(
+    'field_formatter_class' => '',
+  );
+  $handler->display->display_options['fields']['field_geo_1']['group_column'] = 'lat';
+  /* Field: Position Longitude */
+  $handler->display->display_options['fields']['field_geo_2']['id'] = 'field_geo_2';
+  $handler->display->display_options['fields']['field_geo_2']['table'] = 'field_data_field_geo';
+  $handler->display->display_options['fields']['field_geo_2']['field'] = 'field_geo';
+  $handler->display->display_options['fields']['field_geo_2']['ui_name'] = 'Position Longitude';
+  $handler->display->display_options['fields']['field_geo_2']['label'] = '';
+  $handler->display->display_options['fields']['field_geo_2']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['field_geo_2']['hide_alter_empty'] = FALSE;
+  $handler->display->display_options['fields']['field_geo_2']['click_sort_column'] = 'lng';
+  $handler->display->display_options['fields']['field_geo_2']['type'] = 'geolocation_longitude';
+  $handler->display->display_options['fields']['field_geo_2']['settings'] = array(
+    'field_formatter_class' => '',
+  );
+  $handler->display->display_options['fields']['field_geo_2']['group_column'] = 'lat';
+  /* Field: address */
+  $handler->display->display_options['fields']['field_address']['id'] = 'field_address';
+  $handler->display->display_options['fields']['field_address']['table'] = 'field_data_field_address';
+  $handler->display->display_options['fields']['field_address']['field'] = 'field_address';
+  $handler->display->display_options['fields']['field_address']['ui_name'] = 'address';
+  $handler->display->display_options['fields']['field_address']['label'] = '';
+  $handler->display->display_options['fields']['field_address']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['field_address']['element_default_classes'] = FALSE;
+  $handler->display->display_options['fields']['field_address']['type'] = 'text_plain';
+  $handler->display->display_options['fields']['field_address']['settings'] = array(
+    'field_formatter_class' => '',
+  );
+  /* Field: Path */
+  $handler->display->display_options['fields']['path']['id'] = 'path';
+  $handler->display->display_options['fields']['path']['table'] = 'node';
+  $handler->display->display_options['fields']['path']['field'] = 'path';
+  $handler->display->display_options['fields']['path']['ui_name'] = 'Path';
+  $handler->display->display_options['fields']['path']['label'] = '';
+  $handler->display->display_options['fields']['path']['element_label_colon'] = FALSE;
+  /* Field: Status Icon */
+  $handler->display->display_options['fields']['field_status_icon']['id'] = 'field_status_icon';
+  $handler->display->display_options['fields']['field_status_icon']['table'] = 'field_data_field_status_icon';
+  $handler->display->display_options['fields']['field_status_icon']['field'] = 'field_status_icon';
+  $handler->display->display_options['fields']['field_status_icon']['relationship'] = 'field_status_tid';
+  $handler->display->display_options['fields']['field_status_icon']['ui_name'] = 'Status Icon';
+  $handler->display->display_options['fields']['field_status_icon']['label'] = '';
+  $handler->display->display_options['fields']['field_status_icon']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['field_status_icon']['settings'] = array(
+    'field_formatter_class' => '',
+  );
+  /* Field: Category icon */
+  $handler->display->display_options['fields']['field_category_icon']['id'] = 'field_category_icon';
+  $handler->display->display_options['fields']['field_category_icon']['table'] = 'field_data_field_category_icon';
+  $handler->display->display_options['fields']['field_category_icon']['field'] = 'field_category_icon';
+  $handler->display->display_options['fields']['field_category_icon']['relationship'] = 'field_category_tid';
+  $handler->display->display_options['fields']['field_category_icon']['ui_name'] = 'Category icon';
+  $handler->display->display_options['fields']['field_category_icon']['label'] = '';
+  $handler->display->display_options['fields']['field_category_icon']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['field_category_icon']['settings'] = array(
+    'field_formatter_class' => '',
+  );
+  /* Field: Content: Nid */
+  $handler->display->display_options['fields']['nid']['id'] = 'nid';
+  $handler->display->display_options['fields']['nid']['table'] = 'node';
+  $handler->display->display_options['fields']['nid']['field'] = 'nid';
+  $handler->display->display_options['fields']['nid']['label'] = '';
+  $handler->display->display_options['fields']['nid']['element_label_colon'] = FALSE;
+  $handler->display->display_options['defaults']['filter_groups'] = FALSE;
+  $handler->display->display_options['defaults']['filters'] = FALSE;
+  /* Filter criterion: Content: Published */
+  $handler->display->display_options['filters']['status']['id'] = 'status';
+  $handler->display->display_options['filters']['status']['table'] = 'node';
+  $handler->display->display_options['filters']['status']['field'] = 'status';
+  $handler->display->display_options['filters']['status']['value'] = 1;
+  $handler->display->display_options['filters']['status']['group'] = 0;
+  $handler->display->display_options['filters']['status']['expose']['operator'] = FALSE;
+  /* Filter criterion: Content: Type */
+  $handler->display->display_options['filters']['type']['id'] = 'type';
+  $handler->display->display_options['filters']['type']['table'] = 'node';
+  $handler->display->display_options['filters']['type']['field'] = 'type';
+  $handler->display->display_options['filters']['type']['value'] = array(
+    'report' => 'report',
+  );
+  $handler->display->display_options['filters']['type']['group'] = '0';
+  /* Filter criterion: Content: Category (field_category) */
+  $handler->display->display_options['filters']['field_category_tid']['id'] = 'field_category_tid';
+  $handler->display->display_options['filters']['field_category_tid']['table'] = 'field_data_field_category';
+  $handler->display->display_options['filters']['field_category_tid']['field'] = 'field_category_tid';
+  $handler->display->display_options['filters']['field_category_tid']['group'] = '0';
+  $handler->display->display_options['filters']['field_category_tid']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['field_category_tid']['expose']['operator_id'] = 'field_category_tid_op';
+  $handler->display->display_options['filters']['field_category_tid']['expose']['label'] = 'Service';
+  $handler->display->display_options['filters']['field_category_tid']['expose']['operator'] = 'field_category_tid_op';
+  $handler->display->display_options['filters']['field_category_tid']['expose']['identifier'] = 'field_category_tid';
+  $handler->display->display_options['filters']['field_category_tid']['expose']['remember_roles'] = array(
+    2 => '2',
+    1 => 0,
+    3 => 0,
+  );
+  $handler->display->display_options['filters']['field_category_tid']['type'] = 'select';
+  $handler->display->display_options['filters']['field_category_tid']['vocabulary'] = 'category';
+  /* Filter criterion: Content: Status (field_status) */
+  $handler->display->display_options['filters']['field_status_tid']['id'] = 'field_status_tid';
+  $handler->display->display_options['filters']['field_status_tid']['table'] = 'field_data_field_status';
+  $handler->display->display_options['filters']['field_status_tid']['field'] = 'field_status_tid';
+  $handler->display->display_options['filters']['field_status_tid']['group'] = '0';
+  $handler->display->display_options['filters']['field_status_tid']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['field_status_tid']['expose']['operator_id'] = 'field_status_tid_op';
+  $handler->display->display_options['filters']['field_status_tid']['expose']['label'] = 'Status';
+  $handler->display->display_options['filters']['field_status_tid']['expose']['operator'] = 'field_status_tid_op';
+  $handler->display->display_options['filters']['field_status_tid']['expose']['identifier'] = 'field_status_tid';
+  $handler->display->display_options['filters']['field_status_tid']['type'] = 'select';
+  $handler->display->display_options['filters']['field_status_tid']['vocabulary'] = 'status';
+  $handler->display->display_options['path'] = 'reports/geojson/map';
   $translatables['markers'] = array(
     t('Master'),
     t('Reports Mark-a-Spot'),
@@ -886,6 +1041,7 @@ function mark_a_spot_views_default_views() {
     t('Sort by'),
     t('Asc'),
     t('Desc'),
+    t('Select any filter and click on Apply to see results'),
     t('Items per page'),
     t('- All -'),
     t('Offset'),
@@ -899,18 +1055,12 @@ function mark_a_spot_views_default_views() {
     t('title'),
     t('nid'),
     t('created'),
-    t('statusTitle'),
-    t('Status: [field_status]'),
     t('statusHex'),
     t('categoryHex'),
     t('positionLat'),
     t('positionLng'),
-    t('categoryId'),
     t('address'),
     t('path'),
-    t('userNickname'),
-    t('Gast'),
-    t('timestamp'),
     t('statusIcon'),
     t('categoryIcon'),
     t('Alle'),
@@ -923,7 +1073,6 @@ function mark_a_spot_views_default_views() {
     t('next Page ›'),
     t('last Page »'),
     t('No Results'),
-    t('Für diese Kategorie / Status haben wir keine aktuellen Beiträge'),
     t('[field_status]'),
     t('[field_category]'),
     t('<span class="submitted meta-info"> [created] </span>'),
@@ -936,7 +1085,9 @@ function mark_a_spot_views_default_views() {
     t('Anzahl an Kommentaren'),
     t('Category'),
     t('Feed'),
-    t('JSON View'),
+    t('GeoJSON List'),
+    t('Place your report (field_geo:lng)'),
+    t('GeoJSON Map'),
   );
   $export['markers'] = $view;
 

@@ -37,8 +37,9 @@ function markaspot_logic_validate($form, &$form_state) {
 
   // Transform cities into a readable string.
   if (count(array_keys($validate_cities)) > 1) {
-    $last_element = array_pop($validate_cities);
-    $area = implode(", ", $validate_cities);
+    $area_cities = $validate_cities;
+    $last_element = array_pop($area_cities);
+    $area = implode(", ", $area_cities);
     $area = $area . ' ' . t('or') . ' ' . $last_element;
   }
   else {
@@ -111,6 +112,7 @@ function markaspot_logic_page_build(&$page) {
       'markaspot_city' => variable_get('markaspot_logic_city'),
       'markaspot_ini_lat' => variable_get('markaspot_logic_ini_lat'),
       'markaspot_ini_lng' => variable_get('markaspot_logic_ini_lng'),
+      'markaspot_map_type' => variable_get('markaspot_logic_map_type'),
       'bbox_nw_lat' => variable_get('markaspot_logic_bbox_nw_lat'),
       'bbox_nw_lng' => variable_get('markaspot_logic_bbox_nw_lng'),
       'bbox_se_lat' => variable_get('markaspot_logic_bbox_se_lat'),
@@ -124,7 +126,7 @@ function markaspot_logic_page_build(&$page) {
   if (variable_get('markaspot_logic_map_type') == 1) {
     drupal_add_js(array(
       'mas' => array(
-        'cloudmade_api_key' => variable_get('markaspot_logic_cloudmade_api_key'),
+        'mapbox_map_id' => variable_get('markaspot_logic_mapbox_map_id'),
       ),
     ), 'setting');
   }
@@ -142,38 +144,38 @@ function markaspot_logic_page_build(&$page) {
 
   if (arg(0) == "list" || arg(0) == "map" || drupal_is_front_page() == TRUE) {
     drupal_add_js(drupal_get_path('profile', 'markaspot') . '/libraries/spin.js/spin.js', NULL);
+    drupal_add_js(drupal_get_path('profile', 'markaspot') . '/libraries/leaflet/leaflet.js');
+    drupal_add_js(drupal_get_path('module', 'markaspot_logic') . '/js/markers_leaflet.js');
+    drupal_add_js(drupal_get_path('profile', 'markaspot') . '/libraries/Leaflet.awesome-markers/dist/leaflet.awesome-markers.min.js', NULL);
+    drupal_add_js(drupal_get_path('profile', 'markaspot') . '/libraries/Leaflet.markercluster/dist/leaflet.markercluster.js', NULL);
+
+
+    drupal_add_css(drupal_get_path('profile', 'markaspot') . '/libraries/leaflet/leaflet.css');
+    drupal_add_css(drupal_get_path('profile', 'markaspot') . '/libraries/leaflet/leaflet.ie.css', array(
+      'group' => CSS_THEME,
+      'browsers' => array(
+        'IE' => 'lte IE 8',
+        '!IE' => FALSE,
+      ),
+    ));
+    drupal_add_css(drupal_get_path('profile', 'markaspot') . '/libraries/Leaflet.markercluster/dist/MarkerCluster.css');
+    drupal_add_css(drupal_get_path('profile', 'markaspot') . '/libraries/Leaflet.markercluster/dist/MarkerCluster.Default.css');
+    drupal_add_css(drupal_get_path('profile', 'markaspot') . '/libraries/Leaflet.markercluster/dist/MarkerCluster.Default.ie.css', array(
+      'group' => CSS_THEME,
+      'browsers' => array(
+        'IE' => 'lte IE 8',
+        '!IE' => FALSE,
+      ),
+    ));
+
 
     if (variable_get('markaspot_logic_map_type') == 0) {
-      drupal_add_js('https://maps.google.com/maps/api/js?sensor=true&v=3.13', 'external');
-      drupal_add_js(drupal_get_path('profile', 'markaspot') . '/libraries/markerclusterer/markerclusterer_compiled.js', NULL);
-      drupal_add_js(drupal_get_path('profile', 'markaspot') . '/libraries/mapiconmaker/mapiconmaker.js', NULL);
-      drupal_add_js(drupal_get_path('module', 'markaspot_logic') . '/js/markers_googlemaps.js', NULL);
+      drupal_add_js('https://maps.google.com/maps/api/js?sensor=true', 'external');
+      drupal_add_js(drupal_get_path('profile', 'markaspot') . '/libraries/leaflet-plugins/layer/tile/Google.js', NULL);
     }
-    else {
-      drupal_add_css(drupal_get_path('profile', 'markaspot') . '/libraries/leaflet/leaflet.css');
-      drupal_add_css(drupal_get_path('profile', 'markaspot') . '/libraries/leaflet/leaflet.ie.css', array(
-        'group' => CSS_THEME,
-        'browsers' => array(
-          'IE' => 'lte IE 8',
-          '!IE' => FALSE,
-        ),
-      ));
-      drupal_add_css(drupal_get_path('profile', 'markaspot') . '/libraries/Leaflet.markercluster/dist/MarkerCluster.css');
-      drupal_add_css(drupal_get_path('profile', 'markaspot') . '/libraries/Leaflet.markercluster/dist/MarkerCluster.Default.css');
-      drupal_add_css(drupal_get_path('profile', 'markaspot') . '/libraries/Leaflet.markercluster/dist/MarkerCluster.Default.ie.css', array(
-        'group' => CSS_THEME,
-        'browsers' => array(
-          'IE' => 'lte IE 8',
-          '!IE' => FALSE,
-        ),
-      ));
 
-      drupal_add_js(drupal_get_path('profile', 'markaspot') . '/libraries/leaflet/leaflet.js');
-      drupal_add_js(drupal_get_path('module', 'markaspot_logic') . '/js/markers_leaflet.js');
-      drupal_add_js(drupal_get_path('profile', 'markaspot') . '/libraries/Leaflet.awesome-markers/dist/leaflet.awesome-markers.min.js', NULL);
-      drupal_add_js(drupal_get_path('profile', 'markaspot') . '/libraries/Leaflet.markercluster/dist/leaflet.markercluster.js', NULL);
 
-    }
+
   }
 
   if (strstr(current_path(), 'system/mark_a_spot')) {
@@ -181,6 +183,19 @@ function markaspot_logic_page_build(&$page) {
     drupal_add_js(drupal_get_path('profile', 'markaspot') . '/libraries/leaflet/leaflet.js');
     drupal_add_js(drupal_get_path('profile', 'markaspot') . '/libraries/Leaflet.draw/dist/leaflet.draw.js', NULL);
     drupal_add_css(drupal_get_path('profile', 'markaspot') . '/libraries/Leaflet.draw/dist/leaflet.draw.css');
+
+    drupal_add_js(drupal_get_path('profile', 'markaspot') . '/libraries/leaflet-locatecontrol/src/L.Control.Locate.js', NULL);
+    drupal_add_css(drupal_get_path('profile', 'markaspot') . '/libraries/leaflet-locatecontrol/src/L.Control.Locate.css');
+    drupal_add_css(drupal_get_path('profile', 'markaspot') . '/libraries/leaflet-locatecontrol/src/L.Control.Locate.ie.css',     array(
+      'group' => CSS_THEME,
+      'browsers' => array(
+        'IE' => 'lte IE 8',
+        '!IE' => FALSE,
+      ),
+    ));
+
+
+
     drupal_add_js(drupal_get_path('module', 'markaspot_logic') . '/js/markaspot_logic.js');
     drupal_add_css(drupal_get_path('module', 'markaspot_logic') . '/css/markaspot_logic.css');
 
@@ -280,23 +295,23 @@ function markaspot_logic_admin_settings() {
     '#type' => 'radios',
     '#title' => t('Map type'),
     '#default_value' => variable_get('markaspot_logic_map_type', 0),
-    '#options' => array(t('Google Maps'), t('Cloudmade'), t('Other OSM')),
+    '#options' => array(t('Google Maps'), t('Mapbox'), t('Other OSM')),
   );
-  $form['types']['markaspot_logic_cloudmade_api_key'] = array(
+  $form['types']['markaspot_logic_mapbox_map_id'] = array(
     '#type' => 'textfield',
-    '#title' => t('Cloudmade API Key'),
-    '#default_value' => variable_get('markaspot_logic_cloudmade_api_key'),
-    '#description' => t('Insert your API Key here'),
+    '#title' => t('Mapbox Map ID'),
+    '#default_value' => variable_get('markaspot_logic_mapbox_map_id'),
+    '#description' => t('Insert your Map ID (e.g. markaspot.Ejs23a) here'),
   );
   $form['types']['osm']['markaspot_logic_osm_custom_tile_url'] = array(
     '#type' => 'textfield',
-    '#title' => t('Tile URL, if not from Cloudmade'),
+    '#title' => t('Tile URL, if not from Mapbox'),
     '#default_value' => variable_get('markaspot_logic_osm_custom_tile_url', markaspot_logic_defaults('markaspot_logic_osm_custom_tile_url')),
-    '#description' => t('If you want to use a different tile service or https with cloudmade, enter the url pattern, e.g. http://{s}.somedomain.com/your-api-key/{z}/{x}/{y}.png'),
+    '#description' => t('If you want to use a different tile service, enter the url pattern, e.g. http://{s}.somedomain.com/your-api-key/{z}/{x}/{y}.png'),
   );
   $form['types']['osm']['markaspot_logic_osm_custom_attribution'] = array(
     '#type' => 'textfield',
-    '#title' => t('Attribution Statement, if not from Cloudmade'),
+    '#title' => t('Attribution Statement, if not from Mapbox'),
     '#default_value' => variable_get('markaspot_logic_osm_custom_attribution', markaspot_logic_defaults('markaspot_logic_osm_custom_attribution')),
     '#description' => t('If you use an alternative Operator for serving tiles show special attribution'),
   );

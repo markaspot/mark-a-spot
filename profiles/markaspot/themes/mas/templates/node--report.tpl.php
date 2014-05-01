@@ -7,8 +7,11 @@
 <article id="node-<?php print $node->nid; ?>" class="<?php print $classes; ?> clearfix"<?php print $attributes; ?>>
 
   <?php
-  $category = $node->field_category[LANGUAGE_NONE][0]['taxonomy_term'];
-  $status   = $node->field_status[LANGUAGE_NONE][0]['taxonomy_term'];
+  // taxonomy_term_load($node->field_category[LANGUAGE_NONE][0]['taxonomy_term']['tid']);
+  $cat_tid    = $node->field_category[LANGUAGE_NONE][0]['tid'];
+  $status_tid = $node->field_status[LANGUAGE_NONE][0]['tid'];
+  $category = taxonomy_term_load($cat_tid);
+  $status   = taxonomy_term_load($status_tid);
   ?>
   <div class="row">
     <div class="col-md-6">

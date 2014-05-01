@@ -18,11 +18,9 @@
       var fields = settings.geolocationOsm.formatters;
       // Work on each map
       $.each(fields, function(instance, data) {
-        console.log(instance);
         var instanceSettings = data.settings;
         $.each(data.deltas, function(d, delta) {
 
-          console.log(instanceSettings, d);
           id = instance + "-" + d;
 
           $("#geolocation-osm-dynamic-" + id).once('geolocation-osm-dynamic-formatter', function () {

@@ -91,8 +91,8 @@ var opts = {
   hwaccel: <span id="opt-hwaccel" class="kwd">false</span>, // Whether to use hardware acceleration
   className: 'spinner', // The CSS class to assign to the spinner
   zIndex: 2e9, // The z-index (defaults to 2000000000)
-  top: 'auto', // Top position relative to parent in px
-  left: 'auto' // Left position relative to parent in px
+  top: '50%', // Top position relative to parent
+  left: '50%' // Left position relative to parent
 };
 var target = document.getElementById('foo');
 var spinner = new Spinner(opts).spin(target);
@@ -146,6 +146,10 @@ target.appendChild(spinner.el);
 
 <h2>Changes</h2>
 
+<h3 id="v2.0.1">Version 2.0.1 (24.04.2014)</h3>
+<ul>
+  <li>Position is now set even if now target is given. See <a href="https://github.com/fgnass/spin.js/issues/218">issue #218</a>. (Thanks <a href="https://github.com/tablatronix">tablatronix</a>)</li>
+</ul>
 <h3 id="v2.0.0">Version 2.0.0 (13.03.2014)</h3>
 <ul>
   <li>The Spinner is now absolutely positioned at top: 50% left: 50% by default. (Thanks <a href="https://github.com/steelywing">steelywing</a>)</li>
