@@ -854,7 +854,7 @@ function mark_a_spot_views_default_views() {
   $handler->display->display_options['path'] = 'reports/geojson';
 
   /* Display: GeoJSON Map */
-  $handler = $view->new_display('page', 'GeoJSON Map', 'page_3');
+  $handler = $view->new_display('page', 'GeoJSON Map', 'geojson_map');
   $handler->display->display_options['defaults']['style_plugin'] = FALSE;
   $handler->display->display_options['style_plugin'] = 'views_geojson';
   $handler->display->display_options['style_options']['data_source']['value'] = 'latlon';
@@ -1086,7 +1086,6 @@ function mark_a_spot_views_default_views() {
     t('Category'),
     t('Feed'),
     t('GeoJSON List'),
-    t('Place your report (field_geo:lng)'),
     t('GeoJSON Map'),
   );
   $export['markers'] = $view;

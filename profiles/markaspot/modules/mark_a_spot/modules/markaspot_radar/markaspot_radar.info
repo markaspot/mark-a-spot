@@ -5,8 +5,8 @@ package = Mark-a-Spot
 
 
 ; Information added by drush on 2014-05-01
-version = "7.x-2.4-beta+121-dev"
+version = "7.x-2.4-beta+122-dev"
 core = "7.x"
 project = "markaspot"
-datestamp = "1398955878"
+datestamp = "1398957880"
 
