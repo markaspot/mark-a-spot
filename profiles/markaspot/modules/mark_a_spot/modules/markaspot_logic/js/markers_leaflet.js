@@ -118,8 +118,15 @@ var markerLayer;
       markerLayer = new L.MarkerClusterGroup({disableClusteringAtZoom: 15, maxClusterRadius: 40 });
 
       uri = mas.uri.split('?');
-      url = Drupal.settings.basePath + 'reports/geojson/map?' + uri[1];
 
+      // Selecting view displays.
+      if (uri[0].search('map') != -1 || uri[0].search('home') != -1) {
+        // map view
+        url = Drupal.settings.basePath + 'reports/geojson/map?' + 'field_category_tid=' + categoryCond + '&field_status_tid=' + statusCond;
+      } else {
+        url = Drupal.settings.basePath + 'reports/geojson?' + uri[1];
+      }
+      
       // Spinner injection.
       var target = document.getElementById('map');
       var spinner = new Spinner().spin(target);
