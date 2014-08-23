@@ -231,7 +231,11 @@ body.toolbar-drawer {
 
 .region.region-footer {
   padding: 10px 15px;
-  color: #fff;
+  color: #666;
+}
+
+.page-map  .region-footer{
+  display:none;
 }
 
 /* Footer Menue */
@@ -266,14 +270,90 @@ body.page-map {
 
 .page-map .row.map-tools {
   position: absolute;
-  width: 100%;
-  top: 40px;
-  left: 0;
+  /* width: 100%; */
+  top: 120px;
+  left: 20px;
+  z-index: 3;
 }
 
+.page-map #map{
+  position:absolute;
+  z-index: 1;
+}
+
+.page-map a.map-menue,
+.page-map a.map-menue-all{
+  display: block;
+  padding: 10px 15px;
+  font-weight: 700;
+
+}
+
+.page-map li .map-menue-all.active{
+  background: #333;
+  color: #fff;
+}
+
+.map-menue.marker-category.col-FFA500.active {
+  background: #FFA500;
+  color: #fff;
+  border: 1px #fff;
+}
+
+.map-menue.marker-category.col-FF0000.active {
+  background: #FF0000;
+  color: #fff;
+  border: 1px #fff;
+}
+
+
+.map-menue.marker-category.col-57AAD9.active {
+  background: #57AAD9;
+  color: #fff;
+  border: 1px #fff;
+}
+
+.map-menue.marker-category.col-206298.active {
+  background: #206298;
+  color: #fff;
+  border: 1px #fff;
+}
+
+.map-menue.marker-category.col-FFA500 {
+  color: #FFA500;
+  background: #fff;
+}
+
+.map-menue.marker-category.col-FF0000 {
+  color: #FF0000;
+  background: #fff;
+}
+
+.map-menue.marker-category.col-57AAD9{
+  color: #57AAD9;
+  background: #fff;
+  border: 1px #fff;
+}
+
+.map-menue.marker-category.col-206298 {
+  color: #206298;
+  background: #fff;
+  border: 1px #fff;
+}
+
+.list-group-item {
+  position: relative;
+  display: block;
+  padding: 0;
+  margin-bottom: -1px;
+  background-color: #ffffff;
+  border: 1px solid #dddddd;
+}
+
+
 .row.map-tools aside {
-  width: 320px;
-  margin: 20px 100px;
+  /* width: 220px; */
+  /* margin: 80px 20px; */
 }
 
 .page-map .navbar-inner,
@@ -302,9 +382,8 @@ div.marker-status {
 span.marker-status,
 span.marker-category {
   display: inline-block;
-  width: 49%;
   font-size: 85%;
-  margin: 0 1px 0 0;
+  /* margin: 0 1px 0 0; */
 }
 
 .marker-status.col-5F9EA0,
@@ -314,10 +393,10 @@ span.marker-category {
   font-weight: 400;
 }
 
-.marker-status.col-ff6600,
-.marker-status.col-ff6600 a {
-  background: no-repeat scroll right center #ff6600;
-  color: yellow;
+.marker-status.col-FFA500,
+.marker-status.col-FFA500 a {
+  background: no-repeat scroll right center #FFA500;
+  color: orange;
   font-weight: 400;
 }
 
@@ -327,22 +406,16 @@ span.marker-category {
   color: green;
 }
 
-.marker-status.col-cc0000,
-.marker-status.col-cc0000 a {
-  background: no-repeat scroll right center #cc0000;
-  color: #fff;
+.marker-status.col-FF0000,
+.marker-status.col-FF0000 a {
+  background: no-repeat scroll right center #FF0000;
+  color: darkred;
 }
 
-.marker-status.col-ff6600,
-.marker-status.col-ff6600 a {
-  background: no-repeat scroll right center #ff6600;
-  color: yellow;
-}
-
-.marker-status.col-8fe83b,
-.marker-status.col-8fe83b a {
-  background: no-repeat scroll right center #8fe83b;
-  color: green;
+.marker-status.col-008000,
+.marker-status.col-008000 a {
+  background: no-repeat scroll right center #008000;
+  color: darkgreen;
 }
 
 .marker-status.col-CCCCCC,
@@ -448,8 +521,15 @@ span.marker-category {
 
 .page-map a.marker-status:hover,
 .page-map a.marker-category:hover {
-  color: #000;
+  /* color: #000; */
+  text-decoration: none
 }
+
+
+.page-map a span {
+  font-weight: normal
+}
+
 
 /* Jumbotrons
 -------------------------------------------------- */
@@ -475,17 +555,14 @@ span.marker-category {
 
 #page-header {
   height: 70px;
-  background: url('../images/logo-small.png') 15px 50% no-repeat;
+  /* background: url('../images/logo-small.png') 15px 50% no-repeat; */
 }
 
 .page-map #page-header {
   display: none;
 }
 
-.not-front .logo.navbar-btn.pull-left,
-.front .logo.navbar-btn.pull-left {
-  display: none;
-}
+
 
 .page-map .logo.navbar-btn.pull-left {
   display: block;
@@ -495,7 +572,7 @@ span.marker-category {
 
 #block-markaspot-logic-taxonomy-category,
 #block-markaspot-logic-taxonomy-status {
-  margin: 11px 40px 0 0;
+  margin: 0;
   background: none;
   opacity: 0.8;
   border: none;
@@ -505,6 +582,7 @@ span.marker-category {
   -o-transition: opacity 500ms ease-out;
   transition: opacity 500ms ease-out;
   float: left;
+  font-size: 15px
 }
 
 #block-markaspot-logic-taxonomy-category:hover,
@@ -560,13 +638,6 @@ span.marker-category {
 -------------------------------------------------- */
 
 /* Special class on .container surrounding .navbar, used for positioning it into place. */
-.front .navbar-wrapper {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 20;
-}
 
 
 .front .main-container.container.page {
@@ -579,7 +650,8 @@ span.marker-category {
   margin: 10px 0;
 }
 
-.front .page-header {
+.front .page-header,
+.page-node-add-report .page-header{
   display: none;
 }
 
@@ -702,7 +774,8 @@ input[type="color"] {
 }
 
 .geolocation-address .form-type-textfield {
-  width: 60%;
+  width: 50%;
+  margin: 0;
 }
 
 div#edit-field-geo-und-0-address label{
@@ -714,11 +787,11 @@ div#edit-field-geo-und-0-address label{
   background: rgba(255, 255, 255, 0.6);
   padding: 10px;
   z-index: 9;
-  margin: 10px;
+  margin: 0 10px;
   /* float:left; */
-  width: 75%;
   position: absolute;
   left: 50px;
+  height: 110px;
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
   border-radius: 3px;
@@ -733,19 +806,20 @@ div#edit-field-geo-und-0-address label{
 }
 
 .geolocation-help {
-  font-size: 0.9em;
+  font-size: 0.8em;
   color: #999;
-  background: #fff;
+  background: rgba(255, 255, 255, 0.6);
   padding: 10px;
   margin: 0;
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
   border-radius: 3px;
   position: absolute;
-  top: 262px;
-  z-index: 9;
-  width: 265px;
+  z-index: 9999;
+  top: 12px;
+  width: 136px;
   right: 10px;
+  height: 110px;
 }
 
 .geolocation-help:before {
@@ -762,6 +836,10 @@ div#edit-field-geo-und-0-address label{
   float: right;
 }
 
+span#geolocation-client-location-7-0 {
+  font-size: 1em;
+}
+
 .geolocation-map {
   height: 300px;
 }
@@ -770,12 +848,18 @@ div#edit-field-geo-und-0-address label{
   display: none;
 }
 
+div#medialink {
+  position: relative;
+  top: 34px;
+  left: 68%;
+}
+
 .fieldset-description,
 .description,
 .help-block {
   color: #999;
-  padding: 0 0 10px 0;
-  display: none;
+  padding: 0 0 10px 5px;
+  display: block;
 }
 
 .group-tab1 a {
@@ -791,6 +875,7 @@ div#edit-field-geo-und-0-address label{
   border: none;
   box-shadow: none;
   padding: 0;
+  display: none;
 }
 
 .geolocation-lng-item,
@@ -799,27 +884,22 @@ div#edit-field-geo-und-0-address label{
 }
 
 .mapheader {
-  color: #fff;
+  color: #000;
   text-align: center;
   text-shadow: 0 1px 3px rgba(0, 0, 0, .4), 0 0 30px rgba(0, 0, 0, .075);
-  /* IE9 SVG, needs conditional override of 'filter' to 'none' */
-  background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMTAwJSI+CiAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjMWU1Nzk5IiBzdG9wLW9wYWNpdHk9IjEiLz4KICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzdkYjllOCIgc3RvcC1vcGFjaXR5PSIwIi8+CiAgPC9saW5lYXJHcmFkaWVudD4KICA8cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSJ1cmwoI2dyYWQtdWNnZy1nZW5lcmF0ZWQpIiAvPgo8L3N2Zz4=);
-  background: -moz-linear-gradient(-45deg, rgba(30, 87, 153, 1) 0%, rgba(125, 185, 232, 0) 100%); /* FF3.6+ */
-  background: -webkit-gradient(linear, left top, right bottom, color-stop(0%, rgba(30, 87, 153, 1)), color-stop(100%, rgba(125, 185, 232, 0))); /* Chrome,Safari4+ */
-  background: -webkit-linear-gradient(-45deg, rgba(30, 87, 153, 1) 0%, rgba(125, 185, 232, 0) 100%); /* Chrome10+,Safari5.1+ */
-  background: -o-linear-gradient(-45deg, rgba(30, 87, 153, 1) 0%, rgba(125, 185, 232, 0) 100%); /* Opera 11.10+ */
-  background: -ms-linear-gradient(-45deg, rgba(30, 87, 153, 1) 0%, rgba(125, 185, 232, 0) 100%); /* IE10+ */
-  background: linear-gradient(135deg, rgba(30, 87, 153, 1) 0%, rgba(125, 185, 232, 0) 100%); /* W3C */
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#1e5799', endColorstr='#007db9e8', GradientType=1); /* IE6-8 fallback on horizontal gradient */
-  /*http://www.colorzilla.com/gradient-editor/*/
-  box-shadow: 0 2px 2px -2px #232323;
-  -moz-box-shadow: 0 1px 10px -2px #232323;
-  -webkit-box-shadow: 0 1px 10px -4px #232323;
+
+  background: -moz-linear-gradient(top,  rgba(229,229,229,0.65) 0%, rgba(198,198,198,0.7) 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(229,229,229,0.65)), color-stop(100%,rgba(198,198,198,0.7))); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top,  rgba(229,229,229,0.65) 0%,rgba(198,198,198,0.7) 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top,  rgba(229,229,229,0.65) 0%,rgba(198,198,198,0.7) 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top,  rgba(229,229,229,0.65) 0%,rgba(198,198,198,0.7) 100%); /* IE10+ */
+  background: linear-gradient(to bottom,  rgba(229,229,229,0.65) 0%,rgba(198,198,198,0.7) 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a6e5e5e5', endColorstr='#b3c6c6c6',GradientType=0 ); /* IE6-9 */
 
   position: relative;
   z-index: 42;
   height: 350px;
-  padding: 40px 0;
+  padding: 0px 0;
 }
 
 .admin-menu .mapheader {
@@ -830,7 +910,7 @@ div#edit-field-geo-und-0-address label{
   background: none repeat scroll 0 0 transparent;
   left: 0;
   position: absolute;
-  top: 70px;
+  /* top: 134px; */
   width: 100%;
   z-index: 39;
 }
@@ -839,16 +919,13 @@ div#edit-field-geo-und-0-address label{
   height: 348px;
 }
 
-.admin-menu #map_wrapper_splash {
-  top: 100px;
+div#geolocation-map-7-0 {
+  height: 400px!important;
 }
 
-.front .navbar-wrapper {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 50;
+
+.admin-menu #map_wrapper_splash {
+  top: 163px;
 }
 
 .list {
@@ -873,7 +950,7 @@ div.list a h3 {
 
 .page-map .navbar-wrapper {
   position: fixed;
-  z-index: 34;
+  z-index: 99999;
   margin-top: 0;
   left: 0;
   right: 0;
@@ -953,14 +1030,6 @@ div.list a h3 {
     padding-top: 0;
   }
 
-  .front .navbar-wrapper {
-    top: 60px;
-  }
-
-  .navbar-tray-open.navbar-horizontal .navbar-wrapper {
-    top: 80px;
-  }
-
   .stage h1 {
     font-size: 2.5em;
   }
@@ -992,10 +1061,6 @@ div.list a h3 {
 ------------------------- */
 @media (min-width: 768px) and (max-width: 979px) {
 
-  .front .navbar-wrapper {
-    top: 90px;
-  }
-
   /* Remove any padding from the body */
   body {
     padding-top: 0;
@@ -1015,7 +1080,9 @@ div.list a h3 {
 
   .page-map .row.map-tools {
     position: absolute;
-    top: 40px;
+    top: 120px;
+
+    left: 25px;
   }
 
   .jumbotron {
@@ -1028,10 +1095,20 @@ div.list a h3 {
 /* Tablet
 ------------------------- */
 @media (max-width: 767px) {
+
+
+  div.alert.alert-block.alert-danger {
+    position: absolute;
+    z-index: 10;
+    right: 18px;
+    top: 0px;
+    border: 1PX solid;
+  }
+
+
   /* Remove any padding from the body */
   body {
     padding-top: 0;
-    font-size: 120%;
   }
 
   #page-header {
@@ -1050,15 +1127,12 @@ div.list a h3 {
     padding-right: 15px;
   }
 
-  #edit-submit {
-    width: 100%;
-  }
 
   #map_wrapper_splash {
-    top: 0;
+    /* top: 0; */
   }
 
-  .not-front .logo.navbar-btn.pull-left,
+  .not-front .navbar-btn.pull-left,
   .front .logo.navbar-btn.pull-left {
     display: block;
   }
@@ -1086,6 +1160,8 @@ div.list a h3 {
     display: none;
   }
 
+
+
   .list,
   .add {
     margin: 10px;
@@ -1103,16 +1179,25 @@ div.list a h3 {
     display: block;
   }
 
+
+  div.leaflet-popup-content {
+    width: 250px!important;
+  }
+
+
+
   /* Tighten up footer */
   .footer {
-    margin: 0;
+    margin: 0px;
     padding-top: 0;
     padding-bottom: 0;
+    font-size: 0.7em;
+
   }
 
   .page-map .row.map-tools {
     position: absolute;
-    top: 40px;
+    top: 120px;
   }
 
   table td {
@@ -1128,15 +1213,50 @@ div.list a h3 {
   .panel-2col-stacked .panel-col-last .inside {
     margin: 0 0 1em 0;
   }
+
+  .geolocation-address {
+    width: 300px;
+  }
+  .geolocation-address input{
+    font-size: 12px
+  }
 }
 
 /* Landscape phones
 ------------------------- */
 @media (max-width: 480px) {
 
+  #edit-field-geo-und-0-address {
+    diplay:none;
+  }
+
+  .geolocation-help {
+    top: 5px;
+    width: 136px;
+    right: 5px;
+    height: 110px;
+  }
+
+  .main-container {
+    min-height: 380px;
+  }
+
   /* Change up some type stuff */
   h2 small {
     display: block;
+  }
+
+  div#geolocation-map-7-0 {
+    height: 300px!important;
+  }
+  .geolocation-address {
+    display:none
+  }
+  .geolocation-map {
+    margin: 0;
+  }
+  .geolocation-help {
+
   }
 
   .mapheader .btn {
@@ -1152,6 +1272,16 @@ div.list a h3 {
   .navbar-fixed-top,
   .navbar-fixed-bottom {
     position: fixed;
+  }
+
+  input#edit-field-geo-und-0-address-field {
+    font-size: 10px;
+  }
+  span#geolocation-address-geocode-7-0 {
+    font-size: 10px;
+  }
+  .nav-tabs > li > a {
+    font-size: 10px;
   }
 
   /* Container and Map Handling in List View */
@@ -1182,10 +1312,13 @@ div.list a h3 {
   }
 
   .page-map .row.map-tools {
-    position: absolute;
-    top: 40px;
+    top: 120px;
+    right: 24px;
+    left: inherit;
   }
-
+  .page-map .list-group-item a{
+    padding: 5px 10px
+  }
   /*narrow form styles*/
   #geolocation-address-8-0 {
     width: 100%;
@@ -1205,7 +1338,7 @@ div.list a h3 {
 }
 
 .tab-content {
-  padding: 10px 3px;
+  padding: 0px 3px;
 }
 
 .tab-content > .tab-pane {
@@ -1236,6 +1369,7 @@ div.list a h3 {
   -moz-animation-fill-mode: both;
   -o-animation-fill-mode: both;
   animation-fill-mode: both;
+  /* min-height: 350px; */
 }
 
 @-webkit-keyframes fadeInUp {
@@ -1291,4 +1425,94 @@ div.list a h3 {
   -moz-animation-name: fadeInUp;
   -o-animation-name: fadeInUp;
   animation-name: fadeInUp;
+}
+
+
+div.field-geo-radar {
+  display: none;
+}
+
+.navbar-btn {
+  margin-top: 2px;
+  margin-bottom: 4px;
+}
+
+.page-node-add-report .region.region-help.alert.alert-info {
+  display: none;
+}
+
+li.list-group-item:hover {
+  background: #f2f2f2;
+}
+
+div#edit-field-geo-und-0-address {
+  margin: 0;
+}
+
+div#edit-actions {
+  text-align: right;
+}
+p.help-block {
+  padding: 10px 0;
+  display: block;
+  margin: 0;
+  color: #666;
+}
+div.image-widget-data {
+  width: 300px;
+}
+input#edit-field-image-und-0-upload {
+  display:inline;
+  width: 130px;
+  margin:0 10px;
+}
+
+.popover{
+  max-width:300px;
+}
+
+.popover-report{
+  max-width:300px;
+  min-height: 170px;
+}
+
+.marker-cluster-large div {
+  background-color: rgba(83, 83, 83, 0.9);
+}
+
+.marker-cluster-large  {
+  background-color: rgba(83, 83, 83, 0.8);
+  color: #fff;
+}
+
+.marker-cluster-medium div {
+  background-color: rgba(54, 54, 54, 0.7);
+}
+
+.marker-cluster-medium  {
+  background-color: rgba(83, 83, 83, 0.6);
+  color: #fff;
+}
+
+.marker-cluster-small div {
+  background-color: rgba(51, 51, 51, 0.50);
+}
+
+.marker-cluster-small  {
+  background-color: rgba(44, 44, 44, 0.40);
+  color: #fff;
+}
+
+.list .btn-default,
+.add .btn-default {
+  opacity: 0.8;
+}
+
+div.col-md-6.jumbotron {
+  background: #fff;
+  border: 1px solid #f8f8f8;
+}
+
+.leaflet-marker-pane i.icon {
+  font-size: 16px;
 }

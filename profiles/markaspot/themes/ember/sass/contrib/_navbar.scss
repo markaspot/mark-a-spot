@@ -1,0 +1,8 @@
+/* Ember overrides of navbar CSS */
+
+// Import the common includes for all files.
+@import "base";
+
+#navbar-administration {
+	font-family: $font-sansserif;
+}

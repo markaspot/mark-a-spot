@@ -1,6 +1,5 @@
 /* Compatible with Leaflet 0.7 */
 
-@import url('font/locate-fa.woff');
 @import url('css/locate-fa.css');
 @import url('css/animation.css');
 
@@ -17,7 +16,7 @@
 }
 
 .leaflet-control-locate.active a {
-	color: #265B86;
+	color: #2074B6;
 }
 
 .leaflet-control-locate.active.following a {

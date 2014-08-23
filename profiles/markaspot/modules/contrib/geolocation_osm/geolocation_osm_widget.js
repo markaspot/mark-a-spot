@@ -49,9 +49,14 @@
 
           var city = result.address.city ? result.address.city : "";
           city = city ? city : result.address.village;
+          city = city ? city : result.address.town;
+          city = city ? city : result.address.hamlet;
+          city = city ? city : result.address.state_district;
 
           street      = result.address.house_number ? street + ' ' + result.address.house_number : street;
           var postcode    = result.address.postcode ? result.address.postcode : "";
+
+          // Need Adress switch for geocoding
           var address = street + ', ' + postcode + ' ' + city;
 
           $('#edit-field-geo-und-0-address-field').val(address);
@@ -96,8 +101,14 @@
 
         street = result[0].address.house_number ? street + ' ' + result[0].address.house_number : street;
 
+        var city = result[0].address.city ? result[0].address.city : "";
+        city = city ? city : result[0].address.town;
+        city = city ? city : result[0].address.village;
+        city = city ? city : result[0].address.hamlet;
+        city = city ? city : result[0].address.state_district;
+
         postcode = result[0].address.postcode ? result[0].address.postcode + " " : "";
-        var address = street + ', ' + postcode + result[0].address.city;
+        var address = street + ', ' + postcode + city;
 
         $('#edit-field-geo-und-0-address-field').val(address);
         $('#geolocation-lat-' + i + ' input').attr('value', result[0].lat);
@@ -210,7 +221,7 @@
       alert(Drupal.t("Your browser doesn't support geolocation. We've placed you in Siberia."));
       initialLocation = siberia;
     }
-    Drupal.geolocation.maps[i].setView(initialLocation);
+    Drupal.geolocation.maps[i].setView(initialLocation, 16);
     Drupal.geolocation.setMapMarker(initialLocation, i);
   }
 
@@ -253,7 +264,7 @@
             $('#geolocation-client-location-' + i + ':not(.geolocation-osm-osm-processed)').addClass('geolocation-osm-osm-processed').click(function () {
               navigator.geolocation.getCurrentPosition(function (position) {
                 latLng = new L.LatLng(position.coords.latitude, position.coords.longitude);
-                Drupal.geolocation.maps[i].setView(latLng);
+                // Drupal.geolocation.maps[i].setView(latLng);
                 Drupal.geolocation.setMapMarker(latLng, i);
                 Drupal.geolocation.codeLatLng(latLng, i, 'geocoder');
               }, function () {
@@ -273,15 +284,16 @@
           var osmUrl = tile_server,
             osmAttribution = 'Map data &copy; 2014 OpenStreetMap contributors, Imagery &copy; 2014 osm',
             osm = new L.TileLayer(osmUrl, {maxZoom: 18, attribution: osmAttribution});
+          Drupal.geolocation.maps[i].setZoom(Drupal.settings.geolocation.settings.map_zoomlevel);
 
-          Drupal.geolocation.maps[i].setView(latLng, 16).addLayer(osm);
-          Drupal.geolocation.maps[i].setZoom(16);
+          Drupal.geolocation.maps[i].setView(latLng).addLayer(osm);
 
           if (lat && lng) {
             // Set initial marker
             Drupal.geolocation.codeLatLng(latLng, i, 'geocoder');
             Drupal.geolocation.setMapMarker(latLng, i);
           }
+
 
           Drupal.geolocation.maps[i].on('click', function (e) {
             // console.log(e);

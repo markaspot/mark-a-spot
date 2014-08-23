@@ -44,13 +44,17 @@
 .secondary a,
 .secondary a:link,
 .secondary a:visited {
-  color: #848484;
+  color: #999999;
 }
 .primary a:active, .primary a.active, .primary a:hover,
 .secondary a:active,
 .secondary a.active,
 .secondary a:hover {
   color: #333333;
+}
+.primary a:hover,
+.secondary a:hover {
+  text-decoration: none;
 }
 
 .primary li {
@@ -92,16 +96,16 @@
   /* LTR */
 }
 .menu .expanded {
-  list-style-image: url('../images/menu-expanded.png?1388162849');
+  list-style-image: url('../images/menu-expanded.png?1399128626');
   list-style-type: circle;
 }
 .menu .collapsed {
-  list-style-image: url('../images/menu-collapsed.png?1388162849');
+  list-style-image: url('../images/menu-collapsed.png?1399128626');
   /* LTR */
   list-style-type: disc;
 }
 .menu .leaf {
-  list-style-image: url('../images/menu-leaf.png?1388162849');
+  list-style-image: url('../images/menu-leaf.png?1399128626');
   list-style-type: square;
 }
 .menu .active {
@@ -154,6 +158,11 @@ td.menu-disabled {
 #branding .secondary {
   margin-top: 0;
   margin-bottom: 0;
+}
+#branding .primary a,
+#branding .secondary a {
+  color: #aaa;
+  /* todo: change in ux styleguide and remove here */
 }
 #branding .primary > [class*="active"] a,
 #branding .primary > :hover a,

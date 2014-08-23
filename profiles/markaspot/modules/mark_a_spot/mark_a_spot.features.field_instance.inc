@@ -1097,7 +1097,20 @@ function mark_a_spot_field_default_field_instances() {
     'bundle' => 'status',
     'default_value' => NULL,
     'deleted' => 0,
-    'description' => '',
+    'description' => 'darkred : 8B0000
+orange : FFA500
+green : 008000
+darkgreen : 006400
+blue : 0000FF
+darkblue : 00008B
+purple : 800080
+darkpurple : 871F78
+cadetblue : 5F9EA0
+lightgray : D3D3D3
+gray : 808080
+black : 000000
+beige : F5F5DC
+white : 5F9EA0',
     'display' => array(
       'default' => array(
         'label' => 'hidden',
@@ -1217,6 +1230,20 @@ function mark_a_spot_field_default_field_instances() {
   t('categoryHex');
   t('categoryId');
   t('category_icon');
+  t('darkred : 8B0000
+orange : FFA500
+green : 008000
+darkgreen : 006400
+blue : 0000FF
+darkblue : 00008B
+purple : 800080
+darkpurple : 871F78
+cadetblue : 5F9EA0
+lightgray : D3D3D3
+gray : 808080
+black : 000000
+beige : F5F5DC
+white : 5F9EA0');
   t('hash');
   t('keywords');
   t('statusHex');

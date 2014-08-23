@@ -57,3 +57,23 @@ function mas_preprocess_comment(&$variables) {
     $variables['classes_array'][] = "management-comment";
   }
 }
+
+/**
+ * Implements hook_form_alter().
+ */
+function mas_form_report_node_form_alter(&$form, &$form_state, $form_id) {
+  $form['actions']['photo'] = array(
+    '#type' => 'button',
+    '#value' => '<i class="glyphicon glyphicon-camera"></i> ' . t('Add Photo'),
+    '#weight' => 0,
+    '#executes_submit_callback' => TRUE,
+    '#submit' => FALSE,
+  );
+}
+
+/**
+ * Implements hook_field_widget_form_alter().
+ */
+function mas_field_widget_geolocation_osm_form_alter(&$element, &$form_state, $context) {
+  $element['address']['#description'] = t('Enter an adress.');
+}

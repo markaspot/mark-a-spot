@@ -31,4 +31,34 @@ Drupal.behaviors.BootstrapFieldgroup = {
   }
 };
 
+/**
+ * Implements Drupal.FieldGroup.processHook().
+ */
+Drupal.FieldGroup = Drupal.FieldGroup || {};
+Drupal.FieldGroup.Effects = Drupal.FieldGroup.Effects || {};
+Drupal.FieldGroup.Effects.processBootstrap_Fieldgroup_Nav = {
+  execute: function (context, settings, type) {
+    
+    if (type == 'form') {
+      
+      // Add required fields mark to any element containing required fields
+      $('ul.nav', context).once('fieldgroup-effects', function(i) {
+        
+        $('li', this).each(function() {
+          
+          if ($(this).is('.required-fields')) {
+            
+            var $link = $('a', this);
+            var $group = $(this).closest('.bootstrap-nav-wrapper');
+            var $pane = $('.tab-content', $group).find($link.attr('href'));
+            if ($pane.find('.form-required').length > 0) {
+              $link.append(' ').append($('.form-required').eq(0).clone());
+            }
+          }
+        });
+      });
+    }
+  }
+};
+
 })(jQuery);

@@ -14,7 +14,7 @@
   padding: 0.70711em;
   border-width: 1px;
   border-style: solid;
-  border-color: #cccccc;
+  border-color: #dddddd;
 }
 [dir="ltr"] .messages {
   border-left-width: 0.35355em;
@@ -87,7 +87,7 @@
 }
 .status:before,
 .ok:before {
-  background-image: url('../images/success.svg?1388162849');
+  background-image: url('../images/success.svg?1399128626');
 }
 
 /* Specific styles for the warning message. */
@@ -101,7 +101,7 @@
   border-right-color: #f79521;
 }
 .warning:before {
-  background-image: url('../images/warning.svg?1388162849');
+  background-image: url('../images/warning.svg?1399128626');
 }
 
 /* Specific styles for the error message. */
@@ -115,7 +115,7 @@
   border-right-color: #cb2026;
 }
 .error:before {
-  background-image: url('../images/error.svg?1388162849');
+  background-image: url('../images/error.svg?1399128626');
 }
 
 /* Report message styles. */

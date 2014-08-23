@@ -9,6 +9,9 @@
 #branding {
   %tabs-primary,
   %tabs-secondary {
+    a {
+        color: #aaa; /* todo: change in ux styleguide and remove here */
+      }
     margin: {
       top: 0;
       bottom: 0;

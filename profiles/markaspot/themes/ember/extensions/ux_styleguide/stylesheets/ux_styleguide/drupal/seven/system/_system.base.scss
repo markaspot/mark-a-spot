@@ -37,20 +37,20 @@ html.js {
     background: {
       image: image-url("throbber.gif");
       repeat: no-repeat;
-      size: 2em;
+      size: 1.1em;
     }
     @include single-transition(background-color, .2s);
   }
 
   &[dir="ltr"] {
     .form-autocomplete {
-      background-position: 100% .6em; /* LTR */
+      background-position: 100% .65em; /* LTR */
     }
   }
 
   &[dir="rtl"] {
     .form-autocomplete {
-      background-position: $rhythm-space .6em; /* LTR */
+      background-position: $rhythm-space .65em; /* LTR */
     }
   }
 
@@ -60,13 +60,13 @@ html.js {
 
   &[dir="ltr"] {
     .throbbing {
-      background-position: 100% -2em; /* LTR */
+      background-position: 100% -.85em; /* LTR */
     }
   }
 
   &[dir="rtl"] {
     .throbbing {
-      background-position: $rhythm-space -2em; /* LTR */
+      background-position: $rhythm-space -.85em; /* LTR */
     }
   }
 }
@@ -80,6 +80,7 @@ html.js {
   .collapsed {
     height: $rhythm-space;
     margin-bottom: $rhythm-space * 2;
+    border-color: transparent;
 
     .fieldset-wrapper {
       display: none;
@@ -88,6 +89,7 @@ html.js {
 
   .collapsible {
     position: relative;
+    @include single-transition(border-color, .4s);
 
     .fieldset-legend {
       display: block;
@@ -129,10 +131,8 @@ body.drag {
 
 .draggable {
   td {
-    vertical-align: top;
-
     &:first-child {
-      padding-left: ($rhythm-space-short + ms(1));
+      padding-left: 0;
     }
   }
 }
@@ -143,10 +143,9 @@ body.drag {
   &,
   &:link,
   &:visited {
-    color: $color-link;
+    color: $color-border;
   }
 
-  .drag &,
   &:hover,
   &:active,
   &:focus {
@@ -154,36 +153,32 @@ body.drag {
   }
 
   .draggable & {
-    display: block;
-    float: left;
-    margin-top: $rhythm-space;
-    margin-left: -(($rhythm-space-short + ms(1)));
-    width: 0;
-    overflow: hidden;
     cursor: move;
     text-decoration: none;
-    @include opacity(0);
-    @include transition-property(width opacity);
-    @include transition-duration(.4s);
-  }
-
-  .draggable:hover &,
-  .draggable.drag & {
-    width: ms(1);
-    @include opacity(1);
   }
 
   .handle {
+    display: inline-block;
+    vertical-align: middle;
+
+    [dir="ltr"] & {
+      margin: {
+        right: $rhythm-space-short;
+        left: $rhythm-space;
+      }
+    }
+
+    [dir="rtl"] & {
+      margin: {
+        right: $rhythm-space;
+        left: $rhythm-space-short;
+      }
+    }
+
     &:before {
-      display: block;
-      content: "\283f \2836";
-      @include word-break(break-all);
-      @include box-sizing(border-box);
-      padding: .25em 0;
-      white-space: normal;
-      line-height: .523em;
+      line-height: 1em;
       font-size: ms(1);
-      width: 1em;
+      content: "\2261";
     }
   }
 }

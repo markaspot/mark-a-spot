@@ -199,6 +199,15 @@ function markaspot_log_node_update($node) {
 }
 
 /**
+ * Implements hook_node_delete().
+ */
+function markaspot_log_node_delete($node) {
+  $nid = $node->nid;
+  db_delete('markaspot_log')->condition('nid', $nid)->execute();
+}
+
+
+/**
  * Implements hook_comment_presave().
  */
 function markaspot_log_comment_presave($comment) {

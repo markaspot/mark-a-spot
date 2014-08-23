@@ -10,6 +10,10 @@ L.Control.Locate = L.Control.extend({
         drawCircle: true,
         follow: false,  // follow with zoom and pan the user's location
         stopFollowingOnDrag: false, // if follow is true, stop following when map is dragged (deprecated)
+        // if true locate control remains active on click even if the user's location is in view.
+        // clicking control will just pan to location
+        remainActive: false,
+        markerClass: L.circleMarker, // L.circleMarker or L.marker
         // range circle
         circleStyle: {
             color: '#136AEC',
@@ -34,7 +38,7 @@ L.Control.Locate = L.Control.extend({
             //color: '#FFA500',
             //fillColor: '#FFB000'
         },
-        icon: 'icon-location',  // icon-locate or icon-direction
+        icon: 'icon-location',  // icon-location or icon-direction
         iconLoading: 'icon-spinner animate-spin',
         circlePadding: [0, 0],
         metric: true,
@@ -46,11 +50,12 @@ L.Control.Locate = L.Control.extend({
         onLocationOutsideMapBounds: function(control) {
             // this event is repeatedly called when the location changes
             control.stopLocate();
-            alert(context.options.strings.outsideMapBoundsMsg);
+            alert(control.options.strings.outsideMapBoundsMsg);
         },
         setView: true, // automatically sets the map view to the user's location
         // keep the current map zoom level when displaying the user's location. (if 'false', use maxZoom)
         keepCurrentZoomLevel: false,
+        showPopup: true, // display a popup when the user click on the inner marker
         strings: {
             title: "Show me where I am",
             popup: "You are within {distance} {unit} from this point",
@@ -94,8 +99,8 @@ L.Control.Locate = L.Control.extend({
             .on(link, 'click', L.DomEvent.stopPropagation)
             .on(link, 'click', L.DomEvent.preventDefault)
             .on(link, 'click', function() {
-                if (self._active && (self._event === undefined || map.getBounds().contains(self._event.latlng) || !self.options.setView ||
-                    isOutsideMapBounds())) {
+                var shouldStop = (self._event === undefined || map.getBounds().contains(self._event.latlng) || !self.options.setView || isOutsideMapBounds())
+                if (!self.options.remainActive && (self._active && shouldStop)) {
                     stopLocate();
                 } else {
                     locate();
@@ -157,7 +162,7 @@ L.Control.Locate = L.Control.extend({
             if (self.options.stopFollowingOnDrag) {
                 map.off('dragstart', stopFollowing);
             }
-            visualizeLocation();
+            setContainerStyle();
         };
 
         var isOutsideMapBounds = function () {
@@ -221,20 +226,26 @@ L.Control.Locate = L.Control.extend({
                 mStyle = self.options.markerStyle;
             }
 
-            var t = self.options.strings.popup;
-            if (!self._circleMarker) {
-                self._circleMarker = L.circleMarker(self._event.latlng, mStyle)
-                    .bindPopup(L.Util.template(t, {distance: distance, unit: unit}))
+            if (!self._marker) {
+                self._marker = self.options.markerClass(self._event.latlng, mStyle)
                     .addTo(self._layer);
             } else {
-                self._circleMarker.setLatLng(self._event.latlng)
-                    .bindPopup(L.Util.template(t, {distance: distance, unit: unit}))
-                    ._popup.setLatLng(self._event.latlng);
+                self._marker.setLatLng(self._event.latlng);
                 for (o in mStyle) {
-                    self._circleMarker.options[o] = mStyle[o];
+                    self._marker.options[o] = mStyle[o];
                 }
             }
 
+			var t = self.options.strings.popup;
+            if (self.options.showPopup && t) {
+              self._marker.bindPopup(L.Util.template(t, {distance: distance, unit: unit}))
+                  ._popup.setLatLng(self._event.latlng);
+            }
+
+            setContainerStyle();
+        };
+
+        var setContainerStyle = function() {
             if (!self._container)
                 return;
             if (self._following) {
@@ -264,7 +275,7 @@ L.Control.Locate = L.Control.extend({
                 L.DomUtil.removeClasses(link, self.options.iconLoading);
                 L.DomUtil.addClasses(link, self.options.icon);
             }
-        }
+        };
 
         var resetVariables = function() {
             self._active = false;
@@ -287,7 +298,7 @@ L.Control.Locate = L.Control.extend({
             resetVariables();
 
             self._layer.clearLayers();
-            self._circleMarker = undefined;
+            self._marker = undefined;
             self._circle = undefined;
         };
 
@@ -335,6 +346,6 @@ L.control.locate = function (options) {
     });
   };
 
-  L.DomUtil.addClasses = function(el, names) { LDomUtilApplyClassesMethod('addClass', el, names); }
-  L.DomUtil.removeClasses = function(el, names) { LDomUtilApplyClassesMethod('removeClass', el, names); }
+  L.DomUtil.addClasses = function(el, names) { LDomUtilApplyClassesMethod('addClass', el, names); };
+  L.DomUtil.removeClasses = function(el, names) { LDomUtilApplyClassesMethod('removeClass', el, names); };
 })();

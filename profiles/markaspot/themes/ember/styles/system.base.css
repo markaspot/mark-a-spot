@@ -31,31 +31,31 @@
 
 /* Animated throbber */
 html.js .form-autocomplete {
-  background-image: url('../images/throbber.gif?1388516670');
+  background-image: url('../images/throbber.gif?1402419892');
   background-repeat: no-repeat;
-  background-size: 2em;
+  background-size: 1.1em;
   -webkit-transition: background-color 0.2s;
   -moz-transition: background-color 0.2s;
   -o-transition: background-color 0.2s;
   transition: background-color 0.2s;
 }
 html.js[dir="ltr"] .form-autocomplete {
-  background-position: 100% .6em;
+  background-position: 100% .65em;
   /* LTR */
 }
 html.js[dir="rtl"] .form-autocomplete {
-  background-position: 0.70711em 0.6em;
+  background-position: 0.70711em 0.65em;
   /* LTR */
 }
 html.js .throbbing {
   background-color: #e9f6fc;
 }
 html.js[dir="ltr"] .throbbing {
-  background-position: 100% -2em;
+  background-position: 100% -.85em;
   /* LTR */
 }
 html.js[dir="rtl"] .throbbing {
-  background-position: 0.70711em -2em;
+  background-position: 0.70711em -0.85em;
   /* LTR */
 }
 
@@ -67,12 +67,17 @@ html.js[dir="rtl"] .throbbing {
 html.js .collapsed {
   height: 0.70711em;
   margin-bottom: 1.41421em;
+  border-color: transparent;
 }
 html.js .collapsed .fieldset-wrapper {
   display: none;
 }
 html.js .collapsible {
   position: relative;
+  -webkit-transition: border-color 0.4s;
+  -moz-transition: border-color 0.4s;
+  -o-transition: border-color 0.4s;
+  transition: border-color 0.4s;
 }
 html.js .collapsible .fieldset-legend {
   display: block;
@@ -92,7 +97,7 @@ html.js .collapsible .fieldset-legend {
   box-sizing: border-box;
 }
 .form-textarea-wrapper .grippie {
-  background: #eeeeee url('../images/grippie.png?1388516670') no-repeat center 2px;
+  background: #eeeeee url('../images/grippie.png?1402419892') no-repeat center 2px;
   border: 1px solid #ddd;
   border-top-width: 0;
   cursor: s-resize;
@@ -109,61 +114,39 @@ body.drag {
   cursor: move;
 }
 
-.draggable td {
-  vertical-align: top;
-}
 .draggable td:first-child {
-  padding-left: 1.85355em;
+  padding-left: 0;
 }
 
 .tabledrag-handle {
   text-decoration: none;
 }
 .tabledrag-handle, .tabledrag-handle:link, .tabledrag-handle:visited {
-  color: #2fa6e5;
+  color: #dddddd;
 }
-.drag .tabledrag-handle, .tabledrag-handle:hover, .tabledrag-handle:active, .tabledrag-handle:focus {
+.tabledrag-handle:hover, .tabledrag-handle:active, .tabledrag-handle:focus {
   color: #f05724;
 }
 .draggable .tabledrag-handle {
-  display: block;
-  float: left;
-  margin-top: 0.70711em;
-  margin-left: -1.85355em;
-  width: 0;
-  overflow: hidden;
   cursor: move;
   text-decoration: none;
-  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=0);
-  opacity: 0;
-  -webkit-transition-property: width, opacity;
-  -moz-transition-property: width, opacity;
-  -o-transition-property: width, opacity;
-  transition-property: width opacity;
-  -webkit-transition-duration: 0.4s;
-  -moz-transition-duration: 0.4s;
-  -o-transition-duration: 0.4s;
-  transition-duration: 0.4s;
 }
-.draggable:hover .tabledrag-handle, .draggable.drag .tabledrag-handle {
-  width: 1.5em;
-  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=100);
-  opacity: 1;
+.tabledrag-handle .handle {
+  display: inline-block;
+  vertical-align: middle;
+}
+[dir="ltr"] .tabledrag-handle .handle {
+  margin-right: 0.35355em;
+  margin-left: 0.70711em;
+}
+[dir="rtl"] .tabledrag-handle .handle {
+  margin-right: 0.70711em;
+  margin-left: 0.35355em;
 }
 .tabledrag-handle .handle:before {
-  display: block;
-  content: "\283f \2836";
-  -ms-word-break: break-all;
-  word-break: break-all;
-  word-break: break-word;
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
-  padding: .25em 0;
-  white-space: normal;
-  line-height: .523em;
+  line-height: 1em;
   font-size: 1.5em;
-  width: 1em;
+  content: "\2261";
 }
 
 .tabledrag-handle-hover .handle {
@@ -175,7 +158,7 @@ body.drag {
   width: 1em;
   vertical-align: baseline;
   font-family: Times, serif;
-  color: #cccccc;
+  color: #dddddd;
 }
 [dir="ltr"] .indentation {
   text-align: left;
@@ -235,7 +218,7 @@ body.drag {
   margin: 0.70711em 0;
 }
 .progress .bar {
-  border: 1px solid #cccccc;
+  border: 1px solid #dddddd;
 }
 .progress .filled {
   background-color: #f9f9f9;
@@ -255,7 +238,7 @@ body.drag {
   display: inline-block;
 }
 .ajax-progress .throbber {
-  background: transparent url('../images/throbber.gif?1388516670') no-repeat 0px -18px;
+  background: transparent url('../images/throbber.gif?1402419892') no-repeat 0px -18px;
   height: 15px;
   margin: 0.35355em;
   width: 15px;

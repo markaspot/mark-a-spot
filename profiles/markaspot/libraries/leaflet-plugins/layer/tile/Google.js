@@ -56,17 +56,15 @@ L.Google = L.Class.extend({
 	},
 
 	onRemove: function(map) {
-		this._map._container.removeChild(this._container);
-		//this._container = null;
+		map._container.removeChild(this._container);
 
-		this._map.off('viewreset', this._resetCallback, this);
+		map.off('viewreset', this._resetCallback, this);
 
-		this._map.off('move', this._update, this);
+		map.off('move', this._update, this);
 
-		this._map.off('zoomanim', this._handleZoomAnim, this);
+		map.off('zoomanim', this._handleZoomAnim, this);
 
 		map._controlCorners.bottomright.style.marginBottom = '0em';
-		//this._map.off('moveend', this._update, this);
 	},
 
 	getAttribution: function() {
@@ -126,6 +124,8 @@ L.Google = L.Class.extend({
 
 		google.maps.event.addListenerOnce(map, 'idle',
 			function() { _this._checkZoomLevels(); });
+		//Reporting that map-object was initialized.
+		this.fire('MapObjectInitialized', { mapObject: map });
 	},
 
 	_checkZoomLevels: function() {
@@ -150,14 +150,13 @@ L.Google = L.Class.extend({
 		if (!this._google) return;
 		this._resize();
 
-		var center = e && e.latlng ? e.latlng : this._map.getCenter();
+		var center = this._map.getCenter();
 		var _center = new google.maps.LatLng(center.lat, center.lng);
 
 		this._google.setCenter(_center);
-		this._google.setZoom(this._map.getZoom());
+		this._google.setZoom(Math.round(this._map.getZoom()));
 
 		this._checkZoomLevels();
-		//this._google.fitBounds(google_bounds);
 	},
 
 	_resize: function() {
@@ -175,7 +174,7 @@ L.Google = L.Class.extend({
 		var _center = new google.maps.LatLng(center.lat, center.lng);
 
 		this._google.setCenter(_center);
-		this._google.setZoom(e.zoom);
+		this._google.setZoom(Math.round(e.zoom));
 	},
 
 

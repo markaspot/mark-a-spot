@@ -1,122 +1,52 @@
-/* 
-   Optimal text line length for legibility is 65-75 characters. 
-   I add an extra 10 to compensate for the fact that ex 
-   (the height of the lower case "x", usually equal to it's width 
-   and therefor an average character) is narrower than the width of 
-   an uppercase letter and any given line will contain a few of them.
-   Apply in the style.scss file using "max-width" 
-*/
 /**
- * Override of misc/vertical-tabs.css.
+ * Override of responsive vertical tabs module css/vertical-tabs.css.
  */
-div.vertical-tabs {
-  background: white url(../images/fc.png) repeat-y 0 0;
-  /* LTR */
-  border: 1px solid #ccc;
-  margin: 10px 0;
-  position: relative;
-}
 
-div.vertical-tabs fieldset {
-  border: 0;
+.vertical-tabs-panes fieldset .fieldset-wrapper {
+  padding: 0 15px 0; 
+}
+/* push summary right */
+.vertical-tabs-panes a.fieldset-title {
+  margin-right: .5em; /* LTR */
+}
+/* positions collapse icon beside legend */
+html.js .vertical-tabs-panes fieldset.collapsed .fieldset-legend {
+  background-position: 0 7px;
+  position: static;
+}
+/* positions collapse icon beside legend */
+html.js .vertical-tabs-panes fieldset.collapsible .fieldset-legend {
+  background-position: 0 7px;
+  position: static;
+}
+html.js .vertical-tabs-panes .fieldset-legend span.summary {
+  display: inline-block;
+  text-transform: none;
+  font-weight: normal;
+  margin-left: 0; /* LTR */
+}
+/* removes extra space not needed when inside tabs */
+.vertical-tabs-panes .form-radios,
+.vertical-tabs-panes .form-item {
+  margin: 0 0 .5em;
   padding: 0;
-  margin: 0;
 }
-
-div.vertical-tabs .vertical-tabs-list {
-  border-bottom: 1px solid #ccc;
-  float: left;
-  /* LTR */
-  font-size: 1em;
-  line-height: 1;
-  margin: 0 -100% -1px 0;
-  /* LTR */
-  padding: 0;
-  width: 240px;
+.vertical-tabs-panes .form-type-select {
+  display: inline-block;
 }
-
-div.vertical-tabs ul li.vertical-tab-button {
-  list-style: none;
-  list-style-image: none;
-  margin: 0;
-}
-
-div.vertical-tabs ul li.vertical-tab-button a {
-  border-top: 1px solid #ccc;
-  display: block;
-  padding: 10px;
-}
-
-div.vertical-tabs ul li.first a {
-  border-top: 0;
-}
-
-div.vertical-tabs ul li.vertical-tab-button strong {
-  font-size: 0.923em;
-}
-
-div.vertical-tabs ul li.vertical-tab-button .summary {
-  color: #666;
-  display: block;
-  font-size: 0.846em;
-  padding-top: 0.4em;
-}
-
-div.vertical-tabs ul li.vertical-tab-button a:hover,
-div.vertical-tabs ul li.vertical-tab-button a:focus {
-  background: #d5d5d5;
-  text-decoration: none;
-  outline: 0;
-}
-
-div.vertical-tabs ul li.selected a,
-div.vertical-tabs ul li.selected a:hover,
-div.vertical-tabs ul li.selected a:focus,
-div.vertical-tabs ul li.selected a:active {
-  background: #fff;
-  border-right-color: #fff;
-  /* LTR */
-  border-top: 1px solid #ccc;
-}
-
-div.vertical-tabs ul li.first.selected a,
-div.vertical-tabs ul li.first.selected a:hover {
-  border-top: 0;
-}
-
-div.vertical-tabs ul li.selected a:focus strong {
-  text-decoration: underline;
-}
-
-div.vertical-tabs .vertical-tabs-panes {
-  margin: 0 0 0 265px;
-  /* LTR */
-  padding: 10px 15px 10px 0;
-  /* LTR */
-}
-
-div.vertical-tabs .vertical-tabs-panes legend {
-  display: none;
-}
-
-.vertical-tabs-pane .fieldset-wrapper > div:first-child {
-  padding-top: 5px;
-}
-
-/**
- * Prevent text inputs from overflowing when container is too narrow. "width" is
- * applied to override hardcoded cols or size attributes and used in conjunction
- * with "box-sizing" to prevent box model issues from occurring in most browsers.
-*/
-.vertical-tabs .form-type-textfield input {
+.vertical-tabs-panes #edit-options  {
   width: 100%;
-  -moz-box-sizing: border-box;
-  -webkit-box-sizing: border-box;
-  box-sizing: border-box;
 }
 
-* html .vertical-tabs .form-type-textfield,
-* html .vertical-tabs .form-textarea-wrapper {
-  width: 95%;
-  /* IE6 */
-}
+
+
+
+
+
+
+
+
+
+
+
+

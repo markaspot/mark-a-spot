@@ -3,6 +3,9 @@
 // Dimension variables.
 //
 
+// Use the border-box model for layouts.
+$include-border-box: true;
+
 // Use the modular-scale plugin for spacing.
 $base-size: 1em;
 $ratio: augmented-fourth() fifth();
@@ -20,3 +23,23 @@ $rhythm-space: ms(-1) !default;
 $rhythm-space-short: ms(-5) !default;
 $inset-space: ms(4) !default;
 $inset-space-short: ms(2) !default;
+
+// Breakpoints
+$breakpoint-extra-small: 15em !default;
+$breakpoint-small: 30em !default;
+$breakpoint-medium: 40em !default;
+$breakpoint-large: 60em !default;
+$breakpoint-extra-large: 80em !default;
+
+// Make the default output for singularitygs grids float.
+$output: float;
+
+// Add support for rtl layouts.
+$direction: both;
+
+// Set the gutters for the Singularitygs grids.
+$gutters: $rhythm-space * 2;
+$gutter-styles: split fixed;
+
+// Set a maximum page width.
+$maximum-page-width: 140em !default;

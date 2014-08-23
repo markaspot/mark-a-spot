@@ -71,7 +71,9 @@
 ?>
 <div id="media-browser-tabset">
   <div id="branding" class="clearfix">
-    <h1 class="page-title"><?php print render($page['content']['system_main']['title']); ?></h1>
+    <?php if (!empty($variables['title'])): ?>
+      <h1 class="page-title"><?php print render($page['content']['system_main']['title']); ?></h1>
+    <?php endif; ?>
     <div id="media-tabs-wrapper">
       <?php print render($page['content']['system_main']['tabset']['tabs']); ?>
     </div>

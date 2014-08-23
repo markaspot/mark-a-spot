@@ -1,4 +1,4 @@
-h3, h4, th, h1, h2, h5, h6, dt, label, button,
+h3, h4, h1, h2, h5, h6, dt, th, label, button,
 input[type="reset"],
 input[type="submit"],
 input[type="button"],
@@ -9,7 +9,7 @@ input[id^="edit-next"],
   font-family: "Helvetica Neue", helvetica, "Segoe UI", segoe, "Ubuntu", "Droid Sans", "Arial", sans-serif;
 }
 
-h3, h4, th {
+h3, h4 {
   font-weight: 400;
 }
 
@@ -17,7 +17,7 @@ h1, h2 {
   font-weight: 200;
 }
 
-h5, h6, dt, label, button,
+h5, h6, dt, th, label, button,
 input[type="reset"],
 input[type="submit"],
 input[type="button"],
@@ -27,7 +27,7 @@ input[id^="edit-next"],
 .fake-submit {
   font-weight: 700;
 }
-h5 b, h6 b, dt b, label b, button b,
+h5 b, h6 b, dt b, th b, label b, button b,
 input[type="reset"] b,
 input[type="submit"] b,
 input[type="button"] b,
@@ -38,6 +38,7 @@ input[id^="edit-next"] b,
 h5 strong,
 h6 strong,
 dt strong,
+th strong,
 label strong,
 button strong,
 input[type="reset"] strong,
@@ -228,7 +229,7 @@ blockquote {
   padding: 0.70711em;
   border-top: 1px solid;
   border-bottom: 1px solid;
-  border-color: #cccccc;
+  border-color: #dddddd;
   -webkit-border-radius: 2px;
   -moz-border-radius: 2px;
   -ms-border-radius: 2px;
@@ -281,7 +282,7 @@ table {
 }
 
 tbody {
-  border-top: 1px solid #cccccc;
+  border-top: 1px solid #dddddd;
 }
 
 th {
@@ -298,7 +299,7 @@ th,
 td {
   margin: 0;
   padding: 0.35355em 0.70711em;
-  border-bottom: 1px solid #cccccc;
+  border-bottom: 1px solid #dddddd;
 }
 
 /**
@@ -393,7 +394,7 @@ textarea {
   margin: 0.35355em 0;
   padding: 0.35355em 0.70711em;
   max-width: 100%;
-  border: 1px solid #cccccc;
+  border: 1px solid #dddddd;
   -webkit-border-radius: 2px;
   -moz-border-radius: 2px;
   -ms-border-radius: 2px;
@@ -424,7 +425,7 @@ input[type="url"]::-webkit-input-placeholder,
 input[type="week"]::-webkit-input-placeholder,
 select::-webkit-input-placeholder,
 textarea::-webkit-input-placeholder {
-  color: #cccccc;
+  color: #dddddd;
   font-family: "Helvetica Neue", helvetica, "Segoe UI", segoe, "Ubuntu", "Droid Sans", "Arial", sans-serif;
   font-weight: 400;
 }
@@ -446,7 +447,7 @@ input[type="url"]:-moz-placeholder,
 input[type="week"]:-moz-placeholder,
 select:-moz-placeholder,
 textarea:-moz-placeholder {
-  color: #cccccc;
+  color: #dddddd;
   font-family: "Helvetica Neue", helvetica, "Segoe UI", segoe, "Ubuntu", "Droid Sans", "Arial", sans-serif;
   font-weight: 400;
 }
@@ -468,7 +469,7 @@ input[type="url"]::-moz-placeholder,
 input[type="week"]::-moz-placeholder,
 select::-moz-placeholder,
 textarea::-moz-placeholder {
-  color: #cccccc;
+  color: #dddddd;
   font-family: "Helvetica Neue", helvetica, "Segoe UI", segoe, "Ubuntu", "Droid Sans", "Arial", sans-serif;
   font-weight: 400;
 }
@@ -490,7 +491,7 @@ input[type="url"]:-ms-input-placeholder,
 input[type="week"]:-ms-input-placeholder,
 select:-ms-input-placeholder,
 textarea:-ms-input-placeholder {
-  color: #cccccc;
+  color: #dddddd;
   font-family: "Helvetica Neue", helvetica, "Segoe UI", segoe, "Ubuntu", "Droid Sans", "Arial", sans-serif;
   font-weight: 400;
 }
@@ -774,7 +775,7 @@ input[id^="edit-next"],
   margin: 0.2963em;
   max-width: 100%;
   overflow: visible;
-  line-height: 1em;
+  line-height: 1.25em;
   vertical-align: baseline;
   border: none;
   -webkit-border-radius: 2px;
@@ -785,8 +786,7 @@ input[id^="edit-next"],
   /* Reset all button fonts to a similar baseline in webkit. */
   font: -webkit-small-control;
   font-family: "Helvetica Neue", helvetica, "Segoe UI", segoe, "Ubuntu", "Droid Sans", "Arial", sans-serif;
-  font-weight: 400;
-  letter-spacing: .06em;
+  font-weight: 700;
   text-align: center;
   text-decoration: none;
   cursor: pointer;
@@ -825,9 +825,9 @@ input[type="button"]:focus,
 input[id^="edit-next"]:focus,
 .fake-submit:focus, [class*="action-item-small"]:focus, [class*="action-item-large"]:focus, .ctools-button-processed:focus, #features-filter span:focus {
   text-decoration: none;
-  -webkit-box-shadow: 0 0 0 0.2963em rgba(204, 204, 204, 0.4);
-  -moz-box-shadow: 0 0 0 0.2963em rgba(204, 204, 204, 0.4);
-  box-shadow: 0 0 0 0.2963em rgba(204, 204, 204, 0.4);
+  -webkit-box-shadow: 0 0 0 0.2963em rgba(221, 221, 221, 0.4);
+  -moz-box-shadow: 0 0 0 0.2963em rgba(221, 221, 221, 0.4);
+  box-shadow: 0 0 0 0.2963em rgba(221, 221, 221, 0.4);
 }
 button::-moz-focus-inner,
 input[type="reset"]::-moz-focus-inner,
@@ -858,7 +858,7 @@ input[id^="edit-next"],
 
 /* Dimensions for the small button type. */
 [class*="action-item-small"] {
-  padding: 0.35355em 1em;
+  padding: 0.35355em 0.70711em;
   font-size: 1em;
 }
 
@@ -874,8 +874,8 @@ input[type="submit"],
 input[type="button"],
 [class*="action-item"], .button,
 [id^="edit-cancel"] {
-  background: #cccccc;
-  text-shadow: 0 1px 0 #efefef;
+  background: #dddddd;
+  text-shadow: 0 1px 0 #f4f4f4;
 }
 button,
 input[type="reset"],
@@ -893,7 +893,7 @@ input[type="submit"]:visited,
 input[type="button"]:visited,
 [class*="action-item"]:visited, .button:visited,
 [id^="edit-cancel"]:visited {
-  color: #1a1a1a;
+  color: #2b2b2b;
 }
 button:hover,
 input[type="reset"]:hover,
@@ -901,9 +901,9 @@ input[type="submit"]:hover,
 input[type="button"]:hover,
 [class*="action-item"]:hover, .button:hover,
 [id^="edit-cancel"]:hover {
-  color: #242424;
-  background: #d6d6d6;
-  text-shadow: 0 1px 0 #f2f2f2;
+  color: #303030;
+  background: #e3e3e3;
+  text-shadow: 0 1px 0 #f6f6f6;
 }
 button:focus,
 input[type="reset"]:focus,
@@ -916,7 +916,7 @@ input[type="submit"]:active,
 input[type="button"]:active,
 [class*="action-item"]:active, .button:active,
 [id^="edit-cancel"]:active {
-  background: #cccccc;
+  background: #dddddd;
 }
 button[disabled],
 input[disabled][type="reset"],
@@ -927,8 +927,8 @@ input[disabled][type="button"],
 input[type="submit"][disabled],
 [type="submit"][disabled][class*="action-item"], [type="submit"][disabled].button,
 [type="submit"][disabled][id^="edit-cancel"] {
-  color: #999999;
-  background: #cccccc;
+  color: #aaaaaa;
+  background: #dddddd;
   cursor: default;
   cursor: not-allowed;
   text-shadow: none;
@@ -957,8 +957,8 @@ input[type="submit"][disabled]:focus,
   -webkit-box-shadow: none;
   -moz-box-shadow: none;
   box-shadow: none;
-  color: #999999;
-  background: #cccccc;
+  color: #aaaaaa;
+  background: #dddddd;
 }
 
 .action-item-active, .action-item-active[type="reset"], .action-item-active[type="submit"], .action-item-active[type="button"],
@@ -970,8 +970,8 @@ input[type="submit"][disabled]:focus,
 .action-item-large-active[type="reset"],
 .action-item-large-active[type="submit"],
 .action-item-large-active[type="button"] {
-  background: #a3a3a3;
-  text-shadow: 0 1px 0 #303030;
+  background: #b0b0b0;
+  text-shadow: 0 1px 0 #343434;
 }
 .action-item-active, .action-item-active[type="reset"], .action-item-active[type="submit"], .action-item-active[type="button"],
 .action-item-small-active,
@@ -992,23 +992,23 @@ input[type="submit"][disabled]:focus,
 .action-item-small-active:hover,
 .action-item-large-active:hover {
   color: white;
-  background: #b5b5b5;
-  text-shadow: 0 1px 0 #363636;
+  background: #bfbfbf;
+  text-shadow: 0 1px 0 #393939;
 }
 .action-item-active:focus,
 .action-item-small-active:focus,
 .action-item-large-active:focus, .action-item-active:active,
 .action-item-small-active:active,
 .action-item-large-active:active {
-  background: #a3a3a3;
+  background: #b0b0b0;
 }
 [disabled].action-item-active,
 [disabled].action-item-small-active,
 [disabled].action-item-large-active, [type="submit"][disabled].action-item-active,
 [type="submit"][disabled].action-item-small-active,
 [type="submit"][disabled].action-item-large-active {
-  color: #d6d6d6;
-  background: #a3a3a3;
+  color: #e3e3e3;
+  background: #b0b0b0;
   cursor: default;
   cursor: not-allowed;
   text-shadow: none;
@@ -1029,8 +1029,8 @@ input[type="submit"][disabled]:focus,
   -webkit-box-shadow: none;
   -moz-box-shadow: none;
   box-shadow: none;
-  color: #d6d6d6;
-  background: #a3a3a3;
+  color: #e3e3e3;
+  background: #b0b0b0;
 }
 
 .action-item-primary, .action-item-primary[type="reset"], .action-item-primary[type="submit"], .action-item-primary[type="button"],
@@ -1364,7 +1364,7 @@ input[type="button"][class*="action-item-large"],
 }
 
 body {
-  background: white url('../images/spark_bg_tile.png?1376700820');
+  background: #f5f5f5;
 }
 
 p,
@@ -1389,24 +1389,14 @@ section,
 summary,
 dt,
 dd,
-li,
-.more-help-link,
-.more-link {
+li {
   max-width: 85ex;
 }
 
 h2,
 h3 {
   color: #555;
-}
-
-textarea {
-  height: 200px;
-}
-
-tr,
-td {
-  background-color: transparent;
+  font-weight: 300;
 }
 
 /* =============================================================================
@@ -1442,14 +1432,15 @@ td {
 /* FORM ELEMENTS */
 /* Make fake buttons inherit the given styles. */
 .form-select, .form-select:focus, .form-select:active {
-  background: white url('../images/select_sprite.svg?1388162849') no-repeat right center;
+  background: white url('../images/select_sprite.svg?1402419892') no-repeat;
 }
 [dir="ltr"] .form-select {
   padding-right: 3.51961em;
+  background-position: right -5px center;
 }
 [dir="rtl"] .form-select {
   padding-left: 3.51961em;
-  background-position: left center;
+  background-position: left -5px center;
 }
 
 .machine-name-label {
@@ -1479,10 +1470,6 @@ td {
 .tips:hover,
 .description:hover {
   opacity: 1;
-  -webkit-transition: all 1s;
-  -moz-transition: all 1s;
-  -o-transition: all 1s;
-  transition: all 1s;
 }
 
 /* ADMIN LISTS */
@@ -1503,7 +1490,7 @@ div.admin-panel .body {
 }
 div.admin-panel h3 {
   font-size: 1.5em;
-  margin: 0 0 15px 30px;
+  margin: 0 0 .5em 0;
   padding: 0 0 5px;
   border-bottom: 1px solid #ddd;
   text-transform: uppercase;
@@ -1515,11 +1502,13 @@ ul.admin-list {
   padding: 0;
 }
 ul.admin-list li {
-  background: url('../images/list-item.png?1376700820') no-repeat scroll 0 0 transparent;
+  background: url('../images/list-item.png?1402419892') no-repeat scroll 0 0 transparent;
+  background-size: 18px;
+  background-position: 0 1px;
   list-style-image: none;
   list-style-type: none;
   margin: 0 0 1em;
-  padding: 0 0 0 2.5em;
+  padding: 0 0 0 2em;
 }
 ul.admin-list li a {
   font-size: 1em;
@@ -1527,11 +1516,7 @@ ul.admin-list li a {
 }
 ul.admin-list .label {
   color: #555;
-  font-size: 1.5em;
-}
-ul.admin-list.compact li {
-  background: none;
-  margin: 0;
+  font-size: 1.25em;
 }
 
 .compact-link {
@@ -1556,14 +1541,14 @@ div.add-or-remove-shortcuts {
 div.add-or-remove-shortcuts a span.icon {
   display: block;
   width: 24px;
-  background: transparent url('../images/no_shortcut.svg?1388162849') no-repeat scroll 0 0;
+  background: transparent url('../images/no_shortcut.svg?1402419892') no-repeat scroll 0 0;
   height: 24px;
   float: right;
   margin-left: 8px;
 }
 
 div.add-shortcut a:focus span.icon, div.add-shortcut a:hover span.icon {
-  background: transparent url('../images/shortcut.svg?1388162849') no-repeat scroll 0 0;
+  background: transparent url('../images/shortcut.svg?1402419892') no-repeat scroll 0 0;
   -webkit-transition: all 1s;
   -moz-transition: all 1s;
   -o-transition: all 1s;
@@ -1571,10 +1556,10 @@ div.add-shortcut a:focus span.icon, div.add-shortcut a:hover span.icon {
 }
 
 div.remove-shortcut a span.icon {
-  background: transparent url('../images/no_shortcut.svg?1388162849') no-repeat scroll 0 0;
+  background: transparent url('../images/no_shortcut.svg?1402419892') no-repeat scroll 0 0;
 }
 div.remove-shortcut a:focus span.icon, div.remove-shortcut a:hover span.icon {
-  background: transparent url('../images/no_shortcut.svg?1388162849') no-repeat scroll 0 0;
+  background: transparent url('../images/no_shortcut.svg?1402419892') no-repeat scroll 0 0;
   -webkit-transition: all 1s;
   -moz-transition: all 1s;
   -o-transition: all 1s;
@@ -1597,6 +1582,8 @@ div.add-or-remove-shortcuts a:focus span.text, div.add-or-remove-shortcuts a:hov
 /* ACTION LINKS */
 ul.action-links {
   margin: 0;
+  padding-left: 0;
+  padding-right: 0;
 }
 
 .action-links li {
@@ -1610,10 +1597,10 @@ ul.action-links {
   text-decoration: none;
 }
 .action-links li:before {
-  content: "\2295";
-  font-size: 2em;
-  top: .1em;
-  color: #999999;
+  content: "+";
+  font-size: 1.5em;
+  top: .0em;
+  color: #2fa6e5;
   position: relative;
   margin-right: .1em;
 }
@@ -1678,59 +1665,72 @@ details > .details-wrapper, .container-inline .details-wrapper {
   margin: 0 0 1em;
 }
 
-#edit-filters {
-  float: left;
-  display: inline-block;
-  width: 60%;
-}
-
-#edit-options {
-  float: left;
-  display: inline-block;
-  width: 40%;
-}
-
-.exposed-filters .form-item {
-  float: none;
-  margin-bottom: 0;
-  display: inline-block;
-}
-.exposed-filters .form-item label {
-  float: none;
-  font-weight: bold;
-  width: inherit;
-  padding: 0;
-  margin: 0;
-}
-.exposed-filters .filters {
-  float: none;
-  margin-right: 0;
-  display: inline;
-}
-.exposed-filters .current-filters ul,
-.exposed-filters .block ul,
-.exposed-filters .item-list ul {
-  margin: 0;
-}
-.exposed-filters .additional-filters {
-  padding: 12px 0 0 0;
-  margin-right: 0.2em;
-}
-
-div.exposed-filters div#edit-actions {
-  display: inline-block;
-}
-
-.container-inline.form-actions, div.exposed-filters .container-inline.form-actions {
-  margin: 0;
-}
-
 div.item-list ul.current-filters {
   margin: .5em 0;
+  padding: 0;
+  margin-bottom: 1rem;
 }
 ul.current-filters li {
   margin: 1em 0;
   display: inline;
+}
+
+/* position and style edit filters neatly inline and floated left above tables they filter. */
+#edit-filters {
+  float: left;
+  display: inline-block;
+  margin-top: 0;
+  padding-left: 0;
+  width: 65%;
+}
+#edit-filters div.fieldset-wrapper {
+  margin-top: 1rem;
+}
+#edit-filters div.exposed-filters {
+  display: inline-block;
+}
+#edit-filters div.exposed-filters .form-select {
+  width: 100%;
+}
+#edit-filters div.exposed-filters .form-item {
+  width: 25%;
+  float: none;
+  margin-bottom: 1rem;
+  display: inline-block;
+  position: relative;
+  vertical-align: top;
+}
+#edit-filters div.exposed-filters .form-item label {
+  font-weight: bold;
+  position: absolute;
+  top: -1rem;
+}
+#edit-filters div.exposed-filters .filters {
+  float: none;
+  margin-right: 0;
+  display: inline;
+}
+#edit-filters div.exposed-filters .current-filters ul,
+#edit-filters div.exposed-filters .block ul,
+#edit-filters div.exposed-filters .item-list ul {
+  margin-bottom: 1rem;
+}
+#edit-filters div.exposed-filters .additional-filters {
+  padding: 12px 0 0 0;
+  margin-right: 1em;
+  font-weight: bold;
+}
+#edit-filters div.exposed-filters div#edit-actions {
+  display: inline-block;
+  width: auto;
+}
+#edit-filters div.exposed-filters div#edit-actions .form-submit {
+  width: auto;
+  padding: .47em 1em;
+  vertical-align: middle;
+  margin-left: 0;
+  font-weight: bold;
+  letter-spacing: 0em;
 }
 
 /* TIPS */
@@ -1749,10 +1749,60 @@ body div.form-type-radio div.description, body div.form-type-checkbox div.descri
   /* LTR */
 }
 
-/* TABLES */
+#system-modules label {
+  font-weight: normal;
+}
+#system-modules .expand .inner {
+  outline: 0px solid transparent;
+}
+
+/* override clearfix (to do: fix ux_styleguide @import) */
+.clearfix {
+  clear: both;
+}
+
+/* Preview */
+.preview .node {
+  background-color: white;
+}
+
+/**
+ * Ember table styles
+ */
+table,
+thead,
+tfoot,
+tbody,
+tr,
+th,
+td {
+  overflow: hidden;
+  white-space: normal;
+  text-align: left;
+}
+
+table {
+  /* Firefox has issues with tables aligning to the right and off the page. */
+  clear: both;
+  border-spacing: 0;
+  margin: 0 0 2em;
+  overflow: scroll;
+}
+
+table thead {
+  border-top: 1px solid #dddddd;
+}
+table tfoot {
+  border-bottom: 1px solid #dddddd;
+}
+table tbody {
+  border-collapse: collapse;
+  border-top: 1px solid #dddddd;
+}
+
 tr {
   /* Exception for webkit bug with the right border of the last cell in some
-   * tables, since it's webkit only, we can use :last-child */
+  * tables, since it's webkit only, we can use :last-child */
 }
 tr.odd, tr.even {
   background-color: transparent;
@@ -1762,42 +1812,364 @@ tr.odd .form-actions, tr.even .form-item,
 tr.even .form-actions {
   margin: 0;
   padding: 0;
-  white-space: nowrap;
 }
 tr.region-title {
   background-color: transparent;
   border: 0px solid transparent;
 }
-tr td:last-child {
+tr:hover td {
+  background-color: white;
+}
+tr.selected td {
+  background-color: #ffffee;
+}
+tr:last-child {
   border-right: none;
   /* LTR */
 }
+tr.active, tr.dblog-access-denied .active, tr.dblog-page-not-found .active {
+  background: white;
+}
 
-table {
-  /* Firefox has issues with tables aligning to the right and off the page. */
-  clear: both;
+td > a:hover,
+th > a:hover,
+th.active > a:hover {
+  cursor: pointer;
+  text-decoration: none;
+  color: #007ec0;
 }
-table td.active {
-  background-color: #e5e5e5;
+
+th.active {
+  white-space: nowrap;
 }
-table td ul.inline {
+th.active > a {
+  color: #333333;
+}
+
+td,
+th {
+  padding: 0.5rem 1rem;
+}
+
+th a {
+  padding: 0 2rem 0 0;
+}
+
+th.active a img {
+  position: absolute;
+  top: 25%;
+  right: 1em;
   margin: 0;
 }
-table tr.selected td, table tr.selected td.active {
-  background: #f9f9f9;
+
+/* :before pseudo-classes create the border bottom and background that will be altered for affordances for sortable columns. 
+ * :before is used bacause we can't change attributes on the parent of the link */
+th:before,
+th a:hover:before, th.active a:before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  left: 0px;
 }
-table.sticky-header {
+th:before {
+  top: -2px;
+  height: 100%;
+  background-color: #fafafa;
+  z-index: -1;
+}
+th a:hover:before {
+  border-bottom: 2px solid #2fa6e5;
+  top: 0px;
+  background-color: white;
+  height: 95%;
+  z-index: -1;
+}
+th.active a:before {
+  border-bottom: 2px solid #f05724;
+  top: -2px;
+  background-color: white;
+  height: 100%;
+  z-index: -1;
+}
+
+th {
+  font-size: .9em;
+  color: #999999;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  margin: 0;
+  position: relative;
+  white-space: nowrap;
+}
+
+td {
+  vertical-align: top;
+  border-bottom: 1px solid #dddddd;
+  overflow: hidden;
+}
+a td {
+  color: #2fa6e5;
+  cursor: pointer;
+}
+a td:hover {
+  color: #007ec0;
+}
+td.status, td.ok {
+  background-color: transparent;
+}
+td ul.inline {
+  margin: 0;
+}
+td.description {
+  opacity: 1;
+  background-color: inherit;
+  transition: none;
+}
+
+th a,
+td a {
+  text-decoration: none;
+}
+
+td ul,
+td ol,
+td li.first,
+td li.last,
+td li {
+  padding: 0;
+  margin: 0;
+  line-height: normal;
+}
+
+/* Remove padding from lists inside tables */
+[dir="ltr"] td ul,
+[dir="ltr"] td ol {
+  padding-left: 0;
+}
+
+[dir="rtl"] td ul,
+[dir="rtl"] td ol {
+  padding-right: 0;
+}
+
+.sticky-header {
   z-index: 2;
 }
 
-#system-modules label {
-  font-weight: normal;
+@media (max-width: 680px) {
+  table {
+    display: block;
+  }
+
+  tr {
+    position: relative;
+  }
+
+  th:nth-child(2),
+  td:nth-child(2) {
+    position: absolute;
+    left: 0;
+    display: block;
+    width: 30%;
+    margin: 0;
+    overflow: hidden;
+    background-color: white;
+    border-right: 1px solid #dddddd;
+    z-index: 2;
+  }
+
+  td:nth-child(1),
+  th:nth-child(1) {
+    padding-left: 250px;
+  }
 }
-#system-modules .expand .inner {
-  outline: 0px solid transparent;
+/* overrides */
+/* on these forms/pages make column 1 widest */
+#permissions th:first-child,
+#permissions td:first-child,
+.page-admin-structure-menu th:first-child,
+.page-admin-structure-menu td:first-child,
+.page-admin-reports-updates th:first-child,
+.page-admin-reports-updates td:first-child,
+form#block-admin-display-form table th:first-child,
+form#block-admin-display-form table td:first-child,
+table#shortcuts th:first-child,
+table#shortcuts td:first-child {
+  width: 100%;
 }
 
-/* VERTICAL TABS */
+/* on these forms/pages make column 4 widest */
+form#system-modules th:nth-child(4),
+form#system-modules td:nth-child(4) {
+  width: 100%;
+  min-width: 300px;
+}
+
+/* for these types of tables and on these pages make the last column widest */
+.table-select-processed td:last-child,
+.table-select-processed th:last-child {
+  width: 100%;
+}
+
+.view-workbench-edited th.views-field.views-field-timestamp {
+  width: 100%;
+}
+
+/* on these pages align last child column right */
+#comment-admin-overview td:last-child,
+#comment-admin-overview th:last-child {
+  text-align: right;
+}
+
+/* on multi-select tables the second column is primary, thus nth child 2 is used to emphasize the primary column,
+ * also last column is always operations so align right and set width to 100% to push other cols left.
+ */
+form#node-admin-content table td,
+form#node-admin-content table th {
+  white-space: nowrap;
+}
+form#node-admin-content table td:first-child,
+form#node-admin-content table th:first-child {
+  padding: 0.5rem 1rem;
+}
+form#node-admin-content table td:nth-child(2),
+form#node-admin-content table th:nth-child(2) {
+  font-weight: bold;
+}
+form#node-admin-content table td:last-child,
+form#node-admin-content table th:last-child {
+  text-align: right;
+  width: 100%;
+}
+
+#dashboard_main th:first-child,
+#dashboard_main td:first-child {
+  font-weight: bold;
+}
+
+.view-workbench-edited td.views-field-changed,
+.view-workbench-edited td.views-field-type,
+.view-workbench-edited td.views-field-title,
+.view-workbench-edited td.views-field-status,
+.view-workbench-recent-content td.views-field-changed,
+.view-workbench-recent-content td.views-field-type,
+.view-workbench-recent-content td.views-field-title,
+.view-workbench-recent-content td.views-field-status {
+  white-space: nowrap;
+}
+.view-workbench-edited th.views-field-edit-node,
+.view-workbench-edited td.views-field-edit-node,
+.view-workbench-recent-content th.views-field-edit-node,
+.view-workbench-recent-content td.views-field-edit-node {
+  text-align: right;
+}
+
+td ul.links li, ul.inline li {
+  padding-right: 0;
+}
+
+.update > tr.warning {
+  background: #ffd;
+}
+
+.update tr.warning .version-recommended {
+  background: transparent;
+}
+
+.draggable .tabledrag-handle {
+  float: left;
+}
+
+/* vertical tabs component styles */
+h3, h4, h1, h2, h5, h6, dt, th, label, button,
+input[type="reset"],
+input[type="submit"],
+input[type="button"],
+[class*="action-item"], .button,
+[id^="edit-cancel"], input[id^="edit-submit"],
+input[id^="edit-next"],
+.fake-submit {
+  font-family: "Helvetica Neue", helvetica, "Segoe UI", segoe, "Ubuntu", "Droid Sans", "Arial", sans-serif;
+}
+
+h3, h4 {
+  font-weight: 400;
+}
+
+h1, h2 {
+  font-weight: 200;
+}
+
+h5, h6, dt, th, label, button,
+input[type="reset"],
+input[type="submit"],
+input[type="button"],
+[class*="action-item"], .button,
+[id^="edit-cancel"], input[id^="edit-submit"],
+input[id^="edit-next"],
+.fake-submit {
+  font-weight: 700;
+}
+h5 b, h6 b, dt b, th b, label b, button b,
+input[type="reset"] b,
+input[type="submit"] b,
+input[type="button"] b,
+[class*="action-item"] b, .button b,
+[id^="edit-cancel"] b, input[id^="edit-submit"] b,
+input[id^="edit-next"] b,
+.fake-submit b,
+h5 strong,
+h6 strong,
+dt strong,
+th strong,
+label strong,
+button strong,
+input[type="reset"] strong,
+input[type="submit"] strong,
+input[type="button"] strong,
+[class*="action-item"] strong,
+.button strong,
+[id^="edit-cancel"] strong,
+input[id^="edit-submit"] strong,
+input[id^="edit-next"] strong,
+.fake-submit strong {
+  font-weight: 400;
+}
+
+blockquote, caption,
+tfoot {
+  font-family: Constantia, "Lucida Bright", Lucidabright, "Lucida Serif", Lucida, "DejaVu Serif", "Bitstream Vera Serif", "Liberation Serif", Georgia, serif;
+}
+
+blockquote, caption,
+tfoot {
+  font-style: italic;
+}
+blockquote i, caption i,
+tfoot i,
+blockquote em,
+caption em,
+tfoot em {
+  font-style: normal;
+}
+
+pre,
+code {
+  font-family: Consolas, "Andale Mono WT", "Andale Mono", "Lucida Console", "Lucida Sans Typewriter", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Liberation Mono", "Nimbus Mono L", Monaco, "Courier New", Courier, monospace;
+}
+pre i,
+code i,
+pre em,
+code em {
+  font-style: normal;
+}
+pre b,
+code b,
+pre strong,
+code strong {
+  font-weight: 400;
+}
+
 .vertical-tabs:focus, .vertical-tabs-list:focus, li.selected:focus {
   outline: 0px solid transparent;
 }
@@ -1807,6 +2179,9 @@ table.sticky-header {
   padding: 10px 20px;
 }
 
+div.vertical-tabs {
+  background: #fff;
+}
 div.vertical-tabs fieldset {
   -webkit-box-shadow: none;
   -moz-box-shadow: none;
@@ -1821,7 +2196,100 @@ div.vertical-tabs ul li.vertical-tab-button a:hover, div.vertical-tabs ul li.ver
   display: block;
 }
 
-/* DROPBUTTON */
+.vertical-tabs fieldset.vertical-tabs-pane {
+  padding: 2em;
+}
+
+/* Ember styles for the dropbutton component */
+h3, h4, h1, h2, h5, h6, dt, th, label, button,
+input[type="reset"],
+input[type="submit"],
+input[type="button"],
+[class*="action-item"], .button,
+[id^="edit-cancel"], input[id^="edit-submit"],
+input[id^="edit-next"],
+.fake-submit {
+  font-family: "Helvetica Neue", helvetica, "Segoe UI", segoe, "Ubuntu", "Droid Sans", "Arial", sans-serif;
+}
+
+h3, h4 {
+  font-weight: 400;
+}
+
+h1, h2 {
+  font-weight: 200;
+}
+
+h5, h6, dt, th, label, button,
+input[type="reset"],
+input[type="submit"],
+input[type="button"],
+[class*="action-item"], .button,
+[id^="edit-cancel"], input[id^="edit-submit"],
+input[id^="edit-next"],
+.fake-submit {
+  font-weight: 700;
+}
+h5 b, h6 b, dt b, th b, label b, button b,
+input[type="reset"] b,
+input[type="submit"] b,
+input[type="button"] b,
+[class*="action-item"] b, .button b,
+[id^="edit-cancel"] b, input[id^="edit-submit"] b,
+input[id^="edit-next"] b,
+.fake-submit b,
+h5 strong,
+h6 strong,
+dt strong,
+th strong,
+label strong,
+button strong,
+input[type="reset"] strong,
+input[type="submit"] strong,
+input[type="button"] strong,
+[class*="action-item"] strong,
+.button strong,
+[id^="edit-cancel"] strong,
+input[id^="edit-submit"] strong,
+input[id^="edit-next"] strong,
+.fake-submit strong {
+  font-weight: 400;
+}
+
+blockquote, caption,
+tfoot {
+  font-family: Constantia, "Lucida Bright", Lucidabright, "Lucida Serif", Lucida, "DejaVu Serif", "Bitstream Vera Serif", "Liberation Serif", Georgia, serif;
+}
+
+blockquote, caption,
+tfoot {
+  font-style: italic;
+}
+blockquote i, caption i,
+tfoot i,
+blockquote em,
+caption em,
+tfoot em {
+  font-style: normal;
+}
+
+pre,
+code {
+  font-family: Consolas, "Andale Mono WT", "Andale Mono", "Lucida Console", "Lucida Sans Typewriter", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Liberation Mono", "Nimbus Mono L", Monaco, "Courier New", Courier, monospace;
+}
+pre i,
+code i,
+pre em,
+code em {
+  font-style: normal;
+}
+pre b,
+code b,
+pre strong,
+code strong {
+  font-weight: 400;
+}
+
 .js .dropbutton-widget {
   background: #f5f5f5;
   border: 0px solid transparent;
@@ -1854,53 +2322,112 @@ tr.selected > .dropbutton-widget {
   background: none;
 }
 
-/* Preview */
-.preview .node {
-  background-color: white;
+/* Ember styles for OVERLAY (not recommended for use with Ember theme) */
+h3, h4, h1, h2, h5, h6, dt, th, label, button,
+input[type="reset"],
+input[type="submit"],
+input[type="button"],
+[class*="action-item"], .button,
+[id^="edit-cancel"], input[id^="edit-submit"],
+input[id^="edit-next"],
+.fake-submit {
+  font-family: "Helvetica Neue", helvetica, "Segoe UI", segoe, "Ubuntu", "Droid Sans", "Arial", sans-serif;
 }
 
-/* OVERLAY (not recommended for use with Ember theme) */
+h3, h4 {
+  font-weight: 400;
+}
+
+h1, h2 {
+  font-weight: 200;
+}
+
+h5, h6, dt, th, label, button,
+input[type="reset"],
+input[type="submit"],
+input[type="button"],
+[class*="action-item"], .button,
+[id^="edit-cancel"], input[id^="edit-submit"],
+input[id^="edit-next"],
+.fake-submit {
+  font-weight: 700;
+}
+h5 b, h6 b, dt b, th b, label b, button b,
+input[type="reset"] b,
+input[type="submit"] b,
+input[type="button"] b,
+[class*="action-item"] b, .button b,
+[id^="edit-cancel"] b, input[id^="edit-submit"] b,
+input[id^="edit-next"] b,
+.fake-submit b,
+h5 strong,
+h6 strong,
+dt strong,
+th strong,
+label strong,
+button strong,
+input[type="reset"] strong,
+input[type="submit"] strong,
+input[type="button"] strong,
+[class*="action-item"] strong,
+.button strong,
+[id^="edit-cancel"] strong,
+input[id^="edit-submit"] strong,
+input[id^="edit-next"] strong,
+.fake-submit strong {
+  font-weight: 400;
+}
+
+blockquote, caption,
+tfoot {
+  font-family: Constantia, "Lucida Bright", Lucidabright, "Lucida Serif", Lucida, "DejaVu Serif", "Bitstream Vera Serif", "Liberation Serif", Georgia, serif;
+}
+
+blockquote, caption,
+tfoot {
+  font-style: italic;
+}
+blockquote i, caption i,
+tfoot i,
+blockquote em,
+caption em,
+tfoot em {
+  font-style: normal;
+}
+
+pre,
+code {
+  font-family: Consolas, "Andale Mono WT", "Andale Mono", "Lucida Console", "Lucida Sans Typewriter", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Liberation Mono", "Nimbus Mono L", Monaco, "Courier New", Courier, monospace;
+}
+pre i,
+code i,
+pre em,
+code em {
+  font-style: normal;
+}
+pre b,
+code b,
+pre strong,
+code strong {
+  font-weight: 400;
+}
+
 div#overlay {
   min-width: 200px;
-  max-width: 800px;
 }
 
 #overlay-content {
-  padding: 0;
+  padding: 0 0 1em;
 }
 
 #overlay-titlebar {
-  display: none;
+  display: block;
 }
 
 .overlay #branding {
-  background-color: #303030;
-  padding: 20px 20px 0px;
-  border-bottom: 1px solid #ddd;
-}
-.overlay .breadcrumb,
-.overlay .region-help,
-.overlay #left,
-.overlay #footer {
   display: none;
 }
-.overlay #content {
-  padding: 0;
-  margin: 0;
-  border: 0 solid transparent;
-  -webkit-box-shadow: none;
-  -moz-box-shadow: none;
-  box-shadow: none;
-}
-.overlay .content,
-.overlay .actions {
-  padding: 20px 20px 0;
-}
 .overlay #page {
-  margin: 0;
-  padding: 0;
-}
-.overlay #content {
   padding: 0;
 }
 
@@ -1918,6 +2445,21 @@ div#overlay {
   padding: 1em 2.25em 0;
   width: 100%;
   color: #cccccc;
+  border-top: 50px solid #303030;
+  /* removes ugly white gap when you scroll past the top */
+  margin-top: -50px;
+}
+#branding .breadcrumb {
+  color: #777;
+  margin: 0;
+}
+#branding .breadcrumb a {
+  color: #777;
+  font-size: 90%;
+}
+#branding .breadcrumb a:hover {
+  color: #FFF;
+  text-decoration: none;
 }
 #branding h1.page-title {
   margin: 0 0 .25em;
@@ -1957,7 +2499,7 @@ div#overlay {
 }
 
 #page {
-  margin: 1em 2.25em 0;
+  margin: 1.5rem 2.25em 0;
   position: relative;
 }
 
@@ -1966,12 +2508,7 @@ div#overlay {
   border: none;
 }
 
-/* =============================================================================
-
-   STYLING SPECIFIC TO UIs
-
-   ========================================================================== */
-/* MAINTENANCE UI */
+/* MAINTENANCE PAGE */
 body.in-maintenance #sidebar-first {
   float: left;
   /* LTR */
@@ -2023,23 +2560,23 @@ ol.task-list li {
   /* LTR */
 }
 ol.task-list li.active {
-  background: transparent url('../images/task-item.png?1376700820') no-repeat 3px 50%;
+  background: transparent url('../images/task-item.png?1402419892') no-repeat 3px 50%;
   /* LTR */
   color: #000;
   padding: 0.5em 1em 0.5em 20px;
   /* LTR */
 }
 ol.task-list li.done {
-  background: transparent url('../images/task-check.png?1376700820') no-repeat 0 50%;
+  background: transparent url('../images/task-check.png?1402419892') no-repeat 0 50%;
   color: green;
 }
 
-/* DASHBOARD UI */
+/* DASHBOARD PAGE */
 #dashboard .region {
   margin: 0;
 }
 #dashboard div.block h2 {
-  font-size: 1em;
+  font-size: 1.5em;
   margin: 0;
   padding: 3px 10px;
 }
@@ -2068,6 +2605,7 @@ ol.task-list li.done {
 }
 #dashboard .ui-sortable {
   border: 2px dotted #ccc;
+  border-color: #2fa6e5;
   padding: 10px 10px 0;
 }
 #dashboard #disabled-blocks .region {
@@ -2076,18 +2614,31 @@ ol.task-list li.done {
   padding: 0;
 }
 #dashboard #disabled-blocks .block {
-  background-color: #666;
+  background-color: transparent;
+  border-radius: 3px;
 }
 #dashboard #disabled-blocks .block,
 #dashboard .block-placeholder {
-  background-color: #666;
-  border-radius: 4px;
+  background-color: #ccc;
+  border-radius: 3px;
   float: left;
   margin: 3px 6px 3px 0;
   padding: 5px 4px 5px 8px;
 }
 
-/* CONTENT TYPES UI */
+#block-node-recent table,
+#block-node-recent tr {
+  border: none;
+}
+#block-node-recent .more-link {
+  padding: 0 5px 5px 0;
+  /* LTR */
+}
+#dashboard #block-node-recent div.content {
+  padding: 0;
+}
+
+/* CONTENT TYPES PAGE */
 #field-display-overview input.field-formatter-settings-edit {
   margin: 0;
   padding: 1px 8px;
@@ -2102,14 +2653,27 @@ ol.task-list li.done {
   margin: 10px 0 0;
 }
 
-/* PEOPLE UI */
+/* PEOPLE PAGE */
 #permissions td.module {
   background-color: #f5f5f5;
   background-image: none;
   font-weight: bold;
 }
 
-/* APPEARANCE UI */
+em.permission-warning,
+.permission .description .placeholder em {
+  color: #f79521;
+  font-weight: bold;
+  display: block;
+}
+
+#edit-cancel-account {
+  background: inherit;
+  text-align: inherit;
+  font-weight: inherit;
+}
+
+/* APPEARANCE PAGE */
 .theme-selector .no-screenshot {
   background: #ddd;
 }
@@ -2132,7 +2696,11 @@ img.screenshot {
   font-size: 2.25em;
 }
 
-/* MODULES UI */
+.theme-info h3 {
+  font-size: 1.77778em;
+}
+
+/* MODULES PAGE */
 #module-filter-squeeze table,
 #module-filter-modules table {
   clear: none;
@@ -2143,20 +2711,7 @@ img.screenshot {
    STYLING SPECIFIC TO BLOCKS
 
    ========================================================================== */
-/* Recent content block */
-#block-node-recent table,
-#block-node-recent tr {
-  border: none;
-}
-#block-node-recent .more-link {
-  padding: 0 5px 5px 0;
-  /* LTR */
-}
-#dashboard #block-node-recent div.content {
-  padding: 0;
-}
-
-/* User login block */
+/* User login */
 #user-login-form .openid-links {
   margin-left: 0;
   /* LTR */
@@ -2187,27 +2742,101 @@ img.screenshot {
   color: white;
 }
 
-/* =============================================================================
-
-   STYLING SPECIFIC TO OVERLAY
-
-   ========================================================================== */
-#overlay {
-  min-width: 320px;
-  max-width: 960px;
-}
-#overlay #page {
-  padding: 2em;
+.search-block-form {
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
 
-/* =============================================================================
+/* Ember overrides of ctools CSS */
+h3, h4, h1, h2, h5, h6, dt, th, label, button,
+input[type="reset"],
+input[type="submit"],
+input[type="button"],
+[class*="action-item"], .button,
+[id^="edit-cancel"], input[id^="edit-submit"],
+input[id^="edit-next"],
+.fake-submit {
+  font-family: "Helvetica Neue", helvetica, "Segoe UI", segoe, "Ubuntu", "Droid Sans", "Arial", sans-serif;
+}
 
-   STYLES SPECIFIC TO CONTRIBUTED MODULES
-   navbar, ctools, media, views, views UI, panels, panelizer, workbench
+h3, h4 {
+  font-weight: 400;
+}
 
-   ============================================================================= */
-/* Navbar (coming soon) */
-/* Ctools */
+h1, h2 {
+  font-weight: 200;
+}
+
+h5, h6, dt, th, label, button,
+input[type="reset"],
+input[type="submit"],
+input[type="button"],
+[class*="action-item"], .button,
+[id^="edit-cancel"], input[id^="edit-submit"],
+input[id^="edit-next"],
+.fake-submit {
+  font-weight: 700;
+}
+h5 b, h6 b, dt b, th b, label b, button b,
+input[type="reset"] b,
+input[type="submit"] b,
+input[type="button"] b,
+[class*="action-item"] b, .button b,
+[id^="edit-cancel"] b, input[id^="edit-submit"] b,
+input[id^="edit-next"] b,
+.fake-submit b,
+h5 strong,
+h6 strong,
+dt strong,
+th strong,
+label strong,
+button strong,
+input[type="reset"] strong,
+input[type="submit"] strong,
+input[type="button"] strong,
+[class*="action-item"] strong,
+.button strong,
+[id^="edit-cancel"] strong,
+input[id^="edit-submit"] strong,
+input[id^="edit-next"] strong,
+.fake-submit strong {
+  font-weight: 400;
+}
+
+blockquote, caption,
+tfoot {
+  font-family: Constantia, "Lucida Bright", Lucidabright, "Lucida Serif", Lucida, "DejaVu Serif", "Bitstream Vera Serif", "Liberation Serif", Georgia, serif;
+}
+
+blockquote, caption,
+tfoot {
+  font-style: italic;
+}
+blockquote i, caption i,
+tfoot i,
+blockquote em,
+caption em,
+tfoot em {
+  font-style: normal;
+}
+
+pre,
+code {
+  font-family: Consolas, "Andale Mono WT", "Andale Mono", "Lucida Console", "Lucida Sans Typewriter", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Liberation Mono", "Nimbus Mono L", Monaco, "Courier New", Courier, monospace;
+}
+pre i,
+code i,
+pre em,
+code em {
+  font-style: normal;
+}
+pre b,
+code b,
+pre strong,
+code strong {
+  font-weight: 400;
+}
+
 .ctools-button-processed {
   text-align: left;
   /* LTR */
@@ -2231,6 +2860,15 @@ img.screenshot {
   margin: 0;
 }
 
+/* Keep the initial state of the ctools dropbutton in the document flow. */
+.ctools-dropbutton-wrapper {
+  position: relative;
+  min-height: 2.3em;
+}
+.ctools-dropbutton-wrapper ul {
+  padding: 0;
+}
+
 /**
  * Adjust dropbutton arrow
  */
@@ -2248,7 +2886,96 @@ img.screenshot {
   top: 0.3em;
 }
 
-/* VIEWS */
+/* Ember overrides of views CSS */
+h3, h4, h1, h2, h5, h6, dt, th, label, button,
+input[type="reset"],
+input[type="submit"],
+input[type="button"],
+[class*="action-item"], .button,
+[id^="edit-cancel"], input[id^="edit-submit"],
+input[id^="edit-next"],
+.fake-submit {
+  font-family: "Helvetica Neue", helvetica, "Segoe UI", segoe, "Ubuntu", "Droid Sans", "Arial", sans-serif;
+}
+
+h3, h4 {
+  font-weight: 400;
+}
+
+h1, h2 {
+  font-weight: 200;
+}
+
+h5, h6, dt, th, label, button,
+input[type="reset"],
+input[type="submit"],
+input[type="button"],
+[class*="action-item"], .button,
+[id^="edit-cancel"], input[id^="edit-submit"],
+input[id^="edit-next"],
+.fake-submit {
+  font-weight: 700;
+}
+h5 b, h6 b, dt b, th b, label b, button b,
+input[type="reset"] b,
+input[type="submit"] b,
+input[type="button"] b,
+[class*="action-item"] b, .button b,
+[id^="edit-cancel"] b, input[id^="edit-submit"] b,
+input[id^="edit-next"] b,
+.fake-submit b,
+h5 strong,
+h6 strong,
+dt strong,
+th strong,
+label strong,
+button strong,
+input[type="reset"] strong,
+input[type="submit"] strong,
+input[type="button"] strong,
+[class*="action-item"] strong,
+.button strong,
+[id^="edit-cancel"] strong,
+input[id^="edit-submit"] strong,
+input[id^="edit-next"] strong,
+.fake-submit strong {
+  font-weight: 400;
+}
+
+blockquote, caption,
+tfoot {
+  font-family: Constantia, "Lucida Bright", Lucidabright, "Lucida Serif", Lucida, "DejaVu Serif", "Bitstream Vera Serif", "Liberation Serif", Georgia, serif;
+}
+
+blockquote, caption,
+tfoot {
+  font-style: italic;
+}
+blockquote i, caption i,
+tfoot i,
+blockquote em,
+caption em,
+tfoot em {
+  font-style: normal;
+}
+
+pre,
+code {
+  font-family: Consolas, "Andale Mono WT", "Andale Mono", "Lucida Console", "Lucida Sans Typewriter", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Liberation Mono", "Nimbus Mono L", Monaco, "Courier New", Courier, monospace;
+}
+pre i,
+code i,
+pre em,
+code em {
+  font-style: normal;
+}
+pre b,
+code b,
+pre strong,
+code strong {
+  font-weight: 400;
+}
+
 .views-admin ul,
 .views-admin menu,
 .views-admin dir {
@@ -2340,6 +3067,9 @@ img.screenshot {
   border: 0px solid transparent;
   top: 0;
 }
+.views-ui-dialog .views-messages {
+  padding: 0 1em;
+}
 
 .box-padding {
   padding-left: 0;
@@ -2412,7 +3142,7 @@ td.group-title {
   border: 0px solid transparent;
   padding: 0;
   border-bottom: 1px solid #999;
-  margin-bottom: 1em;
+  margin-bottom: 3em;
   height: 2.8em;
 }
 .views-display-top .ctools-button-processed {
@@ -2487,7 +3217,7 @@ ul#views-display-menu-tabs li {
 }
 
 #edit-display-settings-content {
-  margin-top: 0px;
+  margin-top: 1em;
 }
 
 #edit-display-settings-main {
@@ -2561,7 +3291,7 @@ ul#views-display-menu-tabs li {
 .views-ui-display-tab-bucket .views-display-setting {
   color: inherit;
   font-size: inherit;
-  padding-bottom: 0px;
+  padding-bottom: 5px;
 }
 .views-ui-display-tab-bucket .even {
   background-color: transparent;
@@ -2699,14 +3429,22 @@ ul#views-display-menu-tabs li {
   padding: inherit;
 }
 
-#views-ui-rearrange-filter-form tr td[rowspan] {
-  border: 0px solid transparent;
-}
-#views-ui-rearrange-filter-form tr[id^="views-row"] {
-  border-right: 0px solid transparent;
-}
-#views-ui-rearrange-filter-form tr[id^="views-row"].even td {
-  background-color: transparent;
+#views-ui-rearrange-filter-form {
+  /*tr {
+    td[rowspan] {
+      border: 0px solid transparent;
+    }
+
+    &[id^="views-row"] {
+      border-right: 0px solid transparent;
+
+      &.even {
+        td {
+          background-color: transparent;
+        }
+      }
+    }
+  }*/
 }
 #views-ui-rearrange-filter-form .views-group-title {
   border-top: 0px solid transparent;
@@ -2759,20 +3497,23 @@ ul#views-display-menu-tabs li {
   padding-left: 0px;
 }
 
-.views-query-info table {
-  border-color: inherit;
-  border-spacing: 0;
-  margin: inherit;
-}
-.views-query-info table tr {
-  background-color: inherit;
-}
-.views-query-info table th,
-.views-query-info table td {
-  color: inherit;
-  padding: 0px;
-}
+/*.views-query-info {
+  table {
+    border-color: inherit;
+    border-spacing: 0;
+    margin: inherit;
 
+    tr {
+      background-color: inherit;
+    }
+
+    th,
+    td {
+      color: inherit;
+      padding: 0px;
+    }
+  }
+}*/
 #edit-options-exception.collapsible {
   margin-top: 0;
 }
@@ -2830,7 +3571,96 @@ ul#views-display-menu-tabs li {
   font-weight: normal;
 }
 
-/* PANELS */
+/* Ember overrides of panels CSS */
+h3, h4, h1, h2, h5, h6, dt, th, label, button,
+input[type="reset"],
+input[type="submit"],
+input[type="button"],
+[class*="action-item"], .button,
+[id^="edit-cancel"], input[id^="edit-submit"],
+input[id^="edit-next"],
+.fake-submit {
+  font-family: "Helvetica Neue", helvetica, "Segoe UI", segoe, "Ubuntu", "Droid Sans", "Arial", sans-serif;
+}
+
+h3, h4 {
+  font-weight: 400;
+}
+
+h1, h2 {
+  font-weight: 200;
+}
+
+h5, h6, dt, th, label, button,
+input[type="reset"],
+input[type="submit"],
+input[type="button"],
+[class*="action-item"], .button,
+[id^="edit-cancel"], input[id^="edit-submit"],
+input[id^="edit-next"],
+.fake-submit {
+  font-weight: 700;
+}
+h5 b, h6 b, dt b, th b, label b, button b,
+input[type="reset"] b,
+input[type="submit"] b,
+input[type="button"] b,
+[class*="action-item"] b, .button b,
+[id^="edit-cancel"] b, input[id^="edit-submit"] b,
+input[id^="edit-next"] b,
+.fake-submit b,
+h5 strong,
+h6 strong,
+dt strong,
+th strong,
+label strong,
+button strong,
+input[type="reset"] strong,
+input[type="submit"] strong,
+input[type="button"] strong,
+[class*="action-item"] strong,
+.button strong,
+[id^="edit-cancel"] strong,
+input[id^="edit-submit"] strong,
+input[id^="edit-next"] strong,
+.fake-submit strong {
+  font-weight: 400;
+}
+
+blockquote, caption,
+tfoot {
+  font-family: Constantia, "Lucida Bright", Lucidabright, "Lucida Serif", Lucida, "DejaVu Serif", "Bitstream Vera Serif", "Liberation Serif", Georgia, serif;
+}
+
+blockquote, caption,
+tfoot {
+  font-style: italic;
+}
+blockquote i, caption i,
+tfoot i,
+blockquote em,
+caption em,
+tfoot em {
+  font-style: normal;
+}
+
+pre,
+code {
+  font-family: Consolas, "Andale Mono WT", "Andale Mono", "Lucida Console", "Lucida Sans Typewriter", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Liberation Mono", "Nimbus Mono L", Monaco, "Courier New", Courier, monospace;
+}
+pre i,
+code i,
+pre em,
+code em {
+  font-style: normal;
+}
+pre b,
+code b,
+pre strong,
+code strong {
+  font-weight: 400;
+}
+
 .dashboard-content {
   padding: 0;
 }
@@ -2865,7 +3695,7 @@ div.dashboard-block {
 }
 
 dl.page-manager-wizards {
-  background: url('../images/list-item.png?1376700820') no-repeat scroll 0 0 transparent;
+  background: url('../images/list-item.png?1402419892') no-repeat scroll 0 0 transparent;
   margin: 0 0 1em;
   padding: 0 0 0 2.5em;
 }
@@ -2946,7 +3776,96 @@ body form#page-manager-list-pages-form, body form#ctools-export-ui-list-form {
   margin: 1em 0;
 }
 
-/* MEDIA */
+/* Ember overrides of Media module CSS */
+h3, h4, h1, h2, h5, h6, dt, th, label, button,
+input[type="reset"],
+input[type="submit"],
+input[type="button"],
+[class*="action-item"], .button,
+[id^="edit-cancel"], input[id^="edit-submit"],
+input[id^="edit-next"],
+.fake-submit {
+  font-family: "Helvetica Neue", helvetica, "Segoe UI", segoe, "Ubuntu", "Droid Sans", "Arial", sans-serif;
+}
+
+h3, h4 {
+  font-weight: 400;
+}
+
+h1, h2 {
+  font-weight: 200;
+}
+
+h5, h6, dt, th, label, button,
+input[type="reset"],
+input[type="submit"],
+input[type="button"],
+[class*="action-item"], .button,
+[id^="edit-cancel"], input[id^="edit-submit"],
+input[id^="edit-next"],
+.fake-submit {
+  font-weight: 700;
+}
+h5 b, h6 b, dt b, th b, label b, button b,
+input[type="reset"] b,
+input[type="submit"] b,
+input[type="button"] b,
+[class*="action-item"] b, .button b,
+[id^="edit-cancel"] b, input[id^="edit-submit"] b,
+input[id^="edit-next"] b,
+.fake-submit b,
+h5 strong,
+h6 strong,
+dt strong,
+th strong,
+label strong,
+button strong,
+input[type="reset"] strong,
+input[type="submit"] strong,
+input[type="button"] strong,
+[class*="action-item"] strong,
+.button strong,
+[id^="edit-cancel"] strong,
+input[id^="edit-submit"] strong,
+input[id^="edit-next"] strong,
+.fake-submit strong {
+  font-weight: 400;
+}
+
+blockquote, caption,
+tfoot {
+  font-family: Constantia, "Lucida Bright", Lucidabright, "Lucida Serif", Lucida, "DejaVu Serif", "Bitstream Vera Serif", "Liberation Serif", Georgia, serif;
+}
+
+blockquote, caption,
+tfoot {
+  font-style: italic;
+}
+blockquote i, caption i,
+tfoot i,
+blockquote em,
+caption em,
+tfoot em {
+  font-style: normal;
+}
+
+pre,
+code {
+  font-family: Consolas, "Andale Mono WT", "Andale Mono", "Lucida Console", "Lucida Sans Typewriter", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Liberation Mono", "Nimbus Mono L", Monaco, "Courier New", Courier, monospace;
+}
+pre i,
+code i,
+pre em,
+code em {
+  font-style: normal;
+}
+pre b,
+code b,
+pre strong,
+code strong {
+  font-weight: 400;
+}
+
 /* Media - Field widget */
 .media-widget {
   padding: 9px 0;
@@ -3010,16 +3929,248 @@ body form#page-manager-list-pages-form, body form#ctools-export-ui-list-form {
   overflow: hidden;
 }
 
-/* Media - Media browser */
-/* WORKBENCH */
+/* Ember overrides of workbench CSS */
+h3, h4, h1, h2, h5, h6, dt, th, label, button,
+input[type="reset"],
+input[type="submit"],
+input[type="button"],
+[class*="action-item"], .button,
+[id^="edit-cancel"], input[id^="edit-submit"],
+input[id^="edit-next"],
+.fake-submit {
+  font-family: "Helvetica Neue", helvetica, "Segoe UI", segoe, "Ubuntu", "Droid Sans", "Arial", sans-serif;
+}
+
+h3, h4 {
+  font-weight: 400;
+}
+
+h1, h2 {
+  font-weight: 200;
+}
+
+h5, h6, dt, th, label, button,
+input[type="reset"],
+input[type="submit"],
+input[type="button"],
+[class*="action-item"], .button,
+[id^="edit-cancel"], input[id^="edit-submit"],
+input[id^="edit-next"],
+.fake-submit {
+  font-weight: 700;
+}
+h5 b, h6 b, dt b, th b, label b, button b,
+input[type="reset"] b,
+input[type="submit"] b,
+input[type="button"] b,
+[class*="action-item"] b, .button b,
+[id^="edit-cancel"] b, input[id^="edit-submit"] b,
+input[id^="edit-next"] b,
+.fake-submit b,
+h5 strong,
+h6 strong,
+dt strong,
+th strong,
+label strong,
+button strong,
+input[type="reset"] strong,
+input[type="submit"] strong,
+input[type="button"] strong,
+[class*="action-item"] strong,
+.button strong,
+[id^="edit-cancel"] strong,
+input[id^="edit-submit"] strong,
+input[id^="edit-next"] strong,
+.fake-submit strong {
+  font-weight: 400;
+}
+
+blockquote, caption,
+tfoot {
+  font-family: Constantia, "Lucida Bright", Lucidabright, "Lucida Serif", Lucida, "DejaVu Serif", "Bitstream Vera Serif", "Liberation Serif", Georgia, serif;
+}
+
+blockquote, caption,
+tfoot {
+  font-style: italic;
+}
+blockquote i, caption i,
+tfoot i,
+blockquote em,
+caption em,
+tfoot em {
+  font-style: normal;
+}
+
+pre,
+code {
+  font-family: Consolas, "Andale Mono WT", "Andale Mono", "Lucida Console", "Lucida Sans Typewriter", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Liberation Mono", "Nimbus Mono L", Monaco, "Courier New", Courier, monospace;
+}
+pre i,
+code i,
+pre em,
+code em {
+  font-style: normal;
+}
+pre b,
+code b,
+pre strong,
+code strong {
+  font-weight: 400;
+}
+
 div.admin.my-workbench .left,
 div.admin.my-workbench .right {
   margin: 0;
 }
 
-/* FEATURES */
+@media (max-width: 30em) {
+  div.admin.my-workbench .left,
+  div.admin.my-workbench .right {
+    float: none;
+    width: 100%;
+  }
+  div.admin.my-workbench .left {
+    margin-bottom: 20px;
+  }
+  div.admin.my-workbench .left .views-field-picture {
+    float: left;
+  }
+  div.admin.my-workbench .left .views-field-name,
+  div.admin.my-workbench .left .views-field-edit-node {
+    text-align: right;
+  }
+}
+/* Ember overrides of features CSS */
+h3, h4, h1, h2, h5, h6, dt, th, label, button,
+input[type="reset"],
+input[type="submit"],
+input[type="button"],
+[class*="action-item"], .button,
+[id^="edit-cancel"], input[id^="edit-submit"],
+input[id^="edit-next"],
+.fake-submit {
+  font-family: "Helvetica Neue", helvetica, "Segoe UI", segoe, "Ubuntu", "Droid Sans", "Arial", sans-serif;
+}
+
+h3, h4 {
+  font-weight: 400;
+}
+
+h1, h2 {
+  font-weight: 200;
+}
+
+h5, h6, dt, th, label, button,
+input[type="reset"],
+input[type="submit"],
+input[type="button"],
+[class*="action-item"], .button,
+[id^="edit-cancel"], input[id^="edit-submit"],
+input[id^="edit-next"],
+.fake-submit {
+  font-weight: 700;
+}
+h5 b, h6 b, dt b, th b, label b, button b,
+input[type="reset"] b,
+input[type="submit"] b,
+input[type="button"] b,
+[class*="action-item"] b, .button b,
+[id^="edit-cancel"] b, input[id^="edit-submit"] b,
+input[id^="edit-next"] b,
+.fake-submit b,
+h5 strong,
+h6 strong,
+dt strong,
+th strong,
+label strong,
+button strong,
+input[type="reset"] strong,
+input[type="submit"] strong,
+input[type="button"] strong,
+[class*="action-item"] strong,
+.button strong,
+[id^="edit-cancel"] strong,
+input[id^="edit-submit"] strong,
+input[id^="edit-next"] strong,
+.fake-submit strong {
+  font-weight: 400;
+}
+
+blockquote, caption,
+tfoot {
+  font-family: Constantia, "Lucida Bright", Lucidabright, "Lucida Serif", Lucida, "DejaVu Serif", "Bitstream Vera Serif", "Liberation Serif", Georgia, serif;
+}
+
+blockquote, caption,
+tfoot {
+  font-style: italic;
+}
+blockquote i, caption i,
+tfoot i,
+blockquote em,
+caption em,
+tfoot em {
+  font-style: normal;
+}
+
+pre,
+code {
+  font-family: Consolas, "Andale Mono WT", "Andale Mono", "Lucida Console", "Lucida Sans Typewriter", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Liberation Mono", "Nimbus Mono L", Monaco, "Courier New", Courier, monospace;
+}
+pre i,
+code i,
+pre em,
+code em {
+  font-style: normal;
+}
+pre b,
+code b,
+pre strong,
+code strong {
+  font-weight: 400;
+}
+
 form div.buttons {
   text-align: left;
+}
+
+div.features-components table td {
+  line-height: 2.25;
+}
+
+div.features-components table th span {
+  background: none;
+}
+
+a.admin-update,
+a.features-storage,
+span.features-storage,
+span.features-component-list span {
+  white-space: nowrap;
+  margin-right: 0;
+  padding: .25em .5em;
+  background: #ddd;
+  -moz-border-radius: 0;
+  -webkit-border-radius: 0;
+}
+
+#features-export-wrapper .component-included .form-type-checkbox {
+  margin: 0;
+  padding: .25em;
+}
+
+div.features-export-list {
+  border: 0;
+}
+
+div.features-components h3,
+#features-filter h3,
+fieldset.features-export-component h3,
+div.features-components div.column div.info h3 {
+  font-weight: 300;
+  font-size: 2.25em;
+  line-height: normal;
 }
 
 fieldset.features-export-component, fieldset.features-export-component.collapsed {
@@ -3046,12 +4197,106 @@ fieldset.features-export-component, fieldset.features-export-component.collapsed
   margin: inherit;
 }
 
+/* Ember overrides of navbar CSS */
+h3, h4, h1, h2, h5, h6, dt, th, label, button,
+input[type="reset"],
+input[type="submit"],
+input[type="button"],
+[class*="action-item"], .button,
+[id^="edit-cancel"], input[id^="edit-submit"],
+input[id^="edit-next"],
+.fake-submit {
+  font-family: "Helvetica Neue", helvetica, "Segoe UI", segoe, "Ubuntu", "Droid Sans", "Arial", sans-serif;
+}
+
+h3, h4 {
+  font-weight: 400;
+}
+
+h1, h2 {
+  font-weight: 200;
+}
+
+h5, h6, dt, th, label, button,
+input[type="reset"],
+input[type="submit"],
+input[type="button"],
+[class*="action-item"], .button,
+[id^="edit-cancel"], input[id^="edit-submit"],
+input[id^="edit-next"],
+.fake-submit {
+  font-weight: 700;
+}
+h5 b, h6 b, dt b, th b, label b, button b,
+input[type="reset"] b,
+input[type="submit"] b,
+input[type="button"] b,
+[class*="action-item"] b, .button b,
+[id^="edit-cancel"] b, input[id^="edit-submit"] b,
+input[id^="edit-next"] b,
+.fake-submit b,
+h5 strong,
+h6 strong,
+dt strong,
+th strong,
+label strong,
+button strong,
+input[type="reset"] strong,
+input[type="submit"] strong,
+input[type="button"] strong,
+[class*="action-item"] strong,
+.button strong,
+[id^="edit-cancel"] strong,
+input[id^="edit-submit"] strong,
+input[id^="edit-next"] strong,
+.fake-submit strong {
+  font-weight: 400;
+}
+
+blockquote, caption,
+tfoot {
+  font-family: Constantia, "Lucida Bright", Lucidabright, "Lucida Serif", Lucida, "DejaVu Serif", "Bitstream Vera Serif", "Liberation Serif", Georgia, serif;
+}
+
+blockquote, caption,
+tfoot {
+  font-style: italic;
+}
+blockquote i, caption i,
+tfoot i,
+blockquote em,
+caption em,
+tfoot em {
+  font-style: normal;
+}
+
+pre,
+code {
+  font-family: Consolas, "Andale Mono WT", "Andale Mono", "Lucida Console", "Lucida Sans Typewriter", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Liberation Mono", "Nimbus Mono L", Monaco, "Courier New", Courier, monospace;
+}
+pre i,
+code i,
+pre em,
+code em {
+  font-style: normal;
+}
+pre b,
+code b,
+pre strong,
+code strong {
+  font-weight: 400;
+}
+
+#navbar-administration {
+  font-family: "Helvetica Neue", helvetica, "Segoe UI", segoe, "Ubuntu", "Droid Sans", "Arial", sans-serif;
+}
+
 /* =============================================================================
 
    MEDIA QUERIES
 
    ========================================================================== */
-@media (max-width: 960px) {
+@media (max-width: 60em) {
   /* dashboard */
   div#dashboard_sidebar {
     clear: both;
@@ -3072,10 +4317,15 @@ fieldset.features-export-component, fieldset.features-export-component.collapsed
     width: 100%;
   }
 }
-@media (max-width: 480px) {
+@media (max-width: 30em) {
   #page {
     margin: 0;
     padding: 1em;
+  }
+
+  #branding {
+    padding-right: 1em;
+    padding-left: 1em;
   }
 
   #overlay {
@@ -3148,45 +4398,38 @@ fieldset.features-export-component, fieldset.features-export-component.collapsed
   html.js #preview {
     margin-left: -15px;
   }
-
-  /* vertical tabs */
-  div.vertical-tabs {
-    background: url('../images/fc.png?1376700820') repeat-y scroll -97px 0 white;
-    border: 1px solid #ddd;
-  }
-  div.vertical-tabs .vertical-tabs-list {
-    width: 143px;
-  }
-  div.vertical-tabs .vertical-tabs-panes {
-    margin: 0 0 0 163px;
-  }
-
-  /* workbench */
-  div.admin.my-workbench .left,
-  div.admin.my-workbench .right {
+}
+/* responsive filters and edit options */
+@media (max-width: 960px) {
+  #edit-options,
+  #edit-filters {
     float: none;
     width: 100%;
   }
-  div.admin.my-workbench .left {
-    margin-bottom: 20px;
+
+  #edit-options .form-submit,
+  div.form-item.form-type-select.form-item-operation,
+  div.exposed-filters .form-item,
+  div.exposed-filters div#edit-actions {
+    float: none;
+    width: auto;
   }
-  div.admin.my-workbench .left .views-field-picture {
+
+  #edit-options div.fieldset-wrapper {
+    margin: 0;
+  }
+}
+@media (max-width: 680px) {
+  #edit-options .form-submit,
+  #edit-options div.form-item.form-type-select.form-item-operation,
+  #edit-filters div.exposed-filters .form-item,
+  #edit-filters div.exposed-filters div#edit-actions {
+    width: 100%;
     float: left;
-  }
-  div.admin.my-workbench .left .views-field-name,
-  div.admin.my-workbench .left .views-field-edit-node {
-    text-align: right;
+    margin-left: 0;
+    margin-top: 0;
   }
 }
-.search-block-form {
-  margin-top: 20px;
-  margin-bottom: 20px;
-}
-
-.theme-info h3 {
-  font-size: 1.77778em;
-}
-
 /* =============================================================================
 
    FADE IN ON PAGELOAD
@@ -3236,4 +4479,67 @@ fieldset.features-export-component, fieldset.features-export-component.collapsed
   -webkit-animation-delay: 0.5s;
   -moz-animation-delay: 0.5s;
   animation-delay: 0.5s;
+}
+
+/* overrides of UX styleguide
+ * TODO move to proper place in UX styleguide
+ */
+[dir="ltr"] fieldset {
+  padding-left: 0em;
+}
+
+label {
+  color: #555;
+  margin: 0 .1em;
+}
+
+div.fieldset-description {
+  margin-bottom: 1em;
+}
+
+legend {
+  font-size: 1.3em;
+  font-weight: normal;
+  margin-bottom: .5em;
+}
+
+[dir="ltr"] div.admin .left {
+  margin-left: 0;
+}
+
+[dir="rtl"] div.admin .right {
+  margin-right: 0;
+}
+
+#branding h1.page-title {
+  font-size: 2.5em;
+}
+
+#branding {
+  background: #444;
+  color: #BBB;
+}
+
+div#branding ul.secondary {
+  background-color: #fff;
+  border-bottom: 1px solid #DDD;
+}
+div#branding ul.secondary a,
+div#branding ul.secondary a:link,
+div#branding ul.secondary a:visited {
+  font-weight: 700;
+  color: #333333;
+}
+div#branding ul.secondary a:hover,
+div#branding ul.secondary a:active,
+div#branding ul.secondary a.active {
+  color: #f05724;
+}
+
+a.active {
+  cursor: default;
+}
+
+.update table.version .version-links {
+  text-align: left;
 }

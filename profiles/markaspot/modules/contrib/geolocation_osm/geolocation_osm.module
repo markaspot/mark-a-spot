@@ -443,6 +443,13 @@ function geolocation_osm_field_widget_settings_form($field, $instance) {
     '#description' => t('Set the image path of your leaflet library (needed with compressed javascript on production sites, see https://github.com/Leaflet/Leaflet/issues/766'),
     '#default_value' => isset($settings['leafletImagePath']) ? $settings['leafletImagePath'] : FALSE,
   );
+  $form['map_zoomlevel'] = array(
+    '#type' => 'select',
+    '#title' => t('Zoom Level at Start'),
+    '#options' => array(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15),
+    '#description' => t('By default zooming is done with double click and/or using the map controls to avoid interrupting the normal window scroll. It can optionally be enabled here.'),
+    '#default_value' => isset($settings['map_zoomlevel']) ? $settings['map_zoomlevel'] : FALSE,
+  );
   $form['scrollwheel'] = array(
     '#type' => 'checkbox',
     '#title' => t('Scroll Zoom'),

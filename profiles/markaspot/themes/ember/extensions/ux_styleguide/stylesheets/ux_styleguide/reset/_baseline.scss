@@ -215,7 +215,7 @@
     }
 
     th {
-      @extend %font-sansserif-regular;
+      @extend %font-sansserif-bold;
       text-transform: uppercase;
 
       [dir="ltr"] & {

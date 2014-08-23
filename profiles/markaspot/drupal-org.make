@@ -22,6 +22,8 @@ projects[field_formatter_settings][subdir] = "contrib"
 projects[field_formatter_class][subdir] = "contrib"
 projects[field_formatter_css_class][subdir] = "contrib"
 projects[geophp][subdir] = "contrib"
+projects[references][subdir] = "contrib"
+projects[references_dialog][subdir] = "contrib"
 
 projects[views_geojson][subdir] = "contrib"
 projects[views_geojson][version] = 1.x-dev
@@ -109,3 +111,4 @@ libraries[bootstrap][overwrite] = TRUE
 ; Themes
 projects[bootstrap][type] = "theme"
 projects[ember][type] = "theme"
+projects[ember][version] = 2.x-dev

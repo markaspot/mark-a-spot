@@ -57,6 +57,10 @@
     &:hover {
       color: $color-text;
     }
+
+    &:hover {
+      text-decoration: none;
+    }
   }
 }
 
@@ -90,5 +94,42 @@
 
   a {
     font-weight: $font-bold;
+  }
+}
+
+// Collapsible elements
+%collapsible-expanded,
+%collapsible-collapsed {
+  &:before {
+    position: relative;
+    display: inline-block;
+    content: '\2303';
+    color: $color-link-alternate;
+    @include transition(top .2s, transform .2s);
+  }
+}
+
+%collapsible-expanded {
+  &:before {
+    top: (($line-height - 1em) / 2);
+  }
+
+  html.js[dir="ltr"] & {
+    &:before {
+      margin-right: $rhythm-space-short;
+    }
+  }
+}
+
+%collapsible-collapsed {
+  &:before {
+    top: -(($line-height - 1em) / 2);
+    @include scaleY(-1);
+  }
+
+  html.js[dir="rtl"] & {
+    &:before {
+      margin-left: $rhythm-space-short;
+    }
   }
 }

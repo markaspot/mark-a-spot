@@ -1,0 +1,64 @@
+<?php
+/**
+ * @file
+ * Mark-a-Spot static geojson module.
+ * This module implements hook_cron to automatically generates static geojson
+ * file in file directory
+ */
+
+/**
+ * Implements hook_cron().
+ */
+function markaspot_static_geojson_cron() {
+  markaspot_static_geojson_save_file();
+}
+
+
+/*
+ * Implements hook_enable().
+ */
+function markaspot_static_geojson_enable() {
+  markaspot_static_geojson_save_file();
+}
+
+/*
+ * Implements hook_node_insert().
+ */
+function markaspot_static_geojson_node_insert($node) {
+  markaspot_static_geojson_save_file();
+}
+
+/*
+ * Implements hook_node_update().
+ */
+function markaspot_static_geojson_node_update($node) {
+  markaspot_static_geojson_save_file();
+}
+
+/**
+ * Implements hook_page_build().
+ */
+function markaspot_static_geojson_page_build(&$page) {
+  if (arg(0) == "list" || arg(0) == "map" || drupal_is_front_page() == TRUE) {
+    drupal_add_js(drupal_get_path('module', 'markaspot_static_geojson') . '/markaspot_static_geojson.js');
+    drupal_add_js(array('markaspot_static_geojson' => array('enable' => TRUE)), 'setting');
+  }
+}
+
+
+/**
+ * Creates Static file
+ */
+
+function markaspot_static_geojson_save_file() {
+  global $base_url;
+  $json = drupal_http_request($base_url . base_path() . 'reports/geojson/map');
+  $dir = 'public://geojson';
+  file_prepare_directory($dir, FILE_CREATE_DIRECTORY);
+  $file = file_save_data($json->data, 'public://geojson/reports.json', FILE_EXISTS_REPLACE);
+
+  if ($file == FALSE) {
+    $message = t('GeoJSON could not be written');
+    watchdog('Mark-a-Spot', $message);
+  }
+}

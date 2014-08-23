@@ -1,17 +1,16 @@
-#Leaflet.Locate
+# Leaflet.Locate
 
 A useful control to geolocate the user with many options.
 
 Tested with Leaflet 0.7 in Firefox, Webkit and mobile Webkit.
 
 
-##Demo
+## Demo
 
 Check out the demo at http://domoritz.github.io/leaflet-locatecontrol/demo/
 
 
 ## Usage
-
 
 ### Minimal set up:
 
@@ -30,11 +29,16 @@ For testing purposes and development, you can use the latest version directly fr
 <script src="//rawgithub.com/domoritz/leaflet-locatecontrol/gh-pages/src/L.Control.Locate.js" ></script>
 ```
 
-### Add the following snippet to your map initialization:
+#### Add the following snippet to your map initialization:
 
 ```js
 L.control.locate().addTo(map);
 ```
+
+#### Install using bower
+
+To install the locate control with [Bower](http://bower.io/), just run `bower install leaflet.locatecontrol`.
+
 
 ### Possible options
 
@@ -48,11 +52,13 @@ L.control.locate({
     setView: true, // automatically sets the map view to the user's location, enabled if `follow` is true
     keepCurrentZoomLevel: false, // keep the current map zoom level when displaying the user's location. (if `false`, use maxZoom)
     stopFollowingOnDrag: false, // stop following when the map is dragged if `follow` is true (deprecated, see below)
+    remainActive: false, // if true locate control remains active on click even if the user's location is in view.
+    markerClass: L.circleMarker, // L.circleMarker or L.marker
     circleStyle: {},  // change the style of the circle around the user's location
     markerStyle: {},
     followCircleStyle: {},  // set difference for the style of the circle around the user's location while following
     followMarkerStyle: {},
-    icon: 'icon-location',  // `icon-locate` or `icon-direction`
+    icon: 'icon-location',  // `icon-location` or `icon-direction`
     iconLoading: 'icon-spinner  animate-spin',  // class for loading icon
     circlePadding: [0, 0], // padding around accuracy circle, value is passed to setBounds
     metric: true,  // use metric or imperial units
@@ -60,6 +66,7 @@ L.control.locate({
     onLocationOutsideMapBounds:  function(context) { // called when outside map boundaries
             alert(context.options.strings.outsideMapBoundsMsg);
     },
+    showPopup: true, // display a popup when the user click on the inner marker
     strings: {
         title: "Show me where I am",  // title of the locate control
         popup: "You are within {distance} {unit} from this point",  // text to appear if user clicks on circle

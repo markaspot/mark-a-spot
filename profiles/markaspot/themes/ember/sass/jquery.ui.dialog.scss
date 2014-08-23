@@ -5,3 +5,20 @@
 
 @import "base";
 @import "ux_styleguide/jquery/jquery.ui.dialog";
+
+.ui-dialog {
+  border: $base-border-width solid $color-border-reverse;
+  max-width: 100%;
+
+  .ui-dialog-titlebar {
+    padding: {
+      right: 1em;
+      left: 1em;
+    }
+    background-color: $color-background-dark;
+  }
+}
+
+.ui-widget-overlay {
+  position: fixed;
+}

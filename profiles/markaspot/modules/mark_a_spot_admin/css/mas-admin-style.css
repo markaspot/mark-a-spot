@@ -195,3 +195,15 @@ input.fluid {
   width: 60px;
   text-align: right;
 }
+
+
+div#geolocation-map-7-0 {
+  height: 100px!important;
+  width: 50%!important
+}
+
+div.field-geo-radar,
+input#edit-photo,
+.node-type-report #block-system-help  {
+  display: none;
+}

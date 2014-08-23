@@ -2,8 +2,11 @@
 ?>
 
 <div id="branding" class="clearfix">
+    <?php if (!empty($breadcrumb)): ?>
+    <?php print $breadcrumb; ?>
+    <?php endif; ?>
     <?php print render($title_prefix); ?>
-	<?php if ($title): ?>
+    <?php if ($title): ?>
       <h1 class="page-title">
 	    <?php print $title; ?>
       </h1>
@@ -15,10 +18,6 @@
   </div>
 
   <div id="page"<?php echo theme_get_setting('ember_no_fadein_effect') ? '' : ' class="fade-in"'?>>
-
-  <?php if (!empty($breadcrumb)): ?>
-    <?php print $breadcrumb; ?>
-  <?php endif; ?>
 
   <?php if ($page['help']): ?>
     <?php print render($page['help']); ?>

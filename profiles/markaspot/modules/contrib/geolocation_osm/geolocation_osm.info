@@ -7,8 +7,8 @@ core = "7.x"
 
 
 
-; Information added by drush on 2014-05-01
+; Information added by drush on 2014-08-23
 version = "unknown"
 project = "geolocation_osm"
-datestamp = "1398957897"
+datestamp = "1408809977"
 
