@@ -396,7 +396,7 @@ span.marker-category {
 .marker-status.col-FFA500,
 .marker-status.col-FFA500 a {
   background: no-repeat scroll right center #FFA500;
-  color: orange;
+  color: #fff;
   font-weight: 400;
 }
 
@@ -429,90 +429,73 @@ span.marker-category {
   font-weight: 700;
 }
 
-.page-map .marker-status.col-8fe83b,
-.page-map .marker-status.col-8fe83b a {
-  color: green;
+
+.page-map .col-FFA500,
+.page-map .col-FFA500 a {
+  color: #FFA500;
   font-weight: 700;
 }
 
-.page-map .marker-status.col-cc0000,
-.page-map .marker-status.col-cc0000 a {
-  color: #cc0000;
+.page-map .col-008000,
+.page-map .col-008000 a {
+  color: #008000;
   font-weight: 700;
 }
 
-.page-map .marker-status.col-ff6600,
-.page-map .marker-status.col-ff6600 a {
-  color: #ff6600;
+.page-map .col-FF0000,
+.page-map .col-FF0000 a {
+  color: #ff0000;
   font-weight: 700;
 }
 
-.page-map .marker-status.col-8fe83b,
-.page-map .marker-status.col-8fe83b a {
-  color: green;
-  font-weight: 700;
-}
-
-.page-map .marker-status.col-cc0000,
-.page-map .marker-status.col-cc0000 a {
-  color: #cc0000;
-  font-weight: 700;
-}
-
-.page-map .marker-status.col-ff6600,
-.page-map .marker-status.col-ff6600 a {
-  color: #ff6600;
-  font-weight: 700;
-}
-
-.page-map .marker-category.col-00008B,
-.page-map .marker-category.col-00008B a {
+.page-map .col-00008B,
+.page-map .col-00008B a {
   color: #00008b;
   font-weight: 700;
 }
 
-.page-map .marker-category.col-0000FF,
-.page-map .marker-category.col-0000FF a {
+.page-map .col-0000FF,
+.page-map .col-0000FF a {
   color: #0000ff;
   font-weight: 700;
 }
 
-.page-map .marker-category.col-5F9EA0,
-.page-map .marker-category.col-5F9EA0 a {
+.page-map .col-5F9EA0,
+.page-map .col-5F9EA0 a {
   color: #5f9ea0;
   font-weight: 700;
 }
 
-.page-map .marker-status.col-5F9EA0,
-.page-map .marker-status.col-5F9EA0 a {
-  background: none;
-  color: #5f9ea0;
-  font-weight: 400;
-}
-
-.page-map .marker-category.col-8B0000,
-.page-map .marker-category.col-8B0000 a {
+.page-map .col-8B0000,
+.page-map .col-8B0000 a {
   color: #8b0000;
   font-weight: 700;
 }
 
-.page-map .marker-category.col-006400,
-.page-map .marker-category.col-006400 a {
+.page-map .col-006400,
+.page-map .col-006400 a {
   color: #006400;
   font-weight: 700;
 }
 
-.page-map .marker-category.col-871F78,
-.page-map .marker-category.col-871F78 a {
+.page-map .col-871F78,
+.page-map .col-871F78 a {
   color: #871f78;
   font-weight: 700;
 }
 
-.page-map .marker-category.col-FFA500,
-.page-map .marker-category.col-FFA500 a {
+.page-map .col-FFA500,
+.page-map .col-FFA500 a {
   color: #ffa500;
   font-weight: 700;
 }
+
+.page-map .col-F5F5DC,
+.page-map .col-F5F5DC a {
+  color: #F5F5DC;
+  font-weight: 700;
+}
+
 
 .page-map .marker-category,
 .page-map .marker-status {
@@ -622,15 +605,10 @@ span.marker-category {
 
 #map_wrapper_map {
   margin: auto;
-  /* Div soll zentriert werden */
   min-height: 100%;
-  /* Mindesthöhe für moderne Browser */
   height: auto !important;
-  /* Important Regel für moderne Browser */
   height: 100%;
-  /* Mindesthöhe für den IE */
   overflow: hidden !important;
-  /* FF Scroll-leiste */
   padding: 40px 0 0 40px;
 }
 
