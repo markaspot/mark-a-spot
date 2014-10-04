@@ -36,7 +36,7 @@ function views_json_views_pre_render(&$view) {
         foreach($view->field as $field_name => $field) {
           if($field instanceof views_handler_field_field) {
             if($field->field_info['type'] == 'video') {
-              
+
               // Get the Video URL.
               $video = $field->get_value($view->result[$row]);
               $url = file_create_url($video[0]['uri']);
@@ -167,6 +167,18 @@ function _views_json_render_fields($view, $row) {
     else {
       $field_output = $view->field[$field->options['id']]->advanced_render($row);
       $field_raw = (isset($view->field[$id]->field_alias) && isset($row->{$view->field[$id]->field_alias})) ? $row->{$view->field[$id]->field_alias} : NULL;
+      // Check if this is field is the entity's label.
+      if (empty($field->base_table)) {
+        $entity_info = entity_get_info($field->table);
+        if (isset($entity_info['entity keys'])) {
+          $label_field = $entity_info['entity keys']['label'];
+          if ($field->real_field == $label_field) {
+            // Decode html entities in label field as views does this by default for those fields.
+            $field_output = html_entity_decode($field_output, ENT_QUOTES);
+            $field_output = mb_check_encoding($field_output, 'UTF-8') ? $field_output : utf8_encode($field_output);
+          }
+        }
+      }
     }
 
     $img_match = array();
@@ -279,7 +291,7 @@ function views_json_get($name, $display_id = 'default', $args = array(), $raw = 
  *
  * @see _views_json_json_encode
  */
-function _views_json_encode_formatted($v, $depth = 0) {
+function _views_json_encode_formatted($v, $options, $depth = 0) {
   $base_indent  = '&nbsp;&nbsp;';
   $eol          = '<br />';
   $indent       = str_repeat($base_indent, $depth);
@@ -299,6 +311,11 @@ function _views_json_encode_formatted($v, $depth = 0) {
       $search   = array('"', chr(92), chr(8), chr(12), chr(13) . chr(10), chr(10), chr(13), chr(9));
       $replace  = array('\"', '\\', '\b', '\f', '\n', '\n', '\r', '\t');
       $output   = str_replace($search, $replace, $v);
+
+      // Convert string to numeric if need.
+      if (!empty($options['numeric_strings']) && is_numeric($output)) {
+        return (strpos($output, '.') !== FALSE) ? floatval($output) : intval($output);
+      }
 /* *
       $output = str_replace(array("\r", "\n", "<", ">", "&"),
                            array('\r', '\n', '\x3c', '\x3e', '\x26'),
@@ -313,7 +330,7 @@ function _views_json_encode_formatted($v, $depth = 0) {
       if (empty($v) || array_keys($v) === range(0, sizeof($v) - 1)) {
         $output = array();
         foreach ($v as $val) {
-          $output[] = $indent . $base_indent . _views_json_encode_formatted($val, $depth + 1);
+          $output[] = $indent . $base_indent . _views_json_encode_formatted($val, $options, $depth + 1);
         }
         return '[' . (!empty($output) ? $eol . implode(',' . $eol, $output) . $eol . $indent : '') . ']';
       }
@@ -322,7 +339,7 @@ function _views_json_encode_formatted($v, $depth = 0) {
     case 'object':
       $output = array();
       foreach ($v as $key => $val) {
-        $output[] = $indent . $base_indent . _views_json_encode_formatted(strval($key)) . ' : ' . _views_json_encode_formatted($val, $depth + 1);
+        $output[] = $indent . $base_indent . _views_json_encode_formatted(strval($key)) . ' : ' . _views_json_encode_formatted($val, $options, $depth + 1);
       }
       return '{' . (!empty($output) ? $eol . implode(',' . $eol, $output) . $eol . $indent : '') . '}';
 

@@ -21,8 +21,8 @@ class views_plugin_style_json extends views_plugin_style {
     $options['format'] = array('default' => 'simple', 'translatable' => FALSE);
     $options['jsonp_prefix'] = array('default' => NULL, 'translatable' => FALSE);
     $options['content_type'] = array('default' => 'default', 'translatable' => FALSE);
-    $options['using_views_api_mode'] = array('default' => TRUE, 'translatable' => FALSE);
-    
+    $options['using_views_api_mode'] = array('default' => FALSE, 'translatable' => FALSE);
+
     // Encoding options, to be used by json_encode().
     $options['encoding'] = array('contains' => array(
       'object_arrays' => array('default' => NULL, 'translatable' => FALSE, 'bitmask' => 'JSON_FORCE_OBJECT'),
@@ -109,9 +109,9 @@ class views_plugin_style_json extends views_plugin_style {
       '#type' => 'checkbox',
       '#title' => t('Views API mode'),
       '#default_value' => $this->options['using_views_api_mode'],
-      '#description' => t('Not using View API mode means the JSON gets output directly and the server ceases normal page processing.  Using it means the server does not cease processing after outputting the JSON.  This allows the Views API to be used with the view without having to prematurely terminate page processing.'),
+      '#description' => t('With Views API mode the JSON will embedded as normal content so normal page processing is used. Leave it unchecked when JSON should be printed directly to the client.'),
     );
-    
+
     // JSON encoding options.
     $form['object_arrays'] = array(
       '#type' => 'checkbox',
@@ -162,7 +162,7 @@ class views_plugin_style_json extends views_plugin_style {
       '#default_value' => $this->options['json_char_encoding'],
       '#description' => t('You can combine multiple options.'),
     );
-    
+
     // Only enable options supported by the current PHP version.
     if(!(PHP_MAJOR_VERSION >= 5 && PHP_MINOR_VERSION >= 4)) {
       $php5_4_ops = array('bigint_string', 'pretty_print', 'unescaped_slashes', 'unescaped_unicode');

@@ -125,6 +125,7 @@
      * Hide Layers
      */
     hideMarkers: function() {
+      Drupal.Markaspot.maps[0].closePopup();
       Drupal.Markaspot.maps[0].removeLayer(markerLayer);
     },
 
@@ -133,16 +134,20 @@
      */
     markerClickFn: function (latlon, html, id) {
       return function (e) {
+        var target  = document.getElementById('map');
+        var spinner = new Spinner().spin(target);
         map = Drupal.Markaspot.maps[0];
         map.closePopup();
         var report_url = Drupal.settings.basePath + 'georeport/v2/requests/' + id + '.json';
         $.getJSON(report_url).success(function (data) {
-          var request = data[0].media_url ? '<img style="height: 80px; margin: 20px 10px 10px 0" src="' + data[0].media_url + '" class="map img-thumbnail pull-left"><p>' + data[0].description + '</p>' : '<p>' + data[0].description + '</p>';
-
-          L.popup({autoPanPadding: new L.Point(15,120)})
+          var description = data[0].description ? data[0].description : "";
+          var request = data[0].media_url ? '<img style="height: 80px; margin: 10px 10px 10px 0" src="' + data[0].media_url + '" class="map img-thumbnail pull-left"><p class="report-detail">' + description + '</p>' : '<p class="report-detail">' + description + '</p>';
+          // L.popup({autoPanPadding: new L.Point(15,120)})
+          L.popup()
             .setLatLng(latlon)
             .setContent(html + request + '</div>')
             .openOn(map);
+          spinner.stop();
         });
 
         map.on('popupopen', function (e) {
@@ -173,8 +178,7 @@
 
       var initialLatLng = new L.LatLng(mas.markaspot_ini_lat, mas.markaspot_ini_lng);
       // bounds = new L.LatLngBounds(initialLatLng);
-
-      if (!dataset && mas.node_type == 'report') {
+      if (dataset.length == 0) {
         alert(Drupal.t('No reports found for this category/status'));
       }
 
@@ -188,61 +192,75 @@
           html += '<div><a class="infowindow-link" href="' + item.path + '">' + Drupal.t('read more') + '</a></div>';
         }
 
+        var colorswitch, colors;
 
-
-        var colors = [{
-          "color": "red", "hex": "FF0000"
-        }, {
-          "color": "darkred", "hex": "8B0000"
-        }, {
-          "color": "orange", "hex": "FFA500"
-        }, {
-          "color": "green", "hex": "008000"
-        }, {
-          "color": "darkgreen", "hex": "006400"
-        }, {
-          "color": "blue", "hex": "0000FF"
-        }, {
-          "color": "darkblue", "hex": "00008B"
-        }, {
-          "color": "purple", "hex": "800080"
-        }, {
-          "color": "darkpurple", "hex": "871F78"
-        }, {
-          "color": "cadetblue", "hex": "5F9EA0",
-        }, {
-          "color": "lightgray", "hex": "D3D3D3",
-        }, {
-          "color": "gray", "hex": "808080",
-        }, {
-          "color": "black", "hex": "000000",
-        }, {
-          "color": "beige", "hex": "F5F5DC",
-        }, {
-          "color": "white", "hex": "5F9EA0",
-        }];
-
-        var colorswitch = (getToggle == 1) ? String(item.field_category_hex) : String(item.field_status_hex);
-
+        if (getToggle == 1) {
+          colors = [{
+            "color": "red", "hex": "FF0000"
+          }, {
+            "color": "darkred", "hex": "8B0000"
+          }, {
+            "color": "orange", "hex": "FFA500", "iconColor" : "dark-red"
+          }, {
+            "color": "green", "hex": "008000"
+          }, {
+            "color": "darkgreen", "hex": "006400"
+          }, {
+            "color": "blue", "hex": "0000FF"
+          }, {
+            "color": "darkblue", "hex": "00008B"
+          }, {
+            "color": "purple", "hex": "800080"
+          }, {
+            "color": "darkpurple", "hex": "871F78"
+          }, {
+            "color": "cadetblue", "hex": "5F9EA0"
+          }, {
+            "color": "lightgray", "hex": "D3D3D3", "iconColor" : "black"
+          }, {
+            "color": "gray", "hex": "808080"
+          }, {
+            "color": "black", "hex": "000000"
+          }, {
+            "color": "beige", "hex": "F5F5DC", "iconColor" : "darkred"
+          }, {
+            "color": "white", "hex": "FFFFFF", "iconColor" : "black"
+          }];
+          colorswitch = item.field_category_hex;
+        }
+        if (getToggle == 2) {
+          colors = [{
+            "color": "red", "hex": "FF0000"
+          }, {
+            "color": "green", "hex": "008000"
+          }, {
+            "color": "orange", "hex": "FFA500"
+          }, {
+            "color": "cadetblue", "hex": "5F9EA0"
+          }];
+          colorswitch = item.field_status_hex;
+        }
         $.each(colors, function(key, element) {
+
           if (colorswitch == element.hex) {
             var awesomeColor = element.color;
-            var awesomeIcon = (getToggle == 1) ? item.field_category_icon : item.field_status_icon;
+            var awesomeIcon  = (getToggle == 1) ? item.field_category_icon : item.field_status_icon;
+            var iconColor    = element.iconColor ? element.iconColor : "#ffffff";
             var marker = new L.Marker(latlon, {
               icon: L.AwesomeMarkers.icon({
                 icon: awesomeIcon,
                 prefix: 'icon',
                 markerColor: awesomeColor,
+                iconColor: iconColor,
                 spin: false
               })
             });
             markerLayer.addLayer(marker);
             marker.on('click', Drupal.markaspot.markerClickFn(latlon, html, item.uuid));
           }
-
         });
         var fn = Drupal.markaspot.markerClickFn(latlon, html, item.uuid);
-        $('#marker_' + item.nid).on('hover', fn);
+        $('#marker_' + item.nid).on('hover, click', fn);
         Drupal.Markaspot.maps[0].addLayer(markerLayer);
       });
     },
@@ -257,6 +275,7 @@
 
       //Mark-a-Spot Static Module detected, get all data via JSON in sites/default/files/geojson.
       if (moduleStatic) {
+
         if (categoryCond == "All" && statusCond == "All") {
           var dataset = data.features;
           Drupal.markaspot.showData(getToggle, dataset);

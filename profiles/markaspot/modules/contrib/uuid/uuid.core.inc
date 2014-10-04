@@ -125,10 +125,52 @@ function file_entity_uuid_load(&$entities, $entity_type) {
 function file_entity_uuid_presave(&$entity, $entity_type) {
   if ($entity_type == 'file') {
     entity_property_uuid_to_id($entity, 'user', 'uid');
+
+    // Write the new file to the local filesystem.
     if (isset($entity->file_contents)) {
-      $directory = drupal_dirname($entity->uri);
+      // Don't try to write it if it uses a stream wrapper that isn't writeable
+      // (for example, if it is a remotely-hosted video).
+      $scheme = file_uri_scheme($entity->uri);
+      $wrappers = file_get_stream_wrappers(STREAM_WRAPPERS_WRITE);
+      if (empty($wrappers[$scheme])) {
+        return;
+      }
+
+      // Check for an existing file with the same URI.
+      $existing_files = file_load_multiple(array(), array('uri' => $entity->uri));
+      $existing = (object) array('uri' => NULL, 'uuid' => NULL);
+      if (count($existing_files)) {
+        $existing = reset($existing_files);
+      }
+
+      // If this is a new file and there is an existing file with the same URI,
+      // but a different uuid then rename this file.
+      if ($entity->is_new && $entity->uri == $existing->uri && $entity->uuid != $existing->uuid) {
+        $uri = $entity->uri;
+        $replace = FILE_EXISTS_RENAME;
+      }
+      // If this has an id, meaning UUID has already matched the uuid to an
+      // existing file, but it has a URI that matches a file with a different
+      // uuid, then load the file with the matching uuid and use the URI from
+      // that file. The existing file with the matching uuid is most likely a
+      // file that was previously renamed, e.g. as in the condition above, to
+      // avoid conflict. The uuid matches because they are the same file, but
+      // the URI does not because an incrementing number was added as part of
+      // the renaming.
+      elseif ($entity->uri == $existing->uri && $entity->uuid != $existing->uuid) {
+        $file = file_load($entity->fid);
+        $uri = $file->uri;
+        $replace = FILE_EXISTS_REPLACE;
+      }
+      // Otherwise create a new file or replace the existing file contents.
+      else {
+        $uri = $entity->uri;
+        $replace = FILE_EXISTS_REPLACE;
+      }
+
+      $directory = drupal_dirname($uri);
       file_prepare_directory($directory, FILE_CREATE_DIRECTORY);
-      file_unmanaged_save_data(base64_decode($entity->file_contents), $entity->uri, FILE_EXISTS_REPLACE);
+      $entity->uri = file_unmanaged_save_data(base64_decode($entity->file_contents), $uri, $replace);
     }
   }
 }
@@ -368,7 +410,7 @@ function node_uuid_entities_features_export_entity_alter(&$entity, $entity_type)
 }
 
 /**
- * Implementation of hook_uuid_entities_features_export_entity_alter().
+ * Implementations hook_uuid_entities_features_export_entity_alter().
  */
 function user_uuid_entities_features_export_entity_alter(&$entity, $entity_type) {
   if ($entity_type == 'user') {

@@ -52,11 +52,21 @@ function markaspot_uuid_generate_mas() {
   );
 
   $uuid_preset_length = variable_get('markaspot_logic_uuid_pattern', 0);
-  return sprintf($uuid_pattern[$uuid_preset_length],
-    // 32 bits for "time_low".
-    mt_rand(0, 65535),
-    // 16 bits for "time_mid".
-    mt_rand(0, 65535)) . '-' . $next_nid;
+  $uuid_offset = variable_get('markaspot_logic_uuid_offset', 0);
+  $next_id = ($next_nid - $uuid_offset > 0) ? $next_nid - $uuid_offset : $next_nid;
+
+  if ($uuid_preset_length <= 2) {
+
+    return sprintf($uuid_pattern[$uuid_preset_length],
+      // 32 bits for "time_low".
+      mt_rand(0, 65535),
+      // 16 bits for "time_mid".
+      mt_rand(0, 65535)) . '-' . $next_id;
+  }
+  else {
+
+    return variable_get('markaspot_logic_uuid_prefix', 'A-') . '-' . $next_id;
+  }
 }
 
 
@@ -77,7 +87,7 @@ function markaspot_uuid_node_insert($node) {
 }
 
 /**
- * Implements hook_node_insert().
+ * Implements hook_node_update().
  *
  * Need to update the title field with UUID
  */

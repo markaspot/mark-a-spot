@@ -14,18 +14,15 @@
 
 $jsonp_prefix = $options['jsonp_prefix'];
 
-$features_collection = array(
-  'type' => 'FeatureCollection',
-  'features' => $features,
-);
-
 if ($view->override_path) {
+
   // We're inside a live preview where the GeoJSON is pretty-printed.
-  $json = _views_geojson_encode_formatted($features_collection);
-  if ($jsonp_prefix) $json = "$jsonp_prefix($json)";
-  print "<code>$json</code>";
-}
-else {
+  $json = check_plain(_views_geojson_encode_formatted($features_collection));
+  if ($jsonp_prefix) {
+    $json = "$jsonp_prefix($json)";
+  }
+  print "<pre>$json</pre>";
+} else {
   $json = drupal_json_encode($features_collection);
   if ($jsonp_prefix) {
     $json = "$jsonp_prefix($json)";
@@ -40,7 +37,6 @@ else {
     $content_type = ($options['content_type'] == 'default') ? 'application/json' : $options['content_type'];
     drupal_add_http_header("Content-Type", "$content_type; charset=utf-8");
     print $json;
-    //Don't think this is needed in .tpl.php files: module_invoke_all('exit');
-    exit;
+    drupal_exit();
   }
 }

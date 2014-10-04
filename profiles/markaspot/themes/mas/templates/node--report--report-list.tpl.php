@@ -111,7 +111,7 @@
     print render($content);
   ?>
   <div class="location">
-    <div class="show-markers" title="<?php t('Show marker in map')?>" id="marker_<?php echo $node->nid;?>"><span class="icon-location-2"></span></div>
+    <div class="show-markers" title="<?php t('Show marker in map')?>" id="marker_<?php echo $node->nid;?>"><span class="icon-location"></span></div>
   </div>
   <?php if (!empty($content['field_tags']) || !empty($content['links'])): ?>
     <footer>

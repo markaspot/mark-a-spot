@@ -11,6 +11,7 @@ class views_plugin_argument_default_bboxquery extends views_plugin_argument_defa
   function option_definition() {
     $options = parent::option_definition();
     $options['argument'] = array('default' => '');
+    $options['arg_id'] = array('default' => 'bbox');
 
     return $options;
   }
@@ -28,8 +29,8 @@ class views_plugin_argument_default_bboxquery extends views_plugin_argument_defa
       '#title'  => t('Query argument ID'),
       '#size' => 60,
       '#maxlength' => 64,
-      '#default_value'  => $this->options['arg_id'] ? $this->options['arg_id'] : t('BBOX'),
-      '#description'  => t('The ID of the query argument.<br />For OpenLayers use <em>BBOX</em>, (as in "<em>?BBOX=left,bottom,right,top</em>".)'),
+      '#default_value'  => $this->options['arg_id'] ? $this->options['arg_id'] : t('bbox'),
+      '#description'  => t('The ID of the query argument.<br />For OpenLayers use <em>bbox</em>, (as in "<em>?bbox=left,bottom,right,top</em>".)'),
     );
   }
 

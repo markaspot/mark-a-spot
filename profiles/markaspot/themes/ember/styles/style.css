@@ -1432,7 +1432,7 @@ h3 {
 /* FORM ELEMENTS */
 /* Make fake buttons inherit the given styles. */
 .form-select, .form-select:focus, .form-select:active {
-  background: white url('../images/select_sprite.svg?1402419892') no-repeat;
+  background: white url('../images/select_sprite.svg?1401388800') no-repeat;
 }
 [dir="ltr"] .form-select {
   padding-right: 3.51961em;
@@ -1502,7 +1502,7 @@ ul.admin-list {
   padding: 0;
 }
 ul.admin-list li {
-  background: url('../images/list-item.png?1402419892') no-repeat scroll 0 0 transparent;
+  background: url('../images/list-item.png?1376700820') no-repeat scroll 0 0 transparent;
   background-size: 18px;
   background-position: 0 1px;
   list-style-image: none;
@@ -1541,14 +1541,14 @@ div.add-or-remove-shortcuts {
 div.add-or-remove-shortcuts a span.icon {
   display: block;
   width: 24px;
-  background: transparent url('../images/no_shortcut.svg?1402419892') no-repeat scroll 0 0;
+  background: transparent url('../images/no_shortcut.svg?1401388800') no-repeat scroll 0 0;
   height: 24px;
   float: right;
   margin-left: 8px;
 }
 
 div.add-shortcut a:focus span.icon, div.add-shortcut a:hover span.icon {
-  background: transparent url('../images/shortcut.svg?1402419892') no-repeat scroll 0 0;
+  background: transparent url('../images/shortcut.svg?1401388800') no-repeat scroll 0 0;
   -webkit-transition: all 1s;
   -moz-transition: all 1s;
   -o-transition: all 1s;
@@ -1556,10 +1556,10 @@ div.add-shortcut a:focus span.icon, div.add-shortcut a:hover span.icon {
 }
 
 div.remove-shortcut a span.icon {
-  background: transparent url('../images/no_shortcut.svg?1402419892') no-repeat scroll 0 0;
+  background: transparent url('../images/no_shortcut.svg?1401388800') no-repeat scroll 0 0;
 }
 div.remove-shortcut a:focus span.icon, div.remove-shortcut a:hover span.icon {
-  background: transparent url('../images/no_shortcut.svg?1402419892') no-repeat scroll 0 0;
+  background: transparent url('../images/no_shortcut.svg?1401388800') no-repeat scroll 0 0;
   -webkit-transition: all 1s;
   -moz-transition: all 1s;
   -o-transition: all 1s;
@@ -1776,7 +1776,6 @@ tbody,
 tr,
 th,
 td {
-  overflow: hidden;
   white-space: normal;
   text-align: left;
 }
@@ -1905,7 +1904,6 @@ th {
 td {
   vertical-align: top;
   border-bottom: 1px solid #dddddd;
-  overflow: hidden;
 }
 a td {
   color: #2fa6e5;
@@ -1972,7 +1970,6 @@ td li {
     display: block;
     width: 30%;
     margin: 0;
-    overflow: hidden;
     background-color: white;
     border-right: 1px solid #dddddd;
     z-index: 2;
@@ -2560,14 +2557,14 @@ ol.task-list li {
   /* LTR */
 }
 ol.task-list li.active {
-  background: transparent url('../images/task-item.png?1402419892') no-repeat 3px 50%;
+  background: transparent url('../images/task-item.png?1376700820') no-repeat 3px 50%;
   /* LTR */
   color: #000;
   padding: 0.5em 1em 0.5em 20px;
   /* LTR */
 }
 ol.task-list li.done {
-  background: transparent url('../images/task-check.png?1402419892') no-repeat 0 50%;
+  background: transparent url('../images/task-check.png?1376700820') no-repeat 0 50%;
   color: green;
 }
 
@@ -3695,7 +3692,7 @@ div.dashboard-block {
 }
 
 dl.page-manager-wizards {
-  background: url('../images/list-item.png?1402419892') no-repeat scroll 0 0 transparent;
+  background: url('../images/list-item.png?1376700820') no-repeat scroll 0 0 transparent;
   margin: 0 0 1em;
   padding: 0 0 0 2.5em;
 }

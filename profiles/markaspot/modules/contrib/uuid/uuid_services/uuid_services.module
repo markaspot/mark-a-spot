@@ -1,6 +1,21 @@
 <?php
 
 /**
+ * Implementation of hook_menu().
+ */
+function uuid_services_menu() {
+  $items['admin/config/services/uuid-services'] = array(
+    'title' => 'UUID Services',
+    'description' => 'Configure settings for Module Filter.',
+    'access arguments' => array('administer services'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('uuid_services_settings'),
+    'file' => 'uuid_services.admin.inc'
+  );
+  return $items;
+}
+
+/**
  * Implements hook_services_resources_alter().
  *
  * Alter all resources that support UUIDs, to make use this functionality when
@@ -14,7 +29,7 @@
  */
 function uuid_services_services_resources_alter(&$resources, &$endpoint) {
   foreach (entity_get_info() as $entity_type => $entity_info) {
-    if (isset($entity_info['uuid']) && $entity_info['uuid'] == TRUE && isset($resources[$entity_type])) {
+    if (isset($entity_info['uuid']) && $entity_info['uuid'] == TRUE && (isset($resources[$entity_type]) || variable_get('uuid_services_support_all_entity_types', FALSE))) {
       unset($resources[$entity_type]['operations']['create']);
 
       // Alter 'retrieve' method to use UUID enabled functions and arguments.
@@ -126,6 +141,7 @@ function _uuid_services_entity_update($entity_type, $uuid, $entity) {
     else {
       $entity = (object) $entity;
     }
+    $entity->uuid_services = TRUE;
     entity_uuid_save($entity_type, $entity);
     return $entity;
   }

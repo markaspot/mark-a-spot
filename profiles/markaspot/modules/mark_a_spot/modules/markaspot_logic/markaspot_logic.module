@@ -417,9 +417,18 @@ function markaspot_logic_admin_settings() {
       '#type' => 'radios',
       '#title' => t('Choose the UUID pattern.'),
       '#default_value' => variable_get('markaspot_logic_uuid_pattern', markaspot_logic_defaults('markaspot_logic_uuid_pattern')),
-      '#options' => array(t('#3e80-67'), t('#3e8031-67'), t('#3e8031b0-67')),
+      '#options' => array(t('#3e80-67'), t('#3e8031-67'), t('#3e8031b0-67'), 'Other:'),
     );
-
+    $form['uuid']['markaspot_logic_uuid_prefix'] = array(
+      '#type' => 'textfield',
+      '#default_value' => variable_get('markaspot_logic_uuid_prefix', markaspot_logic_defaults('markaspot_logic_uuid_prefix')),
+      '#title' => t('In case you want to have no hex code in an multi-stage environment you could just add a String here, but make sure nodes stay unique'),
+    );
+    $form['uuid']['markaspot_logic_uuid_offset'] = array(
+      '#type' => 'textfield',
+      '#default_value' => variable_get('markaspot_logic_uuid_offset', markaspot_logic_defaults('markaspot_logic_uuid_offset')),
+      '#title' => t('Decrease the ID by this Integer to make production projects start with #1'),
+    );
   }
 
   if (module_exists('markaspot_archive')) {
@@ -526,6 +535,12 @@ function markaspot_logic_defaults($id) {
     case 'markaspot_logic_uuid_pattern':
       return 0;
 
+    case 'markaspot_logic_uuid_prefix':
+      return 'A';
+
+    case 'markaspot_logic_uuid_offset':
+      return 0;
+
     case 'markaspot_logic_title_pattern':
       return 0;
 
@@ -596,12 +611,12 @@ function markaspot_logic_block_view($delta = '') {
 
   switch ($delta) {
     case 'taxonomy_category':
-      $block['subject'] = t('Services');
+      $block['subject'] = t('Service Name');
       $block['content'] = markaspot_logic_contents($delta);
       break;
 
     case 'taxonomy_status':
-      $block['subject'] = t('Status');
+      $block['subject'] = t('Request Status');
       $block['content'] = markaspot_logic_contents($delta);
       break;
 
@@ -621,7 +636,7 @@ function markaspot_logic_contents($which_block) {
   switch ($which_block) {
     case 'taxonomy_category':
       $list_category = NULL;
-      $list_category .= '<div class="btn-group dropdown"><button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">' . t('Services') . ' <span class="caret"></span></button>';
+      $list_category .= '<div class="btn-group dropdown"><button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">' . t('Service Name') . ' <span class="caret"></span></button>';
 
       $alter['html'] = TRUE;
       $alter['max_length'] = 125;
@@ -647,7 +662,7 @@ function markaspot_logic_contents($which_block) {
 
     case 'taxonomy_status':
       $list_status = NULL;
-      $list_status .= '<div class="btn-group dropdown"><button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">' . t('Status') . ' <span class="caret"></span></button>';
+      $list_status .= '<div class="btn-group dropdown"><button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">' . t('Request Status') . ' <span class="caret"></span></button>';
 
       $alter['html'] = TRUE;
       $alter['max_length'] = 25;

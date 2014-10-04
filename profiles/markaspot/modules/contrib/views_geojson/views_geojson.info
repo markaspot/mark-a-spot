@@ -8,11 +8,12 @@ files[] = views/views_plugin_style_geojson.inc
 files[] = views/views_geojson_bbox_argument.inc
 files[] = views/views_plugin_argument_default_bboxquery.inc
 
-dependencies[] = views (>=3.0)
-dependencies[] = geophp (>=1.0)
-; Information added by drupal.org packaging script on 2013-10-19
-version = "7.x-1.0-alpha2+13-dev"
+dependencies[] = views
+dependencies[] = geophp
+
+; Information added by Drupal.org packaging script on 2014-10-03
+version = "7.x-1.0-alpha2+18-dev"
 core = "7.x"
 project = "views_geojson"
-datestamp = "1382164834"
+datestamp = "1412328159"
 

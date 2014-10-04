@@ -47,18 +47,15 @@
   </div>
 </div>
 <div id="map" style="width:100%; height:100%"> </div>
-<div class="main-container container">
-
+<div>
   <header role="banner" id="page-header">
     <?php if (!empty($site_slogan)): ?>
       <p class="lead"><?php print $site_slogan; ?></p>
     <?php endif; ?>
-
     <?php print render($page['header']); ?>
   </header> <!-- /#header -->
 
   <div class="row map-tools">
-
     <?php if (!empty($page['sidebar_first'])): ?>
       <aside class="col-md-3" role="complementary">
         <?php print render($page['sidebar_first']); ?>
@@ -70,9 +67,8 @@
         <?php print render($page['sidebar_second']); ?>
       </aside>  <!-- /#sidebar-second -->
     <?php endif; ?>
-
   </div>
 </div>
-<footer class="footer navbar-inverse navbar-fixed-bottom">
+<footer class="footer navbar-default navbar-fixed-bottom">
   <?php print render($page['footer']); ?>
 </footer>

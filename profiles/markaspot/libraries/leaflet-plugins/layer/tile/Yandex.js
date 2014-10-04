@@ -3,7 +3,6 @@
  */
 
 /* global ymaps: true */
-/* global console: true */
 
 L.Yandex = L.Class.extend({
 	includes: L.Mixin.Events,
@@ -27,18 +26,18 @@ L.Yandex = L.Class.extend({
 	_getPossibleMapType: function (mapType) {
 		var result = 'yandex#map';
 		if (typeof mapType !== 'string') {
-	            return result;
+			return result;
 		}
-	        for (var key in this.possibleShortMapTypes) {
-	            if (mapType === this.possibleShortMapTypes[key]) {
-	                result = 'yandex#' + mapType;
-	                break;
-	            }
-	            if (mapType === ('yandex#' + this.possibleShortMapTypes[key])) {
-	            	result = mapType;
-	            }
-	        }
-	        return result;
+		for (var key in this.possibleShortMapTypes) {
+			if (mapType === this.possibleShortMapTypes[key]) {
+				result = 'yandex#' + mapType;
+				break;
+			}
+			if (mapType === ('yandex#' + this.possibleShortMapTypes[key])) {
+				result = mapType;
+			}
+		}
+		return result;
 	},
 	
 	// Possible types: yandex#map, yandex#satellite, yandex#hybrid, yandex#publicMap, yandex#publicMapHybrid
@@ -123,9 +122,6 @@ L.Yandex = L.Class.extend({
 
 		// Check that ymaps.Map is ready
 		if (ymaps.Map === undefined) {
-			if (console) {
-				console.debug('L.Yandex: Waiting on ymaps.load("package.map")');
-			}
 			return ymaps.load(['package.map'], this._initMapObject, this);
 		}
 
@@ -133,9 +129,6 @@ L.Yandex = L.Class.extend({
 		if (this.options.traffic)
 			if (ymaps.control === undefined ||
 					ymaps.control.TrafficControl === undefined) {
-				if (console) {
-					console.debug('L.Yandex: loading traffic and controls');
-				}
 				return ymaps.load(['package.traffic', 'package.controls'],
 					this._initMapObject, this);
 			}

@@ -3,9 +3,9 @@ description = Provides a widget and formater for geolocation field based on <a h
 package = Geolocation
 core = 7.x
 dependencies[] = geolocation
-; Information added by drupal.org packaging script on 2013-07-29
-version = "7.x-1.4"
+; Information added by Drupal.org packaging script on 2014-10-02
+version = "7.x-1.5"
 core = "7.x"
 project = "geolocation"
-datestamp = "1375087575"
+datestamp = "1412245507"
 

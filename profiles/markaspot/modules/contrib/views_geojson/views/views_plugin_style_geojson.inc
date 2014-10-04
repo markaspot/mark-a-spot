@@ -25,7 +25,6 @@ class views_plugin_style_geojson extends views_plugin_style {
         'wkt' => array('default' => 0),
         'name_field' => array('default' => 0),
         'description_field' => array('default' => 0),
-        'view_mode' => array('default' => 'full'),
       ),
     );
     $options['attributes'] = array('default' => NULL, 'translatable' => FALSE);
@@ -138,55 +137,22 @@ class views_plugin_style_geojson extends views_plugin_style {
       );
     }
     $form['data_source']['name_field'] = array(
-        '#type' => 'select',
-        '#title' => t('Title Field'),
-        '#description' => t('Choose the field to appear as title on tooltips.'),
-        '#options' => array_merge(array('' => ''), $fields),
-        '#default_value' => $this->options['data_source']['name_field'],
+      '#type' => 'select',
+      '#title' => t('Title Field'),
+      '#description' => t('Choose the field to appear as title on tooltips.'),
+      '#options' => array_merge(array('' => ''), $fields),
+      '#default_value' => $this->options['data_source']['name_field'],
     );
 
-    // For node content, we can render the node using a specific view mode.
-    if ($this->view->base_table == 'node') {
-      $form['data_source']['description_field'] = array(
-        '#type'           => 'select',
-        '#title'          => t('Description'),
-        '#description'    => t('Choose the field or rendering method to appear as
+    $form['data_source']['description_field'] = array(
+      '#type'           => 'select',
+      '#title'          => t('Description'),
+      '#description'    => t('Choose the field or rendering method to appear as
           description on tooltips.'),
-        '#required'       => FALSE,
-        '#options'        => array_merge(array(
-          ''                => '',
-          '#node'           => '<' . t('Entire node') . '>'
-        ), $fields),
-        '#default_value'  => $this->options['data_source']['description_field'],
-      );
-
-      // Available view modes. @TODO: Make this Content Type aware.
-      $available_view_modes = array();
-      $entity_info = entity_get_info();
-      // Get the machine names of the view modes
-      $view_modes_machine_names[] = array_keys($entity_info['node']['view modes']);
-      // Get the labels (human readable) of the view modes
-      foreach ($entity_info['node']['view modes'] as $key => $view_mode) {
-        $view_modes_labels[] = $view_mode['label'];
-      }
-      // Combine the view mode machine name with its label.
-      // @TODO: Could this be done better?
-      $entities_to_display = array_combine($view_modes_machine_names[0], $view_modes_labels);
-      // Output the form
-      $form['data_source']['view_mode'] = array(
-        '#type'          => 'select',
-        '#title'         => t('View mode'),
-        '#description'   => t('View modes are ways of displaying nodes.'),
-        '#options'       => $entities_to_display,
-        '#default_value' => !empty($this->options['data_source']['view_mode']) ?
-            $this->options['data_source']['view_mode'] : 'full',
-        '#states'        => array(
-          'visible' => array(
-            ':input[name="style_options[data_source][description_field]"]' => array('value' => '#node'),
-          ),
-        ),
-      );
-    }
+      '#required'       => FALSE,
+      '#options'        => array_merge(array(''=>''), $fields),
+      '#default_value'  => $this->options['data_source']['description_field'],
+    );
 
     // Attributes and variable styling description
     $form['attributes'] = array(
@@ -269,8 +235,6 @@ class views_plugin_style_geojson extends views_plugin_style {
   function render() {
     $view = $this->view;
     $options = $this->options;
-    $field = $view->field;
-    $display = $this->display;
 
     $features = array();
     foreach ($view->result as $count => $row) {
@@ -279,6 +243,11 @@ class views_plugin_style_geojson extends views_plugin_style {
     }
     unset($view->row_index);
 
-    return theme($this->theme_functions(), array('view' => $view, 'options' => $options, 'features' => $features));
+    $features_collection = array(
+      'type' => 'FeatureCollection',
+      'features' => $features,
+    );
+
+    return theme($this->theme_functions(), array('view' => $view, 'options' => $options, 'features_collection' => $features_collection));
   }
 }

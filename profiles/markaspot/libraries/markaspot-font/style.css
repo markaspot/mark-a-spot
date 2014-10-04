@@ -1,33 +1,15 @@
 @font-face {
 	font-family: 'markaspot';
-	src:url('fonts/markaspot.eot');
-	src:url('fonts/markaspot.eot?#iefix') format('embedded-opentype'),
-		url('fonts/markaspot.woff') format('woff'),
-		url('fonts/markaspot.ttf') format('truetype'),
-		url('fonts/markaspot.svg#markaspot') format('svg');
+	src:url('fonts/markaspot.eot?dmwcn4');
+	src:url('fonts/markaspot.eot?#iefixdmwcn4') format('embedded-opentype'),
+		url('fonts/markaspot.woff?dmwcn4') format('woff'),
+		url('fonts/markaspot.ttf?dmwcn4') format('truetype'),
+		url('fonts/markaspot.svg?dmwcn4#markaspot') format('svg');
 	font-weight: normal;
 	font-style: normal;
 }
 
-/* Use the following CSS code if you want to use data attributes for inserting your icons */
-[data-icon]:before {
-	font-family: 'markaspot';
-	content: attr(data-icon);
-	speak: none;
-	font-weight: normal;
-	font-variant: normal;
-	text-transform: none;
-	line-height: 1;
-	-webkit-font-smoothing: antialiased;
-}
-
-/* Use the following CSS code if you want to have a class per icon */
-/*
-Instead of a list of all class selectors,
-you can use the generic selector below, but it's slower:
-[class*="icon-"] {
-*/
-.icon-brightness-medium, .icon-remove, .icon-bullhorn, .icon-droplet, .icon-location, .icon-location-2, .icon-office, .icon-bubbles, .icon-lock, .icon-bug, .icon-leaf, .icon-lab, .icon-lightbulb, .icon-bubbles-2, .icon-checkmark, .icon-play, .icon-close, .icon-pause, .icon-headphones, .icon-thumbs-up, .icon-thumbs-down, .icon-headphones-2, .icon-drawer, .icon-car, .icon-trash, .icon-eye-open, .icon-fighter-jet, .icon-graffiti {
+[class^="icon-"], [class*=" icon-"] {
 	font-family: 'markaspot';
 	speak: none;
 	font-style: normal;
@@ -35,7 +17,125 @@ you can use the generic selector below, but it's slower:
 	font-variant: normal;
 	text-transform: none;
 	line-height: 1;
+
+	/* Better Font Rendering =========== */
 	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+.icon-wi-fi:before {
+	content: "\e602";
+}
+.icon-warning:before {
+	content: "\e603";
+}
+.icon-info:before {
+	content: "\e604";
+}
+.icon-phone:before {
+	content: "\e605";
+}
+.icon-heart-outline:before {
+	content: "\e616";
+}
+.icon-tree:before {
+	content: "\e601";
+}
+.icon-minus-circle:before {
+	content: "\f056";
+}
+.icon-sign:before {
+	content: "\e600";
+}
+.icon-uniF100:before {
+	content: "\f100";
+}
+.icon-bridge:before {
+	content: "\f104";
+}
+.icon-road:before {
+	content: "\f018";
+}
+.icon-video-camera:before {
+	content: "\f03d";
+}
+.icon-times-circle:before {
+	content: "\f057";
+}
+.icon-check-circle:before {
+	content: "\f058";
+}
+.icon-info-circle:before {
+	content: "\f05a";
+}
+.icon-times-circle-o:before {
+	content: "\f05c";
+}
+.icon-check-circle-o:before {
+	content: "\f05d";
+}
+.icon-warning2:before {
+	content: "\f071";
+}
+.icon-wrench:before {
+	content: "\f0ad";
+}
+.icon-legal:before {
+	content: "\f0e3";
+}
+.icon-flash:before {
+	content: "\f0e7";
+}
+.icon-building-o:before {
+	content: "\f0f7";
+}
+.icon-wheelchair:before {
+	content: "\f193";
+}
+.icon-envelope:before {
+	content: "\e60e";
+}
+.icon-heart:before {
+	content: "\e60d";
+}
+.icon-road2:before {
+	content: "\e60b";
+}
+.icon-exclamation-sign:before {
+	content: "\e60a";
+}
+.icon-twitter:before {
+	content: "\e614";
+}
+.icon-facebook:before {
+	content: "\e615";
+}
+.icon-bell:before {
+	content: "\e613";
+}
+.icon-truck:before {
+	content: "\e609";
+}
+.icon-umbrella:before {
+	content: "\e608";
+}
+.icon-medkit:before {
+	content: "\e60c";
+}
+.icon-fire-extinguisher:before {
+	content: "\e610";
+}
+.icon-thumbs-up:before {
+	content: "\e611";
+}
+.icon-thumbs-down:before {
+	content: "\e612";
+}
+.icon-sun:before {
+	content: "\e60f";
+}
+.icon-uniF103:before {
+	content: "\f103";
 }
 .icon-brightness-medium:before {
 	content: "\e000";
@@ -49,20 +149,17 @@ you can use the generic selector below, but it's slower:
 .icon-droplet:before {
 	content: "\e003";
 }
-.icon-location:before {
+.icon-location2:before {
 	content: "\e004";
 }
-.icon-location-2:before {
+.icon-location:before {
 	content: "\e005";
 }
 .icon-office:before {
 	content: "\e006";
 }
-.icon-bubbles:before {
+.icon-bubbles2:before {
 	content: "\e007";
-}
-.icon-lock:before {
-	content: "\e008";
 }
 .icon-bug:before {
 	content: "\e009";
@@ -76,7 +173,7 @@ you can use the generic selector below, but it's slower:
 .icon-lightbulb:before {
 	content: "\f0eb";
 }
-.icon-bubbles-2:before {
+.icon-bubbles:before {
 	content: "\e00f";
 }
 .icon-checkmark:before {
@@ -94,13 +191,13 @@ you can use the generic selector below, but it's slower:
 .icon-headphones:before {
 	content: "\f025";
 }
-.icon-thumbs-up:before {
+.icon-thumbs-up2:before {
 	content: "\f164";
 }
-.icon-thumbs-down:before {
+.icon-thumbs-down2:before {
 	content: "\f165";
 }
-.icon-headphones-2:before {
+.icon-headphones2:before {
 	content: "\e013";
 }
 .icon-drawer:before {
@@ -119,5 +216,41 @@ you can use the generic selector below, but it's slower:
 	content: "\f0fb";
 }
 .icon-graffiti:before {
-	content: "\f104";
+	content: "\f106";
+}
+.icon-paint-format:before {
+	content: "\e607";
+}
+.icon-grin:before {
+	content: "\e606";
+}
+.icon-directions:before {
+	content: "\e617";
+}
+.icon-feather:before {
+	content: "\e618";
+}
+.icon-share:before {
+	content: "\e619";
+}
+.icon-bell2:before {
+	content: "\e61a";
+}
+.icon-moon:before {
+	content: "\e61b";
+}
+.icon-leaf2:before {
+	content: "\e61c";
+}
+.icon-new:before {
+	content: "\e61d";
+}
+.icon-shuffle:before {
+	content: "\e61e";
+}
+.icon-switch:before {
+	content: "\e61f";
+}
+.icon-cc:before {
+	content: "\e620";
 }

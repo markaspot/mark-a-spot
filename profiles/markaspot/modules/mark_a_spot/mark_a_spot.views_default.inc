@@ -83,7 +83,7 @@ function mark_a_spot_views_default_views() {
   $handler->display->display_options['fields']['nothing']['table'] = 'views';
   $handler->display->display_options['fields']['nothing']['field'] = 'nothing';
   $handler->display->display_options['fields']['nothing']['label'] = '';
-  $handler->display->display_options['fields']['nothing']['alter']['text'] = '    <div class="col-md-4">
+  $handler->display->display_options['fields']['nothing']['alter']['text'] = '    <div class="col-md-6 col-xs-6 col-lg-6">
       [field_image_1]
       <h5>[title]</h5>
     </div>';
@@ -129,7 +129,7 @@ function mark_a_spot_views_default_views() {
     t('Sortieren nach'),
     t('Aufsteigend'),
     t('Absteigend'),
-    t('    <div class="col-md-4">
+    t('    <div class="col-md-6 col-xs-6 col-lg-6">
       [field_image_1]
       <h5>[title]</h5>
     </div>'),
@@ -857,7 +857,12 @@ function mark_a_spot_views_default_views() {
   $handler->display->display_options['filters']['field_status_tid']['type'] = 'select';
   $handler->display->display_options['filters']['field_status_tid']['vocabulary'] = 'status';
   $handler->display->display_options['path'] = 'reports/geojson';
-
+  $handler->display->display_options['defaults']['sorts'] = FALSE;
+  /* Sort criterion: Content: Nid */
+  $handler->display->display_options['sorts']['nid']['id'] = 'nid';
+  $handler->display->display_options['sorts']['nid']['table'] = 'node';
+  $handler->display->display_options['sorts']['nid']['field'] = 'nid';
+  $handler->display->display_options['sorts']['nid']['order'] = 'DESC';
   /* Display: GeoJSON Map */
   $handler = $view->new_display('page', 'GeoJSON Map', 'geojson_map');
   $handler->display->display_options['defaults']['style_plugin'] = FALSE;

@@ -598,7 +598,7 @@ span.marker-category {
 }
 
 .page-map .btn.btn-primary {
-  width: 100px;
+  width: 140px;
 }
 
 .page-map .dropdown-menu > li > a {
@@ -1471,9 +1471,9 @@ input#edit-field-image-und-0-upload {
   max-width:300px;
 }
 
-.popover-report{
+p.report-detail{
   max-width:300px;
-  min-height: 170px;
+  min-height: 80px;
 }
 
 .marker-cluster-large div {

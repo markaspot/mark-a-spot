@@ -10,7 +10,6 @@ tbody,
 tr,
 th,
 td {
-  overflow: hidden;
   white-space: normal;
   text-align: left;
 }
@@ -157,7 +156,6 @@ th {
 td {
   vertical-align: top;
   border-bottom: $base-border-width solid $color-border;
-  overflow: hidden;
 
   a & {
   color: $color-link;
@@ -231,7 +229,6 @@ td li  {
     display: block;
     width: 30%;
     margin: 0;
-    overflow: hidden;
     background-color: $color-background;
     border-right: 1px solid $color-border;
     z-index: 2;

@@ -54,6 +54,18 @@
    */
   Drupal.geolocation.codeAddress = function(i) {
     var address = $('#geolocation-address-' + i + ' input').val();
+
+    // If it's a URL, try to get the coords from a Google Maps URL.
+    var matches_url = address.match(/^(https?):/i);
+    if (matches_url) {
+
+      // Get the coords, i.e. '41.4069724,2.20136' from 'https://www.google.es/maps/place/Barcelona/@41.39479,2.1487679,12z/data=!3...'
+      var matches_google = address.match(/@([^,]*,[^,]*)/);
+      if (matches_google && matches_google[0] && matches_google[1]) {
+        address =  matches_google[1];
+      }
+    }
+
     geocoder.geocode( { 'address': address }, function(results, status) {
       if (status == google.maps.GeocoderStatus.OK) {
         Drupal.geolocation.maps[i].setCenter(results[0].geometry.location);

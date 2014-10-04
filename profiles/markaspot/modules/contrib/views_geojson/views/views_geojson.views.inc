@@ -66,7 +66,7 @@ function views_geojson_views_handlers() {
 function views_geojson_views_data() {
   $data = array();
 
-  $data['node']['bbox_argument'] = array(
+  $data['views']['bbox_argument'] = array(
     'group' => t('Custom'),
     'real field'  => 'bbox_argument',
     'title' => t('Bounding box'),

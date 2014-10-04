@@ -15,7 +15,7 @@ $jsonp_prefix = $options['jsonp_prefix'];
 
 if ($view->override_path) {
   // We're inside a live preview where the JSON is pretty-printed.
-  $json = _views_json_encode_formatted($rows);
+  $json = _views_json_encode_formatted($rows, $options);
   if ($jsonp_prefix) $json = "$jsonp_prefix($json)";
   print "<code>$json</code>";
 }
