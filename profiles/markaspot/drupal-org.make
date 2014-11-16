@@ -24,6 +24,7 @@ projects[field_formatter_css_class][subdir] = "contrib"
 projects[geophp][subdir] = "contrib"
 projects[references][subdir] = "contrib"
 projects[references_dialog][subdir] = "contrib"
+projects[color_field][subdir] = "contrib"
 
 projects[views_geojson][subdir] = "contrib"
 projects[views_geojson][version] = 1.x-dev
@@ -40,6 +41,8 @@ projects[uuid][patch][2161375] = https://drupal.org/files/issues/custom_method_o
 
 projects[oauth][subdir] = "contrib"
 projects[workbench][subdir] = "contrib"
+projects[rules][subdir] = "contrib"
+
 
 projects[chosen][subdir] = "contrib"
 projects[chosen][version] = 2.x-dev

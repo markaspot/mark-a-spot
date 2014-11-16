@@ -847,54 +847,28 @@ function mark_a_spot_field_default_field_instances() {
     'description' => '',
     'display' => array(
       'default' => array(
-        'label' => 'hidden',
-        'module' => 'field_formatter_css_class',
-        'settings' => array(
-          'depth' => 0,
-          'field_formatter_class' => '',
-          'hidden' => 1,
-          'target' => 'node',
-        ),
-        'type' => 'cssclass_formatter',
-        'weight' => 4,
-      ),
-      'full' => array(
         'label' => 'above',
-        'module' => 'text',
+        'module' => 'color_field',
         'settings' => array(
           'field_formatter_class' => '',
-          'semantic_field_format' => 0,
         ),
-        'type' => 'text_default',
-        'weight' => 1,
-      ),
-      'token' => array(
-        'label' => 'hidden',
-        'module' => 'text',
-        'settings' => array(
-          'field_formatter_class' => '',
-          'semantic_field_format' => 0,
-        ),
-        'type' => 'text_default',
-        'weight' => 1,
+        'type' => 'color_field_default_formatter',
+        'weight' => 6,
       ),
     ),
     'entity_type' => 'taxonomy_term',
     'field_name' => 'field_category_hex',
-    'label' => 'categoryHex',
+    'label' => 'Marker and Background Color',
     'required' => 1,
     'settings' => array(
-      'text_processing' => 0,
       'user_register_form' => FALSE,
     ),
     'widget' => array(
-      'active' => 1,
-      'module' => 'text',
-      'settings' => array(
-        'size' => 6,
-      ),
-      'type' => 'text_textfield',
-      'weight' => 2,
+      'active' => 0,
+      'module' => 'color_field',
+      'settings' => array(),
+      'type' => 'color_field_default_widget',
+      'weight' => 31,
     ),
   );
 
@@ -907,39 +881,29 @@ function mark_a_spot_field_default_field_instances() {
     'display' => array(
       'default' => array(
         'label' => 'above',
-        'module' => 'text',
+        'module' => 'list',
         'settings' => array(
           'field_formatter_class' => '',
         ),
-        'type' => 'text_default',
-        'weight' => 3,
-      ),
-      'full' => array(
-        'label' => 'above',
-        'module' => 'text',
-        'settings' => array(
-          'field_formatter_class' => '',
-        ),
-        'type' => 'text_default',
-        'weight' => 4,
+        'type' => 'list_default',
+        'weight' => 7,
       ),
     ),
     'entity_type' => 'taxonomy_term',
     'field_name' => 'field_category_icon',
-    'label' => 'category_icon',
-    'required' => 1,
+    'label' => 'Icon',
+    'required' => 0,
     'settings' => array(
-      'text_processing' => 0,
       'user_register_form' => FALSE,
     ),
     'widget' => array(
       'active' => 1,
-      'module' => 'text',
+      'module' => 'options',
       'settings' => array(
-        'size' => 60,
+        'apply_chosen' => '',
       ),
-      'type' => 'text_textfield',
-      'weight' => 5,
+      'type' => 'options_select',
+      'weight' => 32,
     ),
   );
 
@@ -985,7 +949,7 @@ function mark_a_spot_field_default_field_instances() {
     ),
     'entity_type' => 'taxonomy_term',
     'field_name' => 'field_category_id',
-    'label' => 'categoryId',
+    'label' => 'ID',
     'required' => 1,
     'settings' => array(
       'text_processing' => 0,
@@ -1030,7 +994,7 @@ function mark_a_spot_field_default_field_instances() {
     ),
     'entity_type' => 'taxonomy_term',
     'field_name' => 'field_hash',
-    'label' => 'hash',
+    'label' => 'Hash',
     'required' => 0,
     'settings' => array(
       'text_processing' => 0,
@@ -1075,7 +1039,7 @@ function mark_a_spot_field_default_field_instances() {
     ),
     'entity_type' => 'taxonomy_term',
     'field_name' => 'field_tags',
-    'label' => 'keywords',
+    'label' => 'Keywords',
     'required' => 0,
     'settings' => array(
       'user_register_form' => FALSE,
@@ -1092,49 +1056,37 @@ function mark_a_spot_field_default_field_instances() {
     ),
   );
 
+
   // Exported field_instance: 'taxonomy_term-status-field_status_hex'
   $field_instances['taxonomy_term-status-field_status_hex'] = array(
     'bundle' => 'status',
     'default_value' => NULL,
     'deleted' => 0,
-    'description' => 'darkred : 8B0000
-orange : FFA500
-green : 008000
-darkgreen : 006400
-blue : 0000FF
-darkblue : 00008B
-purple : 800080
-darkpurple : 871F78
-cadetblue : 5F9EA0
-lightgray : D3D3D3
-gray : 808080
-black : 000000
-beige : F5F5DC
-white : 5F9EA0',
+    'description' => '',
     'display' => array(
       'default' => array(
-        'label' => 'hidden',
-        'settings' => array(),
-        'type' => 'hidden',
-        'weight' => 1,
+        'label' => 'above',
+        'module' => 'color_field',
+        'settings' => array(
+          'field_formatter_class' => '',
+        ),
+        'type' => 'color_field_default_formatter',
+        'weight' => 6,
       ),
     ),
     'entity_type' => 'taxonomy_term',
     'field_name' => 'field_status_hex',
-    'label' => 'statusHex',
+    'label' => 'Marker and Background Color',
     'required' => 1,
     'settings' => array(
-      'text_processing' => 0,
       'user_register_form' => FALSE,
     ),
     'widget' => array(
-      'active' => 1,
-      'module' => 'text',
-      'settings' => array(
-        'size' => 60,
-      ),
-      'type' => 'text_textfield',
-      'weight' => 2,
+      'active' => 0,
+      'module' => 'color_field',
+      'settings' => array(),
+      'type' => 'color_field_default_widget',
+      'weight' => 31,
     ),
   );
 
@@ -1147,31 +1099,29 @@ white : 5F9EA0',
     'display' => array(
       'default' => array(
         'label' => 'above',
-        'module' => 'text',
+        'module' => 'list',
         'settings' => array(
           'field_formatter_class' => '',
-          'semantic_field_format' => 0,
         ),
-        'type' => 'text_default',
-        'weight' => 2,
+        'type' => 'list_default',
+        'weight' => 7,
       ),
     ),
     'entity_type' => 'taxonomy_term',
     'field_name' => 'field_status_icon',
-    'label' => 'status_icon',
+    'label' => 'Icon',
     'required' => 0,
     'settings' => array(
-      'text_processing' => 0,
       'user_register_form' => FALSE,
     ),
     'widget' => array(
       'active' => 1,
-      'module' => 'text',
+      'module' => 'options',
       'settings' => array(
-        'size' => 60,
+        'apply_chosen' => '',
       ),
-      'type' => 'text_textfield',
-      'weight' => 3,
+      'type' => 'options_select',
+      'weight' => 32,
     ),
   );
 
@@ -1191,8 +1141,8 @@ white : 5F9EA0',
     ),
     'entity_type' => 'taxonomy_term',
     'field_name' => 'field_status_id',
-    'label' => 'StatusId',
-    'required' => FALSE,
+    'label' => 'ID',
+    'required' => 0,
     'settings' => array(
       'max' => '',
       'min' => '',
@@ -1201,6 +1151,7 @@ white : 5F9EA0',
       'user_register_form' => FALSE,
     ),
     'widget' => array(
+      'active' => 0,
       'module' => 'number',
       'settings' => array(),
       'type' => 'number',
@@ -1217,37 +1168,20 @@ white : 5F9EA0',
   t('Comment');
   t('E-Mail');
   t('Enter details of the problem');
+  t('Hash');
+  t('ID');
+  t('Icon');
   t('Image');
+  t('Keywords');
+  t('Marker and Background Color');
   t('Notify User?');
   t('Place your report');
   t('Please check http://yourserver.com/profiles/markaspot/libraries/markaspot-font/ for an overview');
   t('Please leave an e-Mail address, so that we can contact you, in case you don\'t want to register');
   t('Report details');
   t('Status');
-  t('StatusId');
   t('This field applies to the tweet311 module. A Twitter-hashtag that citizens may use, applying to a certain service/service code/category');
   t('This field can be used for attaching official documents');
-  t('categoryHex');
-  t('categoryId');
-  t('category_icon');
-  t('darkred : 8B0000
-orange : FFA500
-green : 008000
-darkgreen : 006400
-blue : 0000FF
-darkblue : 00008B
-purple : 800080
-darkpurple : 871F78
-cadetblue : 5F9EA0
-lightgray : D3D3D3
-gray : 808080
-black : 000000
-beige : F5F5DC
-white : 5F9EA0');
-  t('hash');
-  t('keywords');
-  t('statusHex');
-  t('status_icon');
 
   return $field_instances;
 }

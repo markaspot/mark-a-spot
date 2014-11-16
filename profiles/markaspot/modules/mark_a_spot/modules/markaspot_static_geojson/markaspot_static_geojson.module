@@ -25,14 +25,22 @@ function markaspot_static_geojson_enable() {
  * Implements hook_node_insert().
  */
 function markaspot_static_geojson_node_insert($node) {
-  markaspot_static_geojson_save_file();
+  if (variable_get('markaspot_logic_static_node') == 1){
+    return markaspot_static_geojson_save_file();
+  } else {
+    return false;
+  }
 }
 
 /*
  * Implements hook_node_update().
  */
 function markaspot_static_geojson_node_update($node) {
-  markaspot_static_geojson_save_file();
+  if (variable_get('markaspot_logic_static_node') == 1){
+    return markaspot_static_geojson_save_file();
+  } else {
+    return false;
+  }
 }
 
 /**
@@ -52,7 +60,10 @@ function markaspot_static_geojson_page_build(&$page) {
 
 function markaspot_static_geojson_save_file() {
   global $base_url;
-  $json = drupal_http_request($base_url . base_path() . 'reports/geojson/map');
+
+  // Calling the map view
+  $json = drupal_http_request($base_url . base_path() . 'reports/geojson/map', array('timeout' => 120));
+
   $dir = 'public://geojson';
   file_prepare_directory($dir, FILE_CREATE_DIRECTORY);
   $file = file_save_data($json->data, 'public://geojson/reports.json', FILE_EXISTS_REPLACE);

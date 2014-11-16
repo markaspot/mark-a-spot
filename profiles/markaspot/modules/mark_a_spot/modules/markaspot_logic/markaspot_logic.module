@@ -8,6 +8,7 @@
 
 /**
  * Implements hook_form_FORM_ID_alter().
+ *
  */
 function markaspot_logic_form_report_node_form_alter(&$form, &$form_state, $form_id) {
   global $user;
@@ -113,6 +114,8 @@ function markaspot_logic_page_build(&$page) {
       'markaspot_ini_lat' => variable_get('markaspot_logic_ini_lat'),
       'markaspot_ini_lng' => variable_get('markaspot_logic_ini_lng'),
       'markaspot_map_type' => variable_get('markaspot_logic_map_type'),
+      'markaspot_radar_zoom' => variable_get('markaspot_logic_radar_zoom'),
+
       'bbox_nw_lat' => variable_get('markaspot_logic_bbox_nw_lat'),
       'bbox_nw_lng' => variable_get('markaspot_logic_bbox_nw_lng'),
       'bbox_se_lat' => variable_get('markaspot_logic_bbox_se_lat'),
@@ -247,11 +250,16 @@ function markaspot_logic_menu() {
  */
 function markaspot_logic_admin_settings() {
 
-  $form = array();
+  $form['settings'] = array(
+    '#type' => 'vertical_tabs',
+  );
   $form['general'] = array(
     '#type' => 'fieldset',
-    '#title' => t('General'),
+    '#title' => t('General settings, intial location, validation'),
     '#collapsible' => TRUE,
+    '#collapsed' => FALSE,
+    // '#group' => 'settings',
+    '#weight' => '-100',
   );
   $form['general']['markaspot_logic_address'] = array(
     '#type' => 'textfield',
@@ -286,10 +294,13 @@ function markaspot_logic_admin_settings() {
     '#maxlength' => 32,
     '#description' => t('Insert the initial longitude'),
   );
+
   $form['types'] = array(
     '#type' => 'fieldset',
     '#title' => t('Map Types'),
     '#collapsible' => TRUE,
+    '#description' => t('This setting allow you too choose a map tile operator of your choose. Be aware that you have to apply the same for the <a href="@field-geo-page">Geolocation Field settings</a>, too.', array('@field-geo-page' => url('admin/structure/types/manage/report/fields/field_geo'))),
+    '#group' => 'settings',
   );
   $form['types']['markaspot_logic_map_type'] = array(
     '#type' => 'radios',
@@ -317,11 +328,12 @@ function markaspot_logic_admin_settings() {
   );
 
   $form['bbox'] = array(
-    '#suffix' => '<div id="map-wrapper"><div id="settings-map"></div></div>',
     '#type' => 'fieldset',
     '#title' => t('Bounding Box'),
     '#collapsible' => TRUE,
-    '#description' => t('Draw a rectancle (click on the black box) in the map to mark the boundaries for valid reports'),
+    '#description' => t('Draw a rectancle (click on the black box) in the map to mark the boundaries for valid reports') . '<div id="map-wrapper"><div id="settings-map"></div></div>',
+    '#group' => 'settings',
+    '#weight' =>  -10,
   );
 
   $form['bbox']['markaspot_logic_bbox_nw_lat'] = array(
@@ -352,9 +364,10 @@ function markaspot_logic_admin_settings() {
   if (module_exists('markaspot_open311')) {
     $form['open311'] = array(
       '#type' => 'fieldset',
-      '#title' => t('Open311 Service Discovery'),
+      '#title' => t('Open311 Settings and Service Discovery'),
       '#collapsible' => TRUE,
-      '#description' => t('See http://wiki.open311.org/Service_Discovery. This service discovery specification is meant to be read-only and can be provided either dynamically or using a manually edited static file.'),
+      '#description' => t('Configure the Open311 Server Settings (status, publishing settings and Georeport v2 Service Discovery). See http://wiki.open311.org/Service_Discovery. This service discovery specification is meant to be read-only and can be provided either dynamically or using a manually edited static file.'),
+      '#group' => 'settings',
     );
 
     $form['open311']['markaspot_logic_open311_contact'] = array(
@@ -377,20 +390,37 @@ function markaspot_logic_admin_settings() {
       '#default_value' => variable_get('markaspot_logic_open311_changeset', markaspot_logic_defaults('markaspot_logic_open311_changeset')),
       '#title' => t('Sortable field that specifies the last time this document was updated'),
     );
+    $form['open311']['markaspot_logic_open311_node_options_status'] = array(
+      '#type' => 'radios',
+      '#default_value' => variable_get('markaspot_logic_open311_node_options_status', markaspot_logic_defaults('markaspot_logic_open311_node_options_status')),
+      '#options' => array(t('Unpublished'), t('Published')),
+      '#title' => t('Choose the publish status of incoming reports'),
+    );
+
     $form['open311']['markaspot_logic_open311_status_open_start'] = array(
-      '#type' => 'textfield',
+      '#type' => 'select',
+      '#multiple' => TRUE,
+      '#options' => markaspot_logic_get_taxonomy_term_options('status'),
       '#default_value' => variable_get('markaspot_logic_open311_status_open_start', markaspot_logic_defaults('markaspot_logic_open311_status_open_start')),
-      '#title' => t('Enter the Status term-id when creating reports'),
+      '#title' => t('Choose the status that gets applied when creating reports by third party apps'),
     );
+
     $form['open311']['markaspot_logic_open311_status_open'] = array(
-      '#type' => 'textfield',
+      '#type' => 'select',
+      '#multiple' => TRUE,
+      '#options' => markaspot_logic_get_taxonomy_term_options('status'),
       '#default_value' => variable_get('markaspot_logic_open311_status_open', markaspot_logic_defaults('markaspot_logic_open311_status_open')),
-      '#title' => t('Enter the Taxonomy term-ids for open reports (comma-separated)'),
+      '#title' => t('Please choose the status for open reports'),
     );
+
+
+
     $form['open311']['markaspot_logic_open311_status_closed'] = array(
-      '#type' => 'textfield',
+      '#type' => 'select',
+      '#multiple' => TRUE,
+      '#options' => markaspot_logic_get_taxonomy_term_options('status'),
       '#default_value' => variable_get('markaspot_logic_open311_status_closed', markaspot_logic_defaults('markaspot_logic_open311_status_closed')),
-      '#title' => t('Enter the Taxonomy term-ids for closed reports (comma-separated)'),
+      '#title' => t('Please choose the status for closed reports'),
     );
   }
   if (module_exists('markaspot_uuid')) {
@@ -401,6 +431,7 @@ function markaspot_logic_admin_settings() {
       '#description' => t('The Mark-a-Spot UUID Module is enabled, so that service requests are "auto-titled" with the chosen service name
         plus an unique ID. This can be useful in an Open311 service oriented architecture.
         You can <a href="@module-page#edit-modules-mark-a-spot">disable</a> this module at any time, if you prefer user-generated node titles.', array('@module-page' => url('admin/modules'))),
+      '#group' => 'settings',
     );
     $form['uuid']['markaspot_logic_uuid_title'] = array(
       '#type' => 'checkbox',
@@ -437,12 +468,50 @@ function markaspot_logic_admin_settings() {
       '#title' => t('Archive Settings'),
       '#collapsible' => TRUE,
       '#description' => t('Set the period in days since reports have been last edited. Closed reports earlier than this period will be archived automatically'),
+      '#group' => 'settings',
     );
     $form['archive']['markaspot_logic_archive_days'] = array(
       '#type' => 'textfield',
       '#size' => '2',
+      '#maxlength' => '2',
       '#default_value' => variable_get('markaspot_logic_archive_days', markaspot_logic_defaults('markaspot_logic_archive_days')),
       '#title' => t('Days'),
+    );
+  }
+
+  if (module_exists('markaspot_static_geojson')) {
+    $form['static'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Static JSON Settings'),
+      '#collapsible' => TRUE,
+      '#description' => t('Enable creation of a static geojson file on updating and creating reports. This maybe needs more resources of your server and may slow down saving nodes'),
+      '#group' => 'settings',
+
+    );
+    $form['static']['markaspot_logic_static_node'] = array(
+      '#type' => 'checkbox',
+      '#title' => t('Enable static file update?'),
+      '#default_value' => variable_get('markaspot_logic_static_node', markaspot_logic_defaults('markaspot_logic_static_node')),
+    );
+  }
+
+  if(module_exists('markaspot_radar')) {
+    $form['radar'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Mark-a-Spot Radar'),
+      '#collapsible' => TRUE,
+      '#group' => 'settings',
+    );
+
+    $options = array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18);
+
+
+    $form['radar']['markaspot_logic_radar_zoom'] = array(
+      '#type' => 'select',
+      '#title' => t('Map Zoom Setting'),
+      '#options' => $options,
+      '#default_value' => variable_get('markaspot_logic_radar_zoom', markaspot_logic_defaults('markaspot_logic_radar_zoom')),
+      '#description' => t('Set the map zoom value when radar report-spots will be visible to end user'),
     );
   }
 
@@ -451,6 +520,7 @@ function markaspot_logic_admin_settings() {
       '#type' => 'fieldset',
       '#title' => t('Tweet311 Settings'),
       '#description' => t('Let Twitter-Users sending issues by sending mentions to') . ' ' . variable_get('markaspot_logic_twittername') . '. ' . t('Tweet-location should be enabled. Tweets are applied to category-id by hashtag (#id)'),
+      '#group' => 'settings',
     );
 
     $form['twitter']['markaspot_logic_twittername'] = array(
@@ -529,6 +599,9 @@ function markaspot_logic_defaults($id) {
     case 'markaspot_logic_archive_days':
       return '30';
 
+    case 'markaspot_logic_static_node':
+      return 0;
+
     case 'markaspot_logic_uuid_title':
       return 1;
 
@@ -550,14 +623,17 @@ function markaspot_logic_defaults($id) {
     case 'markaspot_logic_open311_contact':
       return 'You can email or call for assistance api@mycity.org +1 (555) 555-5555';
 
+    case 'markaspot_logic_open311_node_options_status':
+      return '1';
+
     case 'markaspot_logic_open311_status_open_start':
-      return '5';
+      return array(5);
 
     case 'markaspot_logic_open311_status_open':
-      return '5,6';
+      return array(5,6);
 
     case 'markaspot_logic_open311_status_closed':
-      return '7,8';
+      return array(7,8);
 
     case 'markaspot_logic_open311_changeset':
       return '2013-11-03 00:00';
@@ -573,6 +649,9 @@ function markaspot_logic_defaults($id) {
 
     case 'markaspot_logic_osm_custom_attribution':
       return 'Map Data © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
+
+    case 'markaspot_logic_radar_zoom':
+      return '10';
 
     default:
       return FALSE;
@@ -717,4 +796,25 @@ function markaspot_logic_preprocess_node(&$vars) {
     $vars['theme_hook_suggestions'][] = 'node__' . $vars['type'] . '__report_list';
   }
   return $vars;
+}
+
+/**
+ * helper function to get taxonomy term options for select widget
+ * @arguments string $machine_name: taxonomy machine name
+ * @return array of select options for form
+ */
+function markaspot_logic_get_taxonomy_term_options($machine_name){
+  $options = array();
+
+  $vid = taxonomy_vocabulary_machine_name_load($machine_name)->vid;
+
+  $options_source = taxonomy_get_tree($vid);
+
+  foreach($options_source as $item ) {
+    $key = $item->tid;
+    $value = $item->name;
+    $options[$key] = $value;
+  }
+
+  return $options;
 }

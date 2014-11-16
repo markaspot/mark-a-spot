@@ -18,6 +18,7 @@ function geolocation_googlemaps_field_formatter_info() {
         'map_height' => '300px',
         'map_zoomlevel' => '7',
         'map_imageformat' => 'png8',
+        'map_link' => 0,
         'map_maptype' => 'roadmap',
         'marker_icon' => '',
       ),
@@ -88,6 +89,14 @@ function geolocation_googlemaps_field_formatter_settings_form($field, $instance,
         '#description' => t('Choose an Image Format. jpg and jpg-baseline typically provide the smallest image size, though they do so through "lossy" compression which may degrade the image. gif, png8 and png32 provide lossless compression.'),
         '#default_value' => $settings['map_imageformat'],
       );
+
+      $element['map_link'] = array(
+        '#type' => 'checkbox',
+        '#title' => t('Create link to Google Maps'),
+        '#description' => t('Link the static map image to Google Maps.'),
+        '#default_value' => $settings['map_link'],
+      );
+
       break;
 
     case 'geolocation_googlemaps_dynamic':
@@ -182,10 +191,8 @@ function geolocation_googlemaps_field_formatter_settings_summary($field, $instan
  */
 function geolocation_googlemaps_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
   $settings = $display['settings'];
-  $api_key = variable_get('geolocation_googlemaps_api_key', '');
-  if ($api_key) {
-  	$settings['api_key'] = $api_key;
-  }
+  $settings['api_key'] = variable_get('geolocation_googlemaps_api_key', '');
+
   $element = array();
   $lat_key = 'lat';
 
@@ -229,7 +236,7 @@ function geolocation_googlemaps_field_formatter_view($entity_type, $entity, $fie
           $path = file_create_url($settings['marker_icon']);
           $query['markers'] = 'icon:' . $path . '|' . $query['markers'];
         }
-        if ($settings['api_key']) {
+        if (!empty($settings['api_key'])) {
           $query['key'] = $settings['api_key'];
         }
         $variables = array(
@@ -238,7 +245,13 @@ function geolocation_googlemaps_field_formatter_view($entity_type, $entity, $fie
           'attributes' => array('class' => 'geolocation-googlemaps-static'),
         );
         $map_img = theme('image', $variables);
-        $element[$delta]['#markup'] = '<div>' . $map_img . '</div>';
+        if ($settings['map_link'] === 1) {
+          $map_link_query['q'] = $item[$lat_key] . ',' . $item[$lng_key];
+          $element[$delta]['#markup'] = '<div>' . l($map_img, '//maps.google.com/maps', array('query' => $map_link_query, 'external' => TRUE, 'html' => TRUE)) . '</div>';
+        }
+        else {
+          $element[$delta]['#markup'] =  '<div>' . $map_img . '</div>';
+        }
       }
       break;
 
@@ -519,12 +532,12 @@ function geolocation_googlemaps_field_widget_error($element, $error, $form, &$fo
 }
 
 /**
- * Implementation of hook_menu().
+ * Implements hook_menu().
  */
 function geolocation_googlemaps_menu() {
   $items['admin/config/services/googlemaps'] = array(
-    'title' => 'geolocation googlemaps',
-    'description' => 'Configure geolocation googlemaps settings',
+    'title' => 'Geolocation Google Maps',
+    'description' => 'Configure Geolocation Google Maps settings',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('geolocation_googlemaps_admin_settings'),
     'access arguments' => array('administer site configuration'),
@@ -533,22 +546,15 @@ function geolocation_googlemaps_menu() {
   return $items;
 }
 
-function  geolocation_googlemaps_admin_settings($form, &$form_state) {
-	
-    $form['geolocation_googlemaps_api_key'] = array(
-      '#title' => t('Your Google Simple API Access key'),
-      '#type' => 'textfield',
-      '#default_value' => variable_get('geolocation_googlemaps_api_key', ''),
-      '#size' => 50,
-      '#maxlength' => 255,
-    );
-     $form['geolocation_googlemaps_api_key']['#description'] = t('This key is not required to work.  But using one will use your accoutns map generation quota instead of the users IP based quota.  There are known issues with mobile devices that share a common proxy IP being disalowed access when using user quota.  If you want to use an API key, you can find instructions <a href="https://developers.google.com/maps/documentation/staticmaps/#api_key">Google Maps Image API website</a>.');
-  
-  // @@@ Convert to element level validation.
-  //$form['#validate'][] = 'geolocation_googlemapsadmin_settings_validate';
-
-  // Add submit handler for JSON conversion.
-  //$form['#submit'][] = 'geolocation_googlemaps_admin_settings_submit';
+function geolocation_googlemaps_admin_settings() {
+  $form['geolocation_googlemaps_api_key'] = array(
+    '#title' => t('Your Google Simple API Access key'),
+    '#type' => 'textfield',
+    '#default_value' => variable_get('geolocation_googlemaps_api_key', ''),
+    '#size' => 50,
+    '#maxlength' => 255,
+    '#description' => t('Using an API key is optional. You can find more information about API keys on <a href="https://developers.google.com/maps/documentation/javascript/tutorial#api_key">Google Maps JavaScript API v3</a>.'),
+  );
 
   return system_settings_form($form);
 }

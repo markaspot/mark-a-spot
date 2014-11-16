@@ -33,4 +33,5 @@ function markaspot_logic_uninstall() {
   variable_del('markaspot_logic_open311_type');
   variable_del('markaspot_logic_osm_custom_tile_url');
   variable_del('markaspot_logic_osm_custom_attribution');
+  variable_del('markaspot_logic_radar_zoom');
 }

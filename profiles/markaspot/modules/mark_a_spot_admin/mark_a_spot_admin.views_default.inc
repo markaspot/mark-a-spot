@@ -22,7 +22,7 @@ function mark_a_spot_admin_views_default_views() {
 
   /* Display: Master */
   $handler = $view->new_display('default', 'Master', 'default');
-  $handler->display->display_options['title'] = 'Neueste Kommentare';
+  $handler->display->display_options['title'] = 'New Comments';
   $handler->display->display_options['use_ajax'] = TRUE;
   $handler->display->display_options['use_more'] = TRUE;
   $handler->display->display_options['use_more_always'] = FALSE;
@@ -32,11 +32,11 @@ function mark_a_spot_admin_views_default_views() {
   $handler->display->display_options['query']['type'] = 'views_query';
   $handler->display->display_options['query']['options']['query_comment'] = FALSE;
   $handler->display->display_options['exposed_form']['type'] = 'basic';
-  $handler->display->display_options['exposed_form']['options']['submit_button'] = 'Anwenden';
-  $handler->display->display_options['exposed_form']['options']['reset_button_label'] = 'Zurücksetzen';
-  $handler->display->display_options['exposed_form']['options']['exposed_sorts_label'] = 'Sortieren nach';
-  $handler->display->display_options['exposed_form']['options']['sort_asc_label'] = 'Aufsteigend';
-  $handler->display->display_options['exposed_form']['options']['sort_desc_label'] = 'Absteigend';
+  $handler->display->display_options['exposed_form']['options']['submit_button'] = 'Apply';
+  $handler->display->display_options['exposed_form']['options']['reset_button_label'] = 'Reset';
+  $handler->display->display_options['exposed_form']['options']['exposed_sorts_label'] = 'Sort';
+  $handler->display->display_options['exposed_form']['options']['sort_asc_label'] = 'Asc';
+  $handler->display->display_options['exposed_form']['options']['sort_desc_label'] = 'Desc';
   $handler->display->display_options['pager']['type'] = 'full';
   $handler->display->display_options['pager']['options']['items_per_page'] = '3';
   $handler->display->display_options['pager']['options']['offset'] = '0';
@@ -340,7 +340,7 @@ function mark_a_spot_admin_views_default_views() {
   $handler->display->display_options['fields']['created']['element_label_colon'] = FALSE;
   $handler->display->display_options['fields']['created']['element_default_classes'] = FALSE;
   $handler->display->display_options['fields']['created']['date_format'] = 'time ago';
-  /* Field: Taxonomy term: categoryHex */
+  /* Field: Taxonomy term: Marker and Background Color */
   $handler->display->display_options['fields']['field_category_hex']['id'] = 'field_category_hex';
   $handler->display->display_options['fields']['field_category_hex']['table'] = 'field_data_field_category_hex';
   $handler->display->display_options['fields']['field_category_hex']['field'] = 'field_category_hex';
@@ -348,7 +348,7 @@ function mark_a_spot_admin_views_default_views() {
   $handler->display->display_options['fields']['field_category_hex']['label'] = '';
   $handler->display->display_options['fields']['field_category_hex']['exclude'] = TRUE;
   $handler->display->display_options['fields']['field_category_hex']['element_label_colon'] = FALSE;
-  /* Field: Taxonomy term: statusHex */
+  /* Field: Taxonomy term: Marker and Background Color */
   $handler->display->display_options['fields']['field_status_hex_1']['id'] = 'field_status_hex_1';
   $handler->display->display_options['fields']['field_status_hex_1']['table'] = 'field_data_field_status_hex';
   $handler->display->display_options['fields']['field_status_hex_1']['field'] = 'field_status_hex';
@@ -489,7 +489,7 @@ function mark_a_spot_admin_views_default_views() {
   $handler->display->display_options['fields']['title']['id'] = 'title';
   $handler->display->display_options['fields']['title']['table'] = 'node';
   $handler->display->display_options['fields']['title']['field'] = 'title';
-  $handler->display->display_options['fields']['title']['label'] = 'Anliegen';
+  $handler->display->display_options['fields']['title']['label'] = 'Report';
   $handler->display->display_options['fields']['title']['alter']['word_boundary'] = FALSE;
   $handler->display->display_options['fields']['title']['alter']['ellipsis'] = FALSE;
   $handler->display->display_options['fields']['title']['element_type'] = 'h4';
@@ -509,7 +509,7 @@ function mark_a_spot_admin_views_default_views() {
   $handler->display->display_options['fields']['created']['id'] = 'created';
   $handler->display->display_options['fields']['created']['table'] = 'node';
   $handler->display->display_options['fields']['created']['field'] = 'created';
-  $handler->display->display_options['fields']['created']['label'] = 'Beitrag vom';
+  $handler->display->display_options['fields']['created']['label'] = 'Published';
   $handler->display->display_options['fields']['created']['element_type'] = 'span';
   $handler->display->display_options['fields']['created']['element_label_colon'] = FALSE;
   $handler->display->display_options['fields']['created']['element_default_classes'] = FALSE;
@@ -522,7 +522,7 @@ function mark_a_spot_admin_views_default_views() {
   $handler->display->display_options['fields']['field_status']['exclude'] = TRUE;
   $handler->display->display_options['fields']['field_status']['element_label_colon'] = FALSE;
   $handler->display->display_options['fields']['field_status']['type'] = 'taxonomy_term_reference_plain';
-  /* Field: Taxonomy term: statusHex */
+  /* Field: Taxonomy term: Marker and Background Color */
   $handler->display->display_options['fields']['field_status_hex']['id'] = 'field_status_hex';
   $handler->display->display_options['fields']['field_status_hex']['table'] = 'field_data_field_status_hex';
   $handler->display->display_options['fields']['field_status_hex']['field'] = 'field_status_hex';
@@ -643,7 +643,7 @@ function mark_a_spot_admin_views_default_views() {
   $handler->display->display_options['fields']['field_status']['label'] = '';
   $handler->display->display_options['fields']['field_status']['exclude'] = TRUE;
   $handler->display->display_options['fields']['field_status']['element_label_colon'] = FALSE;
-  /* Field: Taxonomy term: statusHex */
+  /* Field: Taxonomy term: Marker and Background Color */
   $handler->display->display_options['fields']['field_status_hex']['id'] = 'field_status_hex';
   $handler->display->display_options['fields']['field_status_hex']['table'] = 'field_data_field_status_hex';
   $handler->display->display_options['fields']['field_status_hex']['field'] = 'field_status_hex';
@@ -839,14 +839,14 @@ function mark_a_spot_admin_views_default_views() {
   $handler->display->display_options['fields']['nid']['table'] = 'node';
   $handler->display->display_options['fields']['nid']['field'] = 'nid';
   $handler->display->display_options['fields']['nid']['ui_name'] = '#nid';
-  $handler->display->display_options['fields']['nid']['label'] = 'Beitrag-Nummer';
+  $handler->display->display_options['fields']['nid']['label'] = 'Report Id';
   $handler->display->display_options['fields']['nid']['alter']['alter_text'] = TRUE;
   $handler->display->display_options['fields']['nid']['alter']['text'] = '#[nid]';
   /* Field: Content: Body */
   $handler->display->display_options['fields']['body']['id'] = 'body';
   $handler->display->display_options['fields']['body']['table'] = 'field_data_body';
   $handler->display->display_options['fields']['body']['field'] = 'body';
-  $handler->display->display_options['fields']['body']['label'] = 'Beschreibung';
+  $handler->display->display_options['fields']['body']['label'] = 'Description';
   $handler->display->display_options['fields']['body']['type'] = 'text_trimmed';
   $handler->display->display_options['fields']['body']['settings'] = array(
     'trim_length' => '600',
@@ -874,7 +874,7 @@ function mark_a_spot_admin_views_default_views() {
   $handler->display->display_options['fields']['name']['field'] = 'name';
   $handler->display->display_options['fields']['name']['relationship'] = 'uid';
   $handler->display->display_options['fields']['name']['ui_name'] = 'User';
-  $handler->display->display_options['fields']['name']['label'] = 'Benutzer';
+  $handler->display->display_options['fields']['name']['label'] = 'User';
   $handler->display->display_options['fields']['name']['exclude'] = TRUE;
   $handler->display->display_options['fields']['name']['element_type'] = 'span';
   $handler->display->display_options['fields']['name']['element_label_colon'] = FALSE;
@@ -897,7 +897,7 @@ function mark_a_spot_admin_views_default_views() {
   $handler->display->display_options['fields']['field_status']['exclude'] = TRUE;
   $handler->display->display_options['fields']['field_status']['element_label_colon'] = FALSE;
   $handler->display->display_options['fields']['field_status']['type'] = 'taxonomy_term_reference_plain';
-  /* Field: Taxonomy term: statusHex */
+  /* Field: Taxonomy term: Marker and Background Color */
   $handler->display->display_options['fields']['field_status_hex']['id'] = 'field_status_hex';
   $handler->display->display_options['fields']['field_status_hex']['table'] = 'field_data_field_status_hex';
   $handler->display->display_options['fields']['field_status_hex']['field'] = 'field_status_hex';
@@ -956,7 +956,7 @@ function mark_a_spot_admin_views_default_views() {
   $handler->display->display_options['sorts']['nid']['table'] = 'node';
   $handler->display->display_options['sorts']['nid']['field'] = 'nid';
   $handler->display->display_options['sorts']['nid']['order'] = 'DESC';
-  $handler->display->display_options['sorts']['nid']['expose']['label'] = 'Beitrags-ID';
+  $handler->display->display_options['sorts']['nid']['expose']['label'] = 'Report Id';
   /* Sort criterion: Content: Updated/commented date */
   $handler->display->display_options['sorts']['last_updated']['id'] = 'last_updated';
   $handler->display->display_options['sorts']['last_updated']['table'] = 'node_comment_statistics';
@@ -1037,9 +1037,9 @@ function mark_a_spot_admin_views_default_views() {
   $handler->display->display_options['pager']['options']['expose']['items_per_page_label'] = 'Elemente pro Seite';
   $handler->display->display_options['pager']['options']['expose']['items_per_page_options_all_label'] = '- Alle -';
   $handler->display->display_options['pager']['options']['tags']['first'] = '« erste Seite';
-  $handler->display->display_options['pager']['options']['tags']['previous'] = '‹ vorherige Seite';
-  $handler->display->display_options['pager']['options']['tags']['next'] = 'nächste Seite ›';
-  $handler->display->display_options['pager']['options']['tags']['last'] = 'letzte Seite »';
+  $handler->display->display_options['pager']['options']['tags']['previous'] = '‹ Previous page';
+  $handler->display->display_options['pager']['options']['tags']['next'] = 'Next page ›';
+  $handler->display->display_options['pager']['options']['tags']['last'] = 'Last page »';
   $handler->display->display_options['defaults']['style_plugin'] = FALSE;
   $handler->display->display_options['style_plugin'] = 'table';
   $handler->display->display_options['style_options']['columns'] = array(
@@ -1146,7 +1146,7 @@ function mark_a_spot_admin_views_default_views() {
   $handler->display->display_options['fields']['field_status']['label'] = '';
   $handler->display->display_options['fields']['field_status']['exclude'] = TRUE;
   $handler->display->display_options['fields']['field_status']['element_label_colon'] = FALSE;
-  /* Field: Taxonomy term: statusHex */
+  /* Field: Taxonomy term: Marker and Background Color */
   $handler->display->display_options['fields']['field_status_hex']['id'] = 'field_status_hex';
   $handler->display->display_options['fields']['field_status_hex']['table'] = 'field_data_field_status_hex';
   $handler->display->display_options['fields']['field_status_hex']['field'] = 'field_status_hex';
@@ -1229,8 +1229,8 @@ function mark_a_spot_admin_views_default_views() {
     t('Mas Reports Solved'),
     t('Closed Reports'),
     t('more'),
-    t('Anliegen'),
-    t('Beitrag vom'),
+    t('Report'),
+    t('Published vom'),
     t('Status'),
     t('Bearbeiten (Archivieren)'),
     t('Mas Reports Edited Recently'),
@@ -1241,7 +1241,7 @@ function mark_a_spot_admin_views_default_views() {
     t('Anwenden'),
     t('Zurücksetzen'),
     t('Sortieren nach'),
-    t('Beitrag-Nummer'),
+    t('Report ID#'),
     t('#[nid]'),
     t('Beschreibung'),
     t('Title'),
@@ -1251,7 +1251,7 @@ function mark_a_spot_admin_views_default_views() {
     t('<span class="meta-info"> [last_updated] Uhr </span>'),
     t('Nid'),
     t('Path'),
-    t('Beitrags-ID'),
+    t('Report Id'),
     t('Mas Reports archived'),
     t('Archived reports'),
     t('Bearbeiten'),

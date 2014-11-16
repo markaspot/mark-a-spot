@@ -37,6 +37,8 @@ function markaspot_radar_form_report_node_form_alter(&$form, &$form_state, $form
  */
 function markaspot_radar_views_query_alter(&$view, &$query) {
 
+  $open_tids = array_values(variable_get('markaspot_logic_open311_status_open'));
+
   if ($view->current_display == 'geojson_map') {
     $params = drupal_get_query_parameters();
     if (isset($params['nwLat'])) {
@@ -48,6 +50,7 @@ function markaspot_radar_views_query_alter(&$view, &$query) {
           ->condition('field_data_field_geo.field_geo_lng', $params['nwLng'], '>=')
           ->condition('field_data_field_geo.field_geo_lat', $params['seLat'], '>=')
           ->condition('field_data_field_geo.field_geo_lng', $params['seLng'], '<=')
+          ->condition('field_data_field_status.field_status_tid', $open_tids, 'IN')
       );
     }
   }

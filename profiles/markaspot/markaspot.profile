@@ -108,25 +108,25 @@ function markaspot_create_status() {
   $terms[0] = array(
     'Open',
     'This is just a description which should be replaced',
-    'FF0000',
+    '#FF0000',
     'pause',
   );
   $terms[1] = array(
     'In progress',
     'This is just a description which should be replaced',
-    'FFA500',
+    '#FFA500',
     'play',
   );
   $terms[3] = array(
     'Solved',
     'This is just a description which should be replaced',
-    '008000',
+    '#008000',
     'checkmark',
   );
   $terms[4] = array(
     'Archive',
     'This is just a description which should be replaced',
-    '5F9EA0',
+    '#5F9EA0',
     'drawer',
   );
 
@@ -134,31 +134,31 @@ function markaspot_create_status() {
   $terms[5] = array(
     'dummy',
     'This is just a description which should be replaced',
-    '8fe83b',
+    '#FFFFFF',
     '',
   );
   $terms[6] = array(
     'dummy',
     'This is just a description which should be replaced',
-    '8fe83b',
+    '#FFFFFF',
     '',
   );
   $terms[7] = array(
     'dummy',
     'This is just a description which should be replaced',
-    '8fe83b',
+    '#FFFFFF',
     '',
   );
   $terms[8] = array(
     'dummy',
     'This is just a description which should be replaced',
-    '8fe83b',
+    '#FFFFFF',
     '',
   );
   $terms[9] = array(
     'dummy',
     'This is just a description which should be replaced',
-    '8fe83b',
+    '#FFFFFF',
     '',
   );
 
@@ -167,7 +167,7 @@ function markaspot_create_status() {
     $term['vid'] = $vid;
     $term['name'] = $parent[0];
     $term['description'] = $parent[1];
-    $term['field_status_hex'][LANGUAGE_NONE][0]['value'] = $parent[2];
+    $term['field_status_hex'][LANGUAGE_NONE][0]['rgb'] = $parent[2];
     $term['field_status_icon'][LANGUAGE_NONE][0]['value'] = $parent[3];
 
     $status = taxonomy_term_save((object) $term);
@@ -199,7 +199,7 @@ function markaspot_create_categories() {
     'abandoned, wrecked, dismantled, or inoperative cars on private property',
     '010',
     'abandonedcar, cars, wreckedcar, car',
-    '8B0000',
+    '#8B0000',
     'car',
   );
   $terms[1] = array(
@@ -207,7 +207,7 @@ function markaspot_create_categories() {
     'Litter Basket Request or Complaint',
     '011',
     'litter, trash, garbage',
-    '5F9EA0',
+    '#5F9EA0',
     'trash',
   );
   $terms[2] = array(
@@ -215,7 +215,7 @@ function markaspot_create_categories() {
     'Report graffiti on a building you own.',
     '012',
     'graffiti, paintings',
-    'F5F5DC',
+    '#F5F5DC',
     'graffiti',
   );
   $terms[3] = array(
@@ -223,7 +223,7 @@ function markaspot_create_categories() {
     'Dangerous Buildings and Vacant Property Operations historically has been known for the demolition of dangerous buildings, but recent adjustments in service delivery are focusing on inventorying vacant structures',
     '013',
     'graffiti, demolition',
-    '006400',
+    '#006400',
     'office',
   );
 
@@ -235,7 +235,7 @@ function markaspot_create_categories() {
     $term['description'] = $parent[1];
     $term['field_category_id'][LANGUAGE_NONE][0]['value'] = $parent[2];
     $term['field_hash'][LANGUAGE_NONE][0]['value'] = $parent[3];
-    $term['field_category_hex'][LANGUAGE_NONE][0]['value'] = $parent[4];
+    $term['field_category_hex'][LANGUAGE_NONE][0]['rgb'] = $parent[4];
     $term['field_category_icon'][LANGUAGE_NONE][0]['value'] = $parent[5];
 
     // taxonomy_term_save((object)$term);

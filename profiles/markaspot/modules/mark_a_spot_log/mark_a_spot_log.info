@@ -9,9 +9,9 @@ features[views_view][] = report_log
 features_exclude[dependencies][ctools] = ctools
 
 
-; Information added by drush on 2014-10-04
-version = "7.x-2.6+2-dev"
+; Information added by drush on 2014-11-16
+version = "7.x-2.6+20-dev"
 core = "7.x"
 project = "markaspot"
-datestamp = "1412430357"
+datestamp = "1416151714"
 

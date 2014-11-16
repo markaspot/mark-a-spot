@@ -2,7 +2,7 @@
 
 A useful control to geolocate the user with many options.
 
-Tested with [Leaflet](http://leafletjs.com/) 0.7 in Firefox, Webkit and mobile Webkit. Tested with [Font Awesome](https://fortawesome.github.io/) 4.2.0.
+Tested with [Leaflet](http://leafletjs.com/) 0.7 in Firefox, Webkit and mobile Webkit. Tested with [Font Awesome](https://fortawesome.github.io/Font-Awesome/) 4.2.0.
 
 
 ## Demo
@@ -12,34 +12,50 @@ Check out the demo at http://domoritz.github.io/leaflet-locatecontrol/demo/
 
 ## Usage
 
-### Minimal set up:
+### Set up:
+
+tl;dr
+
+1. Get CSS and JavaScript files
+2. Include CSS and JavaScript files
+3. Initialize plugin
+
+#### Download JavaScript and CSS files
+
+For testing purposes and development, you can use the latest version directly from my repository using [rawgithub](http://rawgithub.com/). However, **don't do this in production environments**!
+
+For production environments, use the [mapbox CDN](https://www.mapbox.com/mapbox.js/plugins/#leaflet-locatecontrol) or [download the files from this repository](/domoritz/leaflet-locatecontrol/archive/gh-pages.zip). In `\src` are the original JS and CSS files and in `\dist` you can find the minified versions suitable for production.
+
+The latest version is always available through [Bower](http://bower.io/), just run `bower install leaflet.locatecontrol`. With bower, everything can easily be kept up to date.
+
+You can also get the latest version of the plugin with [npm](https://www.npmjs.org/). This plugin is available in the [npm repository](https://www.npmjs.org/package/leaflet.locatecontrol).
+
 
 #### Add the JavaScript and CSS files
 
-Download and include the JavaScript and CSS files. The control uses [Font Awesome](https://fortawesome.github.io/) for the icons and if you don't have it included yet, you can use the CSS from the CDN.
+The control uses [Font Awesome](https://fortawesome.github.io/Font-Awesome/) for the icons and if you don't have it included yet, you can use the CSS from the CDN.
 
-For testing purposes and development, you can use the latest version directly from my repository using [rawgithub](http://rawgithub.com/). However, **don't do this in production environments**! For production environments, use the [mapbox CDN](https://www.mapbox.com/mapbox.js/plugins/#leaflet-locatecontrol).
+Then include the CSS and JavaScript files.
+
+This example shows how to include font awesome from a CDN and the locate control files through rawgit. **Only use rawgit for testing and never in production! Always prefer using the Mapbox CDN or bower.**
 
 ```html
 <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
-<link rel="stylesheet" href="//rawgithub.com/domoritz/leaflet-locatecontrol/gh-pages/src/L.Control.Locate.css" />
+<link rel="stylesheet" href="//rawgithub.com/domoritz/leaflet-locatecontrol/gh-pages/dist/L.Control.Locate.min.css" />
 <!--[if lt IE 9]>
-    <link rel="stylesheet" href="//rawgithub.com/domoritz/leaflet-locatecontrol/gh-pages/src/L.Control.Locate.ie.css"/>
+    <link rel="stylesheet" href="//rawgithub.com/domoritz/leaflet-locatecontrol/gh-pages/dist/L.Control.Locate.ie.min.css"/>
 <![endif]-->
 
-<script src="//rawgithub.com/domoritz/leaflet-locatecontrol/gh-pages/src/L.Control.Locate.js" ></script>
+<script src="//rawgithub.com/domoritz/leaflet-locatecontrol/gh-pages/dist/L.Control.Locate.min.js" ></script>
 ```
 
 #### Add the following snippet to your map initialization:
 
+This snippet adds the control to the map. You can pass also pass a configuration.
+
 ```js
 L.control.locate().addTo(map);
 ```
-
-#### Install using bower
-
-To install the locate control with [Bower](http://bower.io/), just run `bower install leaflet.locatecontrol`.
-
 
 ### Possible options
 
@@ -145,10 +161,13 @@ Sites that use this locate control:
 
 Run the demo locally with `python -m SimpleHTTPServer` and then open http://0.0.0.0:8000/demo.
 
+To generate the minified JS and CSS files, use [grunt](http://gruntjs.com/getting-started) and run `grunt`.
+
 
 ## Thanks
 
 To all [contributors](https://github.com/domoritz/leaflet-locatecontrol/contributors) and issue reporters.
+
 
 ## License
 

@@ -243,7 +243,7 @@ function mark_a_spot_views_default_views() {
   $handler->display->display_options['fields']['field_status_hex']['relationship'] = 'field_status_tid';
   $handler->display->display_options['fields']['field_status_hex']['ui_name'] = 'Status Hex Value';
   $handler->display->display_options['fields']['field_status_hex']['hide_alter_empty'] = FALSE;
-  /* Field: Taxonomy term: categoryHex */
+  /* Field: Taxonomy term: Marker and Background Color */
   $handler->display->display_options['fields']['field_category_hex']['id'] = 'field_category_hex';
   $handler->display->display_options['fields']['field_category_hex']['table'] = 'field_data_field_category_hex';
   $handler->display->display_options['fields']['field_category_hex']['field'] = 'field_category_hex';
@@ -444,7 +444,7 @@ function mark_a_spot_views_default_views() {
   $handler->display->display_options['fields']['created']['exclude'] = TRUE;
   $handler->display->display_options['fields']['created']['element_label_colon'] = FALSE;
   $handler->display->display_options['fields']['created']['date_format'] = 'medium';
-  /* Field: Taxonomy term: statusHex */
+  /* Field: Taxonomy term: Marker and Background Color */
   $handler->display->display_options['fields']['field_status_hex']['id'] = 'field_status_hex';
   $handler->display->display_options['fields']['field_status_hex']['table'] = 'field_data_field_status_hex';
   $handler->display->display_options['fields']['field_status_hex']['field'] = 'field_status_hex';
@@ -453,7 +453,7 @@ function mark_a_spot_views_default_views() {
   $handler->display->display_options['fields']['field_status_hex']['exclude'] = TRUE;
   $handler->display->display_options['fields']['field_status_hex']['element_label_colon'] = FALSE;
   $handler->display->display_options['fields']['field_status_hex']['hide_alter_empty'] = FALSE;
-  /* Field: Taxonomy term: categoryHex */
+  /* Field: Taxonomy term: Marker and Background Color */
   $handler->display->display_options['fields']['field_category_hex']['id'] = 'field_category_hex';
   $handler->display->display_options['fields']['field_category_hex']['table'] = 'field_data_field_category_hex';
   $handler->display->display_options['fields']['field_category_hex']['field'] = 'field_category_hex';
@@ -716,7 +716,7 @@ function mark_a_spot_views_default_views() {
   $handler->display->display_options['fields']['field_status_hex']['settings'] = array(
     'field_formatter_class' => '',
   );
-  /* Field: Taxonomy term: categoryHex */
+  /* Field: Taxonomy term: Marker and Background Color */
   $handler->display->display_options['fields']['field_category_hex']['id'] = 'field_category_hex';
   $handler->display->display_options['fields']['field_category_hex']['table'] = 'field_data_field_category_hex';
   $handler->display->display_options['fields']['field_category_hex']['field'] = 'field_category_hex';
@@ -726,7 +726,6 @@ function mark_a_spot_views_default_views() {
   $handler->display->display_options['fields']['field_category_hex']['element_class'] = '[field_category_hex]';
   $handler->display->display_options['fields']['field_category_hex']['element_label_colon'] = FALSE;
   $handler->display->display_options['fields']['field_category_hex']['hide_alter_empty'] = FALSE;
-  $handler->display->display_options['fields']['field_category_hex']['type'] = 'text_plain';
   $handler->display->display_options['fields']['field_category_hex']['settings'] = array(
     'field_formatter_class' => '',
   );
@@ -810,6 +809,12 @@ function mark_a_spot_views_default_views() {
   $handler->display->display_options['fields']['uuid']['table'] = 'node';
   $handler->display->display_options['fields']['uuid']['field'] = 'uuid';
   $handler->display->display_options['fields']['uuid']['label'] = 'uuid';
+  $handler->display->display_options['defaults']['sorts'] = FALSE;
+  /* Sort criterion: Content: Nid */
+  $handler->display->display_options['sorts']['nid']['id'] = 'nid';
+  $handler->display->display_options['sorts']['nid']['table'] = 'node';
+  $handler->display->display_options['sorts']['nid']['field'] = 'nid';
+  $handler->display->display_options['sorts']['nid']['order'] = 'DESC';
   $handler->display->display_options['defaults']['filter_groups'] = FALSE;
   $handler->display->display_options['defaults']['filters'] = FALSE;
   /* Filter criterion: Content: Published */
@@ -857,12 +862,7 @@ function mark_a_spot_views_default_views() {
   $handler->display->display_options['filters']['field_status_tid']['type'] = 'select';
   $handler->display->display_options['filters']['field_status_tid']['vocabulary'] = 'status';
   $handler->display->display_options['path'] = 'reports/geojson';
-  $handler->display->display_options['defaults']['sorts'] = FALSE;
-  /* Sort criterion: Content: Nid */
-  $handler->display->display_options['sorts']['nid']['id'] = 'nid';
-  $handler->display->display_options['sorts']['nid']['table'] = 'node';
-  $handler->display->display_options['sorts']['nid']['field'] = 'nid';
-  $handler->display->display_options['sorts']['nid']['order'] = 'DESC';
+
   /* Display: GeoJSON Map */
   $handler = $view->new_display('page', 'GeoJSON Map', 'geojson_map');
   $handler->display->display_options['defaults']['style_plugin'] = FALSE;
@@ -906,7 +906,7 @@ function mark_a_spot_views_default_views() {
   $handler->display->display_options['fields']['field_status_hex']['settings'] = array(
     'field_formatter_class' => '',
   );
-  /* Field: Taxonomy term: categoryHex */
+  /* Field: Taxonomy term: Marker and Background Color */
   $handler->display->display_options['fields']['field_category_hex']['id'] = 'field_category_hex';
   $handler->display->display_options['fields']['field_category_hex']['table'] = 'field_data_field_category_hex';
   $handler->display->display_options['fields']['field_category_hex']['field'] = 'field_category_hex';
@@ -916,7 +916,6 @@ function mark_a_spot_views_default_views() {
   $handler->display->display_options['fields']['field_category_hex']['element_class'] = '[field_category_hex]';
   $handler->display->display_options['fields']['field_category_hex']['element_label_colon'] = FALSE;
   $handler->display->display_options['fields']['field_category_hex']['hide_alter_empty'] = FALSE;
-  $handler->display->display_options['fields']['field_category_hex']['type'] = 'text_plain';
   $handler->display->display_options['fields']['field_category_hex']['settings'] = array(
     'field_formatter_class' => '',
   );
@@ -1070,8 +1069,7 @@ function mark_a_spot_views_default_views() {
     t('title'),
     t('nid'),
     t('created'),
-    t('statusHex'),
-    t('categoryHex'),
+    t('Marker and Background Color'),
     t('positionLat'),
     t('positionLng'),
     t('address'),

@@ -142,11 +142,14 @@
         $.getJSON(report_url).success(function (data) {
           var description = data[0].description ? data[0].description : "";
           var request = data[0].media_url ? '<img style="height: 80px; margin: 10px 10px 10px 0" src="' + data[0].media_url + '" class="map img-thumbnail pull-left"><p class="report-detail">' + description + '</p>' : '<p class="report-detail">' + description + '</p>';
-          // L.popup({autoPanPadding: new L.Point(15,120)})
-          L.popup()
+          request += '<div><a class="infowindow-link" href="' +  Drupal.settings.basePath + 'reports/' + id + '">' + Drupal.t('read more') + '</a></div>';
+
+          L.popup({autoPanPadding: new L.Point(10,150)})
             .setLatLng(latlon)
             .setContent(html + request + '</div>')
             .openOn(map);
+          spinner.stop();
+        }).fail(function (){
           spinner.stop();
         });
 
@@ -177,9 +180,9 @@
       });
 
       var initialLatLng = new L.LatLng(mas.markaspot_ini_lat, mas.markaspot_ini_lng);
-      // bounds = new L.LatLngBounds(initialLatLng);
       if (dataset.length == 0) {
         alert(Drupal.t('No reports found for this category/status'));
+        return false;
       }
 
       $.each(dataset, function(markers, item) {
@@ -189,55 +192,44 @@
         var html = '<div class="popover-report"><div class="marker-title"><h4>' + item.name + '</h4><span class="meta-info date">' + item.created + '</span><p>' + item.description + '</p></div>';
         if (item.field_address) {
           html += '<div class="marker-address"><p><i class="icon-li icon-location "></i> ' + item.field_address + '</p></div>';
-          html += '<div><a class="infowindow-link" href="' + item.path + '">' + Drupal.t('read more') + '</a></div>';
         }
 
         var colorswitch, colors;
-
+        colors = [{
+          "color": "red", "hex": "#FF0000"
+        }, {
+          "color": "darkred", "hex": "#8B0000"
+        }, {
+          "color": "orange", "hex": "#FFA500", "iconColor" : "dark-red"
+        }, {
+          "color": "green", "hex": "#008000"
+        }, {
+          "color": "darkgreen", "hex": "#006400"
+        }, {
+          "color": "blue", "hex": "#0000FF"
+        }, {
+          "color": "darkblue", "hex": "#00008B"
+        }, {
+          "color": "purple", "hex": "#800080"
+        }, {
+          "color": "darkpurple", "hex": "#871F78"
+        }, {
+          "color": "cadetblue", "hex": "#5F9EA0"
+        }, {
+          "color": "lightgray", "hex": "#D3D3D3", "iconColor" : "black"
+        }, {
+          "color": "gray", "hex": "#808080"
+        }, {
+          "color": "black", "hex": "#000000"
+        }, {
+          "color": "beige", "hex": "#F5F5DC", "iconColor" : "darkred"
+        }, {
+          "color": "white", "hex": "#FFFFFF", "iconColor" : "black"
+        }];
         if (getToggle == 1) {
-          colors = [{
-            "color": "red", "hex": "FF0000"
-          }, {
-            "color": "darkred", "hex": "8B0000"
-          }, {
-            "color": "orange", "hex": "FFA500", "iconColor" : "dark-red"
-          }, {
-            "color": "green", "hex": "008000"
-          }, {
-            "color": "darkgreen", "hex": "006400"
-          }, {
-            "color": "blue", "hex": "0000FF"
-          }, {
-            "color": "darkblue", "hex": "00008B"
-          }, {
-            "color": "purple", "hex": "800080"
-          }, {
-            "color": "darkpurple", "hex": "871F78"
-          }, {
-            "color": "cadetblue", "hex": "5F9EA0"
-          }, {
-            "color": "lightgray", "hex": "D3D3D3", "iconColor" : "black"
-          }, {
-            "color": "gray", "hex": "808080"
-          }, {
-            "color": "black", "hex": "000000"
-          }, {
-            "color": "beige", "hex": "F5F5DC", "iconColor" : "darkred"
-          }, {
-            "color": "white", "hex": "FFFFFF", "iconColor" : "black"
-          }];
           colorswitch = item.field_category_hex;
         }
         if (getToggle == 2) {
-          colors = [{
-            "color": "red", "hex": "FF0000"
-          }, {
-            "color": "green", "hex": "008000"
-          }, {
-            "color": "orange", "hex": "FFA500"
-          }, {
-            "color": "cadetblue", "hex": "5F9EA0"
-          }];
           colorswitch = item.field_status_hex;
         }
         $.each(colors, function(key, element) {
@@ -261,7 +253,11 @@
         });
         var fn = Drupal.markaspot.markerClickFn(latlon, html, item.uuid);
         $('#marker_' + item.nid).on('hover, click', fn);
-        Drupal.Markaspot.maps[0].addLayer(markerLayer);
+        size = markerLayer.getLayers().length;
+        if (size >= 1) {
+          Drupal.Markaspot.maps[0].addLayer(markerLayer);
+          Drupal.Markaspot.maps[0].fitBounds(markerLayer.getBounds());
+        }
       });
     },
 
@@ -305,7 +301,9 @@
           Drupal.markaspot.showData(getToggle, dataset);
         });
       }
-      spinner.stop();
+      setTimeout(function(){
+        spinner.stop();
+      }, 200);
 
     },
     static_enable: function() {

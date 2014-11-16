@@ -1947,6 +1947,15 @@ class DatabaseSelectOrderedTestCase extends DatabaseTestCase {
 
     $this->assertEqual($num_records, 4, 'Returned the correct number of rows.');
   }
+
+  /**
+   * Tests that the sort direction is sanitized properly.
+   */
+  function testOrderByEscaping() {
+    $query = db_select('test')->orderBy('name', 'invalid direction');
+    $order_bys = $query->getOrderBy();
+    $this->assertEqual($order_bys['name'], 'ASC', 'Invalid order by direction is converted to ASC.');
+  }
 }
 
 /**
@@ -3384,6 +3393,34 @@ class DatabaseQueryTestCase extends DatabaseTestCase {
 
     $this->assertEqual(count($names), 3, 'Correct number of names returned');
   }
+
+  /**
+   * Test SQL injection via database query array arguments.
+   */
+  public function testArrayArgumentsSQLInjection() {
+    // Attempt SQL injection and verify that it does not work.
+    $condition = array(
+      "1 ;INSERT INTO {test} (name) VALUES ('test12345678'); -- " => '',
+      '1' => '',
+    );
+    try {
+      db_query("SELECT * FROM {test} WHERE name = :name", array(':name' => $condition))->fetchObject();
+      $this->fail('SQL injection attempt via array arguments should result in a PDOException.');
+    }
+    catch (PDOException $e) {
+      $this->pass('SQL injection attempt via array arguments should result in a PDOException.');
+    }
+
+    // Test that the insert query that was used in the SQL injection attempt did
+    // not result in a row being inserted in the database.
+    $result = db_select('test')
+      ->condition('name', 'test12345678')
+      ->countQuery()
+      ->execute()
+      ->fetchField();
+    $this->assertFalse($result, 'SQL injection attempt did not result in a row being inserted in the database table.');
+  }
+
 }
 
 /**

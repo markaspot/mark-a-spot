@@ -381,13 +381,8 @@ function markaspot_open311_request_map_node($request) {
   $node->created = time();
   $node->modified = time();
 
-  $node_options = variable_get('node_options_report', array());
-  if (in_array('status', $node_options)) {
-    $node->status = 1;
-  }
-  else {
-    $node->status = 0;
-  }
+  $node_options = variable_get('markaspot_logic_open311_node_options_status');
+  $node->status = $node_options;
 
   $node->language = LANGUAGE_NONE;
   // Mapping the requested service code to taxonomy id:
@@ -401,7 +396,7 @@ function markaspot_open311_request_map_node($request) {
   $node->title = $service_code->name;
 
   // All incoming requests get status "open"
-  $node->field_status[$node->language][0]['tid'] = variable_get('markaspot_logic_open311_status_open_start', markaspot_logic_defaults('markaspot_logic_open311_status_open_start'));
+  $node->field_status[$node->language][0]['tid'] = array_values(variable_get('markaspot_logic_open311_status_open_start', markaspot_logic_defaults('markaspot_logic_open311_status_open_start')));
 
   $node->body[$node->language][0]['value'] = $request->description;
   $node->body[$node->language][0]['format'] = 'filtered_html';
@@ -476,7 +471,8 @@ function markaspot_open311_tax_map_status($taxonomy_id) {
   $term['status'] = taxonomy_term_load($taxonomy_id);
 
   if (isset($term['status'])) {
-    $status_open = explode(',', variable_get('markaspot_open311_status_open', markaspot_logic_defaults('markaspot_logic_open311_status_open')));
+    $status_open = array_values(variable_get('markaspot_logic_open311_status_open', markaspot_logic_defaults('markaspot_logic_open311_status_open')));
+
     if (in_array($term['status']->tid, $status_open)) {
       $status = 'open';
     }
@@ -499,10 +495,10 @@ function markaspot_open311_tax_map_status($taxonomy_id) {
  */
 function markaspot_open311_status_map_tax($status) {
   if ($status == "open") {
-    $tids = explode(',', variable_get('markaspot_logic_open311_status_open', markaspot_logic_defaults('markaspot_logic_open311_status_open')));
+    $tids = array_values(variable_get('markaspot_logic_open311_status_open', markaspot_logic_defaults('markaspot_logic_open311_status_open')));
   }
   else {
-    $tids = explode(',', variable_get('markaspot_logic_open311_status_closed', markaspot_logic_defaults('markaspot_logic_open311_status_closed')));
+    $tids = array_values(variable_get('markaspot_logic_open311_status_closed', markaspot_logic_defaults('markaspot_logic_open311_status_closed')));
   }
 
   return $tids;

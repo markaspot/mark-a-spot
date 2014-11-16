@@ -66,6 +66,9 @@ function markaspot_install() {
   $full_html_format = (object) $full_html_format;
   filter_format_save($full_html_format);
 
+  // Disable the default Bartik theme.
+  theme_disable(array('bartik'));
+
   // Any themes without keys here will get numeric keys and so will be enabled,
   // but not placed into variables.
   $enable = array(
@@ -79,9 +82,6 @@ function markaspot_install() {
       variable_set($var, $theme);
     }
   }
-
-  // Disable the default Bartik theme.
-  theme_disable(array('bartik'));
 
   // Enable some standard blocks.
   $default_theme = variable_get('theme_default', 'mas');
@@ -118,7 +118,6 @@ function markaspot_install() {
       'pages' => '',
       'cache' => -1,
     ),
-
     array(
       'module' => 'system',
       'delta' => 'powered-by',
@@ -129,7 +128,6 @@ function markaspot_install() {
       'pages' => '',
       'cache' => -1,
     ),
-
     array(
       'module' => 'system',
       'delta' => 'main',
@@ -202,10 +200,10 @@ function markaspot_install() {
   variable_set('node_options_page', array('status'));
   variable_set('comment_page', COMMENT_NODE_HIDDEN);
 
-  // Don't display date and author information for "Basic page" nodes by default.
+  // Don't display date + author information for "Basic page" nodes by default.
   variable_set('node_submitted_page', FALSE);
 
-  // Enable user picture support and set the default to a square thumbnail option.
+  // Enable user picture support and set the default to square thumbnail option.
   variable_set('user_pictures', '1');
   variable_set('user_picture_dimensions', '1024x1024');
   variable_set('user_picture_file_size', '800');
@@ -217,17 +215,17 @@ function markaspot_install() {
   // Enable default permissions for system roles.
   $filtered_html_permission = filter_permission_name($filtered_html_format);
   user_role_grant_permissions(DRUPAL_ANONYMOUS_RID, array(
-    'access content',
-    'access comments',
-    $filtered_html_permission,
+      'access content',
+      'access comments',
+      $filtered_html_permission,
     )
   );
   user_role_grant_permissions(DRUPAL_AUTHENTICATED_RID, array(
-    'access content',
-    'access comments',
-    'post comments',
-    'skip comment approval',
-    $filtered_html_permission,
+      'access content',
+      'access comments',
+      'post comments',
+      'skip comment approval',
+      $filtered_html_permission,
     )
   );
 
@@ -279,8 +277,178 @@ function markaspot_install() {
   variable_set('markaspot_logic_ini_lng', '6.8961028');
   variable_set('markaspot_logic_twittername', '@mascity');
   variable_set('markaspot_logic_tweetSearch', 1);
-
+  variable_set('markaspot_logic_radar_zoom', 10);
   variable_set('site_name', 'Track issues MaS-City');
   variable_set('site_slogan', 'Report local problems in your area and track government fixing them');
+  variable_set('markaspot_logic_open311_status_open', array(5,6));
+  variable_set('markaspot_logic_open311_status_closed', array(7,8));
+}
 
+
+/**
+ * Check for color_field module.
+ *
+ */
+function markaspot_update_7200(){
+  module_enable(array('color_field'));
+  if (!module_exists('color_field')) {
+    throw new DrupalUpdateException(t('Color Field module has to be installed to run updates'));
+  }
+}
+
+/**
+ * Updates field_status_hex and field_category_hex for use of colorfield.
+ *
+ */
+function markaspot_update_7201() {
+
+  db_change_field('field_data_field_status_hex', 'field_status_hex_value', 'field_status_hex_rgb',
+    array('type' => 'varchar', 'length' => 7));
+  db_change_field('field_revision_field_status_hex', 'field_status_hex_value', 'field_status_hex_rgb',
+    array('type' => 'varchar', 'length' => 7));
+
+  db_change_field('field_data_field_category_hex', 'field_category_hex_value', 'field_category_hex_rgb',
+    array('type' => 'varchar', 'length' => 7));
+  db_change_field('field_revision_field_category_hex', 'field_category_hex_value', 'field_category_hex_rgb',
+    array('type' => 'varchar', 'length' => 7));
+
+  $num_updated = db_update('field_config')
+    ->fields(array(
+      'module' => 'color_field',
+      'type' => 'color_field_rgb',
+    ))
+    ->condition('field_name', 'field_status_hex', '=')
+    ->execute();
+
+  $num_updated = db_update('field_config')
+    ->fields(array(
+      'module' => 'color_field',
+      'type' => 'color_field_rgb',
+    ))
+    ->condition('field_name', 'field_category_hex', '=')
+    ->execute();
+}
+
+
+/**
+ * Adds # to hex rgb field for status data table.
+ *
+ */
+function markaspot_update_7202() {
+
+  $query = db_select('field_data_field_status_hex', 'n');
+  $query->fields('n', array('field_status_hex_rgb', 'entity_id'));
+
+  $result = $query->execute();
+  while (
+  $record = $result->fetchAssoc()) {
+    db_update('field_data_field_status_hex')
+      ->fields(array(
+        'field_status_hex_rgb' => '#' . $record['field_status_hex_rgb'],
+      ))
+      ->execute();
+  }
+}
+
+
+/**
+ * Adds # to hex rgb field for category data table.
+ *
+ */
+function markaspot_update_7203() {
+
+  $query = db_select('field_data_field_category_hex', 'n');
+  $query->fields('n', array('field_category_hex_rgb', 'entity_id'));
+
+  $result = $query->execute();
+  while (
+  $record = $result->fetchAssoc()) {
+    db_update('field_data_field_category_hex')
+      ->fields(array(
+        'field_category_hex_rgb' => '#' . $record['field_category_hex_rgb'],
+      ))
+      ->execute();
+  }
+}
+
+/**
+ * Adds # to hex rgb field for category revision table.
+ *
+ */
+function markaspot_update_7204() {
+
+  $query = db_select('field_revision_field_category_hex', 'n');
+  $query->fields('n', array('field_category_hex_rgb', 'entity_id'));
+
+  $result = $query->execute();
+  while (
+  $record = $result->fetchAssoc()) {
+    db_update('field_data_field_category_hex')
+      ->fields(array(
+        'field_category_hex_rgb' => '#' . $record['field_category_hex_rgb'],
+      ))
+      ->execute();
+  }
+}
+
+/**
+ * Adds # to hex rgb field for status revision table.
+ *
+ */
+function markaspot_update_7205() {
+
+  $query = db_select('field_revision_field_status_hex', 'n');
+  $query->fields('n', array('field_status_hex_rgb', 'entity_id'));
+
+  $result = $query->execute();
+  while (
+  $record = $result->fetchAssoc()) {
+    db_update('field_data_field_status_hex')
+      ->fields(array(
+        'field_status_hex_rgb' => '#' . $record['field_status_hex_rgb'],
+      ))
+      ->execute();
+  }
+}
+
+/**
+ * Updates field widget for category hex field.
+ *
+ */
+function markaspot_update_7206() {
+  markaspot_change_form_widget('taxonomy_term', 'category', 'field_category_hex', 'color_field_default_widget');
+  markaspot_change_form_widget('taxonomy_term', 'status', 'field_status_hex', 'color_field_default_widget');
+
+}
+
+
+/**
+ * Change form widget for a field.
+ *
+ * @param $entity_type
+ *  Entity the field attached to.
+ * @param $bundle
+ *  Bundle the field attached to.
+ * @param $field_name
+ *  Field name.
+ * @param $widget_type_machine_name
+ *  Machine name of the field widget
+ */
+function markaspot_change_form_widget($entity_type, $bundle, $field_name, $widget_type_machine_name) {
+  // Retrieve the stored instance settings to merge with the incoming values.
+  $instance = field_read_instance($entity_type, $field_name, $bundle);
+  // Set the right module information.
+  $widget_type = field_info_widget_types($widget_type_machine_name);
+  $widget_module = $widget_type['module'];
+
+  $instance['widget']['type'] = $widget_type_machine_name;
+  $instance['widget']['module'] = $widget_module;
+
+  // Update field instance
+  field_update_instance($instance);
+  $field = array(
+    'field_name' => $field_name,
+    'settings' => array('default_colors' => '#FF0000, #8B0000, #FFA500, #008000, #006400, #0000FF, #00008B, #800080, #871F78, #5F9EA0, #D3D3D3, #808080, #000000, #F5F5DC, #FFFFFF'),
+  );
+  field_update_field($field);
 }

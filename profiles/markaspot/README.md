@@ -1,87 +1,93 @@
 # Mark-a-Spot
 
-Mark-a-Spot is a full packaged Drupal distribution for public civic issue tracking, including an Open311 GeoReport v2 server.
+Mark-a-Spot is a full packaged Drupal distribution for public civic issue tracking, including an Open311 GeoReport v2 server. Basic Drupal knowledge is required to 
+customize it for your own needs.
 
 You are allowed to and *please* do say that your product is based on Mark-a-Spot, inspired by Mark-a-Spot, but you can’t call your product or service Mark-a-Spot.
 
-This software is based on Drupal 7.
+This software is based on Drupal 7. 
 It's source-code is licensed and made available under the GNU General Public License (GPL) version 2.
 
 ## Demo
-* [MaS-City Demo-Site](http://markaspot.de/master) Mostly new commits
+* [Install on simplytest.me](http://simplytest.me/project/markaspot/7.x-2.x) latest commit
 * [Installation Video](https://vimeo.com/43443940)
 
 ## Initial configuration
+1. Make sure that clean-urls are supported and active: http://yourserver/?q=admin/config/search/clean-urls
 
-1. Start with changing the field settings of the field_geo field by choosing a starting position.
+2. Start with changing the field settings of the field_geo field by choosing a starting position.
 http://yourserver/admin/structure/types/manage/report/fields
-2. Copy and paste the lat/lon values into the settings of the Mark-a-Spot configuration screen
+
+3. Copy and paste the lat/lon values into the settings of the Mark-a-Spot configuration screen
 http://yourserver/admin/config/system/mark_a_spot
-3. Make sure that clean urls are supported and active: http://yourserver/?q=admin/config/search/clean-urls
+
+4. Go to Structure / Taxonomy and configure the terms of category and status vocabularies. There you can just overwrite the default term-name, change colors and icons. 
 
 ## Open311 GeoReport Resources
-
 http://yourserver/georeport/v2/services.format (xml/json)
 http://yourserver/georeport/v2/requests.format (xml/json)
 http://yourserver/georeport/v2/discovery.format (xml/json)
 
+## Using 2.x-dev
+After cloning the repository run update.php. Beware that the data model of the category and status terms have changed.
+Depending on your theme you have to update your templates for displaying status and category colors. Color field module is required.
+
 ## Contact
 Holger Kreis | @markaspot | http://mark-a-spot.org
 
-
 ## Changelog
-
 For a full changelog please see git log at drupal.org repository
 
 ### 2.6
 
-- Issue #2326503: Adds an offset setting for new report ids (7 hours ago) <markaspot>
-- Fix git project url for geolocation_osm submodule (5 weeks ago) <markaspot>
-- Improved pop up handling, map filtering (6 weeks ago) <markaspot>
-- Fix markerColor json object, added iconColor for markers (6 weeks ago) <markaspot>
-- Fix location icon (6 weeks ago) <markaspot>
-- Issue #2326503: Provide a more flexible way of creating uuids (6 weeks ago) <markaspot>
-- Fix colorswitching on different modes (status/categories) (6 weeks ago) <markaspot>
-- Added reference module, fixed link of core (6 weeks ago) <markaspot>* 83702f2 - Updated make files (6 weeks ago) <markaspot>
-- Color changes in accordance to leaflet awesome marker (6 weeks ago) <markaspot>
-- Issue #2319147: Added Mark-a-Spot Static GeoJSON file Generator (6 weeks ago) <markaspot>
-- Issue #2319149: Refactored Map Visualization as Drupal Behaviour (6 weeks ago) <markaspot>
-- Add custom CSS to ember theme (6 weeks ago) <markaspot>
-- Issue #2320001: Report Form Tab fixed, added Photo Button (7 weeks ago) <markaspot>
-- Issue #2321559 Icon alignment, Hex Changes, Nav ... (7 weeks ago) <markaspot>
-- Decrease map size for admin theme (8 weeks ago) <markaspot>
-- Log entries should be deleted on node_delete() (5 months ago) <markaspot>
-- Issue #2255309: Adding Radar module (5 months ago) <markaspot>
+- Issue #2326503: Adds an offset setting for new report ids
+- Fix git project url for geolocation_osm submodule
+- Improved pop up handling, map filtering
+- Fix markerColor json object, added iconColor for markers
+- Fix location icon
+- Issue #2326503: Provide a more flexible way of creating uuids
+- Fix colorswitching on different modes (status/categories
+- Added reference module, fixed link of core
+- Updated make files
+- Color changes in accordance to leaflet awesome marker
+- Issue #2319147: Added Mark-a-Spot Static GeoJSON file Generator
+- Issue #2319149: Refactored Map Visualization as Drupal Behaviour
+- Add custom CSS to ember theme
+- Issue #2320001: Report Form Tab fixed, added Photo Button
+- Issue #2321559 Icon alignment, Hex Changes, Nav ... 
+- Decrease map size for admin theme 
+- Log entries should be deleted on node_delete() 
+- Issue #2255309: Adding Radar module 
 - Issue #2222673 by tormi: Added Leaflet Locate Control Plugin for easier initial location (5 months a
-- Switched views to geojson for leaflet map type (5 months ago) <markaspot>
-- Security Fix Core 7.27 (6 months ago) <markaspot>
+- Switched views to geojson for leaflet map type 
+- Security Fix Core 7.27 
 - Issue #2222167, #2221871 by tormi: Refactoring validation and ui for bounding box definition and mul
-- Issue #2221173 by Carlos Miranda Levy: Made icon field mandatory (7 months ago) <markaspot>
-- Issue #2220161 by Carlos Miranda Levy: Change link to theme related path (7 months ago) <markaspot>
-- Updated twbs to 3.1.1 (7 months ago) <markaspot>
-- Issue #2217987 by Carlos Miranda Levy: Using taxonomy_term_delete (7 months ago) <markaspot>
-- Hide default address on focus geolocation address (7 months ago) <markaspot>
-- Added report logging as responsive timeline (7 months ago) <markaspot>
-- Added options and configuration to generate UUID titles (7 months ago) <markaspot>
-- Set initial map type to OSM (7 months ago) <markaspot>
-- Fixed node count for uuid creation (7 months ago) <markaspot>
-- Added OSM as default setting (post installation) (8 months ago) <markaspot>
+- Issue #2221173 by Carlos Miranda Levy: Made icon field mandatory 
+- Issue #2220161 by Carlos Miranda Levy: Change link to theme related path 
+- Updated twbs to 3.1.1 
+- Issue #2217987 by Carlos Miranda Levy: Using taxonomy_term_delete 
+- Hide default address on focus geolocation address 
+- Added report logging as responsive timeline 
+- Added options and configuration to generate UUID titles 
+- Set initial map type to OSM 
+- Fixed node count for uuid creation 
+- Added OSM as default setting (post installation) 
 
 ### 2.5
 
-- Reformated less compiled styles, eliminated some more errors (8 months ago) <markaspot>
-- Markup- and horizontal scroll fix on smaller devices (8 months ago) <markaspot>
-- Small hook_validate() fix (9 months ago) <markaspot>
-- Delete google maps components from branch (9 months ago) <markaspot>
-- Outsourcing of google maps components (9 months ago) <markaspot>
-- Show bootstrap thumbnail only if image is available (9 months ago) <markaspot>- Added thumbnail class to node template (9 months ago) <markaspot>
-- Logo responsiveness fixes (9 months ago) <markaspot>
-- Changed admin theme (9 months ago) <markaspot>
-- Renaming of title field with service_name (9 months ago) <markaspot>
-- Fix for initial node->status (9 months ago) <markaspot>
-- Changed order of form items (9 months ago) <markaspot>>
-- Form Style changes (9 months ago) <markaspot>
-- Fixed status handling (9 months ago) <markaspot>
+- Reformated less compiled styles, eliminated some more errors 
+- Markup- and horizontal scroll fix on smaller devices 
+- Small hook_validate() fix 
+- Delete google maps components from branch 
+- Outsourcing of google maps components 
+- Show bootstrap thumbnail only if image is available - Added thumbnail class to node template 
+- Logo responsiveness fixes 
+- Changed admin theme 
+- Renaming of title field with service_name 
+- Fix for initial node->status 
+- Changed order of form items >
+- Form Style changes 
+- Fixed status handling 
 
 ### 2.4-beta
 

@@ -4,9 +4,9 @@ core = 7.x
 description = Provides a logging block for civic and administrative activity on reports
 
 
-; Information added by drush on 2014-10-04
-version = "7.x-2.6+2-dev"
+; Information added by drush on 2014-11-16
+version = "7.x-2.6+20-dev"
 core = "7.x"
 project = "markaspot"
-datestamp = "1412430357"
+datestamp = "1416151714"
 

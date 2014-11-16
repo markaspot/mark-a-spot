@@ -1,0 +1,681 @@
+<?php
+/**
+ * @file
+ * An color field with a custom color picker using the Field Types API.
+ */
+
+/**
+ * Implements hook_library().
+ */
+function color_field_library() {
+  $path = libraries_get_path('jquery-simple-color');
+  $libraries['jquery-simple-color'] = array(
+    'title' => 'color_field_jquery_simple_color',
+    'website' => 'http://recursive-design.com/projects/jquery-simple-color/',
+    'version' => '1.0.1',
+    'js' => array(
+      $path . '/jquery.simple-color.min.js' => array(),
+    ),
+  );
+  $path = libraries_get_path('dematte-color-picker');
+  $libraries['dematte-color-picker'] = array(
+    'title' => 'color_field_dematte_color_picker',
+    'website' => 'http://www.dematte.at/colorPicker/',
+    'version' => '0.9',
+    'js' => array(
+      $path . '/colorPicker.js' => array(),
+    ),
+  );
+  $path = libraries_get_path('bgrins-spectrum');
+  $libraries['bgrins-spectrum'] = array(
+    'title' => 'color_field_spectrum_color_picker',
+    'website' => 'http://bgrins.github.io/spectrum/',
+    'version' => '1.1.0',
+    'js' => array(
+      $path . '/spectrum.js' => array(),
+    ),
+    'css' => array(
+      $path . '/spectrum.css' => array(),
+    ),
+  );
+  $path = libraries_get_path('eyecon-color-picker');
+  $libraries['eyecon-color-picker'] = array(
+    'title' => 'color_field_eyecon_color_picker',
+    'website' => 'http://www.eyecon.ro/colorpicker/',
+    'version' => 'latest',
+    'js' => array(
+      $path . '/js/colorpicker.js' => array(),
+      $path . '/js/utils.js' => array(),
+      $path . '/js/layout.js' => array(),
+      $path . '/js/eye.js' => array(),
+    ),
+  );
+  return $libraries;
+}
+
+/**
+ * Implements hook_field_info().
+ */
+function color_field_field_info() {
+  return array(
+    'color_field_rgb' => array(
+      'label' => t('Color Field'),
+      'description' => t('Field using a hexadecimal notation.'),
+      'default_widget' => 'color_field_default_widget',
+      'default_formatter' => 'color_field_default_formatter',
+      'property_type' => 'color_field_rgb',
+    ),
+  );
+}
+
+/**
+ * Implements hook_field_widget_info().
+ *
+ * @see color_field_field_widget_form()
+ */
+function color_field_field_widget_info() {
+  // If jquery-simple-color is enable so widget can be used.
+  $jquery_simple_color_picker_enable = TRUE;
+  $color_field_library_jquery_simple_color = drupal_get_library('color_field', 'jquery-simple-color');
+  foreach ($color_field_library_jquery_simple_color['js'] as $path => $js) {
+    if (!file_exists($path)) {
+      $jquery_simple_color_picker_enable = FALSE;
+    }
+  }
+
+  // If jquery_dematte_color_picker_enable is enable so widget can be used.
+  $jquery_dematte_color_picker_enable = TRUE;
+  $color_field_library_dematte_color = drupal_get_library('color_field', 'dematte-color-picker');
+  foreach ($color_field_library_dematte_color['js'] as $path => $js) {
+    if (!file_exists($path)) {
+      $jquery_dematte_color_picker_enable = FALSE;
+    }
+  }
+
+  // If jquery_eyecon_color_picker_enable is enable so widget can be used.
+  $jquery_eyecon_color_picker_enable = TRUE;
+  $color_field_library_eyecon_color = drupal_get_library('color_field', 'eyecon-color-picker');
+  foreach ($color_field_library_eyecon_color['js'] as $path => $js) {
+    if (!file_exists($path)) {
+      $jquery_eyecon_color_picker_enable = FALSE;
+    }
+  }
+
+  // If jquery_spectrum_color_picker_enable is enable so widget can be used.
+  $jquery_spectrum_color_picker_enable = TRUE;
+  $color_field_library_spectrum_color = drupal_get_library('color_field', 'bgrins-spectrum');
+  foreach ($color_field_library_spectrum_color['js'] as $path => $js) {
+    if (!file_exists($path)) {
+      $jquery_spectrum_color_picker_enable = FALSE;
+    }
+  }
+  foreach ($color_field_library_spectrum_color['css'] as $path => $js) {
+    if (!file_exists($path)) {
+      $jquery_spectrum_color_picker_enable = FALSE;
+    }
+  }
+
+  $widgets = array();
+
+  $widgets['color_field_default_widget'] = array(
+    'label' => t('Pre-selected Color Boxes'),
+    'field types' => array('color_field_rgb'),
+  );
+
+  // color_field_farbtastic_widget need more work before release.
+  /*$widgets['color_field_farbtastic_widget'] = array(
+    'label' => t('Farbtastic Color-Picker'),
+    'field types' => array('color_field_rgb'),
+  );*/
+
+  // check if color_field_simple_color can become color_field_simple_widget
+  if ($jquery_simple_color_picker_enable) {
+    $widgets['color_field_simple_widget'] = array(
+      'label' => t('Simple Color-Picker'),
+      'field types' => array('color_field_rgb'),
+    );
+  }
+
+  // color_field_dematte_widget need more work before release.
+  /*if ($jquery_dematte_color_picker_enable) {
+    $widgets['color_field_dematte_widget'] = array(
+      'label' => t('Dematte Color-Picker'),
+      'field types' => array('color_field_rgb'),
+    );
+  }*/
+
+  // color_field_eyecon_widget need more work before release.
+  /*if ($jquery_eyecon_color_picker_enable) {
+    $widgets['color_field_eyecon_widget'] = array(
+      'label' => t('Eyecon Color-Picker'),
+      'field types' => array('color_field_rgb'),
+    );
+  }*/
+
+  // color_field_eyecon_widget need more work before release.
+  if ($jquery_spectrum_color_picker_enable) {
+    $widgets['color_field_spectrum_widget'] = array(
+      'label' => t('Spectrum Color-Picker'),
+      'field types' => array('color_field_rgb'),
+    );
+  }
+
+  $widgets['color_field_plain_text'] = array(
+    'label' => t('Plain text (RGB value as #ffffff)'),
+    'field types' => array('color_field_rgb'),
+  );
+
+  return $widgets;
+}
+
+/**
+ * Implements hook_field_validate().
+ *
+ * We want to verify that the items only contain RGB hex values like
+ * this: #RRGGBB. If the item validates, we do nothing. If it doesn't
+ * validate, we add our own error notification to the $errors parameter.
+ *
+ * @see color_field_widget_error()
+ */
+function color_field_field_validate($entity_type, $entity, $field, $instance, $langcode, $items, &$errors) {
+  foreach ($items as $delta => $item) {
+    if (!empty($item['rgb'])) {
+      if (!preg_match('@^#[0-9a-fA-F]{6}$@', $item['rgb'])) {
+        $errors[$field['field_name']][$langcode][$delta][] = array(
+          'error' => 'color_field_invalid',
+          'message' => t('Color must be in the hexadecimal format #abcdef.'),
+        );
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_field_is_empty().
+ */
+function color_field_field_is_empty($item, $field) {
+  return empty($item['rgb']);
+}
+
+/**
+ * Implements hook_field_settings_form().
+ *
+ * Handle the parameters for a field.
+ */
+function color_field_field_settings_form($field, $instance, $has_data) {
+  $settings = $field['settings'];
+  $form = array();
+  switch ($instance['widget']['type']) {
+    case 'color_field_simple_color':
+    case 'color_field_simple_widget':
+      $form['cell_width'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Cell width'),
+        '#default_value' => isset($settings['cell_width']) ? $settings['cell_width'] : 10,
+        '#required' => TRUE,
+        '#description' => t('Width of each individual color cell.'),
+      );
+      $form['cell_height'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Height width'),
+        '#default_value' => isset($settings['cell_height']) ? $settings['cell_height'] : 10,
+        '#required' => TRUE,
+        '#description' => t('Height of each individual color cell.'),
+      );
+      $form['cell_margin'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Cell margin'),
+        '#default_value' => isset($settings['cell_margin']) ? $settings['cell_margin'] : 1,
+        '#required' => TRUE,
+        '#description' => t('Margin of each individual color cell.'),
+      );
+      $form['box_width'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Box width'),
+        '#default_value' => isset($settings['box_width']) ? $settings['box_width'] : 115,
+        '#required' => TRUE,
+        '#description' => t('Width of the color display box.'),
+      );
+      $form['box_height'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Box height'),
+        '#default_value' => isset($settings['box_height']) ? $settings['box_height'] : 20,
+        '#required' => TRUE,
+        '#description' => t('Height of the color display box.'),
+      );
+      $form['columns'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Columns number'),
+        '#default_value' => isset($settings['columns']) ? $settings['columns'] : 16,
+        '#required' => TRUE,
+        '#description' => t('Number of columns to display. Color order may look strange if this is altered.'),
+      );
+      break;
+
+    case 'color_field_default_widget':
+      $form['default_colors'] = array(
+        '#type' => 'textarea',
+        '#title' => t('Default colors'),
+        '#default_value' => isset($settings['default_colors']) ? $settings['default_colors'] : '
+#AC725E,#D06B64,#F83A22,#FA573C,#FF7537,#FFAD46
+#42D692,#16A765,#7BD148,#B3DC6C,#FBE983
+#92E1C0,#9FE1E7,#9FC6E7,#4986E7,#9A9CFF
+#B99AFF,#C2C2C2,#CABDBF,#CCA6AC,#F691B2
+#CD74E6,#A47AE2
+        ',
+        '#required' => TRUE,
+        '#description' => t('Default colors for pre-selected color boxes'),
+      );
+      break;
+
+    case 'color_field_spectrum_widget':
+      $form['show_input'] = array(
+        '#type' => 'checkbox',
+        '#title' => t('Show Input'),
+        '#default_value' => isset($settings['show_input']) ? $settings['show_input'] : FALSE,
+        '#description' => t('Allow free form typing.'),
+      );
+      $form['show_palette'] = array(
+        '#type' => 'checkbox',
+        '#title' => t('Show Palette'),
+        '#default_value' => isset($settings['show_palette']) ? $settings['show_palette'] : FALSE,
+        '#description' => t('Show or hide Palette in Spectrum Widget'),
+      );
+      $form['palette'] = array(
+        '#type' => 'textarea',
+        '#title' => t('Color Palette'),
+        '#default_value' => isset($settings['palette']) ? $settings['palette'] : '',
+        '#description' => t('Selectable color palette to accompany the Spectrum Widget'),
+        '#states' => array(
+          'visible' => array(
+            ':input[name="field[settings][show_palette]"]' => array('checked' => TRUE),
+          ),
+        ),
+      );
+      $form['show_palette_only'] = array(
+        '#type' => 'checkbox',
+        '#title' => t('Show Palette Only'),
+        '#default_value' => isset($settings['show_palette_only']) ? $settings['show_palette_only'] : FALSE,
+        '#description' => t('Only show thePalette in Spectrum Widget and nothing else'),
+        '#states' => array(
+          'visible' => array(
+            ':input[name="field[settings][show_palette]"]' => array('checked' => TRUE),
+          ),
+        ),
+      );
+      $form['show_buttons'] = array(
+        '#type' => 'checkbox',
+        '#title' => t('Show Buttons'),
+        '#default_value' => isset($settings['show_buttons']) ? $settings['show_buttons'] : FALSE,
+        '#description' => t('Add Cancel/Confirm Button.'),
+      );
+    break;
+  }
+  return $form;
+}
+
+/**
+ * Implements hook_field_formatter_info().
+ *
+ * @see color_field_field_formatter_view()
+ */
+function color_field_field_formatter_info() {
+  return array(
+    'color_field_default_formatter' => array(
+      'label' => t('Plain text color'),
+      'field types' => array('color_field_rgb'),
+    ),
+    'color_field_css_declaration' => array(
+      'label' => t('CSS Declaration'),
+      'field types' => array('color_field_rgb'),
+      'settings' => array(
+        'selector' => 'body',
+        'property' => 'background-color',
+        'important' => TRUE,
+      ),
+    ),
+    'color_field_swatch' => array(
+      'label' => t('Color Swatch'),
+      'field types' => array('color_field_rgb'),
+      'settings' => array(
+        'width' => '50',
+        'height' => '50',
+      ),
+    ),
+  );
+}
+
+/**
+ * Implements hook_field_formatter_settings_form().
+ */
+function color_field_field_formatter_settings_form($field, $instance, $view_mode, $form, &$form_state) {
+  $display = $instance['display'][$view_mode];
+  $settings = $display['settings'];
+
+  $element = array();
+
+  switch ($display['type']) {
+    case 'color_field_css_declaration':
+      $element['selector'] = array(
+        '#title' => t('Selector'),
+        '#type' => 'textarea',
+        '#default_value' => $settings['selector'],
+        '#required' => TRUE,
+        '#description' => t('A valid CSS selector such as <code>.links > li > a, #logo</code>.'),
+      );
+      $element['token'] = array(
+        '#theme' => 'token_tree',
+        '#token_types' => array($instance['entity_type']),
+        '#dialog' => TRUE,
+      );
+      $element['property'] = array(
+        '#title' => t('Property'),
+        '#type' => 'select',
+        '#default_value' => $settings['property'],
+        '#required' => TRUE,
+        '#options' => array(
+          'background-color' => t('Background color'),
+          'color' => t('Text color'),
+        ),
+      );
+      $element['important'] = array(
+        '#title' => t('Important'),
+        '#type' => 'checkbox',
+        '#default_value' => $settings['important'],
+        '#description' => t('Whenever this declaration is more important than others.'),
+      );
+      break;
+
+    case 'color_field_swatch':
+      $element['width'] = array(
+        '#title' => t('Width'),
+        '#type' => 'textfield',
+        '#default_value' => $settings['width'],
+        '#required' => TRUE,
+      );
+      $element['height'] = array(
+        '#title' => t('Height'),
+        '#type' => 'textfield',
+        '#default_value' => $settings['height'],
+        '#required' => TRUE,
+      );
+      break;
+  }
+
+  return $element;
+
+}
+
+/**
+ * Implements hook_field_formatter_settings_summary().
+ */
+function color_field_field_formatter_settings_summary($field, $instance, $view_mode) {
+  $display = $instance['display'][$view_mode];
+  $settings = $display['settings'];
+
+  $summary = array();
+
+  switch ($display['type']) {
+    case 'color_field_css_declaration':
+      $summary[] = t('CSS selector') . ': ' . $settings['selector'];
+      $summary[] = t('CSS property') . ': ' . $settings['property'];
+      $summary[] = t('!important declaration') . ': ' . (($settings['important']) ? t('Yes') : t('No'));
+      break;
+
+    case 'color_field_swatch':
+      $summary[] = t('Width') . ': ' . $settings['width'];
+      $summary[] = t('Height') . ': ' . $settings['height'];
+      break;
+  }
+
+  return implode('<br />', $summary);
+}
+
+/**
+ * Implements hook_field_formatter_view().
+ *
+ * Two formatters are implemented.
+ * - color_field_default_formatter just outputs markup indicating the color that
+ *   was entered and uses an inline style to set the text color to that value.
+ * - color_field_css_declaration does the same but also changes the
+ *   background color or color of a region defined by the selector.
+ *
+ * @see color_field_formatter_info()
+ */
+function color_field_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+  $element = array();
+  $settings = $display['settings'];
+
+  switch ($display['type']) {
+    case 'color_field_default_formatter':
+      foreach ($items as $delta => $item) {
+        $element[$delta]['#markup'] = $item['rgb'];
+      }
+      break;
+
+    case 'color_field_css_declaration':
+      foreach ($items as $delta => $item) {
+        $selector = token_replace($settings['selector'], array($entity_type => $entity), array('clear' => TRUE));
+        $important = ($settings['important']) ? ' !important' : '';
+        $inline_css = $settings['selector'] . '{' . $settings['property'] . ':' . $item['rgb'] . $important . '}';
+        $inline_css = $selector . '{ ' . $settings['property'] . ': ' . $item['rgb'] . $important . '; }';
+        drupal_add_css($inline_css, 'inline');
+      }
+      break;
+
+    case 'color_field_swatch':
+      foreach ($items as $delta => $item) {
+        $rgb = $item['rgb'];
+        $width = $settings['width'];
+        $height = $settings['height'];
+        $element[$delta]['#markup'] = '<div style="background: ' . $rgb . '; width: ' . $width . 'px; height: ' . $height . 'px;"></div>';
+      }
+      break;
+  }
+
+  return $element;
+}
+
+/**
+ * Implements hook_field_widget_form().
+ */
+function color_field_field_widget_form(&$form, &$form_state, $field, $instance, $langcode, $items, $delta, $element) {
+
+  $widget = $element;
+  $widget['#delta'] = $delta;
+
+  $default_value = isset($instance['default_value'][0]['rgb']) ? $instance['default_value'][0]['rgb'] : '';
+  $value = isset($items[$delta]['rgb']) ? $items[$delta]['rgb'] : $default_value;
+
+  switch ($instance['widget']['type']) {
+    case 'color_field_simple_color':
+    case 'color_field_simple_widget':
+      // Add library.
+      drupal_add_library('color_field', 'jquery-simple-color');
+
+      $field_id = $field['field_name'] . '-' . $langcode . '-' . $delta;
+      // Support field collection module.
+      (isset($element['#field_parents']) && !empty($element['#field_parents'])) ? $bundle_id = '-' . implode('-', $element['#field_parents']) : $bundle_id = '';
+      $id = str_replace("_", "-", 'edit' . $bundle_id . '-' . $field_id . '-rgb');
+
+      $settings['cell_width'] = (isset($field['settings']['cell_width']) && $field['settings']['cell_width'] != '') ? (int) $field['settings']['cell_width'] : 10;
+      $settings['cell_height'] = (isset($field['settings']['cell_height']) && $field['settings']['cell_height'] != '') ? (int) $field['settings']['cell_height'] : 10;
+      $settings['cell_margin'] = (isset($field['settings']['cell_margin']) && $field['settings']['cell_margin'] != '') ? (int) $field['settings']['cell_margin'] : 1;
+      $settings['box_width'] = (isset($field['settings']['box_width']) && $field['settings']['box_width'] != '') ? $field['settings']['box_width'] . 'px' : '115px';
+      $settings['box_height'] = (isset($field['settings']['box_height']) && $field['settings']['box_height'] != '') ? $field['settings']['box_height'] . 'px' : '20px';
+      $settings['columns'] = (isset($field['settings']['columns']) && $field['settings']['columns'] != '') ? $field['settings']['columns'] : '16';
+
+      $widget += array(
+        '#attached' => array(
+          'js' => array(
+            drupal_get_path('module', 'color_field') . '/color_field_jquery_simple_color/color_field_jquery_simple_color.jquery.js',
+            array(
+              'data' => array('color_field_jquery_simple_color' => array('#' . $id => $settings)),
+              'type' => 'setting',
+            ),
+          ),
+          'css' => array(drupal_get_path('module', 'color_field') . '/color_field_jquery_simple_color/color_field_jquery_simple_color.css'),
+        ),
+      );
+      $widget += array(
+        '#type' => 'textfield',
+        '#default_value' => $value,
+        '#size' => 7,
+        '#maxlength' => 7,
+      );
+      break;
+
+    case 'color_field_farbtastic_widget':
+      $base = drupal_get_path('module', 'color');
+      $id = 'edit-' . str_replace("_", "-", $field['field_name']) . '-' . $langcode . '-' . $delta . '-rgb';
+      $settings['id'] = $id;
+      $settings['picker_id'] = $id . '_picker';
+      $widget += array(
+        '#type' => 'textfield',
+        '#description' => t('Format #FFFFFF'),
+        '#default_value' => $value,
+        '#size' => 7,
+        '#maxlength' => 7,
+        '#prefix' => '<div id=' . $settings['picker_id'] . '></div>',
+        '#attached' => array(
+          // Add Farbtastic color picker.
+          'library' => array(
+            array('system', 'farbtastic'),
+          ),
+          'js' => array(
+            drupal_get_path('module', 'color_field') . '/color_field_farbtastic/color_field_farbtastic.jquery.js',
+            array(
+              'data' => array('color_field_farbtastic' => array($id => $settings)),
+              'type' => 'setting',
+            ),
+          ),
+          'css' => array(
+            $base . '/color.css' => array(),
+          ),
+          /*// Add custom CSS.
+          // Add custom JavaScript.
+          'js' => array(
+            $base . '/color.js',
+            array(
+              'data' => array(
+                'color' => array(
+                  'reference' => color_get_palette($theme, TRUE),
+                  'schemes' => $schemes,
+                ),
+                'gradients' => $info['gradients'],
+              ),
+              'type' => 'setting',
+            ),
+          ),*/
+        ),
+      );
+      break;
+
+    case 'color_field_plain_text':
+      $widget += array(
+        '#type' => 'textfield',
+        '#description' => t('Format #FFFFFF'),
+        '#default_value' => $value,
+        '#size' => 7,
+        '#maxlength' => 7,
+      );
+      break;
+
+    case 'color_field_spectrum_widget':
+      // Add library.
+      drupal_add_library('color_field', 'bgrins-spectrum');
+      $field_id = $field['field_name'] . '-' . $langcode . '-' . $delta;
+      // Support field collection module.
+      (isset($element['#field_parents']) && !empty($element['#field_parents'])) ? $bundle_id = '-' . implode('-', $element['#field_parents']) : $bundle_id = '';
+      $id = str_replace("_", "-", 'edit' . $bundle_id . '-' . $field_id . '-rgb');
+      $settings['id'] = $id;
+      $settings['show_input'] = (isset($field['settings']['show_input']) && $field['settings']['show_input'] == 1) ? TRUE : FALSE;
+      $settings['show_palette'] = (isset($field['settings']['show_palette']) && $field['settings']['show_palette'] == 1) ? TRUE : FALSE;
+      $settings['show_palette_only'] = (isset($field['settings']['show_palette_only']) && $field['settings']['show_palette_only'] == 1) ? TRUE : FALSE;
+      $settings['show_buttons'] = (isset($field['settings']['show_buttons']) && $field['settings']['show_buttons'] == 1) ? TRUE : FALSE;
+
+      $default_colors = (isset($field['settings']['palette']) && $field['settings']['palette'] != '') ? $field['settings']['palette'] : '';
+      preg_match_all("/#[0-9a-fA-F]{6}/", $default_colors, $default_colors, PREG_SET_ORDER);
+      foreach ($default_colors as $color) {
+        $settings['palette'][] = $color[0];
+      }
+
+      $widget += array(
+        '#type' => 'textfield',
+        '#description' => t('Format #FFFFFF'),
+        '#default_value' => $value,
+        '#size' => 7,
+        '#maxlength' => 7,
+        '#attached' => array(
+          // Add Spectrum color picker.
+          'library' => array(array('color_field', 'spectrum')),
+          'js' => array(
+            drupal_get_path('module', 'color_field') . '/color_field_spectrum_color_picker/color_field_spectrum_color_picker.jquery.js',
+            array(
+              'data' => array('color_field_spectrum' => array('#' . $id => $settings)),
+              'type' => 'setting',
+            ),
+          ),
+        ),
+      );
+      break;
+
+    case 'color_field_default_widget':
+      $field_id = str_replace("_", "-", $field['field_name']) . '-' . $langcode . '-' . $delta;
+      // Support field collection module.
+      isset($element['#field_parents']) ? $bundle_id = implode('-', $element['#field_parents']) : $bundle_id = '';
+      $divid = 'div-' . $field_id . '-' . $bundle_id . '-rgb';
+      $id = 'edit-' . $field_id . '-' . $bundle_id . '-rgb';
+
+      $settings['value'] = $value;
+      $settings['id'] = $id;
+
+      $default_colors = (isset($field['settings']['default_colors'])) ? $field['settings']['default_colors'] : '';
+      preg_match_all("/#[0-9a-fA-F]{6}/", $default_colors, $default_colors, PREG_SET_ORDER);
+      foreach ($default_colors as $color) {
+        $settings['colors'][] = $color[0];
+      }
+
+      $widget += array(
+        '#suffix' => '<label>' . $instance['label'] . '</label><div id=' . $divid . '></div><div class="description">' . $element['#description'] . '</div>',
+        '#attached' => array(
+          'js' => array(
+            drupal_get_path('module', 'color_field') . '/color_field_default/color_field.js',
+            drupal_get_path('module', 'color_field') . '/color_field_default/color_field.jquery.js',
+            array(
+              'data' => array('color_field' => array('#' . $divid => $settings)),
+              'type' => 'setting',
+            ),
+          ),
+          'css' => array(drupal_get_path('module', 'color_field') . '/color_field_default/color_field.css'),
+        ),
+      );
+
+      $widget += array(
+        '#attributes' => array('class' => array('element-invisible'),'id' => $id),
+        '#type' => 'token',
+        '#default_value' => $value,
+        '#size' => 7,
+        '#maxlength' => 7,
+      );
+      break;
+  }
+
+  $element['rgb'] = $widget;
+  return $element;
+}
+
+/**
+ * Implements hook_field_widget_error().
+ *
+ * @see color_field_validate()
+ * @see form_error()
+ */
+function color_field_widget_error($element, $error, $form, &$form_state) {
+  switch ($error['error']) {
+    case 'color_field_invalid':
+      form_error($element, $error['message']);
+      break;
+  }
+}
+

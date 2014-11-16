@@ -28,7 +28,7 @@
           </span>
         <?php endif; ?>
         <div class="cat-stat-wrapper">
-            <span class="label label-default marker-category col-<?php echo $category->field_category_hex[LANGUAGE_NONE][0]['value'] ?> col-md-6"><i class="icon-li icon-<?php echo $category->field_category_icon[LANGUAGE_NONE][0]['value'] ?> "></i> <?php echo $category->name?> </span> <span class="label label-default marker-status col-<?php echo $status->field_status_hex[LANGUAGE_NONE][0]['value'] ?> col-md-6"><i class="icon-li icon-<?php echo $status->field_status_icon[LANGUAGE_NONE][0]['value'] ?>"></i> <?php echo $status->name ?></span>
+            <span class="label label-default marker-category col-<?php echo ltrim($category->field_category_hex[LANGUAGE_NONE][0]['rgb'], '#') ?> col-md-6"><i class="icon-li icon-<?php echo $category->field_category_icon[LANGUAGE_NONE][0]['value'] ?> "></i> <?php echo $category->name?> </span> <span class="label label-default marker-status col-<?php echo ltrim($status->field_status_hex[LANGUAGE_NONE][0]['rgb'],'#') ?> col-md-6"><i class="icon-li icon-<?php echo $status->field_status_icon[LANGUAGE_NONE][0]['value'] ?>"></i> <?php echo $status->name ?></span>
         </div>
       </header>
       <?php

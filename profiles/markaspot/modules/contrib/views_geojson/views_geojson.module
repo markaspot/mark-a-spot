@@ -131,8 +131,10 @@ function _views_geojson_render_fields($view, $row, $index) {
   foreach ($field_ids as $id) {
     $field = $view->field[$id];
     if (!in_array($id, $excluded_fields, TRUE) && !($field->options['exclude'])) {
-      $value_rendered                                     = $field->advanced_render($row);
-      $feature['properties'][$id] = is_numeric($value_rendered) ? floatval($value_rendered) : $value_rendered;
+      // Allows you to customize the name of the property by setting a label to the field.
+      $key = empty($field->options['label']) ? $id : $field->options['label'];
+      $value_rendered = $field->advanced_render($row);
+      $feature['properties'][$key] = is_numeric($value_rendered) ? floatval($value_rendered) : $value_rendered;
     }
   }
 
