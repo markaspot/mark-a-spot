@@ -880,8 +880,8 @@ div#medialink {
   padding: 0px 0;
 }
 
-.admin-menu .mapheader {
-  margin-top: 29px;
+.navbar-icon-mark-a-spot:before {
+  background-image: url(../../../themes/mas/images/logo-small.png);
 }
 
 #map_wrapper_splash {

@@ -18,7 +18,6 @@ dependencies[] = options
 dependencies[] = path
 dependencies[] = search
 dependencies[] = shortcut
-dependencies[] = admin_menu_toolbar
 dependencies[] = field_ui
 dependencies[] = file
 dependencies[] = taxonomy
@@ -41,11 +40,12 @@ dependencies[] = twitter
 dependencies[] = chosen
 dependencies[] = geophp
 dependencies[] = views_geojson
+dependencies[] = navbar
+dependencies[] = ckeditor
 
-
-; Information added by drush on 2014-11-16
-version = "7.x-2.6+20-dev"
+; Information added by drush on 2014-11-27
+version = "7.x-2.6+29-dev"
 core = "7.x"
 project = "markaspot"
-datestamp = "1416151714"
+datestamp = "1417059386"
 

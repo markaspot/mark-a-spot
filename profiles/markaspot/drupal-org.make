@@ -17,7 +17,6 @@ projects[views][subdir] = "contrib"
 projects[views_datasource][subdir] = "contrib"
 projects[better_exposed_filters][subdir] = "contrib"
 projects[bootstrap_fieldgroup][subdir] = "contrib"
-projects[admin_menu][subdir] = "contrib"
 projects[field_formatter_settings][subdir] = "contrib"
 projects[field_formatter_class][subdir] = "contrib"
 projects[field_formatter_css_class][subdir] = "contrib"
@@ -43,13 +42,20 @@ projects[oauth][subdir] = "contrib"
 projects[workbench][subdir] = "contrib"
 projects[rules][subdir] = "contrib"
 
-
 projects[chosen][subdir] = "contrib"
 projects[chosen][version] = 2.x-dev
 
 projects[geolocation_osm][type] = module
 projects[geolocation_osm][subdir] = "contrib"
 projects[geolocation_osm][download][url] = "http://git.drupal.org/project/geolocation_osm.git"
+
+projects[navbar][type] = module
+projects[navbar][version] = 1.4
+projects[navbar][subdir] = "contrib"
+
+projects[ckeditor][type] = module
+projects[ckeditor][version] = 1.16
+projects[ckeditor][subdir] = contrib
 
 libraries[chosen][type] = libraries
 libraries[chosen][download][type] = get
@@ -110,6 +116,17 @@ libraries[bootstrap][directory_name] = "bootstrap"
 libraries[bootstrap][destination] = "themes/mas"
 libraries[bootstrap][overwrite] = TRUE
 
+libraries[underscore][download][type] = get
+libraries[underscore][download][url] = https://github.com/jashkenas/underscore/archive/1.5.2.zip
+
+libraries[backbone][download][type] = get
+libraries[backbone][download][url] = https://github.com/jashkenas/backbone/archive/1.1.0.zip
+
+libraries[modernizr][download][type] = "get"
+libraries[modernizr][download][url] = "https://github.com/Modernizr/Modernizr/archive/v2.7.0.tar.gz"
+
+libraries[ckeditor][download][type] = get
+libraries[ckeditor][download][url] = http://download.cksource.com/CKEditor%20for%20Drupal/edit/ckeditor_4.3.2_edit.zip
 
 ; Themes
 projects[bootstrap][type] = "theme"

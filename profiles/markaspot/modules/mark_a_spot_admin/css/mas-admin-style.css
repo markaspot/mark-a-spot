@@ -207,3 +207,7 @@ input#edit-photo,
 .node-type-report #block-system-help  {
   display: none;
 }
+
+.navbar-icon-mark-a-spot:before {
+  background-image: url(../../../themes/mas/images/logo-small.png);
+}

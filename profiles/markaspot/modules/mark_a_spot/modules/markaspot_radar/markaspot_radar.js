@@ -99,8 +99,8 @@
 
             $.each(colors, function (key, element) {
               if (item.field_status_hex == element.hex || item.field_category_hex == element.hex) {
-                color = '#' + element.hex;
-                var marker = new L.circleMarker(latlon, {radius: 8, weight: 1, opacity: 0.8, color: '#666', fillOpacity: 1, fillColor: color});
+                color = element.hex;
+                var marker = new L.circleMarker(latlon, {radius: 8, weight: 4, opacity: 1, color: '#666', fillOpacity: 1, fillColor: color});
                 marker.bindPopup(html);
                 reportMarkers.push(marker);
                 bounds.extend(latlon);

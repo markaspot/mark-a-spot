@@ -341,6 +341,10 @@ class views_plugin_style_geojson extends views_plugin_style {
    *   TRUE if the field is handled by the entity module views integration.
    */
   public function is_entity_views_handler($field_handler_instance) {
+    if (!module_exists('entity')) {
+      return FALSE;
+    }
+
     $static_cache = &drupal_static(__METHOD__, array());
     $handler_class = get_class($field_handler_instance);
 

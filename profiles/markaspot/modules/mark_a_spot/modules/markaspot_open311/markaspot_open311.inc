@@ -455,8 +455,11 @@ function markaspot_open311_tax_map_service($taxonomy_term) {
   $service['metadata'] = "false";
   $service['type'] = 'realtime';
   $service['description'] = $taxonomy_term->description;
-  $service['keywords'] = $taxonomy_term->field_hash[$lang][0]['value'];
-
+  if (isset($taxonomy_term->field_hash[$lang][0]['value'])){
+    $service['keywords'] = $taxonomy_term->field_hash[$lang][0]['value'];
+  } else {
+    $service['keywords'] = "";
+  }
   return $service;
 }
 

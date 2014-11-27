@@ -38,6 +38,8 @@ class views_plugin_argument_default_bboxquery extends views_plugin_argument_defa
    * Return the default argument.
    */
   function get_argument() {
+    // @todo: use drupal_get_query_parameters
+    // @todo: shouldn't we sanitize this user input ?
     if (isset($_GET[$this->options['arg_id']])) {
       return $_GET[$this->options['arg_id']];
     } else {
