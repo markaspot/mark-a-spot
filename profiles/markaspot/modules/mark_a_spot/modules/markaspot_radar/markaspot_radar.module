@@ -16,6 +16,7 @@ function markaspot_radar_page_build(&$page) {
   if (arg(1) == 'add' || arg(2) == "edit" && ($type != "page")) {
     drupal_add_css(drupal_get_path('profile', 'markaspot') . '/libraries/Leaflet.awesome-markers/dist/leaflet.awesome-markers.css');
     drupal_add_css(drupal_get_path('profile', 'markaspot') . '/libraries/markaspot-font/style.css');
+    drupal_add_js(drupal_get_path('profile', 'markaspot') . '/libraries/leaflet/leaflet.js');
     drupal_add_js(drupal_get_path('profile', 'markaspot') . '/libraries/Leaflet.awesome-markers/dist/leaflet.awesome-markers.min.js', array('scope' => 'footer', 'weight' => 7));
     drupal_add_js(drupal_get_path('profile', 'markaspot') . '/libraries/Leaflet.markercluster/dist/leaflet.markercluster.js', array('scope' => 'footer', 'weight' => 6));
     drupal_add_js(drupal_get_path('module', 'markaspot_radar') . '/markaspot_radar.js', array('scope' => 'footer', 'weight' => 5));
