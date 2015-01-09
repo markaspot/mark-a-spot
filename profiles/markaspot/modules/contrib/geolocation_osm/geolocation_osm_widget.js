@@ -39,7 +39,7 @@
       $.getJSON(url + '?email=' + nominatimEmail + '&lat=' + latLng.lat + '&lon=' + latLng.lng + '&json_callback=?', {
         format: 'json'
       }).done(function (result) {
-        if (result) {
+        if (result.address) {
           var street  = result.address.construction ? result.address.construction : "";
           street      = street ? street : result.address.path;
           street      = street ? street : result.address.cycleway;
@@ -64,7 +64,7 @@
           // Drupal.geolocation.setMapMarker(new L.LatLng(result.lat , result.lon),i);
         }
         else {
-          alert(Drupal.t("Sorry an address cannot be found"));
+          alert(Drupal.t("Sorry an address cannot be found for this point"));
         }
       });
     }

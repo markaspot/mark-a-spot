@@ -37,7 +37,7 @@ http://drupal.org/documentation/install/modules-themes/modules-7 for help.
 USAGE
 -----
 
-1. Create a View with a Page display on content with geospatial data.
+1. Create a View with a Feed display on content with geospatial data.
 2. Add fields to output a Geofield, longitude & latitude or WKT.
 3. Optionally add fields for name and description.
 4. Set Format for the display to "GeoJSON Feed".
@@ -48,11 +48,6 @@ USAGE
   * Optionally set a JSONP prefix, (see http://en.wikipedia.org/wiki/JSONP).
   * Set the Content-type header to be sent. The default is "application/json",
     the standard MIME type for JSON, per http://www.ietf.org/rfc/rfc4627.txt.
-  * Optionally enable "Views API mode". By default the plugins stop Drupal from
-    doing any additional processing when a view is rendered, allowing the
-    content to be output without normal page markup. If you are calling a view
-    programatically, enable "Views API mode" to avoid early termination of
-    Drupal execution.
 6. If using with the OpenLayers module, your new GeoJSON layer will be available
   as an Overlay layer on the "Layers & Styles" tab when editing your map.
 

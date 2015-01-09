@@ -26,7 +26,7 @@ else {
   }
 
   if (isset($_GET[$jsonp_prefix]) && $jsonp_prefix) {
-    $json = $_GET[$jsonp_prefix] . '(' . $json . ')';
+    $json = check_plain($_GET[$jsonp_prefix]) . '(' . $json . ')';
   }
 
   if ($options['using_views_api_mode']) {

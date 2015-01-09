@@ -4,6 +4,7 @@ A useful control to geolocate the user with many options.
 
 Tested with [Leaflet](http://leafletjs.com/) 0.7 in Firefox, Webkit and mobile Webkit. Tested with [Font Awesome](https://fortawesome.github.io/Font-Awesome/) 4.2.0.
 
+**v0.34.0 introduced breaking changes to the API. Please check your code!**
 
 ## Demo
 
@@ -19,6 +20,7 @@ tl;dr
 1. Get CSS and JavaScript files
 2. Include CSS and JavaScript files
 3. Initialize plugin
+
 
 #### Download JavaScript and CSS files
 
@@ -128,8 +130,6 @@ The locate control fires `startfollowing` and `stopfollowing` on the map object 
 
 
 ### Extending
-
-Extending
 
 To customize the behavior of the plugin, use L.extend to override `start`, `stop`, `drawMarker` and/or `removeMarker`. Please be aware that functions may change and customizations become incompatible.
 

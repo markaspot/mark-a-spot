@@ -13,9 +13,9 @@ features[rules_config][] = rules_report_added
 mtime = 1416117874
 
 
-; Information added by drush on 2014-11-27
-version = "7.x-2.6+29-dev"
+; Information added by drush on 2015-01-09
+version = "7.x-2.6+34-dev"
 core = "7.x"
 project = "markaspot"
-datestamp = "1417059386"
+datestamp = "1420784594"
 

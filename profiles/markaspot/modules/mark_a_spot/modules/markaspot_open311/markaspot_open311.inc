@@ -327,7 +327,9 @@ function markaspot_open311_node_map_request($node, $status, $parameters) {
     $request['service_name'] = $term['category']->name;
   }
 
-  $request['description'] = $node->body[$node->language][0]['value'];
+  if (isset($node->body[$node->language][0]['value'])) {
+    $request['description'] = $node->body[$node->language][0]['value'];
+  }
 
   $request['agency_responsible'] = NULL;
   $request['service_notice'] = NULL;

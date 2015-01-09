@@ -1,7 +1,6 @@
 .simpleColorDisplay {
-  float: left;
   font-family: Helvetica;
 }
-.simpleColorContainer {
-  float: left;
+.simpleColorChooser {
+  z-index: 1;
 }

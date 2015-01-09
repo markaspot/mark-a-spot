@@ -6,8 +6,8 @@
   Drupal.behaviors.color_field = {
     attach: function (context) {
       $.each(Drupal.settings.color_field, function (selector) {
-        id = selector.replace("#div","edit");
-        value = $('#' + id).val();
+        var id = selector.replace("#div","edit");
+        var value = $('#' + id).val();
         if (value == '') value = this.value;
         $(selector).empty().addColorPicker({
           currentColor:value,

@@ -4,7 +4,7 @@
   font-family: monospace;
   font-size: 1.2em;
   margin: 0 3px;
-  padding: 2px 8px;
+  padding: 1px 8px;
 }
 .colorBox.active,
 .colorBox:hover {

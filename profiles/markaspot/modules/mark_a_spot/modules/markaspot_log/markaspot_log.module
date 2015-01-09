@@ -221,22 +221,38 @@ function markaspot_log_comment_presave($comment) {
     $comment->node_type = 'comment_node_' . $node->type;
   }
 
-  if (in_array('Citizen', $user->roles) || in_array('anonymous user', $user->roles)) {
+  if (in_array('administrator', $user->roles)) {
     $data = array(
-      'message' => t('A comment has been created by Citizen'),
+      'message' => t('The Site Administration commented this report.'),
+      'level'  => 'warning',
+      'css_class'   => 'comment',
+    );
+  }
+
+  else if (in_array('Management', $user->roles) || in_array('City Admin', $user->roles)) {
+    $data = array(
+      'message' => t('The City Administration commented this report.'),
+      'level'  => 'warning',
+      'css_class'   => 'comment',
+    );
+  }
+
+  else if (in_array('Citizen', $user->roles) || in_array('anonymous user', $user->roles)) {
+    $data = array(
+      'message' => t('A Citizen commented this report.'),
       'level'  => 'danger',
       'css_class'   => 'comment',
     );
   }
 
-  if (in_array('administrator', $user->roles) ||
-    in_array('Management', $user->roles) || in_array('City Admin', $user->roles)) {
+  else {
     $data = array(
-      'message' => t('A comment has been created by City Administration'),
-      'level'  => 'warning',
+      'message' => t('Someone commented this report'),
+      'level'  => 'danger',
       'css_class'   => 'comment',
     );
   }
+
   $data = (object) $data;
 
   unset($data->nid);

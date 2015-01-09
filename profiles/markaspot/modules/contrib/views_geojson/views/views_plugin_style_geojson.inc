@@ -294,7 +294,9 @@ class views_plugin_style_geojson extends views_plugin_style {
     // Render each row.
     foreach ($results as $i => $row) {
       $this->view->row_index = $i;
-      $features['features'][] = _views_geojson_render_fields($this->view, $row, $i);
+      if ($feature = _views_geojson_render_fields($this->view, $row, $i)) {
+        $features['features'][] = $feature;
+      }
     }
     unset($this->view->row_index);
 

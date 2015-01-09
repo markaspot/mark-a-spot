@@ -36,8 +36,9 @@ INSTALLATION - jQuery simple color
 If you want to use the jquery simple color plugin you need to download it and 
 place it in your libraries folder (this will usually be "sites/all/libraries/").
 You can download the plugin by using the following links or by Drush.
+Make sure you rename the folder jquery-simple-color so you get
+sites/all/libraries/jquery-simple-color/jquery.simple-color.js.
 
-  http://recursive-design.com/projects/jquery-simple-color/
   https://github.com/recurser/jquery-simple-color
 
 -----------------------------------------------------------------------------

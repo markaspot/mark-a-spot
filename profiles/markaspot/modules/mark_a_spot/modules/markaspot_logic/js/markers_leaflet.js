@@ -254,11 +254,11 @@
         var fn = Drupal.markaspot.markerClickFn(latlon, html, item.uuid);
         $('#marker_' + item.nid).on('hover, click', fn);
         size = markerLayer.getLayers().length;
-        if (size >= 1) {
-          Drupal.Markaspot.maps[0].addLayer(markerLayer);
-          Drupal.Markaspot.maps[0].fitBounds(markerLayer.getBounds());
-        }
+        Drupal.Markaspot.maps[0].addLayer(markerLayer);
       });
+      if (size >= 1) {
+        Drupal.Markaspot.maps[0].fitBounds(markerLayer.getBounds());
+      }
     },
 
 

@@ -4,9 +4,9 @@ description = Provides a Stats block for civic and administrative activity on re
 core = "7.x"
 
 
-; Information added by drush on 2014-11-27
-version = "7.x-2.6+29-dev"
+; Information added by drush on 2015-01-09
+version = "7.x-2.6+34-dev"
 core = "7.x"
 project = "markaspot"
-datestamp = "1417059386"
+datestamp = "1420784594"
 
