@@ -27,8 +27,13 @@ function markaspot_uuid_form_report_node_form_alter(&$form, &$form_state, $form_
  * @return string
  *   An UUID, made up of year, month and 8 hex digits.
  */
-function markaspot_uuid_generate_uuid(&$id_field  = NULL) {
-  $callback = 'markaspot_uuid_generate_mas';
+function markaspot_uuid_generate_uuid($entity) {
+  $id_field = NULL;
+  if (isset($entity->type) && $entity->type == 'report') {
+    $callback = 'markaspot_uuid_generate_mas';
+  } else {
+    $callback = '_uuid_generate_php';
+  }
   return $callback($id_field);
 }
 
@@ -40,7 +45,7 @@ function markaspot_uuid_entity_presave($entity, $type) {
   if (isset($info['uuid']) && $info['uuid'] == TRUE && !empty($info['entity keys']['uuid'])) {
     $uuid_key = $info['entity keys']['uuid'];
     if (empty($entity->{$uuid_key})) {
-      $entity->{$uuid_key} = markaspot_uuid_generate_uuid();
+      $entity->{$uuid_key} = markaspot_uuid_generate_uuid($entity);
     }
     if (!empty($info['entity keys']['revision uuid'])) {
       $vuuid_key = $info['entity keys']['revision uuid'];
@@ -57,7 +62,7 @@ function markaspot_uuid_entity_presave($entity, $type) {
       }
 
       if ((isset($entity->revision) && $entity->revision == TRUE && empty($entity->uuid_services)) || empty($entity->{$vuuid_key})) {
-        $entity->{$vuuid_key} = markaspot_uuid_generate_uuid();
+        $entity->{$vuuid_key} = markaspot_uuid_generate_uuid($entity);
       }
     }
   }
@@ -95,6 +100,10 @@ function markaspot_uuid_generate_mas($id_field) {
       mt_rand(0, 65535),
       // 16 bits for "time_mid".
       mt_rand(0, 65535)) . '-' . $next_id;
+  }
+  elseif ($uuid_preset_length == 3){
+
+    return format_date(time(), 'custom', variable_get('markaspot_logic_uuid_prefix')) . '-' . $next_id;
   }
   else {
 

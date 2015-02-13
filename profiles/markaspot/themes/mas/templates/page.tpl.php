@@ -96,8 +96,9 @@
     <?php endif; ?>
 
   </div>
+  <div class="push"></div>
 </div>
 
-<footer class="footer navbar-inverse">
+<footer class="footer">
   <?php print render($page['footer']); ?>
 </footer>

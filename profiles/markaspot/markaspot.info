@@ -1,11 +1,16 @@
 name = Mark-a-Spot
 description = Install with commonly used features pre-configured.
+exclusive = TRUE
 
 core = 7.x
+dependencies[] = icon
 dependencies[] = block
 dependencies[] = entity
 dependencies[] = rest_server
 dependencies[] = services
+dependencies[] = search_api
+dependencies[] = search_api_db
+dependencies[] = search_api_views
 dependencies[] = jquery_update
 dependencies[] = ctools
 dependencies[] = comment
@@ -33,19 +38,19 @@ dependencies[] = better_exposed_filters
 dependencies[] = mark_a_spot
 dependencies[] = markaspot_uuid
 dependencies[] = markaspot_radar
+dependencies[] = markaspot_open311_client
 dependencies[] = mark_a_spot_admin
 dependencies[] = mark_a_spot_default_content
 dependencies[] = mark_a_spot_log
 dependencies[] = twitter
-dependencies[] = chosen
 dependencies[] = geophp
 dependencies[] = views_geojson
 dependencies[] = navbar
 dependencies[] = ckeditor
 
-; Information added by drush on 2015-01-09
-version = "7.x-2.6+34-dev"
+; Information added by drush on 2015-02-13
+version = "7.x-2.7+20-dev"
 core = "7.x"
 project = "markaspot"
-datestamp = "1420784594"
+datestamp = "1423854221"
 

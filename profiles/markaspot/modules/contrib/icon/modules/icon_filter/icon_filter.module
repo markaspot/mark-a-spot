@@ -1,0 +1,76 @@
+<?php
+/**
+ * @file
+ * icon_filter.module
+ * Provides a filter for text fields to replace an icon token with icon markup.
+ */
+
+define('ICON_FILTER_REGEX', '/\[icon:([^:]*):([^\]]*)\]/');
+
+/**
+ * Implements hook_filter_info().
+ */
+function icon_filter_filter_info() {
+  $filters['icon'] = array(
+    'title' => t('Convert [icon:%bundle:%icon] tags'),
+    'description' => t('Converts all [icon:%bundle:%icon] tags into the correct markup necessary for displaying a specific icon. Replace the %bundle with the bundle machine name and replace %icon with the icon machine name.'),
+    'process callback' => '_icon_filter',
+    'tips callback' => '_icon_filter_tips',
+  );
+  return $filters;
+}
+
+/**
+ * Tips callback for icon filter.
+ */
+function _icon_filter_tips($filter, $format, $long = FALSE) {
+  if ($long) {
+    return t('Converts all [icon:%bundle:%icon] tags into the correct markup necessary for displaying a specific icon. Replace the %bundle with the bundle machine name and replace %icon with the icon machine name.');
+  }
+  else {
+    return t('Convert [icon:%bundle:%icon] tags.');
+  }
+}
+
+/**
+ * Process callback for icon filter.
+ */
+function _icon_filter($text, $filter, $format, $langcode, $cache, $cache_id) {
+  $icons = array();
+  if (preg_match_all(ICON_FILTER_REGEX, $text, $matches, PREG_SET_ORDER)) {
+    foreach ($matches as $match) {
+      if (!isset($icons[$match[0]])) {
+        $icons[$match[0]] = theme('icon', array('bundle' => $match[1], 'icon' => $match[2]));
+      }
+    }
+  }
+  foreach ($icons as $search => $replace) {
+    if (!empty($replace)) {
+      $text = str_replace($search, $replace, $text);
+    }
+  }
+  return $text;
+}
+
+/**
+ * Implements hook_field_prepare_view().
+ *
+ * Processes fields to attach bundle resources (if necessary).
+ */
+function icon_filter_preprocess_field(&$variables) {
+  $element = &$variables['element'];
+  if (!empty($element['#formatter'])) {
+    foreach ($element['#items'] as &$item) {
+      if (!empty($item['format']) && ($filters = filter_list_format($item['format'])) && !empty($filters['icon']->status)) {
+        if (preg_match_all(ICON_FILTER_REGEX, $item['value'], $matches, PREG_SET_ORDER)) {
+          foreach ($matches as $match) {
+            if (!isset($icons[$match[0]])) {
+              $bundle = icon_bundle_load($match[1]);
+              icon_process_attached($bundle);
+            }
+          }
+        }
+      }
+    }
+  }
+}

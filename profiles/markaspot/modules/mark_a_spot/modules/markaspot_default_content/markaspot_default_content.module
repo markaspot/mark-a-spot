@@ -16,6 +16,11 @@ function markaspot_default_content_block_info() {
    *  'cache' => DRUPAL_NO_CACHE
    *);
    */
+  $blocks['search_id'] = array(
+    'info' => t('Search Form for Issue ID'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+
   $blocks['welcome'] = array(
     'info' => t('Welcome Text for frontpage'),
     'cache' => DRUPAL_NO_CACHE,
@@ -42,6 +47,18 @@ function markaspot_default_content_block_view($delta = '') {
 
   switch ($delta) {
 
+    case 'search_id':
+      $block['subject'] = t('Service request search');
+      $block['content'] = '<p>'. t('Find out the status of your service request') . '</p>
+        <div class="service-tracker-search"><form action="/list" role="search">
+          <div class="input-group">
+              <input type="text" class="form-control" placeholder="'. t('Enter Service Request #') . '" name="query" id="query">
+              <div class="input-group-btn">
+                  <button class="btn btn-default" type="submit"><i class="glyphicon glyphicon-search"></i></button>
+              </div>
+          </div>
+        </form></div>';
+      break;
     case 'welcome':
       $block['subject'] = t('Welcome to MaS-City');
       $block['content'] = '<h1>' . variable_get('site_name', 'Track issues MaS-City') . '</h1><p>' .
@@ -50,14 +67,14 @@ function markaspot_default_content_block_view($delta = '') {
 
     case 'add_reports':
       $block['subject'] = t('Add Report');
-      $block['content'] = '<div class="add"><a href="node/add/report" class="col-md-5 btn btn-primary btn-info"><h3>
+      $block['content'] = '<div class="add"><a href="node/add/report" class="col-md-5 btn btn-primary btn-success"><h3>
         <i class="icon-bullhorn"></i> ' . t('Report Issue') . '</h3>' . '</a></div>';
       break;
 
     case 'watch_reports':
       $block['subject'] = t('Track Reports');
       $block['content'] = '<div class="list"><a href="list" class="col-md-5 col-md-offset-2 btn btn-primary btn-default">
-        <h3><i class="icon-eye-open"></i> ' . t('Track Issues') . '</h3>' . '</a></div>';
+        <h3><i class="icon-eye"></i> ' . t('Track Issues') . '</h3>' . '</a></div>';
       break;
   }
   return $block;

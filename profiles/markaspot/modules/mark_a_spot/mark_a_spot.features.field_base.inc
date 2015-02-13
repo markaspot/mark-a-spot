@@ -200,10 +200,32 @@ function mark_a_spot_field_default_field_bases() {
     'locked' => 0,
     'module' => 'color_field',
     'settings' => array(
-      'default_colors' => '#FF0000, #8B0000, #FFA500, #008000, #006400, #0000FF, #00008B, #800080, #871F78, #5F9EA0, #D3D3D3, #808080, #000000, #F5F5DC, #FFFFFF',
+      'default_colors' => '#FF0000, #8B0000, #FFA500, #008000, #006400, #ADD8E6, #0000FF, #00008B, #A020F0, #871F78, #5F9EA0, #D3D3D3, #808080, #000000, #F5F5DC, #FFFFFF',
     ),
     'translatable' => 0,
     'type' => 'color_field_rgb',
+  );
+
+  // Exported field_base: 'field_category_icon'
+  $field_bases['field_category_icon'] = array(
+    'active' => 1,
+    'cardinality' => 1,
+    'deleted' => 0,
+    'entity_types' => array(),
+    'field_name' => 'field_category_icon',
+    'field_permissions' => array(
+      'type' => 0,
+    ),
+    'foreign keys' => array(),
+    'indexes' => array(),
+    'locked' => 0,
+    'module' => 'markaspot_icon_field',
+    'settings' => array(
+      'bundle' => NULL,
+      'icon' => NULL,
+    ),
+    'translatable' => 0,
+    'type' => 'markaspot_icon_field',
   );
 
   // Exported field_base: 'field_category_id'
@@ -328,208 +350,6 @@ function mark_a_spot_field_default_field_bases() {
     'type' => 'text',
   );
 
-  // Exported field_base: 'field_status_icon'
-  $field_bases['field_status_icon'] = array(
-    'active' => 1,
-    'cardinality' => 1,
-    'deleted' => 0,
-    'entity_types' => array(),
-    'field_name' => 'field_status_icon',
-    'field_permissions' => array(
-      'type' => 0,
-    ),
-    'foreign keys' => array(),
-    'indexes' => array(
-      'value' => array(
-        0 => 'value',
-      ),
-    ),
-    'locked' => 0,
-    'module' => 'list',
-    'settings' => array(
-      'allowed_values' => array(
-        'brightness-medium' => 'brightness-medium',
-        'remove' => 'remove',
-        'bullhorn' => 'bullhorn',
-        'droplet' => 'droplet',
-        'location2' => 'location2',
-        'location' => 'location',
-        'office' => 'office',
-        'bubbles2' => 'bubbles2',
-        'bug' => 'bug',
-        'leaf' => 'leaf',
-        'lab' => 'lab',
-        'car' => 'car',
-        'pause' => 'pause',
-        'bubbles' => 'bubbles',
-        'checkmark' => 'checkmark',
-        'play' => 'play',
-        'close' => 'close',
-        'headphones' => 'headphones',
-        'drawer' => 'drawer',
-        'sign' => 'sign',
-        'tree' => 'tree',
-        'wi-fi' => 'wi-fi',
-        'warning' => 'warning',
-        'info' => 'info',
-        'phone' => 'phone',
-        'grin' => 'grin',
-        'umbrella' => 'umbrella',
-        'truck' => 'truck',
-        'exclamation-sign' => 'exclamation-sign',
-        'road' => 'road',
-        'medkit' => 'medkit',
-        'heart' => 'heart',
-        'envelope' => 'envelope',
-        'sun' => 'sun',
-        'fire-extinguisher' => 'fire-extinguisher',
-        'thumbs-up' => 'thumbs-up',
-        'thumbs-down' => 'thumbs-down',
-        'bell' => 'bell',
-        'twitter' => 'twitter',
-        'facebook' => 'facebook',
-        'heart-outline' => 'heart-outline',
-        'directions' => 'directions',
-        'feather' => 'feather',
-        'share' => 'share',
-        'bell2' => 'bell2',
-        'moon' => 'moon',
-        'new' => 'new',
-        'shuffle' => 'shuffle',
-        'switch' => 'switch',
-        'cc' => 'cc',
-        'pedestrian' => 'pedestrian',
-        'bike' => 'bike',
-        'motobike' => 'motobike',
-        'skate' => 'skate',
-        'trash' => 'trash',
-        'headphone2' => 'headphone2',
-        'camera' => 'camera',
-        'minus-circle' => 'minus-circle',
-        'remove-circle' => 'remove-circle',
-        'check-circle' => 'check-circle',
-        'info-circle' => 'info-circle',
-        'remove-circle-o' => 'remove-circle-o',
-        'check-circle-o' => 'check-circle-o',
-        'eye' => 'eye',
-        'warning2' => 'warning2',
-        'wrench' => 'wrench',
-        'flash' => 'flash',
-        'building' => 'building',
-        'fighter-jet' => 'fighter-jet',
-        'recycle' => 'recycle',
-        'bridge' => 'bridge',
-        'graffiti' => 'graffiti',
-        'wheelchair' => 'wheelchair',
-      ),
-      'allowed_values_function' => '',
-    ),
-    'translatable' => 0,
-    'type' => 'list_text',
-  );
-
-
-
-  // Exported field_base: 'field_category_icon'
-  $field_bases['field_category_icon'] = array(
-    'active' => 1,
-    'cardinality' => 1,
-    'deleted' => 0,
-    'entity_types' => array(),
-    'field_name' => 'field_category_icon',
-    'field_permissions' => array(
-      'type' => 0,
-    ),
-    'foreign keys' => array(),
-    'indexes' => array(
-      'value' => array(
-        0 => 'value',
-      ),
-    ),
-    'locked' => 0,
-    'module' => 'list',
-    'settings' => array(
-      'allowed_values' => array(
-        'brightness-medium' => 'brightness-medium',
-        'remove' => 'remove',
-        'bullhorn' => 'bullhorn',
-        'droplet' => 'droplet',
-        'location2' => 'location2',
-        'location' => 'location',
-        'office' => 'office',
-        'bubbles2' => 'bubbles2',
-        'bug' => 'bug',
-        'leaf' => 'leaf',
-        'lab' => 'lab',
-        'car' => 'car',
-        'pause' => 'pause',
-        'bubbles' => 'bubbles',
-        'checkmark' => 'checkmark',
-        'play' => 'play',
-        'close' => 'close',
-        'headphones' => 'headphones',
-        'drawer' => 'drawer',
-        'sign' => 'sign',
-        'tree' => 'tree',
-        'wi-fi' => 'wi-fi',
-        'warning' => 'warning',
-        'info' => 'info',
-        'phone' => 'phone',
-        'grin' => 'grin',
-        'umbrella' => 'umbrella',
-        'truck' => 'truck',
-        'exclamation-sign' => 'exclamation-sign',
-        'road' => 'road',
-        'medkit' => 'medkit',
-        'heart' => 'heart',
-        'envelope' => 'envelope',
-        'sun' => 'sun',
-        'fire-extinguisher' => 'fire-extinguisher',
-        'thumbs-up' => 'thumbs-up',
-        'thumbs-down' => 'thumbs-down',
-        'bell' => 'bell',
-        'twitter' => 'twitter',
-        'facebook' => 'facebook',
-        'heart-outline' => 'heart-outline',
-        'directions' => 'directions',
-        'feather' => 'feather',
-        'share' => 'share',
-        'bell2' => 'bell2',
-        'moon' => 'moon',
-        'new' => 'new',
-        'shuffle' => 'shuffle',
-        'switch' => 'switch',
-        'cc' => 'cc',
-        'pedestrian' => 'pedestrian',
-        'bike' => 'bike',
-        'motobike' => 'motobike',
-        'skate' => 'skate',
-        'trash' => 'trash',
-        'headphone2' => 'headphone2',
-        'camera' => 'camera',
-        'minus-circle' => 'minus-circle',
-        'remove-circle' => 'remove-circle',
-        'check-circle' => 'check-circle',
-        'info-circle' => 'info-circle',
-        'remove-circle-o' => 'remove-circle-o',
-        'check-circle-o' => 'check-circle-o',
-        'eye' => 'eye',
-        'warning2' => 'warning2',
-        'wrench' => 'wrench',
-        'flash' => 'flash',
-        'building' => 'building',
-        'fighter-jet' => 'fighter-jet',
-        'recycle' => 'recycle',
-        'bridge' => 'bridge',
-        'graffiti' => 'graffiti',
-        'wheelchair' => 'wheelchair',
-      ),
-      'allowed_values_function' => '',
-    ),
-    'translatable' => 0,
-    'type' => 'list_text',
-  );
-
   // Exported field_base: 'field_image'
   $field_bases['field_image'] = array(
     'active' => 1,
@@ -571,6 +391,36 @@ function mark_a_spot_field_default_field_bases() {
     'deleted' => 0,
     'entity_types' => array(),
     'field_name' => 'field_note',
+    'field_permissions' => array(
+      'type' => 2,
+    ),
+    'foreign keys' => array(
+      'format' => array(
+        'columns' => array(
+          'format' => 'format',
+        ),
+        'table' => 'filter_format',
+      ),
+    ),
+    'indexes' => array(
+      'format' => array(
+        0 => 'format',
+      ),
+    ),
+    'locked' => 0,
+    'module' => 'text',
+    'settings' => array(),
+    'translatable' => 0,
+    'type' => 'text_long',
+  );
+
+  // Exported field_base: 'field_notes'
+  $field_bases['field_notes'] = array(
+    'active' => 1,
+    'cardinality' => 1,
+    'deleted' => 0,
+    'entity_types' => array(),
+    'field_name' => 'field_notes',
     'field_permissions' => array(
       'type' => 2,
     ),
@@ -665,6 +515,36 @@ function mark_a_spot_field_default_field_bases() {
     'type' => 'node_reference',
   );
 
+  // Exported field_base: 'field_statement_comment'
+  $field_bases['field_statement_comment'] = array(
+    'active' => 1,
+    'cardinality' => 1,
+    'deleted' => 0,
+    'entity_types' => array(),
+    'field_name' => 'field_statement_comment',
+    'field_permissions' => array(
+      'type' => 2,
+    ),
+    'foreign keys' => array(
+      'format' => array(
+        'columns' => array(
+          'format' => 'format',
+        ),
+        'table' => 'filter_format',
+      ),
+    ),
+    'indexes' => array(
+      'format' => array(
+        0 => 'format',
+      ),
+    ),
+    'locked' => 0,
+    'module' => 'text',
+    'settings' => array(),
+    'translatable' => 0,
+    'type' => 'text_long',
+  );
+
   // Exported field_base: 'field_status'
   $field_bases['field_status'] = array(
     'active' => 1,
@@ -722,10 +602,29 @@ function mark_a_spot_field_default_field_bases() {
     'locked' => 0,
     'module' => 'color_field',
     'settings' => array(
-      'default_colors' => '#FF0000, #8B0000, #FFA500, #008000, #006400, #0000FF, #00008B, #800080, #871F78, #5F9EA0, #D3D3D3, #808080, #000000, #F5F5DC, #FFFFFF',
+      'default_colors' => '#FF0000, #8B0000, #FFA500, #008000, #006400, #ADD8E6, #0000FF, #00008B, #A020F0, #871F78, #5F9EA0, #D3D3D3, #808080, #000000, #F5F5DC, #FFFFFF',
     ),
     'translatable' => 0,
     'type' => 'color_field_rgb',
+  );
+
+  // Exported field_base: 'field_status_icon'
+  $field_bases['field_status_icon'] = array(
+    'active' => 1,
+    'cardinality' => 1,
+    'deleted' => 0,
+    'entity_types' => array(),
+    'field_name' => 'field_status_icon',
+    'foreign keys' => array(),
+    'indexes' => array(),
+    'locked' => 0,
+    'module' => 'markaspot_icon_field',
+    'settings' => array(
+      'bundle' => NULL,
+      'icon' => NULL,
+    ),
+    'translatable' => 0,
+    'type' => 'markaspot_icon_field',
   );
 
   // Exported field_base: 'field_status_id'

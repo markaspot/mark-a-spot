@@ -27,15 +27,23 @@ class Open311XMLFormatter implements ServicesFormatterInterface {
    *   The XML Tree
    */
   public function render($data) {
-
-    if (!is_array($data)) {
+    // var_dump($data);
+    if (!is_array($data) && !is_object($data)) {
       $message = $data;
       $data = array();
       $data[0] = array("code" => "500", "message" => $message);
     }
-
+    if (is_object($data)){
+      $data = (array) $data;
+      if(is_object($data['user'])){
+        $data['user'] = (array) $data['user'];
+      }
+    }
     $doc = new DOMDocument('1.0', 'utf-8');
     $root = new stdClass();
+    if (array_key_exists('user', $data)) {
+      $root = $doc->createElement('user');
+    }
     // Only change root, if there is GeoReport output data:
     if (array_key_exists('endpoints', $data)) {
       $root = $doc->createElement('discovery');
@@ -82,8 +90,8 @@ class Open311XMLFormatter implements ServicesFormatterInterface {
 
       $assoc = FALSE || empty($data);
       foreach ($data as $key => $value) {
-        if (is_numeric($key)) {
 
+        if (is_numeric($key)) {
           // Mark-a-Spot Integration
           // Instead of "items" geoReport v2 requires an "request" or
           // "service"-element for arrays.
@@ -110,6 +118,11 @@ class Open311XMLFormatter implements ServicesFormatterInterface {
           }
         }
         else {
+
+          if (in_array('user', $data)) {
+            $key = 'user';
+            $data = get_object_vars($data);
+          }
           $assoc = TRUE;
           $key = preg_replace('/[^A-Za-z0-9_]/', '_', $key);
           $key = preg_replace('/^([0-9]+)/', '_$1', $key);
@@ -152,6 +165,10 @@ function _markaspot_open311_access($op, $args) {
 
     case 'create':
       $access = user_access('create report content');
+      break;
+
+    case 'update':
+      $access = user_access('edit any report content');
       break;
   }
 
@@ -247,6 +264,29 @@ function markaspot_open311_services_resources() {
             'type' => 'array',
             'description' => 'The request object',
             'optional' => TRUE,
+          ),
+        ),
+      ),
+      'update' => array(
+        'help' => 'Updates a request',
+        'file' => array('file' => 'inc', 'module' => 'markaspot_open311'),
+        'callback' => 'markaspot_open311_requests_update',
+        'access callback' => '_markaspot_open311_access',
+        'access arguments' => array('update'),
+        'access arguments append' => TRUE,
+        'args' => array(
+          array(
+            'name' => 'service_request_id',
+            'type' => 'string',
+            'description' => 'The (uu)id of the node to update',
+            'source' => array('path' => '0'),
+            'optional' => FALSE,
+          ),
+          array(
+            'source' => 'data',
+            'type' => 'array',
+            'description' => 'The request object',
+            'optional' => FALSE,
           ),
         ),
       ),

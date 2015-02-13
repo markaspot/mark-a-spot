@@ -40,21 +40,25 @@ function markaspot_stats_block_view($delta = '') {
       $block['subject'] = t('Mark-a-Spot Statistics');
 
       if (user_access('view_mas_stats')) {
+        $type = 'ul';
+        $attributes = array(
+          'id' => 'status-list',
+          'class' => 'list-group',
+        );
 
         $block['content'] = '<h3>' . t("Category") . '</h3>';
         // Get the vocabulary ID.
         $vid = db_query("SELECT vid FROM {taxonomy_vocabulary} WHERE machine_name = 'category'")->fetchField();
         $tax_stats = taxonomy_get_tree($vid, $parent = 0, $max_depth = 1, $load_entities = TRUE);
-        $block['content'] .= theme('item_list', array(
-          'items' => markaspot_stats_taxonomy($tax_stats),
-        ));
+        $block['content'].= theme_item_list(array('items' => markaspot_stats_taxonomy($tax_stats), 'title' => FALSE, 'type' => $type, 'attributes' => $attributes));
+
         $block['content'] .= '<h3>' . t("Status") . '</h3>';
         // Get the vocabulary ID.
         $vid = db_query("SELECT vid FROM {taxonomy_vocabulary} WHERE machine_name = 'status'")->fetchField();
         $tax_stats = taxonomy_get_tree($vid, $parent = 0, $max_depth = 1, $load_entities = TRUE);
-        $block['content'] .= theme('item_list', array(
-          'items' => markaspot_stats_taxonomy($tax_stats),
-        ));
+
+        $block['content'].= theme_item_list(array('items' => markaspot_stats_taxonomy($tax_stats), 'title' => FALSE, 'type' => $type, 'attributes' => $attributes));
+
       }
       break;
   }
@@ -134,7 +138,8 @@ function markaspot_stats_taxonomy($tax_stats) {
 
   foreach ($tids['tids'] as $tid) {
     $items[] = array(
-      'data' => '<span>' . views_trim_text($alter, $tid[1]) . ' : <strong>' . markaspot_stats_get($tid[0]) . ' </strong></span>',
+      'data' => '<span>' . views_trim_text($alter, $tid[1]) . ': <strong>' . markaspot_stats_get($tid[0]) . ' </strong></span>',
+      'class' => array('list-group-item'),
     );
   }
   return $items;

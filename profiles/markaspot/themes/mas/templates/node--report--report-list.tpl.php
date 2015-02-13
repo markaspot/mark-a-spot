@@ -75,12 +75,13 @@
  * @see template_process()
  */
 ?>
-<article id="node-<?php print $node->nid; ?>" class="report <?php print $classes; ?> clearfix"<?php print $attributes; ?>>
-
 <?php
-  $category = $node->field_category[LANGUAGE_NONE][0]['taxonomy_term'];
-  $status   = $node->field_status[LANGUAGE_NONE][0]['taxonomy_term'];
+$category = $node->field_category[LANGUAGE_NONE][0]['taxonomy_term'];
+$status   = $node->field_status[LANGUAGE_NONE][0]['taxonomy_term'];
 ?>
+
+<article id="node-<?php print $node->nid; ?>" class="report <?php print $classes; ?> col-<?php echo ltrim($status->field_status_hex[LANGUAGE_NONE][0]['rgb'],'#') ?>">
+
 
   <header class="clearfix">
     <?php print render($title_prefix); ?>
@@ -95,7 +96,7 @@
       </span>
     <?php endif; ?>
     <div class="cat-stat-wrapper">
-        <span class="label label-default marker-category col-<?php echo ltrim($category->field_category_hex[LANGUAGE_NONE][0]['rgb'],'#') ?> col-md-6"><i class="icon-li icon-<?php echo $category->field_category_icon[LANGUAGE_NONE][0]['value'] ?> "></i> <?php echo $category->name?> </span> <span class="label marker-status col-<?php echo ltrim($status->field_status_hex[LANGUAGE_NONE][0]['rgb'], '#'); ?> col-md-6"><i class="icon-li icon-<?php echo $status->field_status_icon[LANGUAGE_NONE][0]['value'] ?>"></i> <?php echo $status->name ?></span>
+      <span class="label label-default marker-category col-<?php echo ltrim($category->field_category_hex[LANGUAGE_NONE][0]['rgb'], '#') ?> col-md-6"><?php print drupal_render($variables['icon_category']); ?> <?php echo $category->name?> </span> <span class="label label-default marker-status col-<?php echo ltrim($status->field_status_hex[LANGUAGE_NONE][0]['rgb'],'#') ?> col-md-6"><?php print drupal_render($variables['icon_status']); ?> <?php echo $status->name ?></span>
     </div>
 
   </header>
@@ -107,12 +108,14 @@
     hide($content['field_tags']);
     hide($content['field_category']);
     hide($content['field_status']);
-
+    hide($content['field_address']);
     print render($content);
+
   ?>
-  <div class="location">
-    <div class="show-markers" title="<?php t('Show marker in map')?>" id="marker_<?php echo $node->nid;?>"><span class="icon-location"></span></div>
-  </div>
+  <?php if (!empty($node->field_address)): ?>
+    <div class="marker-address"><p><i class="icon-location "></i><?php print $node->field_address[LANGUAGE_NONE][0]['value'];?></p></div>
+  <?php endif; ?>
+
   <?php if (!empty($content['field_tags']) || !empty($content['links'])): ?>
     <footer>
       <?php print render($content['field_tags']); ?>

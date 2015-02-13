@@ -60,19 +60,14 @@ settings[bootstrap_cdn] = ''
 scripts[] = 'js/mas.js'
 
 
+; Global
+; --------------
+settings[toggle_name] = 0
+settings[toggle_search] = 0
 
-; ;-------------------------
-; ; METHOD 2: Bootstrap CDN
-; ;-------------------------
-;
-; Method 2 uses BootstrapCDN, the only thing you might need to provide here
-; is overrides to Bootstrap theme settings. Copy them here from the base theme
-; to override.
-
-
-; Information added by drush on 2015-01-09
-version = "7.x-2.6+34-dev"
+; Information added by drush on 2015-02-13
+version = "7.x-2.7+20-dev"
 core = "7.x"
 project = "markaspot"
-datestamp = "1420784594"
+datestamp = "1423854221"
 

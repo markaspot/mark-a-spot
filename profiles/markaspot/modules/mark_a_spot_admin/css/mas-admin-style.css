@@ -196,18 +196,125 @@ input.fluid {
   text-align: right;
 }
 
-
 div#geolocation-map-7-0 {
-  height: 100px!important;
-  width: 50%!important
+  height: 160px !important;
+  width: 100% !important;
 }
 
 div.field-geo-radar,
 input#edit-photo,
-.node-type-report #block-system-help  {
+.node-type-report #block-system-help {
   display: none;
 }
 
 .navbar-icon-mark-a-spot:before {
   background-image: url(../../../themes/mas/images/logo-small.png);
+}
+
+.navbar-icon-verwaltung:before,
+.navbar-icon-recherche:before {
+  background-image: url(../../../themes/mas/images/logo-small.png);
+}
+
+.page-admin-config .right.clearfix {
+  clear: none;
+}
+
+span#geolocation-client-location-7-0 {
+  display: none;
+}
+
+div#edit-field-geo-und-0-address div.description {
+  display: none;
+}
+
+div#geolocation-help-7-0 {
+  display: none;
+}
+
+.geolocation-lng-item, .geolocation-lat-item {
+  display: none;
+}
+
+.ember.page-node .panel-pane {
+  background: #fff;
+  padding: 10px 20px;
+  min-height: 130px}
+
+.ember.node-type-report .fieldset-wrapper {
+  border: 1px solid #eaeaea;
+  padding: 5px;
+}
+
+.ember.node-type-report .panel-2col-bricks .panel-col-last {
+  float: left;
+  width: 60%;
+}
+
+.ember.node-type-report .panel-2col-bricks .panel-col-first {
+  float: left;
+  width: 39%;
+}
+
+.panel-pane.pane-node-form-buttons,
+.panel-pane.pane-node-field-department {
+  width: 49%;
+  float: right;
+  min-height: 150px;
+  background: #fff;
+  margin: 0 0 10px 0;
+}
+
+.panel-pane.pane-node-field-notify-user,
+.panel-pane.pane-node-field-status {
+  width: 50%;
+  float: left;
+  margin: 0 0 30px 0;
+  min-height: 150px;
+}
+
+.panel-pane.pane-node-form-publishing {
+  background: #fff;
+  padding: 10px;
+}
+
+.panel-pane.pane-node-form-publishing h2{
+  display:none;
+}
+
+.panel-pane.pane-entity-form-field.pane-node-field-status,
+.panel-pane.pane-entity-form-field.pane-node-field-statement {
+  clear: both;
+}
+
+body.ember.page-node {
+  background: #dddddd !important;
+}
+
+.ember .panel-2col-bricks .panel-col-last .inside {
+  margin: -14px 0 .5em .5em;
+}
+
+.pane-node-field-image .fieldset-description {
+  display: none;
+}
+
+.panel-pane.pane-entity-form-field.pane-node-field-note {
+  clear: both;
+}
+
+.date-processed span.fieldset-legend {
+  font-size: 12px;
+  margin: 0;
+  padding: 0;
+}
+
+fieldset.form-wrapper.date-processed {
+  margin: 0;
+  padding: 0;
+  height: inherit;
+}
+
+div#edit-field-statement-und-0-field-admin-statement-date-und-0-value {
+  font-size: 10px;
 }

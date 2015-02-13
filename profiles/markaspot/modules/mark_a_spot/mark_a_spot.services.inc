@@ -16,9 +16,7 @@ function mark_a_spot_default_services_endpoint() {
   $endpoint->name = 'georeport_v2';
   $endpoint->server = 'rest_server';
   $endpoint->path = 'georeport/v2';
-  $endpoint->authentication = array(
-    'services' => 'services',
-  );
+  $endpoint->authentication = array();
   $endpoint->server_settings = array(
     'formatters' => array(
       'json' => TRUE,
@@ -26,13 +24,14 @@ function mark_a_spot_default_services_endpoint() {
       'bencode' => FALSE,
       'jsonp' => FALSE,
       'php' => FALSE,
-      'rss' => FALSE,
+      'yaml' => FALSE,
     ),
     'parsers' => array(
       'application/json' => TRUE,
       'application/x-www-form-urlencoded' => TRUE,
       'text/xml' => TRUE,
       'application/vnd.php.serialized' => FALSE,
+      'application/x-yaml' => FALSE,
       'application/xml' => FALSE,
       'multipart/form-data' => FALSE,
     ),
@@ -41,30 +40,30 @@ function mark_a_spot_default_services_endpoint() {
     'discovery' => array(
       'operations' => array(
         'index' => array(
-          'enabled' => 1,
+          'enabled' => '1',
         ),
       ),
     ),
     'requests' => array(
       'operations' => array(
-        'retrieve' => array(
-          'enabled' => 1,
-        ),
         'create' => array(
-          'enabled' => 1,
+          'enabled' => '1',
+        ),
+        'retrieve' => array(
+          'enabled' => '1',
         ),
         'index' => array(
-          'enabled' => 1,
+          'enabled' => '1',
         ),
       ),
     ),
     'services' => array(
       'operations' => array(
         'retrieve' => array(
-          'enabled' => 1,
+          'enabled' => '1',
         ),
         'index' => array(
-          'enabled' => 1,
+          'enabled' => '1',
         ),
       ),
     ),

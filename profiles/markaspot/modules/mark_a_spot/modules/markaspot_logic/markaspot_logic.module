@@ -98,6 +98,28 @@ function markaspot_logic_validate($form, &$form_state) {
 }
 
 /**
+ * Implements hook_help().
+ */
+function  markaspot_logic_help($path, $arg) {
+  switch ($path) {
+    // Main help for Mark-a-Spot.
+    case 'admin/config/system/mark_a_spot':
+      $output = '';
+      $output .= '<h3>' . t('Mark-a-Spot Basic Settings') . '</h3>';
+      $output .=  '<p>' . t('Before you get started, you maybe want to change the <a href="@categories">Categories</a> and the
+            <a href="@status">Status</a> of your platform.</p>',
+        array('@categories' => url('admin/structure/taxonomy/category'), '@status' => url('admin/structure/taxonomy/status'))) . '</p>';
+      if (module_exists('markaspot_open311_client')){
+        $output .= '<p>' . t('The <a href="@client">Open311 Client module</a> has been enabled. Please
+            checkout the <a href="@client">module\'s administration page</a>.',
+            array('@client' => url('admin/config/system/mark_a_spot/mas_open311_client'))) . '</p>';
+      }
+      return $output;
+  }
+}
+
+
+/**
  * Implements hook_page_build().
  *
  * - adds some php information to js
@@ -115,7 +137,9 @@ function markaspot_logic_page_build(&$page) {
       'markaspot_ini_lng' => variable_get('markaspot_logic_ini_lng'),
       'markaspot_map_type' => variable_get('markaspot_logic_map_type'),
       'markaspot_radar_zoom' => variable_get('markaspot_logic_radar_zoom'),
-
+      'markaspot_locate_marker_color' => variable_get('markaspot_locate_marker_color'),
+      'markaspot_locate_icon_color' => variable_get('markaspot_locate_icon_color'),
+      'markaspot_locate_zoom' => variable_get('markaspot_locate_zoom'),
       'bbox_nw_lat' => variable_get('markaspot_logic_bbox_nw_lat'),
       'bbox_nw_lng' => variable_get('markaspot_logic_bbox_nw_lng'),
       'bbox_se_lat' => variable_get('markaspot_logic_bbox_se_lat'),
@@ -143,7 +167,7 @@ function markaspot_logic_page_build(&$page) {
   }
 
   drupal_add_css(drupal_get_path('profile', 'markaspot') . '/libraries/Leaflet.awesome-markers/dist/leaflet.awesome-markers.css');
-  drupal_add_css(drupal_get_path('profile', 'markaspot') . '/libraries/markaspot-font/style.css');
+  // drupal_add_css(drupal_get_path('profile', 'markaspot') . '/libraries/markaspot-font/style.css');
 
   if (arg(0) == "list" || arg(0) == "map" || drupal_is_front_page() == TRUE) {
     drupal_add_js(drupal_get_path('profile', 'markaspot') . '/libraries/spin.js/spin.js', NULL);
@@ -152,6 +176,9 @@ function markaspot_logic_page_build(&$page) {
     drupal_add_js(drupal_get_path('profile', 'markaspot') . '/libraries/Leaflet.awesome-markers/dist/leaflet.awesome-markers.min.js', NULL);
     drupal_add_js(drupal_get_path('profile', 'markaspot') . '/libraries/Leaflet.markercluster/dist/leaflet.markercluster.js', NULL);
 
+    drupal_add_js(drupal_get_path('profile', 'markaspot') . '/libraries/bootbox/bootbox.min.js', NULL);
+    drupal_add_js(drupal_get_path('profile', 'markaspot') . '/libraries/waypoints/lib/jquery.waypoints.min.js', NULL);
+    drupal_add_js(drupal_get_path('profile', 'markaspot') . '/libraries/waypoints/lib/shortcuts/inview.min.js', NULL);
 
     drupal_add_css(drupal_get_path('profile', 'markaspot') . '/libraries/leaflet/leaflet.css');
     drupal_add_css(drupal_get_path('profile', 'markaspot') . '/libraries/leaflet/leaflet.ie.css', array(
@@ -250,6 +277,9 @@ function markaspot_logic_menu() {
  */
 function markaspot_logic_admin_settings() {
 
+  $zoom_options = array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18);
+
+
   $form['settings'] = array(
     '#type' => 'vertical_tabs',
   );
@@ -294,6 +324,33 @@ function markaspot_logic_admin_settings() {
     '#maxlength' => 32,
     '#description' => t('Insert the initial longitude'),
   );
+  $form['list'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Report List Settings'),
+    '#collapsible' => TRUE,
+    '#description' => t('Settings for the list view of Mark-a-Spot'),
+    '#group' => 'settings',
+  );
+  $form['list']['markaspot_locate_zoom'] = array(
+    '#type' => 'select',
+    '#title' => t('Choose the map\'s zoom factor when panning while scrolling the list view.'),
+    '#default_value' => variable_get('markaspot_locate_zoom', markaspot_logic_defaults('markaspot_locate_zoom')),
+    '#options' => $zoom_options,
+  );
+  $form['list']['markaspot_locate_marker_color'] = array(
+    '#type' => 'select',
+    '#title' => t('Choose the background color of the "located" marker when scrolling the list view'),
+    '#default_value' => variable_get('markaspot_locate_marker_color', markaspot_logic_defaults('markaspot_locate_marker_color')),
+    '#options' => array('red' => 'red', 'darkred' => 'darkred', 'lightred' => 'lightred', 'orange' => 'orange', 'beige' => 'beige', 'green' => 'green', 'darkgreen' => 'darkgreen', 'lightgreen' => 'lightgreen', 'blue' => 'blue', 'darkblue' => 'darkblue', 'lightblue ' => 'lightblue', 'purple' => 'purple', 'darkpurple' => 'darkpurple', 'pink' => 'pink', 'cadetblue' => 'cadetblue', 'white' => 'white', 'gray' => 'gray', 'lightgray' => 'lightgray', 'black' => 'black'
+    ),
+  );
+  $form['list']['markaspot_locate_icon_color'] = array(
+    '#type' => 'select',
+    '#title' => t('Choose the icon color of the "located" marker when scrolling the list view'),
+    '#default_value' => variable_get('markaspot_locate_icon_color', markaspot_logic_defaults('markaspot_locate_icon_color')),
+    '#options' => array('red' => 'red', 'darkred' => 'darkred', 'lightred' => 'lightred', 'orange' => 'orange', 'beige' => 'beige', 'green' => 'green', 'darkgreen' => 'darkgreen', 'lightgreen' => 'lightgreen', 'blue' => 'blue', 'darkblue' => 'darkblue', 'lightblue ' => 'lightblue', 'purple' => 'purple', 'darkpurple' => 'darkpurple', 'pink' => 'pink', 'cadetblue' => 'cadetblue', 'white' => 'white', 'gray' => 'gray', 'lightgray' => 'lightgray', 'black' => 'black'
+    ),
+  );
 
   $form['types'] = array(
     '#type' => 'fieldset',
@@ -321,7 +378,7 @@ function markaspot_logic_admin_settings() {
     '#description' => t('If you want to use a different tile service, enter the url pattern, e.g. http://{s}.somedomain.com/your-api-key/{z}/{x}/{y}.png'),
   );
   $form['types']['osm']['markaspot_logic_osm_custom_attribution'] = array(
-    '#type' => 'textfield',
+    '#type' => 'textarea',
     '#title' => t('Attribution Statement, if not from Mapbox'),
     '#default_value' => variable_get('markaspot_logic_osm_custom_attribution', markaspot_logic_defaults('markaspot_logic_osm_custom_attribution')),
     '#description' => t('If you use an alternative Operator for serving tiles show special attribution'),
@@ -413,8 +470,6 @@ function markaspot_logic_admin_settings() {
       '#title' => t('Please choose the status for open reports'),
     );
 
-
-
     $form['open311']['markaspot_logic_open311_status_closed'] = array(
       '#type' => 'select',
       '#multiple' => TRUE,
@@ -448,12 +503,12 @@ function markaspot_logic_admin_settings() {
       '#type' => 'radios',
       '#title' => t('Choose the UUID pattern.'),
       '#default_value' => variable_get('markaspot_logic_uuid_pattern', markaspot_logic_defaults('markaspot_logic_uuid_pattern')),
-      '#options' => array(t('#3e80-67'), t('#3e8031-67'), t('#3e8031b0-67'), 'Other:'),
+      '#options' => array(t('#3e80-67'), t('#3e8031-67'), t('#3e8031b0-67'), t('PHP date'), t('Other')),
     );
     $form['uuid']['markaspot_logic_uuid_prefix'] = array(
       '#type' => 'textfield',
       '#default_value' => variable_get('markaspot_logic_uuid_prefix', markaspot_logic_defaults('markaspot_logic_uuid_prefix')),
-      '#title' => t('In case you want to have no hex code in an multi-stage environment you could just add a String here, but make sure nodes stay unique'),
+      '#title' => t('In case you want to have no hex code in an multi-stage environment you could just add a string here, but make sure nodes stay unique'),
     );
     $form['uuid']['markaspot_logic_uuid_offset'] = array(
       '#type' => 'textfield',
@@ -503,13 +558,11 @@ function markaspot_logic_admin_settings() {
       '#group' => 'settings',
     );
 
-    $options = array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18);
-
 
     $form['radar']['markaspot_logic_radar_zoom'] = array(
       '#type' => 'select',
       '#title' => t('Map Zoom Setting'),
-      '#options' => $options,
+      '#options' => $zoom_options,
       '#default_value' => variable_get('markaspot_logic_radar_zoom', markaspot_logic_defaults('markaspot_logic_radar_zoom')),
       '#description' => t('Set the map zoom value when radar report-spots will be visible to end user'),
     );
@@ -599,6 +652,15 @@ function markaspot_logic_defaults($id) {
     case 'markaspot_logic_archive_days':
       return '30';
 
+    case 'markaspot_locate_marker_color':
+      return 'blue';
+
+    case 'markaspot_locate_icon_color':
+      return 'white';
+
+    case 'markaspot_locate_zoom':
+      return 16;
+
     case 'markaspot_logic_static_node':
       return 0;
 
@@ -609,7 +671,7 @@ function markaspot_logic_defaults($id) {
       return 0;
 
     case 'markaspot_logic_uuid_prefix':
-      return 'A';
+      return 'R';
 
     case 'markaspot_logic_uuid_offset':
       return 0;
@@ -715,18 +777,27 @@ function markaspot_logic_contents($which_block) {
   switch ($which_block) {
     case 'taxonomy_category':
       $list_category = NULL;
-      $list_category .= '<div class="btn-group dropdown"><button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">' . t('Service Name') . ' <span class="caret"></span></button>';
+
+      $list_category .= '<div class="category"><h3>' . t('Service Name') . ' </h3>';
+      $list_category .= '<ul class="group-list">';
+      $list_class = ' list-group-item';
 
       $alter['html'] = TRUE;
       $alter['max_length'] = 125;
       $alter['word_boundary'] = TRUE;
       $alter['ellipsis'] = TRUE;
-      $list_category .= '<ul class="dropdown-menu">';
 
-      $list_category .= '<li class="marker-category-wrapper-all">' . l(t('All'), '', array('attributes' => array('class' => 'map-menue-all marker-category'))) . '</li>';
+      $list_category .= '<li class="marker-category-wrapper-all' . $list_class .' first">' . l(t('All'), '', array('attributes' => array('class' => 'map-menue-all marker-category'))) . '</li>';
       $taxonomies = taxonomy_get_tree(1, $parent = 0, $max_depth = 1, $load_entities = TRUE);
       foreach ($taxonomies as $term) {
-        $list_category .= '<li class="marker-category-wrapper">' . l('<span class="icon-' . $term->field_category_icon[LANGUAGE_NONE][0]['value'] . '"></span> ' . views_trim_text($alter, check_plain($term->name)), 'taxonomy/term/' . $term->tid, array(
+
+        $icon_category = array(
+          '#theme'  => 'icon',
+          '#bundle' => $term->field_category_icon[LANGUAGE_NONE][0]['bundle'],
+          '#icon'   => $term->field_category_icon[LANGUAGE_NONE][0]['icon'],
+        );
+
+        $list_category .= '<li class="marker-category-wrapper '. $list_class .'">' .  l(drupal_render($icon_category) . ' ' . views_trim_text($alter, check_plain($term->name)), 'taxonomy/term/' . $term->tid, array(
             'attributes' => array(
               'class' => 'map-menue marker-category col-' . ltrim($term->field_category_hex[LANGUAGE_NONE][0]['rgb'],'#'),
               'id' => 'tax-' . $term->tid,
@@ -741,19 +812,28 @@ function markaspot_logic_contents($which_block) {
 
     case 'taxonomy_status':
       $list_status = NULL;
-      $list_status .= '<div class="btn-group dropdown"><button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">' . t('Request Status') . ' <span class="caret"></span></button>';
+
+      $list_status .= '<div class="category"><h3>' . t('Status') . ' </h3>';
+      $list_status .= '<ul class="group-list">';
+      $list_class = ' list-group-item';
 
       $alter['html'] = TRUE;
       $alter['max_length'] = 25;
       $alter['word_boundary'] = TRUE;
       $alter['ellipsis'] = TRUE;
 
-      $list_status .= '<ul class="dropdown-menu">';
-      $list_status .= '<li class="marker-status-wrapper-all">' . l(t('All'), '', array('attributes' => array('class' => 'map-menue-all marker-status'))) . '</li>';
+      $list_status .= '<li class="marker-status-wrapper-all '. $list_class .'">' . l(t('All'), '', array('attributes' => array('class' => 'map-menue-all marker-status'))) . '</li>';
 
       $taxonomies = taxonomy_get_tree(2, $parent = 0, $max_depth = 1, $load_entities = TRUE);
       foreach ($taxonomies as $term) {
-        $list_status .= '<li class="marker-status-wrapper">' . l('<span class="icon-' . $term->field_status_icon[LANGUAGE_NONE][0]['value'] . '"></span> ' . views_trim_text($alter, check_plain($term->name)), 'taxonomy/term/' . $term->tid, array(
+
+        $icon_status = array(
+          '#theme'  => 'icon',
+          '#bundle' => $term->field_status_icon[LANGUAGE_NONE][0]['bundle'],
+          '#icon'   => $term->field_status_icon[LANGUAGE_NONE][0]['icon'],
+        );
+
+        $list_status .= '<li class="marker-status-wrapper ' . $list_class  .'">' .  l(drupal_render($icon_status) . ' ' . views_trim_text($alter, check_plain($term->name)), 'taxonomy/term/' . $term->tid, array(
             'attributes' => array(
               'class' => 'map-menue marker-status col-' . ltrim($term->field_status_hex[LANGUAGE_NONE][0]['rgb'],'#'),
               'id' => 'tax-' . $term->tid,

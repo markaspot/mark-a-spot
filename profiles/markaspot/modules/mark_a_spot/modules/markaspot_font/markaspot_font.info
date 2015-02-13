@@ -1,0 +1,13 @@
+name = Mark-a-Spot Font icon library
+description = Integrates the markaspot icomoon font for Icon API.
+core = 7.x
+configure = admin/config/media/icons
+package = Mark-a-Spot
+
+
+; Information added by drush on 2015-02-13
+version = "7.x-2.7+20-dev"
+core = "7.x"
+project = "markaspot"
+datestamp = "1423854221"
+

@@ -24,10 +24,6 @@ function uuid_generate() {
   $callback = drupal_static(__FUNCTION__);
 
   if (empty($callback)) {
-    if (function_exists('markaspot_uuid_generate_uuid')){
-      $callback = 'markaspot_uuid_generate_uuid';
-      return $callback();
-    }
     if (function_exists('uuid_create') && !function_exists('uuid_make')) {
       $callback = '_uuid_generate_pecl';
     }

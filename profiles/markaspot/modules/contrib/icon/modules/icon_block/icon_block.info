@@ -1,0 +1,17 @@
+name = Icon API: Block
+description = Provides icon integration with blocks.
+core = 7.x
+package = Icon API
+
+files[] = icon_block.install
+files[] = icon_block.module
+
+dependencies[] = block
+dependencies[] = icon
+
+; Information added by Drupal.org packaging script on 2014-03-18
+version = "7.x-1.0-beta5+4-dev"
+core = "7.x"
+project = "icon"
+datestamp = "1395144556"
+

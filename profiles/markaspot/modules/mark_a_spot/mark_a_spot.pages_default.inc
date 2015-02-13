@@ -391,71 +391,6 @@ function mark_a_spot_default_page_manager_pages() {
   $display->content = array();
   $display->panels = array();
     $pane = new stdClass();
-    $pane->pid = 'new-07f4fb6f-b73d-419d-91ee-c8c02201305f';
-    $pane->panel = 'left';
-    $pane->type = 'custom';
-    $pane->subtype = 'custom';
-    $pane->shown = TRUE;
-    $pane->access = array();
-    $pane->configuration = array(
-      'admin_title' => '',
-      'title' => '',
-      'body' => '<div id="map"></div>',
-      'format' => 'full_html',
-      'substitute' => TRUE,
-    );
-    $pane->cache = array();
-    $pane->style = array(
-      'settings' => NULL,
-    );
-    $pane->css = array(
-      'css_id' => '',
-      'css_class' => '',
-    );
-    $pane->extras = array();
-    $pane->position = 0;
-    $pane->locks = '';
-    $pane->uuid = '07f4fb6f-b73d-419d-91ee-c8c02201305f';
-    $display->content['new-07f4fb6f-b73d-419d-91ee-c8c02201305f'] = $pane;
-    $display->panels['left'][0] = 'new-07f4fb6f-b73d-419d-91ee-c8c02201305f';
-    $pane = new stdClass();
-    $pane->pid = 'new-869e3e3c-6298-47a7-82d9-9bbdba58da66';
-    $pane->panel = 'right';
-    $pane->type = 'views';
-    $pane->subtype = 'markers';
-    $pane->shown = TRUE;
-    $pane->access = array();
-    $pane->configuration = array(
-      'override_pager_settings' => 0,
-      'use_pager' => 1,
-      'nodes_per_page' => '10',
-      'pager_id' => '0',
-      'offset' => '0',
-      'more_link' => 0,
-      'feed_icons' => 0,
-      'panel_args' => 1,
-      'link_to_view' => 0,
-      'args' => '',
-      'url' => 'list',
-      'display' => 'report_list',
-      'override_title' => 1,
-      'override_title_text' => '',
-    );
-    $pane->cache = array();
-    $pane->style = array(
-      'settings' => NULL,
-    );
-    $pane->css = array(
-      'css_id' => '',
-      'css_class' => '',
-    );
-    $pane->extras = array();
-    $pane->position = 0;
-    $pane->locks = '';
-    $pane->uuid = '869e3e3c-6298-47a7-82d9-9bbdba58da66';
-    $display->content['new-869e3e3c-6298-47a7-82d9-9bbdba58da66'] = $pane;
-    $display->panels['right'][0] = 'new-869e3e3c-6298-47a7-82d9-9bbdba58da66';
-    $pane = new stdClass();
     $pane->pid = 'new-a5748f71-6415-4ed7-945d-9d532a04bf16';
     $pane->panel = 'top';
     $pane->type = 'custom';
@@ -465,7 +400,12 @@ function mark_a_spot_default_page_manager_pages() {
     $pane->configuration = array(
       'admin_title' => '',
       'title' => 'Reports ',
-      'body' => '<a class="btn btn-large btn-success pull-right" href="node/add/report"><i class="icon-bullhorn"></i> Report a problem here.</a><p>Watch reports in your area.</p>',
+      'body' => '<div class="jumbotron">
+<p><a class="btn btn-large btn-success pull-right" href="node/add/report">Report a problem here.</a></p>
+
+<p>Watch reports in your area.</p>
+</div>
+',
       'format' => 'full_html',
       'substitute' => TRUE,
     );
@@ -475,7 +415,7 @@ function mark_a_spot_default_page_manager_pages() {
     );
     $pane->css = array(
       'css_id' => 'list-intro ',
-      'css_class' => 'jumbotron',
+      'css_class' => 'col-md-offset-4 col-md-8',
     );
     $pane->extras = array();
     $pane->position = 0;
@@ -503,7 +443,7 @@ function mark_a_spot_default_page_manager_pages() {
     );
     $pane->css = array(
       'css_id' => '',
-      'css_class' => '',
+      'css_class' => 'col-md-offset-4 col-md-8',
     );
     $pane->extras = array();
     $pane->position = 1;
@@ -511,6 +451,43 @@ function mark_a_spot_default_page_manager_pages() {
     $pane->uuid = '596fb27f-973e-4069-8e96-f54403f6c661';
     $display->content['new-596fb27f-973e-4069-8e96-f54403f6c661'] = $pane;
     $display->panels['top'][1] = 'new-596fb27f-973e-4069-8e96-f54403f6c661';
+    $pane = new stdClass();
+    $pane->pid = 'new-869e3e3c-6298-47a7-82d9-9bbdba58da66';
+    $pane->panel = 'top';
+    $pane->type = 'views';
+    $pane->subtype = 'markers';
+    $pane->shown = TRUE;
+    $pane->access = array();
+    $pane->configuration = array(
+      'override_pager_settings' => 0,
+      'use_pager' => 1,
+      'nodes_per_page' => '10',
+      'pager_id' => '0',
+      'offset' => '0',
+      'more_link' => 0,
+      'feed_icons' => 0,
+      'panel_args' => 1,
+      'link_to_view' => 0,
+      'args' => '',
+      'url' => 'list',
+      'display' => 'report_list',
+      'override_title' => 1,
+      'override_title_text' => '',
+    );
+    $pane->cache = array();
+    $pane->style = array(
+      'settings' => NULL,
+    );
+    $pane->css = array(
+      'css_id' => '',
+      'css_class' => 'col-md-offset-4 col-md-8',
+    );
+    $pane->extras = array();
+    $pane->position = 2;
+    $pane->locks = '';
+    $pane->uuid = '869e3e3c-6298-47a7-82d9-9bbdba58da66';
+    $display->content['new-869e3e3c-6298-47a7-82d9-9bbdba58da66'] = $pane;
+    $display->panels['top'][2] = 'new-869e3e3c-6298-47a7-82d9-9bbdba58da66';
   $display->hide_title = PANELS_TITLE_NONE;
   $display->title_pane = '0';
   $handler->conf['display'] = $display;

@@ -1,0 +1,14 @@
+name = Mark-a-Spot Icon
+package = "Mark-a-Spot"
+description = Mark-a-Spot Icon formatter
+
+core = "7.x"
+
+
+
+; Information added by drush on 2015-02-13
+version = "7.x-2.7+20-dev"
+core = "7.x"
+project = "markaspot"
+datestamp = "1423854221"
+

@@ -1,0 +1,22 @@
+[class^="iconapi-"], [class*=" iconapi-"] {
+  font-family: 'iconapi';
+  font-style: normal;
+  font-weight: normal;
+ 
+  /* fix buttons height */
+  line-height: 1em;
+ 
+  /* you can be more comfortable with increased icons size */
+  /* font-size: 120%; */
+}
+ 
+.iconapi-add { *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xefff3;&nbsp;'); }
+.iconapi-configure { *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xefff6;&nbsp;'); }
+.iconapi-edit { *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xefff5;&nbsp;'); }
+.iconapi-check { *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xefff1;&nbsp;'); }
+.iconapi-delete { *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xefff2;&nbsp;'); }
+.iconapi-select { *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xefff7;&nbsp;'); }
+.iconapi-right { *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xefff8;&nbsp;'); }
+.iconapi-upload { *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xefff4;&nbsp;'); }
+.iconapi-throbber { *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xefff9;&nbsp;'); }
+.iconapi-view { *zoom: expression( this.runtimeStyle['zoom'] = '1', this.innerHTML = '&#xefff0;&nbsp;'); }

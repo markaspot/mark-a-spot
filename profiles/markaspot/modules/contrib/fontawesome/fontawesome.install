@@ -1,0 +1,27 @@
+<?php
+
+/**
+ * @file
+ * Requirements page for Font Awesome.
+ */
+
+/**
+ * Implements hook_requirements().
+ */
+function fontawesome_requirements($phase) {
+  $requirements = array();
+
+  // Report the version of Font Awesome.
+  if ($phase == 'runtime') {
+    // Make sure Libraries is loaded before loading Font Awesome.
+    drupal_load('module', 'libraries');
+    $fontawesome = libraries_detect('fontawesome');
+    $requirements['fontawesome'] = array(
+      'title' => $fontawesome['name'],
+      'severity' => $fontawesome['installed'] ? REQUIREMENT_OK : REQUIREMENT_WARNING,
+      'value' => $fontawesome['installed'] ? $fontawesome['version'] : $fontawesome['error message'],
+    );
+  }
+
+  return $requirements;
+}

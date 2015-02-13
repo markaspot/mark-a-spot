@@ -10,7 +10,6 @@
  * Implements hook_preprocess_html().
  */
 function mas_preprocess_html(&$variables) {
-  drupal_add_css('//fonts.googleapis.com/css?family=Open+Sans:400,600' , array('group' => CSS_THEME));
 
   // Hide HTML5 Geocoding feature for IE.
   drupal_add_css(path_to_theme() . '/css/ie.css', array(
@@ -76,4 +75,24 @@ function mas_form_report_node_form_alter(&$form, &$form_state, $form_id) {
  */
 function mas_field_widget_geolocation_osm_form_alter(&$element, &$form_state, $context) {
   $element['address']['#description'] = t('Enter an adress.');
+}
+
+function mas_preprocess_node(&$variables) {
+  if ($variables['node']->type != 'report') {
+    return;
+  }
+  if (isset($variables['field_category'][0]['taxonomy_term'])){
+
+    $variables['icon_category'] = array(
+      '#theme' => 'icon',
+      '#bundle' => $variables['field_category'][0]['taxonomy_term']->field_category_icon[LANGUAGE_NONE][0]['bundle'],
+      '#icon' => $variables['field_category'][0]['taxonomy_term']->field_category_icon[LANGUAGE_NONE][0]['icon'],
+    );
+
+    $variables['icon_status'] = array(
+      '#theme' => 'icon',
+      '#bundle' => $variables['field_status'][0]['taxonomy_term']->field_status_icon[LANGUAGE_NONE][0]['bundle'],
+      '#icon' => $variables['field_status'][0]['taxonomy_term']->field_status_icon[LANGUAGE_NONE][0]['icon'],
+    );
+  }
 }

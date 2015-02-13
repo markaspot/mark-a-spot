@@ -90,6 +90,7 @@ function geolocation_osm_field_formatter_info() {
         'leafletImagePath' => $base_url  . '/' . libraries_get_path('leaflet') . '/images/',
         'map_scrollwheel' => FALSE,
         'tile_server_dynamic' => 'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
+        'tile_server_attribution' =>'OSM',
       ),
     ),
   );
@@ -137,7 +138,12 @@ function geolocation_osm_field_formatter_settings_form($field, $instance, $view_
     '#description' => t('Insert the OSM tile server operator for static maps, e.g http://api.tiles.mapbox.com/v3/'),
     '#default_value' => $settings['tile_server_static'],
   );
-
+  $element['tile_server_attribution'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Attribution for tiles and API'),
+    '#description' => t(''),
+    '#default_value' => $settings['tile_server_attribution'],
+  );
 
   /*
    *
@@ -411,14 +417,14 @@ function geolocation_osm_field_widget_settings_form($field, $instance) {
     '#description' => t('Tile map server URL'),
     '#default_value' => isset($settings['tile_server_dynamic']) ? $settings['tile_server_dynamic'] : 'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
   );
-  /*
-  $form['tile_server_static'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Tile Server Operator Static Map'),
-    '#description' => t('Tile map server URL'),
-    '#default_value' => isset($settings['tile_server_static']) ? $settings['tile_server_static'] : 'http://dev.openstreetmap.de/staticmap/',
+
+  $form['tile_server_attribution'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Attribution for tiles and API'),
+    '#description' => t('Be nice and show who is responsible for the tiles you use.'),
+    '#default_value' => $settings['tile_server_attribution'] ? $settings['tile_server_attribution'] : 'Map data &copy; 2015 OpenStreetMap contributors, Imagery &copy; 2015 osm',
   );
-  */
+
   $form['geocode_service'] = array(
     '#type' => 'textfield',
     '#title' => t('Geocoding Service'),

@@ -1,0 +1,121 @@
+<?php
+/**
+ * @file
+ * icon_block.module
+ * Provides icon integration with blocks.
+ */
+
+/**
+ * Implements hook_icon_permission().
+ */
+function icon_block_icon_permission() {
+  return array(
+    'administer block icons' => array(
+      'title' => t('Administer block icons'),
+      'description' => t('Grants selected roles the ability to administer icons in blocks.'),
+    ),
+  );
+}
+
+/**
+ * Helper function to return the default icon block values.
+ */
+function icon_block_defaults() {
+  return array(
+    'icon' => '',
+    'position' => 'title_before',
+    'bundle' => '',
+  );
+}
+
+/**
+ * Implements hook_preprocess_block().
+ *
+ * Add icon to blocks if necessary.
+ */
+function icon_block_preprocess_block(&$variables) {
+  $block = &$variables['block'];
+  $settings = array_merge(icon_block_defaults(), isset($block->icon) ? (array) unserialize($block->icon) : array());
+  if (!empty($settings['bundle']) && !empty($settings['icon'])) {
+    if ($icon = theme('icon', array('bundle' => $settings['bundle'], 'icon' => $settings['icon']))) {
+      $variables['classes_array'][] = 'has-icon';
+      switch ($settings['position']) {
+        case 'title_before':
+          $variables['title_prefix'][] = array('#markup' => $icon);
+          break;
+
+        case 'title_after':
+          $variables['title_suffix'][] = array('#markup' => $icon);
+          break;
+
+        case 'title_inside_before':
+          $block->subject = $icon . $block->subject;
+          break;
+
+        case 'title_inside_after':
+          $block->subject .= $icon;
+          break;
+
+        case 'content_before':
+          $variables['content'] = $icon . $variables['content'];
+          break;
+
+        case 'content_after':
+          $variables['content'] .= $icon;
+          break;
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function icon_block_form_alter(&$form, &$form_state, $form_id) {
+  if ($form_id == 'block_admin_configure' || $form_id == 'block_add_block_form') {
+    $access = user_access('administer icons') || user_access('administer block icons');
+    $block = block_load($form['module']['#value'], $form['delta']['#value']);
+    $settings = array_merge(icon_block_defaults(), isset($block->icon) ? (array) unserialize($block->icon) : array());
+    // Add an icon selector input element.
+    $form['settings']['icon_selector'] = array(
+      '#access' => $access,
+      '#type' => 'icon_selector',
+      '#default_bundle' => $settings['bundle'],
+      '#default_icon' => $settings['icon'],
+    );
+    // Additional configuration on where to place the icon in the block.
+    $icon_state = array('invisible' => array(':input[name="icon_selector[icon]"]' => array('value' => '')));
+    $form['settings']['icon_selector']['position'] = array(
+      '#access' => $access,
+      '#type' => 'select',
+      '#title' => t('Position'),
+      '#options' => array(
+        'title_before' => t('Before title'),
+        'title_after' => t('After title'),
+        'title_inside_before' => t('Before title (inside markup)'),
+        'title_inside_after' => t('After title (inside markup)'),
+        'content_before' => t('Before content'),
+        'content_after' => t('After content'),
+      ),
+      '#default_value' => $settings['position'],
+      '#states' => $icon_state,
+    );
+    if ($access) {
+      $form['#submit'][] = 'icon_block_form_submit';
+    }
+  }
+}
+
+/**
+ * Save supplied class.
+ */
+function icon_block_form_submit($form, &$form_state) {
+  if ($form_state['values']['form_id'] == 'block_admin_configure' || $form_state['values']['form_id'] == 'block_add_block_form') {
+    $module = $form_state['values']['module'];
+    $delta = $form_state['values']['delta'];
+    // Update block icon settings.
+    if (isset($form_state['values']['icon_selector'])) {
+      db_merge('block')->key(array('module' => $module, 'delta' => $delta))->fields(array('icon' => serialize($form_state['values']['icon_selector'])))->execute();
+    }
+  }
+}

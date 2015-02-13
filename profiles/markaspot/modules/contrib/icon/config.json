@@ -1,0 +1,145 @@
+{
+  "name": "iconapi",
+  "css_prefix_text": "iconapi-",
+  "css_use_suffix": false,
+  "glyphs": [
+    {
+      "search": [
+        "plus"
+      ],
+      "code": 983027,
+      "from": 43,
+      "uid": "70370693ada58ef0a60fa0984fe8d52a",
+      "css": "add",
+      "orig_css": "plus",
+      "orig_code": 983027,
+      "src": "entypo"
+    },
+    {
+      "search": [
+        "settings",
+        "cog",
+        "gear",
+        "params"
+      ],
+      "code": 983030,
+      "uid": "bc64550dd022ce21604f97309b346cea",
+      "css": "configure",
+      "orig_css": "cog",
+      "orig_code": 983030,
+      "src": "entypo",
+      "from": 9881
+    },
+    {
+      "search": [
+        "pencil",
+        "write",
+        "reply",
+        "edit"
+      ],
+      "code": 983029,
+      "uid": "c77fd2fd065b5fe16d6f2b41e190b266",
+      "css": "edit",
+      "orig_css": "pencil",
+      "orig_code": 983029,
+      "src": "entypo",
+      "from": 9998
+    },
+    {
+      "search": [
+        "ok",
+        true,
+        "check",
+        "mark"
+      ],
+      "code": 983025,
+      "uid": "14017aae737730faeda4a6fd8fb3a5f0",
+      "css": "check",
+      "orig_css": "check",
+      "orig_code": 983025,
+      "src": "entypo",
+      "from": 10003
+    },
+    {
+      "search": [
+        "close",
+        "cancel",
+        "reject"
+      ],
+      "code": 983026,
+      "from": 10005,
+      "uid": "c709da589c923ba3c2ad48d9fc563e93",
+      "css": "delete",
+      "orig_css": "cancel",
+      "orig_code": 983026,
+      "src": "entypo"
+    },
+    {
+      "search": [
+        "arrow",
+        "dropdown",
+        "combobox"
+      ],
+      "code": 983031,
+      "uid": "0a3192de65a73ca1501b073ad601f87d",
+      "css": "select",
+      "orig_css": "arrow-combo",
+      "orig_code": 983031,
+      "src": "entypo",
+      "from": 59215
+    },
+    {
+      "search": [
+        "arrow",
+        "right"
+      ],
+      "code": 983032,
+      "uid": "749e7d90a9182938180f1d2d8c33584e",
+      "css": "right",
+      "orig_css": "right-open",
+      "orig_code": 983032,
+      "src": "entypo",
+      "from": 59230
+    },
+    {
+      "search": [
+        "upload"
+      ],
+      "code": 983028,
+      "uid": "44199a54057e6e264fde61a49b034171",
+      "css": "upload",
+      "orig_css": "upload",
+      "orig_code": 983028,
+      "src": "entypo",
+      "from": 128228
+    },
+    {
+      "search": [
+        "circle",
+        "sync",
+        "reload",
+        "refresh"
+      ],
+      "code": 983033,
+      "uid": "3bd18d47a12b8709e9f4fe9ead4f7518",
+      "css": "throbber",
+      "orig_css": "arrows-ccw",
+      "orig_code": 983033,
+      "src": "entypo",
+      "from": 128260
+    },
+    {
+      "search": [
+        "search",
+        "find"
+      ],
+      "code": 983024,
+      "uid": "7222571caa5c15f83dcfd447c58d68d9",
+      "css": "view",
+      "orig_css": "search",
+      "orig_code": 983024,
+      "src": "entypo",
+      "from": 128269
+    }
+  ]
+}

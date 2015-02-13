@@ -20,9 +20,9 @@ no autodetect = 1
 project path = profiles/markaspot/modules
 
 
-; Information added by drush on 2015-01-09
-version = "7.x-2.6+34-dev"
+; Information added by drush on 2015-02-13
+version = "7.x-2.7+20-dev"
 core = "7.x"
 project = "markaspot"
-datestamp = "1420784594"
+datestamp = "1423854221"
 

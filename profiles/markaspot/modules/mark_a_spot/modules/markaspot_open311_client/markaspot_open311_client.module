@@ -1,0 +1,257 @@
+<?php
+/**
+ * @file
+ * Mark-a-Spot Open311 Client module.
+ * This module visualizes already reported service requests as clickable
+ * points directly into the map.
+ */
+
+/**
+ * Implements hook_help().
+ */
+function  markaspot_open311_client_help($path, $arg) {
+  switch ($path) {
+
+    case 'admin/config/system/mark_a_spot/mas_open311_client':
+      return '<p>' . t('This module needs some basic settings to make it work as a standalone client.') . '</p>';
+  }
+}
+
+
+/**
+ * Implements hook_page_build().
+ */
+function markaspot_open311_client_page_build(&$page) {
+  if (arg(0) == "map" || arg(0) == "list" || drupal_is_front_page() == TRUE) {
+    drupal_add_js(drupal_get_path('profile', 'markaspot') . '/libraries/Leaflet.Sync/L.Map.Sync.js', NULL);
+    drupal_add_js(drupal_get_path('module', 'markaspot_open311_client') . '/markaspot_open311_client.js', array('scope' => 'footer', 'weight' => 5));
+    drupal_add_css(drupal_get_path('module', 'markaspot_open311_client') . '/markaspot_open311_client.css', array('weight' => -1000));
+    drupal_add_css(drupal_get_path('module', 'markaspot_open311_client') . '/markaspot_open311_client_ie.css', array(
+      'type' => 'file',
+      'group' => 2000,
+      'media' => 'all',
+      'browsers' => array('IE' => 'lte IE 9', '!IE' => FALSE),
+      'weight' => 100,
+    ));
+
+    drupal_add_js(drupal_get_path('profile', 'markaspot') . '/libraries/leaflet-locatecontrol/dist/L.Control.Locate.min.js', NULL);
+    drupal_add_js(drupal_get_path('profile', 'markaspot') . '/libraries/Leaflet.EasyButton/easy-button.js', NULL);
+    drupal_add_js(drupal_get_path('profile', 'markaspot') . '/libraries/jquery-html5-upload/jquery.html5_upload.js', NULL);
+    drupal_add_js(drupal_get_path('profile', 'markaspot') . '/libraries/leaflet.bouncemarker/bouncemarker.js', NULL);
+
+    drupal_add_css(drupal_get_path('profile', 'markaspot') . '/libraries/leaflet-locatecontrol/dist/L.Control.Locate.min.css');
+    drupal_add_css(drupal_get_path('profile', 'markaspot') . '/libraries/leaflet-locatecontrol/dist/L.Control.Locate.min.css', array(
+      'group' => CSS_THEME,
+      'browsers' => array(
+        'IE' => 'lte IE 8',
+        '!IE' => FALSE,
+      ),
+    ));
+
+    drupal_add_js(array(
+      'markaspotOpen311Client' => array(
+        'markaspot_open311_client_geocode_service' => variable_get('markaspot_open311_client_geocode_service'),
+        'markaspot_open311_client_bbox' => variable_get('markaspot_open311_client_bbox'),
+        'markaspot_open311_client_nominatimEmail' => variable_get('markaspot_open311_client_nominatimEmail'),
+        'markaspot_open311_client_leafletImagePath' => variable_get('markaspot_open311_client_leafletImagePath'),
+        'markaspot_open311_client_api_key' => variable_get('markaspot_open311_client_api_key'),
+        'markaspot_open311_image_api_url' => variable_get('markaspot_open311_image_api_url'),
+        'markaspot_open311_image_api_key' => variable_get('markaspot_open311_image_api_key'),
+        'markaspot_open311_client_endpoint' => variable_get('markaspot_open311_client_endpoint'),
+      ),
+    ), 'setting');
+
+    // Add block to footer.
+    $block = module_invoke('markaspot_open311_client', 'block_view', 'open311_client');
+    $blocks['open311_client'] = array('#markup' => $block['content']);
+
+    $region = 'footer';
+    if (isset($page[$region])) {
+      $page[$region] = array_merge($page[$region], $blocks);
+    }
+    else {
+      $page[$region] = $blocks;
+    }
+  }
+}
+
+
+/**
+ * Implements hook_block_info().
+ */
+function markaspot_open311_client_block_info() {
+
+  $blocks['open311_client'] = array(
+    'info' => t('Open311 client in a block'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function markaspot_open311_client_block_view($delta = '') {
+  $block = array();
+
+  switch ($delta) {
+    case 'open311_client';
+      $block['subject'] = t('Open311 Client');
+      $block['content'] = markaspot_open311_client_content();
+  }
+  return $block;
+}
+
+/**
+ * Markup for Block.
+ *
+ * @return string block
+ */
+function markaspot_open311_client_content() {
+  $markup = '<div id="open311_client" class="modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"">
+    <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3 id="open311_client_header">' . t('Report Issue') . '</h3>
+        </div>
+        <div class="modal-body">
+        <form id="open311_client_form" class="form-popup">
+          <fieldset>
+
+          <!-- Select Basic -->
+          <div class="form-group">
+            <label class="control-label" for="service_code">' . t('Category') . '</label>
+            <div class="controls">
+              <select class="form-control" id="services" name="service_code"></select>
+            </div>
+          </div>
+
+          <!-- Prepended text-->
+          <div class="form-group">
+            <div class="input-group">
+              <label class="control-label" for="address_string">' . t('Address') . '</label>
+              <span class="input-group-addon"><i class="icon-location"></i></span>
+              <input id="address_string" name="address_string" class="form-control" type="text">
+            </div>
+            <div id="map_small" style="width:100%; height: 100px"></div>
+            <div class="description"><p>' . t('Drag map to adjust location or tab locate button for GPS') . '</p></div>
+          </div>
+
+          <div class="form-group">
+            <div class="input-group">
+              <label class="control-label" for="email">' . t('E-Mail') . '</label>
+              <span class="input-group-addon"><i class="icon-envelope"></i></span>
+              <input class="form-control" type="text" id="email" name="email" placeholder="' . t('foo@bar.com') . '">
+            </div>
+          </div>
+          <div class="form-group photo">
+            <div class="input-group">
+              <span class="btn btn-default btn-file"><i class="glyphicon glyphicon-camera"></i>' . t('Browse') . ' <input id="multiple" type="file"></span>&nbsp;<span id="uploadMessage" class="well">' . t('Provide a photo?') . '</span>
+            </div>
+          </div>
+          <!-- Textarea -->
+          <div class="form-group">
+            <div class="controls">
+              <label class="control-label" for="description">' . t('Description') . '</label>
+              <textarea maxlength="250" id="description" name="description" placeholder="' . t('Describe your problem in 200 chars') . '" class="form-control" rows="3"></textarea>
+            </div>
+          </div>
+          <!-- Button -->
+          <div class="form-group">
+            <div class="controls">
+              <button id="open311_client_submit" data-toggle="popover" name="open311_client_submit" class="btn btn-default">' . t('Submit') . '</button>
+              <button id="open311_client_close" name="" class="btn pull-right"><i class="glyphicon glyphicon-remove-circle"></i> ' . t('Close') . '</button>
+
+            </div>
+          </div>
+
+          <input type="hidden" id="media_url" name="media_url" value="">
+          <input type="hidden" id="lat" name="lat" value="">
+          <input type="hidden" id="long" name="long" value="">
+          <input type="hidden" name="api_key" value="' .  variable_get('markaspot_open311_client_api_key', 'abcde12345') . '">
+          </fieldset>
+        </form>
+        </div>
+      </div>
+    </div>
+  </div>';
+  return $markup;
+}
+/**
+ * Implements hook_menu().
+ *
+ * - Callback to feedback page accessible for all
+ * - Menu item for system settings page accessible for admins
+ */
+function markaspot_open311_client_menu() {
+
+  $items['admin/config/system/mark_a_spot/mas_open311_client'] = array(
+    'title' => 'Mark-a-Spot Open311 Client',
+    'description' => 'Basic configuration',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('markaspot_open311_client_admin_settings'),
+    'access callback' => 'user_access',
+    'access arguments' => array('administer site configuration'),
+  );
+  return $items;
+}
+
+
+/**
+ * Implements hook_admin_settings().
+ */
+function markaspot_open311_client_admin_settings() {
+  $form['markaspot_open311_client_geocode_service'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Geocoding Service'),
+    '#description' => t('Insert a geocode service provider'),
+    '#default_value' => variable_get('markaspot_open311_client_geocode_service', 'http://nominatim.openstreetmaps.org'),
+  );
+  $form['markaspot_open311_client_bbox'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Bounding Box defining the area of Geocoding'),
+    '#description' => t('Format viewbox=left,top,right,bottom'),
+    '#default_value' => variable_get('markaspot_open311_client_bbox', '50.8,6.9,50.4,7.7'),
+  );
+  $form['markaspot_open311_client_nominatimEmail'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Nominatim E-Mail for load and problem reporting'),
+    '#description' => t('If you are making large numbers of request please include a valid email address or alternatively include your email address as part of the User-Agent string. This information will be kept confidential and only used to contact you in the event of a problem, see Usage Policy for more details.'),
+    '#default_value' => variable_get('markaspot_open311_client_nominatimEmail', variable_get('nominatimEmail')),
+  );
+  $form['markaspot_open311_client_leafletImagePath'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Leaflet Image path'),
+    '#description' => t('Set the image path of your leaflet library (needed with compressed javascript on production sites, see https://github.com/Leaflet/Leaflet/issues/766'),
+    '#default_value' => variable_get('markaspot_open311_client_leafletImagePath', variable_get('leafletImagePath')),
+  );
+  $form['markaspot_open311_client_api_key'] = array(
+    '#type' => 'textfield',
+    '#title' => t('GeoReport v2 API Key'),
+    '#description' => t('An API Key is required for creating requests. Be careful exposing it, use a server as proxy'),
+    '#default_value' => variable_get('markaspot_open311_client_api_key', 'abcdefg12345'),
+  );
+  $form['markaspot_open311_image_api_url'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Image Upload API URL'),
+    '#description' => t('Mark-a-Spot uses Imgur as an temporaly upload Cache. This is needed because we need
+      a media_url to be posted as value of a identically named form field. Of course you could set up a local endpoint for file uploads.'),
+    '#default_value' => variable_get('markaspot_open311_image_api_url', 'https://api.imgur.com/3/upload'),
+  );
+  $form['markaspot_open311_image_api_key'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Image Upload API Key'),
+    '#description' => t('Most APIs require access keys. Please enter your imgur.com api key'),
+    '#default_value' => variable_get('markaspot_open311_image_api_key', ''),
+  );
+  $form['markaspot_open311_client_endpoint'] = array(
+    '#type' => 'textfield',
+    '#title' => t('GeoReport v2 Endpoint'),
+    '#description' => t('An API Key is usually required for creating requests. Be careful if using it with javascript. The defaul
+      permission of Mark-a-Spot is create report content for anonymous users. Don\'t use session based authentication for Services.
+      Install the Open311 Authentication module.' ),
+    '#default_value' => variable_get('markaspot_open311_client_endpoint', '/open311/georeport/v2'),
+  );
+  return system_settings_form($form);
+}

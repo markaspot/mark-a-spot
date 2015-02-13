@@ -1,7 +1,7 @@
 <?php
 /**
  * @file
- * Enables modules and site configuration for a standard site installation.
+ * Enables modules and site configuration for a Mark-a-Spot installation.
  */
 
 /**
@@ -10,6 +10,13 @@
  * Perform actions to set up the site for this profile.
  */
 function markaspot_install() {
+  // Increase maximum function nesting level to prevent install errors.
+  $max_nesting_level = ini_get('xdebug.max_nesting_level');
+  if ($max_nesting_level > 0 && $max_nesting_level <= '200') {
+    ini_set('xdebug.max_nesting_level', 200);
+  }
+  ini_set('max_execution_time', '300');
+
   // Add text formats.
   $filtered_html_format = array(
     'format' => 'filtered_html',
@@ -66,9 +73,6 @@ function markaspot_install() {
   $full_html_format = (object) $full_html_format;
   filter_format_save($full_html_format);
 
-  // Disable the default Bartik theme.
-  theme_disable(array('bartik'));
-
   // Any themes without keys here will get numeric keys and so will be enabled,
   // but not placed into variables.
   $enable = array(
@@ -76,6 +80,9 @@ function markaspot_install() {
     'admin_theme' => 'ember',
   );
   theme_enable($enable);
+
+  // Disable the default Bartik theme.
+  theme_disable(array('bartik, seven'));
 
   foreach ($enable as $var => $theme) {
     if (!is_numeric($var)) {
@@ -252,7 +259,7 @@ function markaspot_install() {
   menu_link_save($item);
 
   // Update the menu router information.
-  menu_rebuild();
+  // menu_rebuild();
 
   // Enable the admin theme.
   db_update('system')
@@ -268,20 +275,152 @@ function markaspot_install() {
   module_enable($module_list);
 
   variable_set('jquery_update_jquery_version', '1.7');
-  // Setting some Mark-a-Spot default values.
-  variable_set('markaspot_logic_map_type', '2');
-  variable_set('markaspot_logic_zip', '50321');
-  variable_set('markaspot_logic_city', 'Brühl');
-  variable_set('markaspot_logic_country', 'Deutschland');
-  variable_set('markaspot_logic_ini_lat', '50.8212596');
-  variable_set('markaspot_logic_ini_lng', '6.8961028');
-  variable_set('markaspot_logic_twittername', '@mascity');
-  variable_set('markaspot_logic_tweetSearch', 1);
-  variable_set('markaspot_logic_radar_zoom', 10);
-  variable_set('site_name', 'Track issues MaS-City');
-  variable_set('site_slogan', 'Report local problems in your area and track government fixing them');
-  variable_set('markaspot_logic_open311_status_open', array(5,6));
-  variable_set('markaspot_logic_open311_status_closed', array(7,8));
+}
+
+/**
+ * Implements hook_install_tasks()
+ */
+function markaspot_install_tasks(&$install_state) {
+
+  $tasks = array();
+  $tasks['markaspot_flush_cashes'] = array(
+    'display_name' => st('Flush drupal caches'),
+    'display' => TRUE,
+    'type' => 'batch',
+    'run' => INSTALL_TASK_RUN_IF_REACHED,
+    'function' => 'markaspot_flush_cashes',
+  );
+  /*
+  $tasks['markaspot_enable_icon_api'] = array(
+    'display_name' => st('Enable Icon API'),
+    'display' => TRUE,
+    'type' => 'batch',
+    'run' => INSTALL_TASK_RUN_IF_REACHED,
+    'function' => 'markaspot_enable_icon_api',
+  );
+  */
+
+  $tasks['markaspot_install_content'] = array(
+    'display_name' => st('Create some content'),
+    'display' => TRUE,
+    'type' => 'batch',
+    'run' => INSTALL_TASK_RUN_IF_REACHED,
+    'function' => 'markaspot_install_content',
+  );
+
+
+
+  // Add our custom CSS file for the installation process
+  drupal_add_css(drupal_get_path('profile', 'markaspot') . '/markaspot.css');
+
+  return $tasks;
+}
+
+/**
+ * Create default Content.
+ *
+ * @param string $install_state
+ *   An array of information about the current installation state.
+ *
+ * @return string
+ *   Message on Complete
+ */
+function markaspot_install_content() {
+  global $install_state;
+  // print dd($install_state);
+
+  // ini_set("auto_detect_line_endings", TRUE);
+
+  $operations = array();
+  // Saving taonomies for category:
+  $operations[] = array('_markaspot_create_categories', array(t('Create categories.')));
+  // Saving taxonomies for status:
+  $operations[] = array('_markaspot_create_status', array(t('Create status.')));
+  // Creating example node:
+  $operations[] = array('_markaspot_create_reports', array(t('Create example reports')));
+  // Activating blocks:
+  $operations[] = array('_markaspot_build_blocks',  array(t('Create Blocks')));
+  // Deleting dummy entries:
+  $operations[] = array('_markaspot_delete_dummies', array(t('Create dummy content')));
+  // Create slider image files:
+  $operations[] = array('_markaspot_create_pages', array(t('Create example pages')));
+
+  $batch = array(
+    'title' => t('Importing content'),
+    'operations' => $operations,
+    'file' => drupal_get_path('profile', 'markaspot') . '/markaspot.install_callbacks.inc',
+  );
+
+
+  return $batch;
+}
+
+
+function markaspot_flush_cashes(){
+  global $install_state;
+
+  $operations[] = array('_markaspot_flush_cashes', array());
+
+  $batch = array(
+    'title' => t('Flush drupal cashes'),
+    'operations' => $operations,
+    'file' => drupal_get_path('profile', 'markaspot') . '/markaspot.install_callbacks.inc',
+  );
+
+  return $batch;
+
+}
+
+
+function markaspot_enable_icon_api(){
+  global $install_state;
+
+  $operations[] = array('_markaspot_enable_module', array('icon', array('Icon API')));
+
+  $batch = array(
+    'title' => t('Enabling Icon API'),
+    'operations' => $operations,
+    'file' => drupal_get_path('profile', 'markaspot') . '/markaspot.install_callbacks.inc',
+  );
+
+  return $batch;
+
+}
+
+
+function markaspot_install_finished(){
+  drupal_set_title(st('Mark-a-Spot installation complete'));
+  $messages = drupal_set_message();
+
+  $output  = '<p>' . st('Congratulations, you installed Mark-a-Spot @drupal!', array('@drupal' => drupal_install_profile_distribution_name())) . '</p>';
+  $output .= '<p>' . (isset($messages['error']) ? st('Review the messages above before visiting <a href="@url">your new site</a>.', array('@url' => url(''))) : st('<a href="@url">Visit your new site</a>.', array('@url' => url('')))) . '</p>';
+
+  // Flush all caches to ensure that any full bootstraps during the installer
+  // do not leave stale cached data, and that any content types or other items
+  // registered by the install profile are registered correctly.
+  drupal_flush_all_caches();
+
+  // Remember the profile which was used:
+  variable_set('install_profile', drupal_get_profile());
+
+  // Clean Urls:
+  variable_set('clean_url', 1);
+  variable_set('chosen_minimum_single', 3);
+
+  // Install profiles are always loaded last:
+  db_update('system')
+    ->fields(array('weight' => 1000))
+    ->condition('type', 'module')
+    ->condition('name', drupal_get_profile())
+    ->execute();
+
+  // Cache a fully-built schema:
+  drupal_get_schema(NULL, TRUE);
+  // Set icon view path
+  variable_set('icon_api_view_path_alias', 'icons');
+
+  return $output;
+
 }
 
 
@@ -469,9 +608,127 @@ function markaspot_update_7208() {
 function markaspot_update_7209() {
   markaspot_change_form_widget('taxonomy_term', 'category', 'field_category_icon', 'options_select');
   markaspot_change_form_widget('taxonomy_term', 'status', 'field_status_icon', 'options_select');
+
+  markaspot_update_color_field('field_category_hex');
+  markaspot_update_color_field('field_status_hex');
+
   markaspot_set_allowed_value_list('field_category_icon');
   markaspot_set_allowed_value_list('field_status_icon');
 }
+
+
+/**
+ * Updates field_status_icon and field_category_icon for use of Icon API.
+ *
+ */
+function markaspot_update_7210() {
+  module_enable(array('icon', 'markaspot_icon_field'));
+
+  if (module_exists('icon') && module_exists('markaspot_icon_field')) {
+
+    db_add_field('field_data_field_category_icon', 'field_category_icon_bundle', array(
+      'type' => 'varchar',
+      'length' => 64,
+      'not null' => TRUE,
+      'default' => '',
+    ));
+
+    db_add_field('field_revision_field_category_icon', 'field_category_icon_bundle', array(
+      'type' => 'varchar',
+      'length' => 64,
+      'not null' => TRUE,
+      'default' => '',
+    ));
+
+    db_add_field('field_data_field_status_icon', 'field_status_icon_bundle', array(
+      'type' => 'varchar',
+      'length' => 64,
+      'not null' => TRUE,
+      'default' => '',
+    ));
+
+    db_add_field('field_revision_field_status_icon', 'field_status_icon_bundle', array(
+      'type' => 'varchar',
+      'length' => 64,
+      'not null' => TRUE,
+      'default' => '',
+    ));
+
+    db_change_field('field_data_field_status_icon', 'field_status_icon_value', 'field_status_icon_icon',
+      array('type' => 'varchar', 'length' => 64));
+    db_change_field('field_revision_field_status_icon', 'field_status_icon_value', 'field_status_icon_icon',
+      array('type' => 'varchar', 'length' => 64));
+
+    db_change_field('field_data_field_category_icon', 'field_category_icon_value', 'field_category_icon_icon',
+      array('type' => 'varchar', 'length' => 64));
+    db_change_field('field_revision_field_category_icon', 'field_category_icon_value', 'field_category_icon_icon',
+      array('type' => 'varchar', 'length' => 64));
+
+    $num_updated = db_update('field_config')
+      ->fields(array(
+        'module' => 'markaspot_icon_field',
+        'type' => 'markaspot_icon_field',
+      ))
+      ->condition('field_name', 'field_status_icon', '=')
+      ->execute();
+
+    $num_updated = db_update('field_config')
+      ->fields(array(
+        'module' => 'markaspot_icon_field',
+        'type' => 'markaspot_icon_field',
+      ))
+      ->condition('field_name', 'field_category_icon', '=')
+      ->execute();
+
+    markaspot_change_form_widget('taxonomy_term', 'category', 'field_category_icon', 'markaspot_icon_field');
+    markaspot_change_form_widget('taxonomy_term', 'status', 'field_status_icon', 'markaspot_icon_field');
+
+
+    $num_updated = db_update('field_data_field_category_icon')
+      ->fields(array(
+        'field_category_icon_bundle' => 'markaspot-font',
+      ))
+      ->condition('field_category_icon_bundle', '', '=')
+      ->execute();
+    $num_updated = db_update('field_data_field_status_icon')
+      ->fields(array(
+        'field_status_icon_bundle' => 'markaspot-font',
+      ))
+      ->condition('field_status_icon_bundle', '', '=')
+      ->execute();
+  }
+}
+
+
+/**
+ * Revert Mark-a-Spot feature for use of Search API as backend.
+ *
+ */
+function markaspot_update_7211(){
+  module_enable(array('search_api', 'search_api_db', 'search_api_views'));
+
+  if (!module_exists('search_api') || !module_exists('search_api_db') || !module_exists('search_api_views')) {
+    throw new DrupalUpdateException(t('Search API and Search API db have to be installed to run updates'));
+  } else {
+    cache_clear_all();
+    features_revert(array('mark_a_spot' => array('field_base', 'field_instance')));
+    features_revert(array('mark_a_spot' => array('views_default')));
+    features_revert(array('mark_a_spot' => array('search_api_server')));
+    features_revert(array('mark_a_spot' => array('search_api_index')));
+
+    cache_clear_all();
+
+    drupal_load('module', array('search_api', 'search_api_db'));
+
+    $index = search_api_index_load('default_report_index');
+
+    if (!empty($index)) {
+      search_api_index_items($index, 100);
+    }
+  }
+
+}
+
 
 /**
  * Change allowed values for icon field.
@@ -562,6 +819,8 @@ function markaspot_set_allowed_value_list($field_name) {
   field_update_field($field);
 }
 
+
+
 /**
  * Change form widget for a field.
  *
@@ -586,9 +845,12 @@ function markaspot_change_form_widget($entity_type, $bundle, $field_name, $widge
 
   // Update field instance
   field_update_instance($instance);
+}
+
+function markaspot_update_color_field($field_name) {
   $field = array(
     'field_name' => $field_name,
-    'settings' => array('default_colors' => '#FF0000, #8B0000, #FFA500, #008000, #006400, #0000FF, #00008B, #800080, #871F78, #5F9EA0, #D3D3D3, #808080, #000000, #F5F5DC, #FFFFFF'),
+    'settings' => array('default_colors' => '#FF0000, #8B0000, #FFA500, #008000, #006400, #ADD8E6, #0000FF, #00008B, #A020F0, #871F78, #5F9EA0, #D3D3D3, #808080, #000000, #F5F5DC, #FFFFFF'),
   );
   field_update_field($field);
 }

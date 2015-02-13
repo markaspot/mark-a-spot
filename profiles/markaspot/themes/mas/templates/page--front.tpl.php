@@ -53,16 +53,11 @@
   </div>
 </div>
 
-
-
 <div id="map_wrapper_splash">
   <a id="start" title="<?php t('Click to get the map view')?>" href="/map"></a>
   <div id="map" class="front"></div>
 </div>
 <div class="mapheader masthead">
-  <div class="container">
-
-  </div>
   <div class="container stage">
     <div>
       <div class="col-md-7">
@@ -92,11 +87,7 @@
   </div>
 </div>
 <div class="container main-container">
-
-
-
   <div class="row">
-
     <?php if (!empty($page['sidebar_first'])): ?>
       <aside class="col-md-3" role="complementary">
         <?php print render($page['sidebar_first']); ?>
@@ -143,8 +134,9 @@
       </aside>  <!-- /#sidebar-second -->
     <?php endif; ?>
   </div>
+  <div class="push"></div>
 </div>
 
-<footer class="footer navbar-inverse">
+<footer class="footer">
   <?php print render($page['footer']); ?>
 </footer>

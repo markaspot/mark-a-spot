@@ -90,13 +90,16 @@
       format: 'json'
     }).done(function (result) {
       if (result.length > 0) {
+        result.address = result[0].address;
         Drupal.geolocation.setMapMarker(new L.LatLng(result[0].lat, result[0].lon), i);
-        var street = street ? street : result[0].address.pedestrian;
-        street = street ? street : result[0].address.road;
-        street = street ? street : result[0].address.locality;
-        street = street ? street : result[0].address.pedestrian;
-        street = street ? street : result[0].address.cycleway;
-        street = street ? street : result[0].address.path;
+
+        var street  = result.address.construction ? result.address.construction : "";
+        street      = street ? street : result.address.path;
+        street      = street ? street : result.address.locality;
+        street      = street ? street : result.address.cycleway;
+        street      = street ? street : result.address.road;
+        street      = street ? street : result.address.pedestrian;
+        street      = street ? street : result.address.footway;
         street = street ? street : Drupal.t('City Center');
 
         street = result[0].address.house_number ? street + ' ' + result[0].address.house_number : street;

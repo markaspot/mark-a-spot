@@ -1,7 +1,13 @@
 (function ($) {
   $(document).ready(function () {
 
+    // Change navbar behaviour, when admin bar is visible.
+    if($('body.page-list').hasClass('navbar-tray-open')){
+      $('.navbar.navbar-inverse').addClass('navbar-static-top').removeClass('navbar-fixed-top');
+    }
+
     // Add some bootstrap stuff to elements
+    $('a.leaflet-bar-part i').removeClass('fa-lg');
     $('.field-label').addClass('label');
     $('.geolocation-address-geocode, .geolocation-client-location, .geolocation-remove').addClass('btn');
 

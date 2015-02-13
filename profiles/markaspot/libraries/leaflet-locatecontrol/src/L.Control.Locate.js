@@ -14,7 +14,11 @@ You can find the project at: https://github.com/domoritz/leaflet-locatecontrol
 
     // define a Common JS module that relies on 'leaflet'
     } else if (typeof exports === 'object') {
-        module.exports = factory(require('leaflet'));
+        if (typeof window !== 'undefined' && window.L) {
+            module.exports = factory(L);
+        } else {
+            module.exports = factory(require('leaflet'));
+        }
     }
 
     // attach your plugin to the global 'L' variable
@@ -161,11 +165,16 @@ You can find the project at: https://github.com/domoritz/leaflet-locatecontrol
                 if (this._isOutsideMapBounds()) {
                     this.options.onLocationOutsideMapBounds(this);
                 } else {
-                    map.fitBounds(this._event.bounds, {
-                        padding: this.options.circlePadding,
-                        maxZoom: this.options.keepCurrentZoomLevel ?
+                    // If accuracy info isn't desired, keep the current zoom level
+                    if(this.options.keepCurrentZoomLevel && !this.options.drawCircle){
+                        map.panTo([this._event.latitude, this._event.longitude]);
+                    } else {
+                        map.fitBounds(this._event.bounds, {
+                            padding: this.options.circlePadding,
+                            maxZoom: this.options.keepCurrentZoomLevel ?
                             map.getZoom() : this.options.locateOptions.maxZoom
-                    });
+                        });
+                    }
                 }
                 this._locateOnNextLocationFound = false;
             }
@@ -232,7 +241,7 @@ You can find the project at: https://github.com/domoritz/leaflet-locatecontrol
          * Used by drawMarker, you can ignore it if you have overridden it.
          */
         createMarker: function(latlng, mStyle) {
-            return this.options.markerClass(latlng, mStyle)
+            return this.options.markerClass(latlng, mStyle);
         },
 
         /**
@@ -242,7 +251,7 @@ You can find the project at: https://github.com/domoritz/leaflet-locatecontrol
          */
         updateMarker: function(latlng, mStyle) {
             this._marker.setLatLng(latlng);
-            for (o in mStyle) {
+            for (var o in mStyle) {
                 this._marker.options[o] = mStyle[o];
             }
         },
@@ -281,8 +290,9 @@ You can find the project at: https://github.com/domoritz/leaflet-locatecontrol
                 .on(this._link, 'click', L.DomEvent.stopPropagation)
                 .on(this._link, 'click', L.DomEvent.preventDefault)
                 .on(this._link, 'click', function() {
-                    var shouldStop = (this._event === undefined || this._map.getBounds().contains(this._event.latlng)
-                        || !this.options.setView || this._isOutsideMapBounds());
+                    var shouldStop = (this._event === undefined ||
+                        this._map.getBounds().contains(this._event.latlng) ||
+                        !this.options.setView || this._isOutsideMapBounds());
                     if (!this.options.remainActive && (this._active && shouldStop)) {
                         this.stop();
                     } else {

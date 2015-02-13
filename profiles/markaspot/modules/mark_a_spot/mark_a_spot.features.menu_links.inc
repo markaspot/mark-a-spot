@@ -34,5 +34,6 @@ function mark_a_spot_menu_default_menu_links() {
   // Included for use with string extractors like potx.
   t('Report Issue');
 
+
   return $menu_links;
 }

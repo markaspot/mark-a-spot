@@ -33,7 +33,7 @@
             var markerLocation = latLng;
 
             L.tileLayer(instanceSettings.tile_server_dynamic, {
-              attribution: 'Map data &copy; 2012 OpenStreetMap contributors, Imagery &copy; 2012 osm',
+              attribution: instanceSettings.tile_server_attribution,
               maxZoom: 18
             }).addTo(Drupal.geolocationOsm.maps[id]);
             L.Icon.Default.imagePath = instanceSettings.leafletImagePath;
