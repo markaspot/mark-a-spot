@@ -168,6 +168,12 @@ function mark_a_spot_views_default_views() {
     'general' => array(
       'allow_secondary' => 0,
       'secondary_label' => 'Advanced options',
+      'collapsible_label' => NULL,
+      'combine_rewrite' => NULL,
+      'reset_label' => NULL,
+      'bef_filter_description' => NULL,
+      'any_label' => NULL,
+      'filter_rewrite_values' => NULL,
     ),
     'field_category' => array(
       'bef_format' => 'default',
@@ -180,12 +186,44 @@ function mark_a_spot_views_default_views() {
         'tokens' => array(
           'available' => array(
             0 => 'global_types',
+            'secondary_label' => NULL,
+            'collapsible_label' => NULL,
+            'combine_rewrite' => NULL,
+            'reset_label' => NULL,
+            'bef_filter_description' => NULL,
+            'any_label' => NULL,
+            'filter_rewrite_values' => NULL,
           ),
+          'secondary_label' => NULL,
+          'collapsible_label' => NULL,
+          'combine_rewrite' => NULL,
+          'reset_label' => NULL,
+          'bef_filter_description' => NULL,
+          'any_label' => NULL,
+          'filter_rewrite_values' => NULL,
         ),
         'rewrite' => array(
           'filter_rewrite_values' => '',
+          'secondary_label' => NULL,
+          'collapsible_label' => NULL,
+          'combine_rewrite' => NULL,
+          'reset_label' => NULL,
+          'bef_filter_description' => NULL,
+          'any_label' => NULL,
         ),
+        'secondary_label' => NULL,
+        'collapsible_label' => NULL,
+        'combine_rewrite' => NULL,
+        'reset_label' => NULL,
+        'filter_rewrite_values' => NULL,
       ),
+      'secondary_label' => NULL,
+      'collapsible_label' => NULL,
+      'combine_rewrite' => NULL,
+      'reset_label' => NULL,
+      'bef_filter_description' => NULL,
+      'any_label' => NULL,
+      'filter_rewrite_values' => NULL,
     ),
     'field_status' => array(
       'bef_format' => 'default',
@@ -198,12 +236,44 @@ function mark_a_spot_views_default_views() {
         'tokens' => array(
           'available' => array(
             0 => 'global_types',
+            'secondary_label' => NULL,
+            'collapsible_label' => NULL,
+            'combine_rewrite' => NULL,
+            'reset_label' => NULL,
+            'bef_filter_description' => NULL,
+            'any_label' => NULL,
+            'filter_rewrite_values' => NULL,
           ),
+          'secondary_label' => NULL,
+          'collapsible_label' => NULL,
+          'combine_rewrite' => NULL,
+          'reset_label' => NULL,
+          'bef_filter_description' => NULL,
+          'any_label' => NULL,
+          'filter_rewrite_values' => NULL,
         ),
         'rewrite' => array(
           'filter_rewrite_values' => '',
+          'secondary_label' => NULL,
+          'collapsible_label' => NULL,
+          'combine_rewrite' => NULL,
+          'reset_label' => NULL,
+          'bef_filter_description' => NULL,
+          'any_label' => NULL,
         ),
+        'secondary_label' => NULL,
+        'collapsible_label' => NULL,
+        'combine_rewrite' => NULL,
+        'reset_label' => NULL,
+        'filter_rewrite_values' => NULL,
       ),
+      'secondary_label' => NULL,
+      'collapsible_label' => NULL,
+      'combine_rewrite' => NULL,
+      'reset_label' => NULL,
+      'bef_filter_description' => NULL,
+      'any_label' => NULL,
+      'filter_rewrite_values' => NULL,
     ),
     'search_api_views_fulltext' => array(
       'bef_format' => 'default',
@@ -214,13 +284,52 @@ function mark_a_spot_views_default_views() {
         'tokens' => array(
           'available' => array(
             0 => 'global_types',
+            'secondary_label' => NULL,
+            'collapsible_label' => NULL,
+            'combine_rewrite' => NULL,
+            'reset_label' => NULL,
+            'bef_filter_description' => NULL,
+            'any_label' => NULL,
+            'filter_rewrite_values' => NULL,
           ),
+          'secondary_label' => NULL,
+          'collapsible_label' => NULL,
+          'combine_rewrite' => NULL,
+          'reset_label' => NULL,
+          'bef_filter_description' => NULL,
+          'any_label' => NULL,
+          'filter_rewrite_values' => NULL,
         ),
         'rewrite' => array(
           'filter_rewrite_values' => '',
+          'secondary_label' => NULL,
+          'collapsible_label' => NULL,
+          'combine_rewrite' => NULL,
+          'reset_label' => NULL,
+          'bef_filter_description' => NULL,
+          'any_label' => NULL,
         ),
+        'secondary_label' => NULL,
+        'collapsible_label' => NULL,
+        'combine_rewrite' => NULL,
+        'reset_label' => NULL,
+        'filter_rewrite_values' => NULL,
       ),
+      'secondary_label' => NULL,
+      'collapsible_label' => NULL,
+      'combine_rewrite' => NULL,
+      'reset_label' => NULL,
+      'bef_filter_description' => NULL,
+      'any_label' => NULL,
+      'filter_rewrite_values' => NULL,
     ),
+    'secondary_label' => NULL,
+    'collapsible_label' => NULL,
+    'combine_rewrite' => NULL,
+    'reset_label' => NULL,
+    'bef_filter_description' => NULL,
+    'any_label' => NULL,
+    'filter_rewrite_values' => NULL,
   );
   $handler->display->display_options['exposed_form']['options']['input_required'] = 0;
   $handler->display->display_options['exposed_form']['options']['text_input_required_format'] = 'filtered_html';
@@ -424,27 +533,25 @@ function mark_a_spot_views_default_views() {
   $handler->display->display_options['filters']['search_api_views_fulltext']['group'] = 1;
   $handler->display->display_options['filters']['search_api_views_fulltext']['exposed'] = TRUE;
   $handler->display->display_options['filters']['search_api_views_fulltext']['expose']['operator_id'] = 'search_api_views_fulltext_op';
-  $handler->display->display_options['filters']['search_api_views_fulltext']['expose']['label'] = 'Fulltext search';
+  $handler->display->display_options['filters']['search_api_views_fulltext']['expose']['label'] = 'Search Issue #';
   $handler->display->display_options['filters']['search_api_views_fulltext']['expose']['operator'] = 'search_api_views_fulltext_op';
   $handler->display->display_options['filters']['search_api_views_fulltext']['expose']['identifier'] = 'query';
   $handler->display->display_options['filters']['search_api_views_fulltext']['expose']['remember_roles'] = array(
     2 => '2',
     1 => 0,
-    3 => 0,
     5 => 0,
     4 => 0,
+    3 => 0,
   );
+  $handler->display->display_options['filters']['search_api_views_fulltext']['mode'] = 'filter';
   $handler->display->display_options['filters']['search_api_views_fulltext']['min_length'] = '2';
   $handler->display->display_options['filters']['search_api_views_fulltext']['fields'] = array(
-    'body:value' => 'body:value',
-    'field_address' => 'field_address',
-    'title' => 'title',
     'uuid' => 'uuid',
   );
   $handler->display->display_options['path'] = 'report-list';
 
   /* Display: GeoJSON List */
-  $handler = $view->new_display('page', 'GeoJSON List', 'geojson');
+  $handler = $view->new_display('page', 'GeoJSON List', 'geojson_list');
   $handler->display->display_options['defaults']['pager'] = FALSE;
   $handler->display->display_options['pager']['type'] = 'full';
   $handler->display->display_options['pager']['options']['items_per_page'] = '10';
@@ -617,22 +724,18 @@ function mark_a_spot_views_default_views() {
   $handler->display->display_options['filters']['search_api_views_fulltext']['expose']['remember_roles'] = array(
     2 => '2',
     1 => 0,
-    3 => 0,
     5 => 0,
     4 => 0,
+    3 => 0,
   );
   $handler->display->display_options['filters']['search_api_views_fulltext']['min_length'] = '2';
   $handler->display->display_options['filters']['search_api_views_fulltext']['fields'] = array(
-    'body:value' => 'body:value',
-    'field_address' => 'field_address',
-    'field_statement_comment' => 'field_statement_comment',
-    'title' => 'title',
     'uuid' => 'uuid',
   );
   $handler->display->display_options['path'] = 'reports/geojson';
 
   /* Display: GeoJSON Map */
-  $handler = $view->new_display('page', 'GeoJSON Map', 'page_1');
+  $handler = $view->new_display('page', 'GeoJSON Map', 'geojson_map');
   $handler->display->display_options['defaults']['pager'] = FALSE;
   $handler->display->display_options['pager']['type'] = 'none';
   $handler->display->display_options['pager']['options']['offset'] = '0';
@@ -790,6 +893,7 @@ function mark_a_spot_views_default_views() {
     t('Sort by'),
     t('Asc'),
     t('Desc'),
+    t('Advanced options'),
     t('Select any filter and click on Apply to see results'),
     t('Items per page'),
     t('- All -'),
@@ -812,7 +916,7 @@ function mark_a_spot_views_default_views() {
     t('<span class="submitted meta-info"> [created] </span>'),
     t('<div class="cat-stat-wrapper"><span class="label marker-category col-[field_category_hex] span6"><i class="icon-li icon-[field_category_icon]"></i> [field_category]</span> <span class="label marker-status col-[field_status_hex] span6"><i class="icon-li icon-[field_status_icon]"></i> [field_status]</span></div>'),
     t('Weiterlesen'),
-    t('Fulltext search'),
+    t('Search Issue #'),
     t('GeoJSON List'),
     t('Title'),
     t('created'),
@@ -824,6 +928,7 @@ function mark_a_spot_views_default_views() {
     t('status_hex'),
     t('status_icon'),
     t('category_icon'),
+    t('Fulltext search'),
     t('GeoJSON Map'),
   );
   $export['markers'] = $view;

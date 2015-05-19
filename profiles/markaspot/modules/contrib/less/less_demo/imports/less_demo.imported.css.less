@@ -1,0 +1,10 @@
+
+.gradient(@gradient_top: #bada55, @gradient_bottom: darken(@gradient_top, 10%)) {
+  background-color: @gradient_bottom;
+  background-image: -moz-linear-gradient(top, @gradient_top 0%, @gradient_bottom 100%);
+  background-image: -ms-linear-gradient(top, @gradient_top 0%, @gradient_bottom 100%);
+  background-image: -o-linear-gradient(top, @gradient_top 0%, @gradient_bottom 100%);
+  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, @gradient_top), color-stop(1, @gradient_bottom));
+  background-image: -webkit-linear-gradient(top, @gradient_top 0%, @gradient_bottom 100%);
+  background-image: linear-gradient(top, @gradient_top 0%, @gradient_bottom 100%);
+}

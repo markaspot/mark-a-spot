@@ -80,10 +80,10 @@ L.Util.extend(L.KML, {
 	// Return false if e's first parent Folder is not [folder]
 	// - returns true if no parent Folders
 	_check_folder: function (e, folder) {
-		e = e.parentElement;
+		e = e.parentNode;
 		while (e && e.tagName !== 'Folder')
 		{
-			e = e.parentElement;
+			e = e.parentNode;
 		}
 		return !e || e === folder;
 	},
@@ -92,9 +92,7 @@ L.Util.extend(L.KML, {
 		var style = {};
 		var sl = xml.getElementsByTagName('Style');
 
-		//for (var i = 0; i < sl.length; i++) {
-		var attributes = {color: true, width: true, Icon: true, href: true,
-						  hotSpot: true};
+		var attributes = { color: true, width: true, Icon: true, href: true, hotSpot: true };
 
 		function _parse(xml) {
 			var options = {};
@@ -197,7 +195,16 @@ L.Util.extend(L.KML, {
 	},
 
 	parsePlacemark: function (place, xml, style) {
-		var i, j, el, options = {};
+		var h, i, j, el, options = {};
+
+		var multi = ['MultiGeometry', 'MultiTrack', 'gx:MultiTrack'];
+		for (h in multi) {
+			el = place.getElementsByTagName(multi[h]);
+			for (i = 0; i < el.length; i++) {
+				return this.parsePlacemark(el[i], xml, style);
+			}
+		}
+
 		el = place.getElementsByTagName('styleUrl');
 		for (i = 0; i < el.length; i++) {
 			var url = el[i].childNodes[0].nodeValue;
@@ -207,17 +214,13 @@ L.Util.extend(L.KML, {
 		}
 		var layers = [];
 
-		var parse = ['LineString', 'Polygon', 'Point'];
+		var parse = ['LineString', 'Polygon', 'Point', 'Track', 'gx:Track'];
 		for (j in parse) {
-			// for jshint
-			if (true)
-			{
-				var tag = parse[j];
-				el = place.getElementsByTagName(tag);
-				for (i = 0; i < el.length; i++) {
-					var l = this['parse' + tag](el[i], xml, options);
-					if (l) { layers.push(l); }
-				}
+			var tag = parse[j];
+			el = place.getElementsByTagName(tag);
+			for (i = 0; i < el.length; i++) {
+				var l = this['parse' + tag.replace(/gx:/, '')](el[i], xml, options);
+				if (l) { layers.push(l); }
 			}
 		}
 
@@ -255,6 +258,17 @@ L.Util.extend(L.KML, {
 
 	parseLineString: function (line, xml, options) {
 		var coords = this.parseCoords(line);
+		if (!coords.length) { return; }
+		return new L.Polyline(coords, options);
+	},
+
+	parseTrack: function (line, xml, options) {
+		var el = xml.getElementsByTagName('gx:coord');
+		if (el.length === 0) { el = xml.getElementsByTagName('coord'); }
+		var coords = [];
+		for (var j = 0; j < el.length; j++) {
+			coords = coords.concat(this._read_gxcoords(el[j]));
+		}
 		if (!coords.length) { return; }
 		return new L.Polyline(coords, options);
 	},
@@ -322,6 +336,13 @@ L.Util.extend(L.KML, {
 		return coords;
 	},
 
+	_read_gxcoords: function (el) {
+		var text = '', coords = [];
+		text = el.firstChild.nodeValue.split(' ');
+		coords.push(new L.LatLng(text[1], text[0]));
+		return coords;
+	},
+
 	parseGroundOverlay: function (xml) {
 		var latlonbox = xml.getElementsByTagName('LatLonBox')[0];
 		var bounds = new L.LatLngBounds(
@@ -374,11 +395,13 @@ L.KMLIcon = L.Icon.extend({
 			this.style.width = i.width + 'px';
 			this.style.height = i.height + 'px';
 
-			if (this.anchorType.x === 'UNITS_FRACTION' || this.anchorType.x === 'fraction') {
+			if (this.anchorType.x === 'fraction' && this.anchorType.y === 'fraction') {
 				img.style.marginLeft = (-this.anchor.x * i.width) + 'px';
-			}
-			if (this.anchorType.y === 'UNITS_FRACTION' || this.anchorType.x === 'fraction') {
 				img.style.marginTop  = (-(1 - this.anchor.y) * i.height) + 'px';
+			}
+			if (this.anchorType.x === 'pixels' && this.anchorType.y === 'pixels') {
+				img.style.marginLeft = (-this.anchor.x) + 'px';
+				img.style.marginTop  = (this.anchor.y - i.height + 1) + 'px';
 			}
 			this.style.display = '';
 		};

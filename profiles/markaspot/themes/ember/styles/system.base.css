@@ -31,7 +31,7 @@
 
 /* Animated throbber */
 html.js .form-autocomplete {
-  background-image: url('../images/throbber.gif?1402419892');
+  background-image: url('../images/throbber.gif?1422987384');
   background-repeat: no-repeat;
   background-size: 1.1em;
   -webkit-transition: background-color 0.2s;
@@ -65,8 +65,7 @@ html.js[dir="rtl"] .throbbing {
  * @see collapse.js
  */
 html.js .collapsed {
-  height: 0.70711em;
-  margin-bottom: 1.41421em;
+  height: auto;
   border-color: transparent;
 }
 html.js .collapsed .fieldset-wrapper {
@@ -97,7 +96,7 @@ html.js .collapsible .fieldset-legend {
   box-sizing: border-box;
 }
 .form-textarea-wrapper .grippie {
-  background: #eeeeee url('../images/grippie.png?1402419892') no-repeat center 2px;
+  background: #eeeeee url('../images/grippie.png?1422987384') no-repeat center 2px;
   border: 1px solid #ddd;
   border-top-width: 0;
   cursor: s-resize;
@@ -155,10 +154,11 @@ body.drag {
 
 .indentation {
   display: inline-block;
-  width: 1em;
+  width: 2em;
   vertical-align: baseline;
   font-family: Times, serif;
   color: #dddddd;
+  float: left;
 }
 [dir="ltr"] .indentation {
   text-align: left;
@@ -238,7 +238,7 @@ body.drag {
   display: inline-block;
 }
 .ajax-progress .throbber {
-  background: transparent url('../images/throbber.gif?1402419892') no-repeat 0px -18px;
+  background: transparent url('../images/throbber.gif?1422987384') no-repeat 0px -18px;
   height: 15px;
   margin: 0.35355em;
   width: 15px;
@@ -356,4 +356,36 @@ html.js .js-hide {
 }
 .clearfix:after {
   clear: both;
+}
+
+/*
+ * Styles for the admin/appearance page
+ */
+/* Remove clearfix rule for selectors */
+.theme-selector {
+  clear: inherit;
+  float: left;
+  /* Give all theme selectors the same padding */
+  padding: 20px 20px 20px 0;
+}
+
+/* Remove the theme list wrappers' clearfix rule */
+.system-themes-list {
+  clear: inherit;
+}
+
+/* Set the font size on <h3> tags to be a bit smaller */
+.theme-info h3 {
+  font-size: 1.3em;
+}
+
+/* Give the enabled themes info section padding, and place it under the screenshot */
+.system-themes-list-enabled .theme-info {
+  clear: both;
+  padding-top: 10px;
+}
+
+.system-themes-list-disabled .theme-selector {
+  /* Set static height to match width, to that themes align properly */
+  height: 300px;
 }

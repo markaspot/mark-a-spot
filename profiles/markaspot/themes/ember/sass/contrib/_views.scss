@@ -374,15 +374,11 @@ ul#views-display-menu-tabs {
 }
 
 .views-ui-display-tab-bucket {
-  border: 0px solid transparent;
   line-height: inherit;
   padding-top: 0px;
 }
 
 .views-ui-display-tab-bucket {
-  + .views-ui-display-tab-bucket {
-    border-top: 0px solid transparent;
-  }
 
   > h3,
   > .views-display-setting {
@@ -395,6 +391,7 @@ ul#views-display-menu-tabs {
     font-weight: 900;
     border-top: 1px solid #ddd;
     padding: .5em 0 0;
+    text-align:left;
   }
 
   .horizontal.actions {
@@ -436,6 +433,20 @@ ul#views-display-menu-tabs {
   .views-ajax-link {
     margin-left: 0em;
     margin-right: 0em;
+    .views-field-relationship {
+    	width:100%;
+    	float:left;
+    	font-size:.8em;
+    	color:#333;
+    	margin-bottom:5px;
+    	&:before {
+    		content:"(";
+    	}
+    	&:after {
+    		content:")";
+
+    	}
+    }
   }
 
   .label {

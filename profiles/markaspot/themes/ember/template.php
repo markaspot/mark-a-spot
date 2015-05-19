@@ -199,3 +199,99 @@ function ember_links__ctools_dropbutton($variables) {
     return '';
   }
 }
+
+/**
+ * Implements hook_views_ui_display_tab_alter().
+ *
+ * This is used to wrap span tags around title components in the Fields section
+ * of the Views Admin UI.
+ *
+ * @see views_ui_edit_form_get_bucket()
+ */
+function ember_views_ui_display_tab_alter(&$build, &$view, $display_id) {
+  $display = $view->display[$display_id];
+  $root_url = "admin/structure/views/nojs/config-item/$view->name/$display_id";
+
+  // The below is a straight copy-paste from views_ui_edit_form_get_bucket().
+  static $relationships = NULL;
+  if (!isset($relationships)) {
+    // Get relationship labels.
+    $relationships = array();
+    // @todo: get_handlers()
+    $handlers = $display->handler->get_option('relationships');
+    if ($handlers) {
+      foreach ($handlers as $id => $info) {
+        $handler = $display->handler->get_handler('relationship', $id);
+        $relationships[$id] = $handler->label();
+      }
+    }
+  }
+
+  // Custom code begins.
+  // For each type of field which may have a description, alter the link text.
+  $type = 'field';
+  foreach ($display->handler->get_option("{$type}s") as $id => $field) {
+    $handler = $display->handler->get_handler($type, $id);
+    $text = _ember_views_ui_field_link($field, $handler, $relationships, $type, $root_url);
+    $build['details']['columns']['first']['fields']['fields'][$id]['#link'] = $text;
+  }
+
+  $type = 'argument';
+  foreach ($display->handler->get_option("{$type}s") as $id => $field) {
+    $handler = $display->handler->get_handler($type, $id);
+    $text = _ember_views_ui_field_link($field, $handler, $relationships, $type, $root_url);
+    $build['details']['columns']['third']['collapse']['arguments']['fields'][$id]['#link'] = $text;
+  }
+
+  $type = 'relationship';
+  foreach ($display->handler->get_option("{$type}s") as $id => $field) {
+    $handler = $display->handler->get_handler($type, $id);
+    $text = _ember_views_ui_field_link($field, $handler, $relationships, $type, $root_url);
+    $build['details']['columns']['third']['collapse']['relationships']['fields'][$id]['#link'] = $text;
+  }
+}
+
+/**
+ * Generate a field description and link for the Views UI.
+ *
+ * @param object $field
+ *   The field we wish to edit output for.
+ * @param object $handler
+ *   The field handler (a views API component).
+ * @param array $relationships
+ *   An array of relationships, in the format field_id=>relationship name.
+ * @param string $type
+ *   The type of field, either field, argument, or relationship.
+ * @param string $root_url
+ *   The root url to the Views AJAX interface. This function suffixes it.
+ *
+ * @return string
+ *   An a tag with HTML inside which splits the link text into components.
+ */
+function _ember_views_ui_field_link($field, $handler, array $relationships, $type, $root_url) {
+  // Split out the title into its components.
+  // @see views_handler_field::ui_name()
+  // Add the new field descriptions to the output, replacing the default.
+  $new_label = "<span class='views-field-entity-type'>{$handler->definition['group']}:</span>";
+  $new_label .= "<span class='views-field-title'>{$handler->definition['title']}</span> ";
+
+  if (!empty($field['relationship']) && !empty($relationships[$field['relationship']])) {
+    $new_label .= "<span class='views-field-relationship'>{$relationships[$field['relationship']]}</span>";
+  }
+
+  // Reuse some code from the parent function to build up the link again.
+  $description = filter_xss_admin($handler->admin_summary());
+  $link_text = $new_label . (empty($description) ? '' : "<span class='views-field-label'>($description)</span>");
+
+  $link_text = "<div class='views-field-description'>{$link_text}</div>";
+
+  $link_attributes = array('class' => array('views-ajax-link'));
+  if (!empty($field['exclude'])) {
+    $link_attributes['class'][] = 'views-field-excluded';
+  }
+
+  return l($link_text,
+    "$root_url/$type/{$field['id']}",
+    array('attributes' => $link_attributes, 'html' => TRUE)
+    );
+}

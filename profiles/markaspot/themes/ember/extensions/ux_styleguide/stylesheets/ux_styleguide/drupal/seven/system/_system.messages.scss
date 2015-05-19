@@ -25,6 +25,12 @@
   @extend %message-error;
 }
 
+//input fix left margin to not conflict with message handling 
+
+[dir="ltr"] input.error, [dir="ltr"] input.warning, [dir="ltr"]  input.ok, [dir="ltr"] select.error, [dir="ltr"] select.warning, [dir="ltr"]  select.ok {
+  padding-left: $rhythm-space;
+}
+
 /* Report message styles. */
 tr,
 span {

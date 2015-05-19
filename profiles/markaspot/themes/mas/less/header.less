@@ -1,1 +1,42 @@
-// Insert your styling here.
+#page-header {
+  height: 60px;
+  background: url('../images/logo-small.png') 15px 50% no-repeat;
+}
+
+
+.page-list #page-header,
+.page-map #page-header {
+  display: none;
+}
+
+.front .page-header,
+.page-node-add-report .page-header{
+  display: none;
+}
+
+.page-header {
+  padding-bottom: 9px;
+  margin: 0 0 20px;
+  border-bottom: 1px solid #eee;
+}
+
+// Navbar handling
+
+@media only screen and (max-width: @screen-sm-min) {
+
+  .navbar-wrapper div.container {
+    margin: 0;
+    padding: 0
+  }
+
+  header#page-header {
+    display: none
+  }
+}
+
+
+// Admin navbar icon
+
+.navbar-icon-mark-a-spot:before {
+  background-image: url(../../../themes/mas/images/logo-small.png);
+}

@@ -1,0 +1,12 @@
+name = "Image Block"
+description = Provides a file field in block configuration form for displaying an image in a block.
+core = 7.x
+
+dependencies[] = block
+
+; Information added by drupal.org packaging script on 2012-07-20
+version = "7.x-1.3"
+core = "7.x"
+project = "imageblock"
+datestamp = "1342798601"
+

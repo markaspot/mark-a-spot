@@ -1,0 +1,90 @@
+<?php
+
+class LessUnitTest extends DrupalUnitTestCase {
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function getInfo() {
+    return array(
+      'name' => 'Less Unit Tests',
+      'description' => 'Tests functions that only act on input and do not require a DB.',
+      'group' => 'Less',
+    );
+  }
+
+  public function setUp() {
+
+    module_load_include('module', 'less');
+    module_load_include('inc', 'less', 'includes/less.process');
+
+    parent::setUp();
+  }
+
+  /**
+   * Test the _less_output_path() function.
+   *
+   * @see _less_output_path()
+   */
+  public function test_less_output_path() {
+
+    $less_item = array(
+      'less' => array(
+        'build_cache_id' => 'Zxz5NVNO0Ad9miD2JeGw1B_3auVKtmJJ7ksCdxaeZ0A',
+        'variables' => array(
+          '@gradient_end' => 'darken(@gradient_start, 10%);',
+          '@gradient_start' => '#0779bf;',
+          '@text_glow' => 'blue',
+          '@test' => 'green',
+          '@header_from' => 'test',
+        ),
+        'functions' => array(
+          'token' => '_less_token_replace',
+          'swap' => '_less_demo_reverse',
+        ),
+        'paths' => array(
+          0 => 'sites/all/modules/custom/less/less_demo/libs',
+        ),
+        'less_autoprefixer' => TRUE,
+        'less_devel' => FALSE,
+        'less_source_maps' => FALSE,
+        'theme' => 'seven',
+        'output_file' => NULL,
+        'build_required' => NULL,
+        'input_file' => 'sites/all/modules/custom/less/less_demo/styles/less_demo.info.css.less',
+      ),
+    );
+
+    _less_output_path($less_item, NULL);
+
+    $expected_output_file = 'public://less/less_demo.info.aIR_TiwEIzIVLaH9dWKmPfbShza_NoIVp_TPs0tPvaM.css';
+
+    $this->assertIdentical($less_item['less']['output_file'], $expected_output_file, 'Output file location processes correctly.');
+  }
+
+  /**
+   * Test the _less_rewrite_paths() function.
+   *
+   * @see _less_rewrite_paths()
+   */
+  public function test_less_rewrite_paths() {
+
+    $input_file_path = 'sites/all/modules/custom/less/less_demo/styles/less_demo.info.css.less';
+
+    $less_compiled_css = <<<'EOD'
+#less_demo_gradient .less_demo_logo {
+  background: transparent url(../images/logo.png) center center no-repeat;
+}
+EOD;
+
+    $expected_rewritten_output_data = <<<EOD
+#less_demo_gradient .less_demo_logo {
+  background: transparent url({$GLOBALS['base_path']}sites/all/modules/custom/less/less_demo/images/logo.png) center center no-repeat;
+}
+EOD;
+
+    $actual_rewritten_output_data = _less_rewrite_paths($input_file_path, $less_compiled_css);
+
+    $this->assertIdentical($actual_rewritten_output_data, $expected_rewritten_output_data, 'Rewritten paths are correct.');
+  }
+}

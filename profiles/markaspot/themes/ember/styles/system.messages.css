@@ -87,7 +87,7 @@
 }
 .status:before,
 .ok:before {
-  background-image: url('../images/success.svg?1399128626');
+  background-image: url('../images/success.svg?1424358603');
 }
 
 /* Specific styles for the warning message. */
@@ -101,7 +101,7 @@
   border-right-color: #f79521;
 }
 .warning:before {
-  background-image: url('../images/warning.svg?1399128626');
+  background-image: url('../images/warning.svg?1424358603');
 }
 
 /* Specific styles for the error message. */
@@ -115,7 +115,11 @@
   border-right-color: #cb2026;
 }
 .error:before {
-  background-image: url('../images/error.svg?1399128626');
+  background-image: url('../images/error.svg?1424358603');
+}
+
+[dir="ltr"] input.error, [dir="ltr"] input.warning, [dir="ltr"] input.ok, [dir="ltr"] select.error, [dir="ltr"] select.warning, [dir="ltr"] select.ok {
+  padding-left: 0.70711em;
 }
 
 /* Report message styles. */

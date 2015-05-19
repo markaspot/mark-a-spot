@@ -28,9 +28,9 @@ projects[references_dialog][subdir] = "contrib"
 projects[color_field][subdir] = "contrib"
 projects[fontawesome][subdir] = "contrib"
 projects[views_bulk_operations][subdir] = "contrib"
-
+projects[colorizer][subdir] = "contrib"
+projects[imageblock][subdir] = "contrib"
 projects[views_geojson][subdir] = "contrib"
-projects[views_geojson][version] = 1.x-dev
 
 
 projects[twitter][subdir] = "contrib"
@@ -63,6 +63,8 @@ projects[ckeditor][subdir] = contrib
 
 projects[search_api][subdir] = contrib
 projects[search_api_db][subdir] = contrib
+
+projects[less][subdir] = contrib
 
 libraries[chosen][type] = libraries
 libraries[chosen][download][type] = get
@@ -153,7 +155,7 @@ libraries[proxy][download][branch] = osm-nominatim
 libraries[proxy][directory_name] = proxy
 
 libraries[bootstrap][download][type] = "get"
-libraries[bootstrap][download][url] = "https://github.com/twbs/bootstrap/archive/v3.3.2.zip"
+libraries[bootstrap][download][url] = "https://github.com/twbs/bootstrap/archive/v3.3.4.zip"
 libraries[bootstrap][directory_name] = "bootstrap"
 libraries[bootstrap][destination] = "themes/mas"
 libraries[bootstrap][overwrite] = TRUE
@@ -169,6 +171,16 @@ libraries[modernizr][download][url] = "https://github.com/Modernizr/Modernizr/ar
 
 libraries[ckeditor][download][type] = get
 libraries[ckeditor][download][url] = http://download.cksource.com/CKEditor%20for%20Drupal/edit/ckeditor_4.3.2_edit.zip
+
+; taken from twbs_less project
+libraries[less.js][directory_name] = less.js
+libraries[less.js][download][type] = file
+libraries[less.js][download][url] = https://github.com/less/less.js/archive/v1.7.5.zip
+libraries[less.js][type] = library
+libraries[less.php][directory_name] = less.php
+libraries[less.php][download][type] = file
+libraries[less.php][download][url] = https://github.com/oyejorge/less.php/archive/v1.7.0.2.zip
+libraries[less.php][type] = libraries
 
 ; Themes
 projects[bootstrap][type] = "theme"

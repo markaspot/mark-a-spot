@@ -258,13 +258,21 @@ table#shortcuts {
   }
 }
 
-/* on these forms/pages make column 4 widest */
+/* on these forms/pages make description column widest */
 form#system-modules {
   th,
   td {
-    &:nth-child(4) {
-      width: 100%;
+    &:nth-child(4),
+    &.description {
       min-width: 300px;
+    }
+  }
+  .module-filter-tabs-processed {
+    th,
+    td {
+      &:nth-child(4) {
+        min-width: 0;
+      }
     }
   }
 }

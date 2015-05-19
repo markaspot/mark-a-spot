@@ -1,0 +1,123 @@
+/* Styles for the front page */
+
+.mapheader {
+  color: #000;
+  text-align: center;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3), 0 0 30px rgba(0, 0, 0, .075);
+
+  background: -moz-linear-gradient(top,  rgba(229,229,229,0.65) 0%, rgba(198,198,198,0.7) 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(229,229,229,0.65)), color-stop(100%,rgba(198,198,198,0.7))); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top,  rgba(229,229,229,0.65) 0%,rgba(198,198,198,0.7) 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top,  rgba(229,229,229,0.65) 0%,rgba(198,198,198,0.7) 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top,  rgba(229,229,229,0.65) 0%,rgba(198,198,198,0.7) 100%); /* IE10+ */
+  background: linear-gradient(to bottom,  rgba(229,229,229,0.65) 0%,rgba(198, 198, 198, 0) 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a6e5e5e5', endColorstr='#b3c6c6c6',GradientType=0 ); /* IE6-9 */
+  position: relative;
+  z-index: 42;
+  height: 350px;
+  padding: 0 0;
+}
+
+.mapheader a {
+  /* color: rgba(255, 255, 255, 0.9); */
+  -webkit-transition: all 0.2s ease-in-out;
+  -moz-transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out;
+}
+
+#map_wrapper_splash {
+  background: none repeat scroll 0 0 transparent;
+  left: 0;
+  position: absolute;
+  /* top: 134px; */
+  width: 100%;
+  z-index: 39;
+}
+
+#map_wrapper_splash #map {
+  height: 348px;
+}
+
+.container.stage {
+  padding: 40px;
+}
+
+.stage .span5.offset1.thumbnail {
+  background: #fff;
+}
+
+
+/* if you don't use the carousel, you may take a look at the page--front.tpl and find a block there */
+.welcome-text.well {
+  margin: 4px 0;
+  background: none;
+}
+
+
+// Front Buttons
+section#block-markaspot-default-content-add-reports,
+section#block-markaspot-default-content-watch-reports {
+  width: 48%;
+  float:left
+}
+
+.list .btn-default,
+.add .btn-default {
+  opacity: 0.8;
+}
+
+
+
+div.col-md-6.jumbotron {
+  background: #fff;
+  border: 1px solid #f8f8f8;
+}
+
+.list,
+.add {
+  margin: 20px 0;
+}
+
+
+div.add a,
+div.list a {
+  @media only screen and (max-width : @screen-md-min) {
+    width: 100%;
+  }
+}
+
+
+div.add a h3,
+div.list a h3 {
+  font-size: 18px;
+  /* line-height: 28px; */
+  margin: 10px 0;
+}
+
+.row.welcome {
+  padding: 10px 0;
+}
+
+.welcome-text.well {
+  background: none;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+  margin: 0;
+}
+
+.welcome h2.block-title {
+  display: none;
+}
+
+.well h3 {
+  margin: 10px 20px;
+  font-weight: 100;
+}
+
+.col-md-4.col-md-offset-1.thumbnail {
+  display: block;
+  @media only screen and (max-width : @screen-md-min) {
+    display:none;
+  }
+}

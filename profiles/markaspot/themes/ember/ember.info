@@ -10,7 +10,6 @@ stylesheets[screen][] = styles/system.base.css
 stylesheets[screen][] = styles/system.menus.css
 stylesheets[screen][] = styles/system.theme.css
 stylesheets[screen][] = styles/system.messages.css
-stylesheets[screen][] = styles/tables.css
 
 ; Settings
 settings[shortcut_module_link] = 1
@@ -24,9 +23,9 @@ regions[page_bottom] = Page bottom
 regions[sidebar_first] = First sidebar
 regions_hidden[] = sidebar_first
 
-; Information added by Drupal.org packaging script on 2014-12-10
-version = "7.x-2.0-alpha2+34-dev"
+; Information added by Drupal.org packaging script on 2015-04-29
+version = "7.x-2.0-alpha3+3-dev"
 core = "7.x"
 project = "ember"
-datestamp = "1418254397"
+datestamp = "1430325784"
 

@@ -274,7 +274,7 @@ function icon_enabled_themes() {
       $themes[] = $theme->name;
       // Merge in the base themes if this is a sub-theme.
       if (isset($theme->base_themes)) {
-        $themes += $theme->base_themes;
+        $themes += array_keys($theme->base_themes);
       }
     }
   }

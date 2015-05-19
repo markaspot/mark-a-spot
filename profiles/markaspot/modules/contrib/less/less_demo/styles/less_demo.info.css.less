@@ -1,0 +1,58 @@
+@import '../imports/less_demo.imported.css.less';
+@import '../imports/less_demo.clearfix.css.less';
+
+/**
+ * The following variables defined in less_demo.info:
+ *   @gradient_start
+ *   @gradient_end
+ *   @text_glow
+ */
+
+@gradient_start: blue;
+@gradient_end: black;
+
+@text_glow: green;
+
+@test: red;
+
+#less_demo_gradient {
+  .clearfix;
+  
+  .gradient(@gradient_start, @gradient_end);
+  
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 80px;
+  text-shadow: 0 0 0 transparent, 0 0 10px @text_glow;
+  text-align: center;
+
+  a {
+    color: @test;
+  }
+  
+  .less_demo_logo {
+    background: transparent url(../images/logo.png) center center no-repeat;
+    height:200px;
+    
+    @media only screen and (max-width: 960px) {
+      float:left;
+      width: 199px;
+    }
+  }
+  
+  p {
+    @media only screen and (max-width: 960px) {
+      float: left;
+    }
+  }
+  
+  .less_demo_logo {
+    
+    &:after {
+      display: block;
+      content: token("Site name from token in .less file: [site:name]");
+      font-size: 20px;
+    }
+  }
+}
+
+

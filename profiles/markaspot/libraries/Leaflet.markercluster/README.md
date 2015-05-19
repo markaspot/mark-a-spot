@@ -33,6 +33,7 @@ By default the Clusterer enables some nice defaults for you:
 * **zoomToBoundsOnClick**: When you click a cluster we zoom to its bounds.
 * **spiderfyOnMaxZoom**: When you click a cluster at the bottom zoom level we spiderfy it so you can see all of its markers. (*Note: the spiderfy occurs at the current zoom level if all items within the cluster are physically located at the same latitude and longitude.*)
 * **removeOutsideVisibleBounds**: Clusters and markers too far from the viewport are removed from the map for performance.
+* **spiderLegPolylineOptions**: Allows you to specify [PolylineOptions](http://leafletjs.com/reference.html#polyline-options) to style spider legs. By default, they are `{ weight: 1.5, color: '#222' }`.
 
 You can disable any of these as you want in the options when you create the MarkerClusterGroup:
 ```javascript
@@ -71,7 +72,7 @@ Other options
 * **iconCreateFunction**: Function used to create the cluster icon [See default as example](https://github.com/Leaflet/Leaflet.markercluster/blob/15ed12654acdc54a4521789c498e4603fe4bf781/src/MarkerClusterGroup.js#L542).
 
 ## Events
-If you register for click, mouseover, etc events just related to Markers in the cluster.
+If you register for click, mouseover, etc events are just related to Markers in the cluster.
 To receive events for clusters listen to 'cluster' + 'eventIWant', ex: 'clusterclick', 'clustermouseover'.
 
 Set your callback up as follows to handle both cases:

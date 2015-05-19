@@ -1370,13 +1370,6 @@ body {
 p,
 blockquote,
 pre,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-article,
 aside,
 details,
 figcaption,
@@ -1432,7 +1425,7 @@ h3 {
 /* FORM ELEMENTS */
 /* Make fake buttons inherit the given styles. */
 .form-select, .form-select:focus, .form-select:active {
-  background: white url('../images/select_sprite.svg?1401388800') no-repeat;
+  background: white url('../images/select_sprite.svg?1430323676') no-repeat;
 }
 [dir="ltr"] .form-select {
   padding-right: 3.51961em;
@@ -1502,7 +1495,7 @@ ul.admin-list {
   padding: 0;
 }
 ul.admin-list li {
-  background: url('../images/list-item.png?1376700820') no-repeat scroll 0 0 transparent;
+  background: url('../images/list-item.png?1430323676') no-repeat scroll 0 0 transparent;
   background-size: 18px;
   background-position: 0 1px;
   list-style-image: none;
@@ -1541,14 +1534,14 @@ div.add-or-remove-shortcuts {
 div.add-or-remove-shortcuts a span.icon {
   display: block;
   width: 24px;
-  background: transparent url('../images/no_shortcut.svg?1401388800') no-repeat scroll 0 0;
+  background: transparent url('../images/no_shortcut.svg?1430323676') no-repeat scroll 0 0;
   height: 24px;
   float: right;
   margin-left: 8px;
 }
 
 div.add-shortcut a:focus span.icon, div.add-shortcut a:hover span.icon {
-  background: transparent url('../images/shortcut.svg?1401388800') no-repeat scroll 0 0;
+  background: transparent url('../images/shortcut.svg?1430323676') no-repeat scroll 0 0;
   -webkit-transition: all 1s;
   -moz-transition: all 1s;
   -o-transition: all 1s;
@@ -1556,10 +1549,10 @@ div.add-shortcut a:focus span.icon, div.add-shortcut a:hover span.icon {
 }
 
 div.remove-shortcut a span.icon {
-  background: transparent url('../images/no_shortcut.svg?1401388800') no-repeat scroll 0 0;
+  background: transparent url('../images/no_shortcut.svg?1430323676') no-repeat scroll 0 0;
 }
 div.remove-shortcut a:focus span.icon, div.remove-shortcut a:hover span.icon {
-  background: transparent url('../images/no_shortcut.svg?1401388800') no-repeat scroll 0 0;
+  background: transparent url('../images/no_shortcut.svg?1430323676') no-repeat scroll 0 0;
   -webkit-transition: all 1s;
   -moz-transition: all 1s;
   -o-transition: all 1s;
@@ -1676,13 +1669,6 @@ ul.current-filters li {
 }
 
 /* position and style edit filters neatly inline and floated left above tables they filter. */
-#edit-filters {
-  float: left;
-  display: inline-block;
-  margin-top: 0;
-  padding-left: 0;
-  width: 65%;
-}
 #edit-filters div.fieldset-wrapper {
   margin-top: 1rem;
 }
@@ -1716,9 +1702,10 @@ ul.current-filters li {
   margin-bottom: 1rem;
 }
 #edit-filters div.exposed-filters .additional-filters {
-  padding: 12px 0 0 0;
+  padding: 0 0 0 0;
   margin-right: 1em;
   font-weight: bold;
+  margin-bottom: 20px;
 }
 #edit-filters div.exposed-filters div#edit-actions {
   display: inline-block;
@@ -1759,6 +1746,12 @@ body div.form-type-radio div.description, body div.form-type-checkbox div.descri
 /* override clearfix (to do: fix ux_styleguide @import) */
 .clearfix {
   clear: both;
+}
+
+/* As admin/config uses a two-column layout, remove .clearfix rule */
+div.admin .right,
+div.admin .left {
+  clear: none;
 }
 
 /* Preview */
@@ -1995,11 +1988,15 @@ table#shortcuts td:first-child {
   width: 100%;
 }
 
-/* on these forms/pages make column 4 widest */
-form#system-modules th:nth-child(4),
-form#system-modules td:nth-child(4) {
-  width: 100%;
+/* on these forms/pages make description column widest */
+form#system-modules th:nth-child(4), form#system-modules th.description,
+form#system-modules td:nth-child(4),
+form#system-modules td.description {
   min-width: 300px;
+}
+form#system-modules .module-filter-tabs-processed th:nth-child(4),
+form#system-modules .module-filter-tabs-processed td:nth-child(4) {
+  min-width: 0;
 }
 
 /* for these types of tables and on these pages make the last column widest */
@@ -2557,14 +2554,14 @@ ol.task-list li {
   /* LTR */
 }
 ol.task-list li.active {
-  background: transparent url('../images/task-item.png?1376700820') no-repeat 3px 50%;
+  background: transparent url('../images/task-item.png?1430323676') no-repeat 3px 50%;
   /* LTR */
   color: #000;
   padding: 0.5em 1em 0.5em 20px;
   /* LTR */
 }
 ol.task-list li.done {
-  background: transparent url('../images/task-check.png?1376700820') no-repeat 0 50%;
+  background: transparent url('../images/task-check.png?1430323676') no-repeat 0 50%;
   color: green;
 }
 
@@ -2860,7 +2857,6 @@ code strong {
 /* Keep the initial state of the ctools dropbutton in the document flow. */
 .ctools-dropbutton-wrapper {
   position: relative;
-  min-height: 2.3em;
 }
 .ctools-dropbutton-wrapper ul {
   padding: 0;
@@ -3253,14 +3249,10 @@ ul#views-display-menu-tabs li {
 }
 
 .views-ui-display-tab-bucket {
-  border: 0px solid transparent;
   line-height: inherit;
   padding-top: 0px;
 }
 
-.views-ui-display-tab-bucket + .views-ui-display-tab-bucket {
-  border-top: 0px solid transparent;
-}
 .views-ui-display-tab-bucket > h3,
 .views-ui-display-tab-bucket > .views-display-setting {
   padding: inherit;
@@ -3271,6 +3263,7 @@ ul#views-display-menu-tabs li {
   font-weight: 900;
   border-top: 1px solid #ddd;
   padding: .5em 0 0;
+  text-align: left;
 }
 .views-ui-display-tab-bucket .horizontal.actions {
   margin-right: 0px;
@@ -3301,6 +3294,19 @@ ul#views-display-menu-tabs li {
 .views-display-setting .views-ajax-link {
   margin-left: 0em;
   margin-right: 0em;
+}
+.views-display-setting .views-ajax-link .views-field-relationship {
+  width: 100%;
+  float: left;
+  font-size: .8em;
+  color: #333;
+  margin-bottom: 5px;
+}
+.views-display-setting .views-ajax-link .views-field-relationship:before {
+  content: "(";
+}
+.views-display-setting .views-ajax-link .views-field-relationship:after {
+  content: ")";
 }
 .views-display-setting .label {
   margin-right: .5em;
@@ -3692,7 +3698,7 @@ div.dashboard-block {
 }
 
 dl.page-manager-wizards {
-  background: url('../images/list-item.png?1376700820') no-repeat scroll 0 0 transparent;
+  background: url('../images/list-item.png?1430323676') no-repeat scroll 0 0 transparent;
   margin: 0 0 1em;
   padding: 0 0 0 2.5em;
 }
@@ -4352,7 +4358,19 @@ code strong {
   }
 
   #tab-bar {
-    display: none;
+    display: block;
+  }
+  #tab-bar li {
+    width: 100%;
+    border-bottom: 1px solid #ccc;
+    margin-bottom: 5px;
+    margin-top: 5px;
+  }
+  #tab-bar li:last-child {
+    border-bottom: none;
+  }
+  #tab-bar li.active {
+    border-bottom: 2px solid #f05724;
   }
 
   /* dashboard */
@@ -4539,4 +4557,9 @@ a.active {
 
 .update table.version .version-links {
   text-align: left;
+}
+
+.rules-elements-table ul.rules-operations li, ul.rules-operations-add li {
+  padding-right: 10px;
+  font-size: 1em;
 }

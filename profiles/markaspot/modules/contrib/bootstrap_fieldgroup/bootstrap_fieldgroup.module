@@ -24,6 +24,10 @@ function bootstrap_fieldgroup_theme() {
       'template' => 'templates/bootstrap-fieldgroup-nav',
       'variables' => array('items' => array(), 'group' => NULL),
     ),
+    'bootstrap_fieldgroup_accordion' => array(
+      'template' => 'templates/bootstrap-fieldgroup-accordion',
+      'variables' => array('items' => array(), 'group' => NULL),
+    ),
   );
 }
 
@@ -45,18 +49,49 @@ function bootstrap_fieldgroup_field_group_formatter_info() {
     'instance_settings' => array('classes' => ''),
   );
 
-  $formatters['bootstrap_accordion'] = array(
+  $formatters['bootstrap_fieldgroup_accordion'] = array(
     'label' => t('Bootstrap Accordion group'),
     'description' => t('This fieldgroup renders child groups as Bootstrap Accordion.'),
     'instance_settings' => array('classes' => '', 'id' => ''),
   );
 
-  $formatters['bootstrap_accordion_item'] = array(
+  $formatters['bootstrap_fieldgroup_accordion_item'] = array(
     'label' => t('Bootstrap Accordion item'),
     'format_types' => array('open', 'closed'),
     'description' => t('This fieldgroup renders the contentin a div, part of Bootstrap Accordion group.'),
     'default_formatter' => 'closed',
     'instance_settings' => array('classes' => ''),
+  );
+
+  $formatters['bootstrap_grid_row'] = array(
+    'label' => t('Bootstrap Grid Row'),
+    'description' => t('This fieldgroup renders a Bootstrap row that is meant to include Bootstrap columns as child groups. It can optionally render a heading (title and description) as a child column.'),
+    'instance_settings' => array(
+      'classes' => '',
+      'show_heading' => 0,
+      'heading_position' => 0,
+      'label_element' => 'h3',
+      'description_element' => 'p',
+      'description' => '',
+      'panelize' => 0,
+      'bootstrap_grid_col_xs' => '',
+      'bootstrap_grid_col_sm' => '',
+      'bootstrap_grid_col_md' => '',
+      'bootstrap_grid_col_lg' => '',
+    ),
+  );
+
+  $formatters['bootstrap_grid_col'] = array(
+    'label' => t('Bootstrap Grid Column'),
+    'description' => t('This fieldgroup renders the content inside a Bootstrap column with the specified column classes. It can optionally wrap the fields inside a panel.'),
+    'instance_settings' => array(
+      'classes' => '',
+      'panelize' => 0,
+      'bootstrap_grid_col_xs' => '',
+      'bootstrap_grid_col_sm' => '',
+      'bootstrap_grid_col_md' => '',
+      'bootstrap_grid_col_lg' => '',
+    ),
   );
 
   foreach (array_keys($formatters) as $key) {
@@ -146,9 +181,69 @@ function bootstrap_fieldgroup_field_group_format_settings($group) {
 
       break;
 
-    case 'bootstrap_accordion':
-    case 'bootstrap_accordion_item':
+    case 'bootstrap_fieldgroup_accordion':
+    case 'bootstrap_fieldgroup_accordion_item':
       // For now - not use any optional instance_settings.
+      break;
+
+    case 'bootstrap_grid_row':
+      $form['instance_settings']['show_heading'] = array(
+        '#title' => t('Show heading'),
+        '#type' => 'select',
+        '#options' => array(0 => t('No'), 1 => t('Yes')),
+        '#default_value' => isset($group->format_settings['instance_settings']['show_heading']) ? $group->format_settings['instance_settings']['show_heading'] : $formatter['instance_settings']['show_heading'],
+        '#weight' => 1,
+      );
+
+      $form['instance_settings']['heading_position'] = array(
+        '#title' => t('Heading Position'),
+        '#type' => 'select',
+        '#options' => array(0 => t('Left'), 1 => t('Right')),
+        '#default_value' => isset($group->format_settings['instance_settings']['heading_position']) ? $group->format_settings['instance_settings']['heading_position'] : $formatter['instance_settings']['heading_position'],
+        '#weight' => 1,
+      );
+
+      $form['instance_settings']['label_element'] = array(
+        '#title' => t('Label element'),
+        '#type' => 'textfield',
+        '#default_value' => isset($group->format_settings['instance_settings']['label_element']) ? $group->format_settings['instance_settings']['label_element'] : $formatter['instance_settings']['label_element'],
+        '#weight' => 1,
+      );
+
+      $form['instance_settings']['description_element'] = array(
+        '#title' => t('Description element'),
+        '#type' => 'textfield',
+        '#default_value' => isset($group->format_settings['instance_settings']['description_element']) ? $group->format_settings['instance_settings']['description_element'] : $formatter['instance_settings']['description_element'],
+        '#weight' => 1,
+      );
+
+      $form['instance_settings']['panelize'] = array(
+        '#title' => t('Embed in a panel'),
+        '#type' => 'select',
+        '#options' => array(0 => t('No'), 1 => t('Yes')),
+        '#default_value' => isset($group->format_settings['instance_settings']['panelize']) ? $group->format_settings['instance_settings']['panelize'] : $formatter['instance_settings']['panelize'],
+        '#weight' => 1,
+      );
+
+      $form['instance_settings']['bootstrap_grid_col_xs'] = _bootstrap_fieldgroup_grid_col_format_settings('xs', $group, $formatter, true);
+      $form['instance_settings']['bootstrap_grid_col_sm'] = _bootstrap_fieldgroup_grid_col_format_settings('sm', $group, $formatter, true);
+      $form['instance_settings']['bootstrap_grid_col_md'] = _bootstrap_fieldgroup_grid_col_format_settings('md', $group, $formatter, true);
+      $form['instance_settings']['bootstrap_grid_col_lg'] = _bootstrap_fieldgroup_grid_col_format_settings('lg', $group, $formatter, true);
+      break;
+
+    case 'bootstrap_grid_col':
+      $form['instance_settings']['panelize'] = array(
+        '#title' => t('Embed in a panel'),
+        '#type' => 'select',
+        '#options' => array(0 => t('No'), 1 => t('Yes')),
+        '#default_value' => isset($group->format_settings['instance_settings']['panelize']) ? $group->format_settings['instance_settings']['panelize'] : $formatter['instance_settings']['panelize'],
+        '#weight' => 1,
+      );
+
+      $form['instance_settings']['bootstrap_grid_col_xs'] = _bootstrap_fieldgroup_grid_col_format_settings('xs', $group, $formatter);
+      $form['instance_settings']['bootstrap_grid_col_sm'] = _bootstrap_fieldgroup_grid_col_format_settings('sm', $group, $formatter);
+      $form['instance_settings']['bootstrap_grid_col_md'] = _bootstrap_fieldgroup_grid_col_format_settings('md', $group, $formatter);
+      $form['instance_settings']['bootstrap_grid_col_lg'] = _bootstrap_fieldgroup_grid_col_format_settings('lg', $group, $formatter);
       break;
 
     default:
@@ -165,11 +260,16 @@ function bootstrap_fieldgroup_field_group_format_settings($group) {
  * @param $group The Field group object prepared for pre_render.
  * @param $form The root element or form.
  */
-function field_group_pre_render_bootstrap_accordion(&$element, $group, &$form) {
+function field_group_pre_render_bootstrap_fieldgroup_accordion(&$element, $group, &$form) {
+
   $element += array(
-    '#type' => 'markup',
-    '#prefix' => '<div class="panel-group ' . $group->classes . '" id="' . $element['#id'] . '">',
-    '#suffix' => '</div>',
+    '#type' => 'bootstrap_fieldgroup_accordion',
+    '#theme' => 'bootstrap_fieldgroup_accordion',
+    '#description' => $group->description,
+    '#parents' => array($group->parent_name),
+    '#attached' => array(
+      'js' => array(drupal_get_path('module', 'bootstrap_fieldgroup') . '/bootstrap_fieldgroup.js'),
+    ),
   );
 }
 
@@ -181,17 +281,14 @@ function field_group_pre_render_bootstrap_accordion(&$element, $group, &$form) {
  * @param $group The Field group object prepared for pre_render.
  * @param $form The root element or form.
  */
-function field_group_pre_render_bootstrap_accordion_item(&$element, $group, &$form) {
-
-  $group_parent_id = $form['#entity_type'] . '_' . $form['#bundle'] . '_' . $form['#view_mode'] . '_' . $group->parent_name;
-  $collapse = $group->format_settings['formatter'] == 'closed' ? ' collapse' : ' collapse in';
+function field_group_pre_render_bootstrap_fieldgroup_accordion_item(&$element, $group, &$form) {
 
   $element += array(
-    '#type' => 'markup',
-    '#prefix' => '<div class="panel panel-default ' . $group->classes . '"><div class="panel-heading"><h4 class="panel-title">
-    <a data-toggle="collapse" data-parent="#' . $group_parent_id . '" href="#' . $element['#id'] . '">' . check_plain(t($group->label)) . '</a>
-    </h4></div><div id="' . $element['#id'] . '" class="panel-collapse  ' . $group->classes . $collapse . '"><div class="panel-body">',
-    '#suffix' => '</div></div></div>',
+    '#type' => 'bootstrap_fieldgroup_accordion_item',
+    '#title' => check_plain(t($group->label)),
+    '#description' => $group->description,
+    '#weight' => $group->weight,
+    '#parents' => array($group->parent_name),
   );
 }
 
@@ -204,6 +301,7 @@ function bootstrap_fieldgroup_field_group_pre_render(&$element, $group, &$form) 
 
   switch ($group->format_type) {
 
+    case 'bootstrap_fieldgroup_accordion':
     case 'bootstrap_fieldgroup_nav':
 
       $items = array();
@@ -241,7 +339,7 @@ function field_group_pre_render_bootstrap_fieldgroup_nav(&$element, $group, &$fo
 function field_group_pre_render_bootstrap_fieldgroup_nav_item(&$element, $group, &$form) {
   $element += array(
     '#type' => 'bootstrap_fieldgroup_nav_item',
-    '#title' => check_plain($group->label),
+    '#title' => check_plain(t($group->label)),
     '#description' => $group->description,
     '#weight' => $group->weight,
     '#parents' => array($group->parent_name),
@@ -300,11 +398,21 @@ function template_preprocess_bootstrap_fieldgroup_nav(&$variables) {
 
     // Check if item is not empty and we have access to it.
     if ($item && (!isset($item['#access']) || $item['#access'])) {
-      $id = _bootstrap_fieldgroup_label_to_id($item['#title']);
+      $id = 'bootstrap-fieldgroup-nav-item--' . drupal_html_id($item['#title']);
+
+      // Is an explicit nav item?
+      if (!empty($item['#type']) && 'bootstrap_fieldgroup_nav_item' == $item['#type']) {
+        $classes = $item['#group']->classes;
+      }
+
+      // Otherwise, just a regular field under the nav.
+      else {
+        $classes = '';
+      }
 
       $variables['navs'][] = array(
         'content' => l(
-          $item['#title'],
+          check_plain(t($item['#title'])),
           NULL,
           array(
             'attributes' => array(
@@ -315,7 +423,7 @@ function template_preprocess_bootstrap_fieldgroup_nav(&$variables) {
             'html' => TRUE,
           )
         ),
-        'classes' => $item['#group']->classes,
+        'classes' => $classes,
       );
 
       $variables['panes'][] = array(
@@ -327,13 +435,226 @@ function template_preprocess_bootstrap_fieldgroup_nav(&$variables) {
 
   // Config?
   $variables['active'] = 0;
-
-  $variables['is_empty'] = !(count($variables['navs']) && count($variables['panes']));
+  $variables['is_empty'] = empty($variables['navs']) && empty($variables['panes']);
+  $variables['is_single'] = (count($variables['navs']) == 1);
 }
 
 /**
- * Convert a group label to a usable HTML id attribute.
+ * Implements template_preprocess_bootstrap_tabs().
+ * @param $variables
  */
-function _bootstrap_fieldgroup_label_to_id($title) {
-  return preg_replace('/\PL/u', '-', drupal_strtolower($title));
+function template_preprocess_bootstrap_fieldgroup_accordion(&$variables) {
+
+  $group = &$variables['group'];
+
+  $variables['classes'] = $variables['group']->classes;
+  $variables['id'] = 'bootstrap-fieldgroup-accordion--' . drupal_html_id($variables['group']->label);
+
+  uasort($variables['items'], 'element_sort');
+  foreach ($variables['items'] as $key => $item) {
+
+    // Check if item is not empty and we have access to it.
+    if ($item && (!isset($item['#access']) || $item['#access'])) {
+      $id = 'bootstrap-fieldgroup-accordion-item--' . drupal_html_id($item['#title']);
+
+      // Is an explicit accordion item?
+      if (!empty($item['#type']) && 'bootstrap_fieldgroup_accordion_item' == $item['#type']) {
+        $classes = $item['#group']->classes;
+      }
+
+      // Otherwise, just a regular field.
+      else {
+        $classes = '';
+      }
+
+      $variables['panels'][] = array(
+        'classes' => $classes,
+        'id' => $id,
+        'label' => check_plain(t($item['#title'])),
+        'collapse' => (!isset($item['#group']) || $item['#group']->format_settings['formatter'] == 'closed') ? 'collapse' : 'collapse in',
+        'content' => drupal_render($item),
+      );
+    }
+  }
+
+  // Config?
+  $variables['active'] = 0;
+  $variables['is_empty'] = empty($variables['panels']);
+  $variables['is_single'] = (count($variables['panels']) == 1);
+}
+
+/**
+ * Implements field_group_pre_render_<format-type>.
+ * Format type: Bootstrap Grid Row.
+ *
+ * @param $element The field group form element.
+ * @param $group The Field group object prepared for pre_render.
+ * @param $form The root element or form.
+ */
+function field_group_pre_render_bootstrap_grid_row(&$element, $group, &$form) {
+  // Get the textual format of the the options available (xs, sm, md, lg).
+  $screen_size_texts = _bootstrap_grid_col_screens();
+
+  $settings = $group->format_settings['instance_settings'];
+
+  // Add only the classes defined in the field group configuration. The rest
+  // will be omitted.
+  $col_classes = '';
+  foreach ($screen_size_texts as $screen_size => $text) {
+    if (!empty($settings['bootstrap_grid_col_' . $screen_size])) {
+      $col_classes .= 'col-' . $screen_size . '-' . $settings['bootstrap_grid_col_' . $screen_size] . ' ';
+    }
+  }
+
+  $prefix = '<div class="row ' . $group->classes . '">';
+  $suffix = '</div>';
+
+  // Wrap the fields in a panel if the panelize option is set to 1.
+  // The panel needs to be wrapped in a column so that margins align correctly.
+  if ($settings['panelize']) {
+    $prefix .= '<div class="col-xs-12"><div class="panel panel-default"><div class="panel-body">';
+    $suffix .= '</div></div></div>';
+  }
+
+  // If the show_heading configuration option is set to 1, add a column to
+  // display the title and the description of the field group.
+  if ($settings['show_heading']) {
+    // If heading_position is 1, render the column after sub-groups so that it
+    // shows on the right.
+    if ($settings['heading_position']) {
+      $suffix = '<div class="' . $col_classes . 'field-group-bootstrap_grid_row-heading">' .
+        '<' . $settings['label_element'] . '>' . check_plain(t($group->label)) . '</' . $settings['label_element'] . '>' .
+        '<' . $settings['description_element'] . '>' . $group->description . '</' . $settings['description_element'] . '>' .
+        '</div>' .
+        $suffix;
+    }
+    // If heading_position is 0, render the column before sub-groups so that it
+    // shows on the left.
+    else {
+      $prefix .= '<div class="' . $col_classes . 'field-group-bootstrap_grid_row-heading">' .
+        '<' . $settings['label_element'] . '>' . check_plain(t($group->label)) . '</' . $settings['label_element'] . '>' .
+        '<' . $settings['description_element'] . '>' . $group->description . '</' . $settings['description_element'] . '>' .
+        '</div>';
+    }
+  }
+
+  $element += array(
+    '#type' => 'markup',
+    '#prefix' => $prefix,
+    '#suffix' => $suffix,
+  );
+}
+
+/**
+ * Implements field_group_pre_render_<format-type>.
+ * Format type: Bootstrap Grid Column.
+ *
+ * @param $element The field group form element.
+ * @param $group The Field group object prepared for pre_render.
+ * @param $form The root element or form.
+ */
+function field_group_pre_render_bootstrap_grid_col(&$element, $group, &$form) {
+  // Get the textual format of the the options available (xs, sm, md, lg).
+  $screen_size_texts = _bootstrap_grid_col_screens();
+
+  $settings = $group->format_settings['instance_settings'];
+
+  // Add only the classes defined in the field group configuration. The rest
+  // will be omitted.
+  $col_classes = '';
+  foreach ($screen_size_texts as $screen_size => $text) {
+    if (!empty($settings['bootstrap_grid_col_' . $screen_size])) {
+      $col_classes .= 'col-' . $screen_size . '-' . $settings['bootstrap_grid_col_' . $screen_size] . ' ';
+    }
+  }
+
+  $prefix = '<div class="' . $col_classes . $group->classes . '">';
+  $suffix = '</div>';
+
+  // Wrap the fields in a panel if the panelize option is set to 1.
+  if ($settings['panelize']) {
+    $prefix .= '<div class="panel panel-default"><div class="panel-body">';
+    $suffix .= '</div></div>';
+  }
+
+  $element += array(
+    '#type' => 'markup',
+    '#prefix' => $prefix,
+    '#suffix' => $suffix,
+  );
+}
+
+/**
+ * Helper function that returns the format settings array for the
+ * bootstrap_grid_col_[xs,sm,md,lg] options used in bootstrap_grid_row and
+ * bootstrap_grid_col field group format types.
+ *
+ * @params string $screen The screen to which the option relates to (xs,sm,md,lg).
+ * @params object $group The Field group object.
+ * @params array $formatter The formatter used for the field group.
+ * @params boolean $is_for_heading Whether the options are for rendering the heading in a Bootstrap Grid Row
+ *                                 or for the fields in a Bootstrap Grid Column.
+ */
+function _bootstrap_fieldgroup_grid_col_format_settings($type, $group, $formatter, $is_for_heading = FALSE) {
+  $screen_size_texts = _bootstrap_grid_col_screens();
+
+  $title = t('The number of columns the fieldgroup should span for ' . $screen_size_texts[$type] . ' screens.');
+
+  if ($is_for_heading) {
+    $title = t('The number of columns the heading of the fieldgroup should span for ' . $screen_size_texts[$type] . ' screens.');
+  }
+
+  return array(
+    '#title' => $title,
+    '#type' => 'select',
+    '#options' => _bootstrap_grid_col_options(),
+    '#default_value' => isset($group->format_settings['instance_settings']['bootstrap_grid_col_' . $type]) ? $group->format_settings['instance_settings']['bootstrap_grid_col_' . $type] : $formatter['instance_settings']['bootstrap_grid_col_' . $type],
+  );
+}
+
+/**
+ * Returns the choices available for the bootstrap_grid_col_[xs,sm,md,lg]
+ * configuration options. Provided by a function to avoid hardcoding them in
+ * multiple places in the code.
+ */
+function _bootstrap_grid_col_options() {
+  static $options;
+  if (!isset($options)) {
+    $options = array(
+      0 => null,
+      1 => '1',
+      2 => '2',
+      3 => '3',
+      4 => '4',
+      5 => '5',
+      6 => '6',
+      7 => '7',
+      8 => '8',
+      9 => '9',
+      10 => '10',
+      11 => '11',
+      12 => '12',
+    );
+  }
+
+  return $options;
+}
+
+/**
+ * Returns the class values suffices available for the bootstrap_grid_col_[xs,sm,md,lg]
+ * configuration options. Provided by a function to avoid hardcoding them in
+ * multiple places in the code.
+ */
+function _bootstrap_grid_col_screens() {
+  static $screens;
+  if (!isset($screens)) {
+    $screens = array(
+      'xs' => 'extra small',
+      'sm' => 'small',
+      'md' => 'medium',
+      'lg' => 'large',
+    );
+  }
+
+  return $screens;
 }

@@ -307,11 +307,7 @@ class views_plugin_style_geojson extends views_plugin_style {
       $json = $this->options['jsonp_prefix'] . "($json)";
     }
 
-    if (empty($this->view->preview)) {
-      // Change the content type header since we're sending a JSON response.
-      $content_type = ($this->options['content_type'] == 'default') ? 'application/json' : $this->options['content_type'];
-      drupal_add_http_header("Content-Type", "$content_type; charset=utf-8");
-    } else {
+    if (!empty($this->view->preview)) {
       // Pretty-print the JSON. This only works for 'page' displays.
       $json = _views_geojson_encode_formatted($features);
       if (!empty($this->options['jsonp_prefix'])) {
@@ -321,12 +317,15 @@ class views_plugin_style_geojson extends views_plugin_style {
         $json = "<pre>$json</pre>";
       }
     }
+    else if ($this->display->display_plugin == 'page' && !$this->options['using_views_api_mode']) {
+      // Change the content type header since we're sending a JSON response.
+      $content_type = ($this->options['content_type'] == 'default') ? 'application/json' : $this->options['content_type'];
+      drupal_add_http_header("Content-Type", "$content_type; charset=utf-8");
 
-    if (empty($this->view->preview) && $this->display->display_plugin == 'page' && !$this->options['using_views_api_mode']) {
       // Page display prints and exits; this is BAD (prevents caching) but
       // supports legacy configurations.
       print $json;
-      exit;
+      drupal_exit();
     }
 
     // Everything else returns output.

@@ -295,6 +295,32 @@ function mark_a_spot_admin_default_page_manager_handlers() {
     $pane->uuid = '66eba5c1-a9b4-40b0-84c2-d52a8f02d23b';
     $display->content['new-66eba5c1-a9b4-40b0-84c2-d52a8f02d23b'] = $pane;
     $display->panels['right_above'][3] = 'new-66eba5c1-a9b4-40b0-84c2-d52a8f02d23b';
+    $pane = new stdClass();
+    $pane->pid = 'new-345334f2-0c23-41cb-a678-6913ba4e2f9e';
+    $pane->panel = 'right_above';
+    $pane->type = 'entity_form_field';
+    $pane->subtype = 'node:field_jurisdiction';
+    $pane->shown = TRUE;
+    $pane->access = array();
+    $pane->configuration = array(
+      'label' => '',
+      'formatter' => '',
+      'context' => 'argument_node_edit_1',
+      'override_title' => 0,
+      'override_title_text' => '',
+      'override_title_heading' => 'h2',
+    );
+    $pane->cache = array();
+    $pane->style = array(
+      'settings' => NULL,
+    );
+    $pane->css = array();
+    $pane->extras = array();
+    $pane->position = 4;
+    $pane->locks = array();
+    $pane->uuid = '345334f2-0c23-41cb-a678-6913ba4e2f9e';
+    $display->content['new-345334f2-0c23-41cb-a678-6913ba4e2f9e'] = $pane;
+    $display->panels['right_above'][4] = 'new-345334f2-0c23-41cb-a678-6913ba4e2f9e';
   $display->hide_title = PANELS_TITLE_FIXED;
   $display->title_pane = 'new-63c1b65f-497a-4ed9-b4f5-ac056fafd003';
   $handler->conf['display'] = $display;

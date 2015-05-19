@@ -13,18 +13,18 @@
     <div class="navbar navbar-inverse" role="navigation">
       <div class="container-fluid">
         <div class="navbar-header">
-        <?php if ($logo): ?>
-          <a class="logo navbar-btn pull-left" href="<?php print $front_page; ?>" title="<?php print t('Home'); ?>">
-            <img src="<?php print $logo; ?>" alt="<?php print t('Home'); ?>" />
-          </a>
-         <?php endif; ?>
+          <?php if ($logo): ?>
+            <a class="logo navbar-btn pull-left" href="<?php print $front_page; ?>" title="<?php print t('Home'); ?>">
+              <img src="<?php print $logo; ?>" alt="<?php print t('Home'); ?>" />
+            </a>
+          <?php endif; ?>
 
-        <?php if (!empty($site_name)): ?>
-          <a class="name navbar-brand" href="<?php print $front_page; ?>" title="<?php print t('Home'); ?>"><?php print $site_name; ?></a>
+          <?php if (!empty($site_name)): ?>
+            <a class="name navbar-brand" href="<?php print $front_page; ?>" title="<?php print t('Home'); ?>"><?php print $site_name; ?></a>
           <?php endif; ?>
 
           <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
-          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
             <span class="sr-only">Toggle navigation</span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
@@ -63,25 +63,19 @@
       <div class="col-md-7">
         <div class="welcome-text well">
           <?php
-            // If you don't want bootstrap carousel to welcome visitors
-            // you can use this block:
-            $block = module_invoke('markaspot_default_content', 'block_view', 'welcome');
-            print render($block['content']);
+            print render($page['front_welcome_text']);
           ?>
         </div>
         <div class="welcome">
           <?php
-            $block = module_invoke('markaspot_default_content', 'block_view', 'add_reports');
-            print render($block['content']);
-          ?>
-          <?php
-            $block = module_invoke('markaspot_default_content', 'block_view', 'watch_reports');
-            print render($block['content']);
+            print render($page['front_welcome_buttons']);
           ?>
         </div>
       </div>
-      <div class="col-md-4 col-md-offset-1 thumbnail">
-        <img class="img-responsive" src="profiles/markaspot/themes/mas/images/flickr_by_realname_garbage-tonal-decay.jpg" alt="" width="720" height="480">
+      <div class="col-md-4 col-md-offset-1">
+        <?php
+           print render($page['front_image']);
+        ?>
       </div>
     </div>
   </div>
@@ -117,7 +111,7 @@
         <ul class="action-links"><?php print render($action_links); ?></ul>
       <?php endif; ?>
 
-      <div class="media gallery">
+      <div class="well clearfix gallery">
         <h3>
           <?php print t('Reports with Media'); ?>
         </h3>

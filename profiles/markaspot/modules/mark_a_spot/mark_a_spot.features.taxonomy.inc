@@ -33,5 +33,13 @@ function mark_a_spot_taxonomy_default_vocabularies() {
       'module' => 'taxonomy',
       'weight' => 0,
     ),
+    'jurisdiction' => array(
+      'name' => 'Jurisdiction',
+      'machine_name' => 'jurisdiction',
+      'description' => 'Allow this platform to distinguish multiple jurisdictions within one API endpoint',
+      'hierarchy' => 0,
+      'module' => 'taxonomy',
+      'weight' => 0,
+    ),
   );
 }

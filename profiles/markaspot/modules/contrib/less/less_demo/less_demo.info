@@ -1,0 +1,30 @@
+
+name = "LESS CSS Preprocessor - DEMO"
+description = "Demonstrate LESS module functionality and implementation examples."
+
+core = 7.x
+
+dependencies[] = less
+
+configure = admin/config/development/less/demo
+
+; Sheets with .less extension will automatically receive variables below.
+stylesheets[all][] = styles/less_demo.info.css.less
+
+; Variables defined here will automatically be available inside sheets
+; registered to this module.
+; Variables are lazy evaluated, so they don't have to be defined in order.
+less[vars][@gradient_end]   = darken(@gradient_start, 10%);
+less[vars][@gradient_start] = #0779bf;
+less[vars][@text_glow]      = lighten(@gradient_start, 10%);
+
+; Register non-global sheets to automatically receive variables associated with
+; this module.
+less[sheets][] = styles/less_demo.drupal_add_css.css.less
+
+; Information added by Drupal.org packaging script on 2015-01-30
+version = "7.x-4.0"
+core = "7.x"
+project = "less"
+datestamp = "1422653011"
+

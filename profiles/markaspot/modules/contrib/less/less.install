@@ -1,0 +1,71 @@
+<?php
+
+/**
+ * @file
+ * Install, update, and uninstall functions for the less module.
+ */
+ 
+/**
+ * Implements hook_uninstall().
+ */
+function less_uninstall() {
+  
+  variable_del('less_engine');
+  
+  variable_del(LESS_DEVEL);
+  variable_del(LESS_WATCH);
+  variable_del(LESS_SOURCE_MAPS);
+  
+  variable_del('less_dir');
+  
+  cache_clear_all('less:', 'cache', TRUE);
+}
+
+/**
+ * Implements hook_requirements().
+ */
+function less_requirements($phase) {
+  $requirements = array();
+  
+  $t = get_t();
+  
+  switch ($phase) {
+    case 'runtime':
+      
+      $less_engine_loaded = _less_inc();
+
+      if (!empty($less_engine_loaded)) {
+        
+        $loaded_engine = libraries_detect($less_engine_loaded);
+        
+        $requirements['less_version'] = array(
+          'title' => $t('LESS'),
+          'value' => $loaded_engine['name'] . ' - v' . $loaded_engine['version'],
+          'description' => $t('To check for newer versions go to <a href="@vendor_url" target="_blank">@vendor_url</a>.', array('@vendor_url' => $loaded_engine['vendor url'])),
+          'severity' => REQUIREMENT_OK,
+        );
+      }
+      else {
+        $requirements['less_library'] = array(
+          'title' => $t('LESS'),
+          'value' => '',
+          'description' => $t('A LESS library was not detected. Please follow the instructions on the <a href="!url" target="_blank">LESS project page</a> to install the a LESS library.', array("!url" => url('https://drupal.org/project/less'))),
+          'severity' => REQUIREMENT_ERROR,
+        );
+      }
+      if (variable_get(LESS_DEVEL, FALSE)) {
+        $requirements[LESS_DEVEL] = array(
+          'title' => 'LESS developer mode',
+          'value' => $t('Enabled'),
+          'description' => $t('LESS files are being checked on every request. Remember to <a href="!url">turn off</a> this feature on production websites.', array("!url" => url('admin/config/development/less'))),
+          'severity' => REQUIREMENT_WARNING,
+        );
+      }
+      break;
+      
+    default:
+      break;
+  }
+  
+  return $requirements;
+}

@@ -46,7 +46,10 @@
     </div>
   </div>
 </div>
-<div id="map" style="width:100%; height:100%"> </div>
+<div id="page-map">
+  <?php print render($page['map']); ?>
+  <div id="map"> </div>
+</div>
 <div>
   <header role="banner" id="page-header">
     <?php if (!empty($site_slogan)): ?>

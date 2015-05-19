@@ -1,0 +1,75 @@
+<?php
+
+/**
+ * @file imageblock.install
+ * Contains install and update functions for Image Block module.
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function imageblock_schema() {
+  $schema = array();
+  $schema['imageblock'] = array(
+    'description' => 'Stores contents of custom-made image blocks.',
+    'fields' => array(
+      'bid' => array(
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'description' => "The block's {block}.bid.",
+      ),
+      'body' => array(
+        'type' => 'text',
+        'not null' => FALSE,
+        'size' => 'big',
+        'description' => 'Block contents.',
+        'translatable' => TRUE,
+      ),
+      'info' => array(
+        'type' => 'varchar',
+        'length' => 128,
+        'not null' => TRUE,
+        'default' => '',
+        'description' => 'Block description.',
+      ),
+      'format' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+        'description' => 'The {filter_format}.format of the block body.',
+      ),
+      'fid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+        'description' => "The File's {files}.fid.",
+      ),
+      'data' => array(
+        'type' => 'text',
+        'not null' => FALSE,
+        'size' => 'big',
+        'description' => 'A serialized array of name value pairs that are related to the block file.',
+      ),
+    ),
+    'unique keys' => array(
+      'info' => array('info'),
+    ),
+    'indexes' => array(
+      'fid' => array('fid'),
+    ),
+    'primary key' => array('bid'),
+  );
+  
+  return $schema;
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function imageblock_uninstall() {
+  variable_del('imageblock_max_file_size');
+  variable_del('imageblock_max_dimensions');
+  variable_del('imageblock_image_path');
+}

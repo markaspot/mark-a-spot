@@ -6,9 +6,9 @@ dependencies[] = views
 
 files[] = views/plugins/views_plugin_style_xml.inc
 
-; Information added by Drupal.org packaging script on 2014-12-19
-version = "7.x-1.0-alpha1"
+; Information added by Drupal.org packaging script on 2015-02-13
+version = "7.x-1.0-alpha2"
 core = "7.x"
 project = "views_datasource"
-datestamp = "1418968383"
+datestamp = "1423859528"
 

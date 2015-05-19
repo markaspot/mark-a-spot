@@ -336,6 +336,8 @@ function markaspot_install_content() {
   $operations[] = array('_markaspot_create_categories', array(t('Create categories.')));
   // Saving taxonomies for status:
   $operations[] = array('_markaspot_create_status', array(t('Create status.')));
+  // Saving taxonomies for jurisdiction:
+  $operations[] = array('_markaspot_create_jurisdiction', array(t('Create jurisdictions.')));
   // Creating example node:
   $operations[] = array('_markaspot_create_reports', array(t('Create example reports')));
   // Activating blocks:

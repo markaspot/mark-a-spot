@@ -64,8 +64,7 @@ function icon_filter_preprocess_field(&$variables) {
       if (!empty($item['format']) && ($filters = filter_list_format($item['format'])) && !empty($filters['icon']->status)) {
         if (preg_match_all(ICON_FILTER_REGEX, $item['value'], $matches, PREG_SET_ORDER)) {
           foreach ($matches as $match) {
-            if (!isset($icons[$match[0]])) {
-              $bundle = icon_bundle_load($match[1]);
+            if (!isset($icons[$match[0]]) && ($bundle = icon_bundle_load($match[1]))) {
               icon_process_attached($bundle);
             }
           }

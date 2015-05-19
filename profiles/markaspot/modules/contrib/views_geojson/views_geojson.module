@@ -16,6 +16,16 @@ function views_geojson_views_api() {
 }
 
 /**
+ * Implements hook_ctools_plugin_api().
+ */
+function views_geojson_ctools_plugin_api($module, $api) {
+  return array(
+    'version' => 1,
+    'path' => drupal_get_path('module', 'views_geojson') . '/includes',
+  );
+}
+
+/**
  * Takes each field from a row object and renders the field as determined by the field's theme.
  *
  * @param $view
@@ -205,15 +215,3 @@ function _views_geojson_encode_formatted($json) {
 
   return $result;
 }
-
-/**
- * Implements hook_ctools_plugin_api().
- */
-function views_geojson_ctools_plugin_api($module, $api) {
-  $path = drupal_get_path('module', 'views_geojson') . '/includes';
-  return array(
-    'version' => 1,
-    'path' => $path
-  );
-}
-

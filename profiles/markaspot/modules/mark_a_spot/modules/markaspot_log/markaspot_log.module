@@ -153,7 +153,9 @@ function markaspot_log_node_insert($node) {
   $data->created = time();
   $data->modified = time();
 
-  markaspot_log_write_log($data);
+  if(isset($data->message)){
+    markaspot_log_write_log($data);
+  }
 }
 
 
@@ -164,7 +166,7 @@ function markaspot_log_node_update($node) {
   $data = new stdClass();
   global $user;
 
-  if (!in_array('Management', $user->roles) || !in_array('administrator', $user->roles) && $node->type == 'report') {
+  if (in_array('Citizen', $user->roles)  && $node->type == 'report') {
 
     if ($node->nid) {
       $data = array(
@@ -176,12 +178,16 @@ function markaspot_log_node_update($node) {
   }
 
   if (in_array('administrator', $user->roles) ||
-    in_array('Management', $user->roles) || in_array('City Admin', $user->roles)) {
+      in_array('Management', $user->roles) || in_array('City Admin', $user->roles)) {
+
+    // Get report status for coloring log label.
+    $tids = array_values(variable_get('markaspot_logic_open311_status_closed'));
+    $level = (in_array($node->field_status[LANGUAGE_NONE][0]['tid'], $tids)) ? 'success' : 'warning';
 
     if ($node->nid) {
       $data = array(
         'message' => t('The report has been edited by City Administration'),
-        'level'  => 'success',
+        'level'  => $level,
         'css_class'   => 'check',
       );
     }
@@ -195,7 +201,9 @@ function markaspot_log_node_update($node) {
 
   $data->created = time();
   $data->modified = time();
-  markaspot_log_write_log($data);
+  if(isset($data->message)){
+    markaspot_log_write_log($data);
+  }
 }
 
 /**

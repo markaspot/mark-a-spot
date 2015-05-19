@@ -129,7 +129,7 @@ function mark_a_spot_field_default_field_instances() {
     'required' => 0,
     'settings' => array(
       'display_summary' => 0,
-      'text_processing' => 1,
+      'text_processing' => 0,
       'user_register_form' => FALSE,
     ),
     'widget' => array(
@@ -662,6 +662,54 @@ function mark_a_spot_field_default_field_instances() {
     ),
   );
 
+  // Exported field_instance: 'node-report-field_jurisdiction'
+  $field_instances['node-report-field_jurisdiction'] = array(
+    'bundle' => 'report',
+    'default_value' => NULL,
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      'default' => array(
+        'label' => 'above',
+        'module' => 'taxonomy',
+        'settings' => array(
+          'field_formatter_class' => '',
+        ),
+        'type' => 'taxonomy_term_reference_link',
+        'weight' => 12,
+      ),
+      'report_list' => array(
+        'label' => 'above',
+        'module' => 'taxonomy',
+        'settings' => array(
+          'field_formatter_class' => '',
+        ),
+        'type' => 'taxonomy_term_reference_plain',
+        'weight' => 0,
+      ),
+      'teaser' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+    ),
+    'entity_type' => 'node',
+    'field_name' => 'field_jurisdiction',
+    'label' => 'Jurisdiction',
+    'required' => 0,
+    'settings' => array(
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'active' => 1,
+      'module' => 'options',
+      'settings' => array(),
+      'type' => 'options_select',
+      'weight' => 21,
+    ),
+  );
+
   // Exported field_instance: 'node-report-field_notes'
   $field_instances['node-report-field_notes'] = array(
     'bundle' => 'report',
@@ -1153,6 +1201,41 @@ function mark_a_spot_field_default_field_instances() {
     ),
   );
 
+  // Exported field_instance: 'taxonomy_term-jurisdiction-field_jurisdiction_id'
+  $field_instances['taxonomy_term-jurisdiction-field_jurisdiction_id'] = array(
+    'bundle' => 'jurisdiction',
+    'default_value' => NULL,
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      'default' => array(
+        'label' => 'above',
+        'module' => 'text',
+        'settings' => array(
+          'field_formatter_class' => '',
+        ),
+        'type' => 'text_default',
+        'weight' => 0,
+      ),
+    ),
+    'entity_type' => 'taxonomy_term',
+    'field_name' => 'field_jurisdiction_id',
+    'label' => 'jurisdiction_id',
+    'required' => FALSE,
+    'settings' => array(
+      'text_processing' => 0,
+      'user_register_form' => FALSE,
+    ),
+    'widget' => array(
+      'module' => 'text',
+      'settings' => array(
+        'size' => 60,
+      ),
+      'type' => 'text_textfield',
+      'weight' => 31,
+    ),
+  );
+
   // Exported field_instance: 'taxonomy_term-status-field_status_hex'
   $field_instances['taxonomy_term-status-field_status_hex'] = array(
     'bundle' => 'status',
@@ -1270,6 +1353,7 @@ function mark_a_spot_field_default_field_instances() {
   t('Icon');
   t('Image');
   t('Internal Notes');
+  t('Jurisdiction');
   t('Keywords');
   t('Marker and Background Color');
   t('Notify User?');
@@ -1280,6 +1364,7 @@ function mark_a_spot_field_default_field_instances() {
   t('This field applies to the tweet311 module. A Twitter-hashtag that citizens may use, applying to a certain service/service code/category');
   t('This field can be used for attaching official documents');
   t('Use this field in case you want to enunciate something more freely');
+  t('jurisdiction_id');
 
   return $field_instances;
 }

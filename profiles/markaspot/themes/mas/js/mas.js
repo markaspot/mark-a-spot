@@ -45,7 +45,7 @@
     $('#edit-photo').hide();
 
     $('#edit-photo').on('click', function (e) {
-      $('.nav-tabs a[href=#---media]').tab('show');
+      $('.nav-tabs a[href=#bootstrap-fieldgroup-nav-item--3-media]').tab('show');
       $('#edit-submit').html(Drupal.t('Save'));
       $('#edit-photo').hide();
     });

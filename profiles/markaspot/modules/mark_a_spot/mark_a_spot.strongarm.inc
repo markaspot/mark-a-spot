@@ -97,6 +97,34 @@ function mark_a_spot_strongarm() {
   $strongarm = new stdClass();
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
+  $strongarm->name = 'colorizer_cssfile';
+  $strongarm->value = 'css/mas-colorizer.css';
+  $export['colorizer_cssfile'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'colorizer_incfile';
+  $strongarm->value = 'mas.colorizer.inc';
+  $export['colorizer_incfile'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'colorizer_mas_stylesheet';
+  $strongarm->value = 'public://colorizer/mas-1c0f353b.css';
+  $export['colorizer_mas_stylesheet'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'colorizer_previewfile';
+  $strongarm->value = 'colorizer.html';
+  $export['colorizer_previewfile'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
   $strongarm->name = 'comment_anonymous_report';
   $strongarm->value = 0;
   $export['comment_anonymous_report'] = $strongarm;
@@ -247,6 +275,48 @@ function mark_a_spot_strongarm() {
   $strongarm->name = 'language_content_type_statement';
   $strongarm->value = '0';
   $export['language_content_type_statement'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'less_autoprefixer';
+  $strongarm->value = FALSE;
+  $export['less_autoprefixer'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'less_devel';
+  $strongarm->value = 0;
+  $export['less_devel'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'less_dir';
+  $strongarm->value = 'Xy_h9VOg5pL2RyoHwE6P2L7TJ7Xvmz6xQBm42V6DaBU';
+  $export['less_dir'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'less_engine';
+  $strongarm->value = 'less.php';
+  $export['less_engine'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'less_source_maps';
+  $strongarm->value = 0;
+  $export['less_source_maps'] = $strongarm;
+
+  $strongarm = new stdClass();
+  $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
+  $strongarm->api_version = 1;
+  $strongarm->name = 'less_watch';
+  $strongarm->value = 0;
+  $export['less_watch'] = $strongarm;
 
   $strongarm = new stdClass();
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */

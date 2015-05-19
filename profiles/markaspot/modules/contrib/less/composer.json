@@ -1,0 +1,20 @@
+{
+  "name": "drupal/less",
+  "authors": [
+    {
+      "name": "corey.aufang",
+      "email": "corey.aufang@gmail.com"
+    }
+  ],
+  "type": "drupal-module",
+  "description": "Automatically process any LESS files that are added using drupal_add_css or added through your theme/module's .info file.",
+  "support": {
+    "issues": "https://drupal.org/project/issues/less",
+    "source": "https://drupal.org/project/less"
+  },
+  "license": "GPL-2.0",
+  "require": {
+    "oyejorge/less.php": "1.7.0.*"
+  },
+  "minimum-stability": "stable"
+}

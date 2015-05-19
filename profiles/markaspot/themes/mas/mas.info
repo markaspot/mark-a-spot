@@ -11,7 +11,11 @@ regions[navigation]     = 'Navigation'
 regions[header]         = 'Top Bar'
 regions[highlighted]    = 'Highlighted'
 regions[help]           = 'Help'
+regions[front_welcome_text]  = 'Front Page Welcome Text'
+regions[front_welcome_buttons]  = 'Front Page Welcome Buttons'
+regions[front_image]    = 'Front Page Image'
 regions[content]        = 'Content'
+regions[map]            = 'Map'
 regions[sidebar_first]  = 'Primary'
 regions[sidebar_second] = 'Secondary'
 regions[footer]         = 'Footer'
@@ -23,8 +27,7 @@ regions[page_bottom]    = 'Page bottom'
 ;; Stylesheets
 ;;;;;;;;;;;;;;;;;;;;;
 
-stylesheets[all][] = css/mas-style.css
-stylesheets[all][] = css/mas.css
+stylesheets[all][] = less/mas-style.less
 
 
 ; For information on choosing the desired method, please read the Drupal
@@ -59,15 +62,11 @@ settings[bootstrap_cdn] = ''
 
 scripts[] = 'js/mas.js'
 
-
 ; Global
 ; --------------
 settings[toggle_name] = 0
 settings[toggle_search] = 0
-
-; Information added by drush on 2015-02-13
-version = "7.x-2.7+20-dev"
-core = "7.x"
+; Information added by drush on 2015-05-19
+version = "7.x-2.8+0-dev"
 project = "markaspot"
-datestamp = "1423854221"
-
+datestamp = "1432049625"

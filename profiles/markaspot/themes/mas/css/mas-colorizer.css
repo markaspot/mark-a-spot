@@ -1,0 +1,45 @@
+body,
+body.overlay {
+  color: @text;
+  background: @bg;
+}
+
+.navbar {
+background-color: @bottom;
+background-image: -moz-linear-gradient(top, @top, @bottom);
+background-image: -webkit-gradient(linear, 0 0, 0 100%, from(@top), to(@bottom));
+background-image: -webkit-linear-gradient(top, @top, @bottom);
+background-image: -o-linear-gradient(top, @top, @bottom);
+background-image: linear-gradient(to bottom, @top, @bottom);
+border: none;
+box-shadow: none;
+color: @titleslogan;
+}
+a {
+  color: @link;
+}
+
+.navbar-inverse .navbar-nav > .active > a,
+.navbar-inverse .navbar-nav > .active > a:hover,
+.navbar-inverse .navbar-nav > .active > a:focus {
+   color: @link;
+   background-color: @toolbarbtn;
+ }
+
+a:hover,
+a:focus {
+  color: @linkhover;
+}
+a:active {
+  color: @linkactive;
+}
+.sidebar .block {
+  background-color: @sidebar;
+  border-color: @sidebarborders;
+}
+
+body footer.footer {
+  background-color: @footer;
+}
+
+

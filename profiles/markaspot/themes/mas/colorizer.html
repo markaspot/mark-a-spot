@@ -1,0 +1,274 @@
+
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head profile="http://www.w3.org/1999/xhtml/vocab">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="Generator" content="Drupal 7 (http://drupal.org)" />
+    <link rel="shortcut icon" href="/misc/favicon.ico" type="image/vnd.microsoft.icon" />
+    <title>Welcome to local.mas | local.mas</title>
+    <style>
+        @import url("/modules/system/system.base.css?nnpgdo");
+    </style>
+    <style>
+        @import url("/modules/contextual/contextual.css?nnpgdo");
+        @import url("/profiles/markaspot/modules/contrib/navbar/css/navbar.menu.css?nnpgdo");
+        @import url("/profiles/markaspot/modules/contrib/navbar/css/navbar.module.css?nnpgdo");
+        @import url("/profiles/markaspot/modules/contrib/navbar/css/navbar.theme.css?nnpgdo");
+        @import url("/profiles/markaspot/modules/contrib/navbar/css/navbar.icons.css?nnpgdo");
+    </style>
+    <style>
+        @import url("/modules/field/theme/field.css?nnpgdo");
+        @import url("/profiles/markaspot/modules/contrib/views/css/views.css?nnpgdo");
+        @import url("/profiles/markaspot/modules/contrib/ckeditor/css/ckeditor.css?nnpgdo");
+    </style>
+    <style>
+        @import url("/profiles/markaspot/modules/contrib/ctools/css/ctools.css?nnpgdo");
+        @import url("/profiles/markaspot/modules/contrib/panels/css/panels.css?nnpgdo");
+        @import url("/profiles/markaspot/libraries/Leaflet.awesome-markers/dist/leaflet.awesome-markers.css?nnpgdo");
+        @import url("/profiles/markaspot/libraries/leaflet/leaflet.css?nnpgdo");
+        @import url("/profiles/markaspot/libraries/Leaflet.markercluster/dist/MarkerCluster.css?nnpgdo");
+        @import url("/profiles/markaspot/libraries/Leaflet.markercluster/dist/MarkerCluster.Default.css?nnpgdo");
+        @import url("/sites/all/libraries/fontawesome/css/font-awesome.css?nnpgdo");
+        @import url("/profiles/markaspot/libraries/markaspot-font/style.css?nnpgdo");
+    </style>
+
+    <!--[if lte IE 8]>
+    <style>
+        @import url("/profiles/markaspot/libraries/leaflet-locatecontrol/dist/L.Control.Locate.min.css?nnpgdo");
+    </style>
+    <![endif]-->
+
+    <!--[if lte IE 9]>
+    <link type="text/css" rel="stylesheet" href="/profiles/markaspot/themes/mas/css/ie.css?nnpgdo" media="all" />
+    <![endif]-->
+    <!-- HTML5 element support for IE6-8 -->
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <script src="/profiles/markaspot/modules/contrib/jquery_update/replace/jquery/1.7/jquery.min.js?v=1.7.1"></script>
+    <script src="/misc/jquery.once.js?v=1.2"></script>
+    <script src="/misc/drupal.js?nnpgdo"></script>
+    <script src="/sites/all/libraries/modernizr/modernizr.js?v=2.7.0"></script>
+    <script src="/sites/all/libraries/underscore/underscore-min.js?v=1.5.2"></script>
+    <script src="/sites/all/libraries/backbone/backbone-min.js?v=1.1.0"></script>
+    <script src="/modules/contextual/contextual.js?v=1.0"></script>
+    <script src="/profiles/markaspot/modules/contrib/navbar/js/matchmedia.js?v=7.36"></script>
+    <script src="/profiles/markaspot/modules/contrib/navbar/js/debounce.js?v=7.36"></script>
+    <script src="/profiles/markaspot/modules/contrib/navbar/js/announce.js?v=7.36"></script>
+    <script src="/profiles/markaspot/modules/contrib/navbar/js/displace.js?v=7.36"></script>
+    <script src="/profiles/markaspot/modules/contrib/navbar/js/navbar.menu.js?v=7.36"></script>
+    <script src="/profiles/markaspot/modules/contrib/navbar/js/escape-admin.js?v=7.36"></script>
+    <script src="/profiles/markaspot/modules/contrib/navbar/js/navbar.js?v=7.36"></script>
+    <script src="/profiles/markaspot/modules/contrib/navbar/js/navbar-tableheader.js?v=7.36"></script>
+    <script src="/profiles/markaspot/libraries/spin.js/spin.js?nnpgdo"></script>
+    <script src="/profiles/markaspot/libraries/leaflet/leaflet.js?nnpgdo"></script>
+    <script src="/profiles/markaspot/modules/mark_a_spot/modules/markaspot_logic/js/markers_leaflet.js?nnpgdo"></script>
+    <script src="/profiles/markaspot/libraries/Leaflet.awesome-markers/dist/leaflet.awesome-markers.min.js?nnpgdo"></script>
+    <script src="/profiles/markaspot/libraries/Leaflet.markercluster/dist/leaflet.markercluster.js?nnpgdo"></script>
+    <script src="/profiles/markaspot/libraries/bootbox/bootbox.min.js?nnpgdo"></script>
+    <script src="/profiles/markaspot/libraries/waypoints/lib/jquery.waypoints.min.js?nnpgdo"></script>
+    <script src="/profiles/markaspot/libraries/waypoints/lib/shortcuts/inview.min.js?nnpgdo"></script>
+    <script src="/profiles/markaspot/libraries/leaflet-locatecontrol/dist/L.Control.Locate.min.js?nnpgdo"></script>
+    <script src="/profiles/markaspot/libraries/Leaflet.EasyButton/easy-button.js?nnpgdo"></script>
+    <script src="/sites/all/modules/less/scripts/less.watch.js?nnpgdo"></script>
+    <script src="/profiles/markaspot/themes/mas/bootstrap/js/affix.js?nnpgdo"></script>
+    <script src="/profiles/markaspot/themes/mas/bootstrap/js/alert.js?nnpgdo"></script>
+    <script src="/profiles/markaspot/themes/mas/bootstrap/js/button.js?nnpgdo"></script>
+    <script src="/profiles/markaspot/themes/mas/bootstrap/js/carousel.js?nnpgdo"></script>
+    <script src="/profiles/markaspot/themes/mas/bootstrap/js/collapse.js?nnpgdo"></script>
+    <script src="/profiles/markaspot/themes/mas/bootstrap/js/dropdown.js?nnpgdo"></script>
+    <script src="/profiles/markaspot/themes/mas/bootstrap/js/modal.js?nnpgdo"></script>
+    <script src="/profiles/markaspot/themes/mas/bootstrap/js/tooltip.js?nnpgdo"></script>
+    <script src="/profiles/markaspot/themes/mas/bootstrap/js/popover.js?nnpgdo"></script>
+    <script src="/profiles/markaspot/themes/mas/bootstrap/js/scrollspy.js?nnpgdo"></script>
+    <script src="/profiles/markaspot/themes/mas/bootstrap/js/tab.js?nnpgdo"></script>
+    <script src="/profiles/markaspot/themes/mas/bootstrap/js/transition.js?nnpgdo"></script>
+    <script src="/profiles/markaspot/themes/mas/js/mas.js?nnpgdo"></script>
+    <script>jQuery.extend(Drupal.settings, {"basePath":"\/","pathPrefix":"","ajaxPageState":{"theme":"mas","theme_token":"deLfRPweUGZfT6Dns6-We7nPlHZWNrhuQ9y6kdnRN38","js":{"sites\/all\/themes\/bootstrap\/js\/bootstrap.js":1,"profiles\/markaspot\/modules\/contrib\/jquery_update\/replace\/jquery\/1.7\/jquery.min.js":1,"misc\/jquery.once.js":1,"misc\/drupal.js":1,"sites\/all\/libraries\/modernizr\/modernizr.js":1,"sites\/all\/libraries\/underscore\/underscore-min.js":1,"sites\/all\/libraries\/backbone\/backbone-min.js":1,"modules\/contextual\/contextual.js":1,"profiles\/markaspot\/modules\/contrib\/navbar\/js\/matchmedia.js":1,"profiles\/markaspot\/modules\/contrib\/navbar\/js\/debounce.js":1,"profiles\/markaspot\/modules\/contrib\/navbar\/js\/announce.js":1,"profiles\/markaspot\/modules\/contrib\/navbar\/js\/displace.js":1,"profiles\/markaspot\/modules\/contrib\/navbar\/js\/navbar.menu.js":1,"profiles\/markaspot\/modules\/contrib\/navbar\/js\/escape-admin.js":1,"profiles\/markaspot\/modules\/contrib\/navbar\/js\/navbar.js":1,"profiles\/markaspot\/modules\/contrib\/navbar\/js\/navbar-tableheader.js":1,"profiles\/markaspot\/libraries\/spin.js\/spin.js":1,"profiles\/markaspot\/libraries\/leaflet\/leaflet.js":1,"profiles\/markaspot\/modules\/mark_a_spot\/modules\/markaspot_logic\/js\/markers_leaflet.js":1,"profiles\/markaspot\/libraries\/Leaflet.awesome-markers\/dist\/leaflet.awesome-markers.min.js":1,"profiles\/markaspot\/libraries\/Leaflet.markercluster\/dist\/leaflet.markercluster.js":1,"profiles\/markaspot\/libraries\/bootbox\/bootbox.min.js":1,"profiles\/markaspot\/libraries\/waypoints\/lib\/jquery.waypoints.min.js":1,"profiles\/markaspot\/libraries\/waypoints\/lib\/shortcuts\/inview.min.js":1,"profiles\/markaspot\/libraries\/leaflet-locatecontrol\/dist\/L.Control.Locate.min.js":1,"profiles\/markaspot\/libraries\/Leaflet.EasyButton\/easy-button.js":1,"sites\/all\/modules\/less\/scripts\/less.watch.js":1,"profiles\/markaspot\/themes\/mas\/bootstrap\/js\/affix.js":1,"profiles\/markaspot\/themes\/mas\/bootstrap\/js\/alert.js":1,"profiles\/markaspot\/themes\/mas\/bootstrap\/js\/button.js":1,"profiles\/markaspot\/themes\/mas\/bootstrap\/js\/carousel.js":1,"profiles\/markaspot\/themes\/mas\/bootstrap\/js\/collapse.js":1,"profiles\/markaspot\/themes\/mas\/bootstrap\/js\/dropdown.js":1,"profiles\/markaspot\/themes\/mas\/bootstrap\/js\/modal.js":1,"profiles\/markaspot\/themes\/mas\/bootstrap\/js\/tooltip.js":1,"profiles\/markaspot\/themes\/mas\/bootstrap\/js\/popover.js":1,"profiles\/markaspot\/themes\/mas\/bootstrap\/js\/scrollspy.js":1,"profiles\/markaspot\/themes\/mas\/bootstrap\/js\/tab.js":1,"profiles\/markaspot\/themes\/mas\/bootstrap\/js\/transition.js":1,"profiles\/markaspot\/themes\/mas\/js\/mas.js":1},"css":{"modules\/system\/system.base.css":1,"modules\/contextual\/contextual.css":1,"profiles\/markaspot\/modules\/contrib\/navbar\/css\/navbar.menu.css":1,"profiles\/markaspot\/modules\/contrib\/navbar\/css\/navbar.module.css":1,"profiles\/markaspot\/modules\/contrib\/navbar\/css\/navbar.theme.css":1,"profiles\/markaspot\/modules\/contrib\/navbar\/css\/navbar.icons.css":1,"modules\/field\/theme\/field.css":1,"profiles\/markaspot\/modules\/contrib\/views\/css\/views.css":1,"profiles\/markaspot\/modules\/contrib\/ckeditor\/css\/ckeditor.css":1,"profiles\/markaspot\/modules\/contrib\/ctools\/css\/ctools.css":1,"profiles\/markaspot\/modules\/contrib\/panels\/css\/panels.css":1,"profiles\/markaspot\/libraries\/Leaflet.awesome-markers\/dist\/leaflet.awesome-markers.css":1,"profiles\/markaspot\/libraries\/leaflet\/leaflet.css":1,"profiles\/markaspot\/libraries\/Leaflet.markercluster\/dist\/MarkerCluster.css":1,"profiles\/markaspot\/libraries\/Leaflet.markercluster\/dist\/MarkerCluster.Default.css":1,"sites\/all\/libraries\/fontawesome\/css\/font-awesome.css":1,"profiles\/markaspot\/libraries\/markaspot-font\/style.css":1,"profiles\/markaspot\/themes\/mas\/less\/mas-style.less":1,"http:\/\/local.mas\/sites\/default\/files\/colorizer\/mas-ac18bad2.css":1,"profiles\/markaspot\/libraries\/leaflet\/leaflet.ie.css":1,"profiles\/markaspot\/libraries\/Leaflet.markercluster\/dist\/MarkerCluster.Default.ie.css":1,"profiles\/markaspot\/libraries\/leaflet-locatecontrol\/dist\/L.Control.Locate.min.css":1,"profiles\/markaspot\/themes\/mas\/css\/ie.css":1}},"mas":{"markaspot_address":"Pingsdorfer Stra\u00dfe 88, 50321 Br\u00fchl, Deutschland","markaspot_city":"Br\u00fchl","markaspot_ini_lat":"50.8212596","markaspot_ini_lng":"6.8961028","markaspot_map_type":"2","markaspot_radar_zoom":"10","markaspot_locate_marker_color":"black","markaspot_locate_icon_color":"white","markaspot_locate_zoom":"15","bbox_nw_lat":"50.8463","bbox_nw_lng":"6.832","bbox_se_lat":"50.8042","bbox_se_lng":"6.937","uri":"\/","node_type":null,"params":{"q":"node"},"osm_custom_tile_url":"http:\/\/{s}.basemaps.cartocdn.com\/light_all\/{z}\/{x}\/{y}.png","osm_custom_attribution":"\u003Ca href=\u0022http:\/\/www.openstreetmap.org\/copyright\u0022\u003EOpenStreetMap\u003C\/a\u003E contributors, \u0026copy; \u003Ca href=\u0022http:\/\/cartodb.com\/attributions\u0022\u003ECartoDB\u003C\/a\u003E"},"currentPath":"node","currentPathIsAdmin":false,"better_exposed_filters":{"views":{"Gallery":{"displays":{"default":{"filters":[]}}}}},"navbar":{"breakpoints":{"narrow":"only screen and (min-width: 16.5em)","standard":"only screen and (min-width: 38.125em)","wide":"only screen and (min-width: 50em)"}},"bootstrap":{"anchorsFix":"1","anchorsSmoothScrolling":"1","popoverEnabled":"1","popoverOptions":{"animation":1,"html":0,"placement":"right","selector":"","trigger":"click","title":"","content":"","delay":0,"container":"body"},"tooltipEnabled":"1","tooltipOptions":{"animation":1,"html":0,"placement":"auto left","selector":"","trigger":"hover focus","delay":0,"container":"body"}}});</script>
+</head>
+<body class="html front one-sidebar sidebar-second page-node" >
+<div id="skip-link">
+    <a href="#main-content" class="element-invisible element-focusable">Skip to main content</a>
+</div>
+<div class="region region-page-top">
+</div>
+<header role="banner" id="page-header" class="container">
+</header> <!-- /#header -->
+
+<div class="navbar-wrapper">
+    <div class="container">
+        <div class="navbar navbar-inverse" role="navigation">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a class="logo navbar-btn pull-left" href="/" title="Home">
+                        <img src="/profiles/markaspot/themes/mas/logo.png" alt="Home" />
+                    </a>
+
+
+                    <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                </div>
+
+
+                <div class="collapse navbar-collapse">
+                    <nav role="navigation">
+                        <ul class="menu nav navbar-nav"><li class="first leaf"><a href="/node/add/report" title="">Report Issue</a></li>
+                            <li class="leaf active"><a href="/" class="active">Home</a></li>
+                            <li class="leaf"><a href="/map">Map</a></li>
+                            <li class="last leaf"><a href="/list">Track Reports</a></li>
+                        </ul>                                            <ul class="menu nav navbar-nav secondary"><li class="first leaf"><a href="/user">My account</a></li>
+                        <li class="last leaf"><a href="/user/logout">Log out</a></li>
+                    </ul>                                        </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="container main-container">
+    <div class="row">
+
+        <section class="col-md-7">
+
+            <a id="main-content"></a>
+            <h1 class="page-header element-invisible">Welcome to local.mas</h1>
+
+            <div class="well clearfix gallery">
+                <h3>
+                    Reports with Media        </h3>
+                <div class="view view-Gallery view-id-Gallery view-display-id-default view-dom-id-9d10a77e1ca74c56c8c9071136c4d8a3">
+
+
+
+                    <div class="view-content">
+                        <div>
+
+                            <div class="col-md-6 col-xs-6 col-lg-6">
+                                <a href="/reports/r-1"><img class="img-thumbnail" src="/sites/default/files/styles/mas_medium/public/image_flickr_by_dancentury_garbage_collection_4585329947_112.jpg?itok=xviyM7za" width="720" height="480" /></a>
+                                <h5><a href="/reports/r-1">Litter Basket Compla...</a></h5>
+                            </div>    </div>
+                        <div>
+
+                            <div class="col-md-6 col-xs-6 col-lg-6">
+                                <a href="/reports/r-2"><img class="img-thumbnail" src="/sites/default/files/styles/mas_medium/public/image_flickr_by_striatic_grafitti_133146861_110.jpg?itok=HKBUTcee" width="720" height="480" /></a>
+                                <h5><a href="/reports/r-2">Graffiti Report #R-2</a></h5>
+                            </div>    </div>
+                        <div>
+
+                            <div class="col-md-6 col-xs-6 col-lg-6">
+                                <a href="/reports/r-3"><img class="img-thumbnail" src="/sites/default/files/styles/mas_medium/public/image_flickr_thomasbrandt_109.jpg?itok=X2xEggQL" width="720" height="480" /></a>
+                                <h5><a href="/reports/r-3">Abandoned Cars #R-3</a></h5>
+                            </div>    </div>
+                        <div>
+
+                            <div class="col-md-6 col-xs-6 col-lg-6">
+                                <a href="/reports/r-4"><img class="img-thumbnail" src="/sites/default/files/styles/mas_medium/public/image_flickr_holger_baustellenlage_ebertplatz_108.jpg?itok=A0SGfb6j" width="720" height="480" /></a>
+                                <h5><a href="/reports/r-4">Building Constructio...</a></h5>
+                            </div>    </div>
+                        <div>
+
+                            <div class="col-md-6 col-xs-6 col-lg-6">
+                                <a href="/reports/r-5"><img class="img-thumbnail" src="/sites/default/files/styles/mas_medium/public/image_flickr_by_mikebaird_abandoned_car_4585329947_108.jpg?itok=PkDH9K7D" width="720" height="480" /></a>
+                                <h5><a href="/reports/r-5">Abandoned Cars #R-5</a></h5>
+                            </div>    </div>
+                        <div>
+
+                            <div class="col-md-6 col-xs-6 col-lg-6">
+                                <a href="/reports/r-6"><img class="img-thumbnail" src="/sites/default/files/styles/mas_medium/public/image_flickr_by_realname_garbage-tonal-decay_108.jpg?itok=qQj7XGZ3" width="720" height="480" /></a>
+                                <h5><a href="/reports/r-6">Litter Basket Compla...</a></h5>
+                            </div>    </div>
+                    </div>
+                </div>      </div>
+        </section>
+
+        <aside class="col-md-4 col-md-offset-1" role="complementary">
+            <div class="region region-sidebar-second">
+                <section id="block-comment-recent" class="block block-comment contextual-links-region clearfix">
+
+                    <h2 class="block-title">Recent comments</h2>
+                    <div class="contextual-links-wrapper"><ul class="contextual-links"><li class="block-configure first last"><a href="/admin/structure/block/manage/comment/recent/configure?destination=node">Configure block</a></li>
+                    </ul></div>
+                    No comments available.
+                </section> <!-- /.block -->
+                <section id="block-markaspot-default-content-search-id" class="block block-markaspot-default-content contextual-links-region clearfix">
+
+                    <h2 class="block-title">Service request search</h2>
+                    <div class="contextual-links-wrapper"><ul class="contextual-links"><li class="block-configure first last"><a href="/admin/structure/block/manage/markaspot_default_content/search_id/configure?destination=node">Configure block</a></li>
+                    </ul></div>
+                    <p>Find out the status of your service request</p>
+                    <div class="service-tracker-search"><form action="/list" role="search">
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Enter Service Request #" name="query" id="query">
+                            <div class="input-group-btn">
+                                <button class="btn btn-default" type="submit"><i class="glyphicon glyphicon-search"></i></button>
+                            </div>
+                        </div>
+                    </form></div>
+                </section> <!-- /.block -->
+                <section id="block-markaspot-stats-markaspot-stats" class="block block-markaspot-stats contextual-links-region clearfix">
+
+                    <h2 class="block-title">Mark-a-Spot Statistics</h2>
+                    <div class="contextual-links-wrapper"><ul class="contextual-links"><li class="block-configure first last"><a href="/admin/structure/block/manage/markaspot_stats/markaspot_stats/configure?destination=node">Configure block</a></li>
+                    </ul></div>
+                    <h3>Category</h3><div class="item-list"><h3></h3><ul id="status-list" class="list-group"><li class="list-group-item first"><span>Abandoned Cars: <strong>2 </strong></span></li>
+                    <li class="list-group-item"><span>Building Construction...: <strong>1 </strong></span></li>
+                    <li class="list-group-item"><span>Graffiti Report: <strong>1 </strong></span></li>
+                    <li class="list-group-item last"><span>Litter Basket Complaint: <strong>2 </strong></span></li>
+                </ul></div><h3>Status</h3><div class="item-list"><h3></h3><ul id="status-list" class="list-group"><li class="list-group-item first"><span>Archive: <strong>1 </strong></span></li>
+                    <li class="list-group-item"><span>In progress: <strong>1 </strong></span></li>
+                    <li class="list-group-item"><span>Open: <strong>2 </strong></span></li>
+                    <li class="list-group-item last"><span>Solved: <strong>2 </strong></span></li>
+                </ul></div>
+                </section> <!-- /.block -->
+                <section id="block-system-navigation" class="block block-system contextual-links-region block-menu clearfix">
+
+                    <h2 class="block-title">Navigation</h2>
+                    <div class="contextual-links-wrapper"><ul class="contextual-links"><li class="menu-list first"><a href="/admin/structure/menu/manage/navigation/list?destination=node">List links</a></li>
+                        <li class="menu-edit"><a href="/admin/structure/menu/manage/navigation/edit?destination=node">Edit menu</a></li>
+                        <li class="block-configure last"><a href="/admin/structure/block/manage/system/navigation/configure?destination=node">Configure block</a></li>
+                    </ul></div>
+                    <ul class="menu nav"><li class="first collapsed"><a href="/node/add">Add content</a></li>
+                        <li class="last collapsed"><a href="/icons" title="Overview of all available icons.">Icons</a></li>
+                    </ul>
+                </section> <!-- /.block -->
+                <section id="block-user-new" class="block block-user contextual-links-region clearfix">
+
+                    <h2 class="block-title">Who's new</h2>
+                    <div class="contextual-links-wrapper"><ul class="contextual-links"><li class="block-configure first last"><a href="/admin/structure/block/manage/user/new/configure?destination=node">Configure block</a></li>
+                    </ul></div>
+                    <ul><li class="first last"><a href="/users/admin" title="View user profile." class="username">admin</a></li>
+                    </ul>
+                </section> <!-- /.block -->
+            </div>
+        </aside>  <!-- /#sidebar-second -->
+    </div>
+    <div class="push"></div>
+</div>
+
+<footer class="footer">
+    <div class="region region-footer">
+        <section id="block-menu-menu-secondary-navigation" class="block block-menu contextual-links-region clearfix">
+
+            <h2 class="block-title">Secondary Navigation</h2>
+            <div class="contextual-links-wrapper"><ul class="contextual-links"><li class="menu-list first"><a href="/admin/structure/menu/manage/menu-secondary-navigation/list?destination=node">List links</a></li>
+                <li class="menu-edit"><a href="/admin/structure/menu/manage/menu-secondary-navigation/edit?destination=node">Edit menu</a></li>
+                <li class="block-configure last"><a href="/admin/structure/block/manage/menu/menu-secondary-navigation/configure?destination=node">Configure block</a></li>
+            </ul></div>
+            <ul class="menu nav"><li class="first leaf"><a href="/content/about-platform" title="">About</a></li>
+                <li class="last leaf"><a href="/content/open311" title="">Open311</a></li>
+            </ul>
+        </section> <!-- /.block -->
+        <span>Built with <a id="mas-link" href="http://mark-a-spot.org">Mark-a-Spot</a></span>  </div>
+</footer>
+<script src="/sites/all/themes/bootstrap/js/bootstrap.js?nnpgdo"></script>
+</body>
+</html>

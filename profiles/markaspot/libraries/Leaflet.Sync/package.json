@@ -1,13 +1,14 @@
 {
-  "name": "Leaflet.Sync",
-  "version": "0.0.0",
+  "name": "leaflet.sync",
+  "version": "0.0.5",
   "description": "Sync two or more Leaflet map instances",
   "main": "L.Map.Sync.js",
   "directories": {
     "test": "test"
   },
   "scripts": {
-    "test": "mocha-phantomjs test/index.html"
+    "test": "eslint L.Map.Sync.js && mocha-phantomjs test/index.html",
+    "release": "mversion patch -m"
   },
   "repository": {
     "type": "git",
@@ -20,16 +21,14 @@
     "sync"
   ],
   "devDependencies": {
-    "jshint": "~2.1.11",
-    "mocha": "~1.13.0",
-    "grunt": "~0.4.1",
-    "matchdep": "~0.1.2",
-    "grunt-contrib-jshint": "~0.6.4",
-    "grunt-mocha-phantomjs": "~0.3.0",
-    "grunt-contrib-connect": "~0.5.0",
-    "leaflet": "~0.7.1",
     "chai": "~1.8.0",
-    "chai-leaflet": "0.0.2"
+    "chai-leaflet": "0.0.9",
+    "eslint": "^0.15.0",
+    "leaflet": "~0.7.3",
+    "mocha": "^2.1.0",
+    "mocha-phantomjs": "^3.5.3",
+    "mversion": "^1.10.0",
+    "phantomjs": "^1.9.16"
   },
   "author": "Bjorn Sandvik",
   "readmeFilename": "README.md"

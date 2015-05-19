@@ -1,0 +1,30 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+function less_demo_menu() {
+  $items = array();
+
+  $items['admin/config/development/less/demo'] = array(
+    'title' => 'LESS Demo',
+    'description' => 'Demonstration for less features',
+    'page callback' => '_less_demo_page',
+    'access arguments' => array(LESS_PERMISSION),
+    'file' => 'less_demo.demo_page.inc',
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 1,
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_admin_paths().
+ */
+function less_demo_admin_paths() {
+
+  return array(
+    'admin/config/development/less/demo' => FALSE,
+  );
+}

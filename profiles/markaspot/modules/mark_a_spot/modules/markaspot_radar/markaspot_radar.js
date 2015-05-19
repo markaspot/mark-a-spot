@@ -76,29 +76,51 @@
         dataType: 'json',
         success: function (data) {
           $.each(data.features, function (key, item) {
-            var latlon = new L.LatLng(item.geometry.coordinates[0], item.geometry.coordinates[1]);
+            var latlon = new L.LatLng(item.geometry.coordinates[1], item.geometry.coordinates[0]);
             item = item.properties;
-
             var html = '<div class="marker-title"><h4><a class="infowindow-link" href="' + item.path + '">' + item.name + '</a></h4><span class="meta-info date">' + item.created + '</span></div>';
-            if (item.field_address) {
-              html += '<div class="marker-address"><p>' + item.field_address + '</p></div>';
-              html += '<div><a class="infowindow-link" href="' + item.path + '">' + Drupal.t('read more') + '</a></div>';
+            if (item.address) {
+              html += '<div class="marker-address"><p>' + item.address + '</p></div>';
             }
-            colors = [
-              {"color": "red", "hex": "#FF0000"},
-              {"color": "darkred", "hex": "#8B0000" },
-              {"color": "orange", "hex": "#FFA500" },
-              {"color": "green", "hex": "#008000"},
-              {"color": "darkgreen", "hex": "#006400"},
-              {"color": "blue", "hex": "#0000FF"},
-              {"color": "darkblue", "hex": "#00008B"},
-              {"color": "purple", "hex": "#800080"},
-              {"color": "darkpurple", "hex": "#871F78"},
-              {"color": "cadetblue", "hex": "#5F9EA0"}
-            ];
+            html += '<div><a class="infowindow-link" href="' + Drupal.settings.basePath + 'reports/' + item.uuid + '">' + Drupal.t('read more') + '</a></div>';
+
+            var colorswitch, colors;
+            colors = [{
+              "color": "red", "hex": "#FF0000"
+            }, {
+              "color": "darkred", "hex": "#8B0000"
+            }, {
+              "color": "orange", "hex": "#FFA500", "iconColor": "dark-red"
+            }, {
+              "color": "green", "hex": "#008000"
+            }, {
+              "color": "darkgreen", "hex": "#006400"
+            }, {
+              "color": "blue", "hex": "#0000FF"
+            }, {
+              "color": "darkblue", "hex": "#00008B"
+            }, {
+              "color": "purple", "hex": "#A020F0"
+            }, {
+              "color": "darkpurple", "hex": "#871F78"
+            }, {
+              "color": "cadetblue", "hex": "#5F9EA0"
+            }, {
+              "color": "lightblue", "hex": "#ADD8E6", "iconColor": "#000000"
+            }, {
+              "color": "lightgray", "hex": "#D3D3D3", "iconColor": "#000000"
+            }, {
+              "color": "gray", "hex": "#808080"
+            }, {
+              "color": "black", "hex": "#000000"
+            }, {
+              "color": "beige", "hex": "#F5F5DC", "iconColor": "darkred"
+            }, {
+              "color": "white", "hex": "#FFFFFF", "iconColor": "#000000"
+            }];
 
             $.each(colors, function (key, element) {
-              if (item.field_status_hex == element.hex || item.field_category_hex == element.hex) {
+              if (item.status_hex == element.hex || item.category_hex == element.hex) {
                 color = element.hex;
                 var marker = new L.circleMarker(latlon, {radius: 8, weight: 4, opacity: 1, color: '#666', fillOpacity: 1, fillColor: color});
                 marker.bindPopup(html);

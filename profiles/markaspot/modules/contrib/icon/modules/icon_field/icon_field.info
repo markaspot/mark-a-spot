@@ -5,9 +5,9 @@ package = Icon API
 
 dependencies[] = field
 dependencies[] = icon
-; Information added by Drupal.org packaging script on 2014-03-18
-version = "7.x-1.0-beta5+4-dev"
+; Information added by Drupal.org packaging script on 2015-05-17
+version = "7.x-1.0-beta5+6-dev"
 core = "7.x"
 project = "icon"
-datestamp = "1395144556"
+datestamp = "1431828183"
 

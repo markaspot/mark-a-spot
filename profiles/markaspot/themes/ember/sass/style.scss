@@ -16,13 +16,6 @@ body {
 p,
 blockquote,
 pre,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-article,
 aside,
 details,
 figcaption,
@@ -395,11 +388,7 @@ ul.current-filters  {
 
 /* position and style edit filters neatly inline and floated left above tables they filter. */
 #edit-filters {
-  float: left;
-  display: inline-block;
-  margin-top: 0;
-  padding-left: 0;
-  width: 65%; & {
+  & {
     div.fieldset-wrapper {
       margin-top: 1rem;
     }
@@ -439,9 +428,10 @@ ul.current-filters  {
         }
 
         .additional-filters {
-          padding: 12px 0 0 0;
+          padding: 0 0 0 0;
           margin-right: 1em;
           font-weight: bold;
+          margin-bottom:20px;
         }
 
         div#edit-actions {
@@ -510,6 +500,15 @@ div.description {
 .clearfix {
  clear:both;
   }
+
+/* As admin/config uses a two-column layout, remove .clearfix rule */
+
+div.admin {
+  .right,
+  .left {
+    clear: none;
+  }
+}
 
 /* Preview */
 
@@ -1021,7 +1020,19 @@ img.screenshot  {
   }
 
   #tab-bar {
-    display: none;
+    display:block;
+    li {
+      width:100%;
+      border-bottom:1px solid #ccc;
+      margin-bottom:5px;
+      margin-top:5px;
+      &:last-child {
+        border-bottom:none;
+      }
+      &.active {
+        border-bottom:2px solid $color-link-alternate;
+      }
+    }
   }
 
   /* dashboard */
@@ -1202,6 +1213,13 @@ a.active {
 text-align: left;
 }
 
+
+//rules layout fixes for ember 
+
+.rules-elements-table ul.rules-operations li, ul.rules-operations-add li {
+  padding-right:10px;
+  font-size:1em;
+}
 
 
 

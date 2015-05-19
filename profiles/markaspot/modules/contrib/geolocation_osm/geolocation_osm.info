@@ -6,9 +6,7 @@ dependencies[] = libraries
 core = "7.x"
 
 
-
-; Information added by drush on 2015-02-13
+; Information added by drush on 2015-02-12
 version = "unknown"
 project = "geolocation_osm"
-datestamp = "1423854248"
-
+datestamp = "1423763424"

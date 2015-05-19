@@ -10,6 +10,15 @@
 function mark_a_spot_user_default_permissions() {
   $permissions = array();
 
+  // Exported permission: 'administer filters'.
+  $permissions['administer filters'] = array(
+    'name' => 'administer filters',
+    'roles' => array(
+      'administrator' => 'administrator',
+    ),
+    'module' => 'filter',
+  );
+
   // Exported permission: 'create report content'.
   $permissions['create report content'] = array(
     'name' => 'create report content',
@@ -19,6 +28,14 @@ function mark_a_spot_user_default_permissions() {
       'authenticated user' => 'authenticated user',
     ),
     'module' => 'node',
+  );
+  // Exported permission: 'use text format full_html'.
+  $permissions['use text format full_html'] = array(
+    'name' => 'use text format full_html',
+    'roles' => array(
+      'administrator' => 'administrator',
+    ),
+    'module' => 'filter',
   );
 
   // Exported permission: 'view field_statement'.

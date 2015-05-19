@@ -239,7 +239,9 @@ div#geolocation-help-7-0 {
 .ember.page-node .panel-pane {
   background: #fff;
   padding: 10px 20px;
-  min-height: 130px}
+  min-height: 110px;
+  clear: left;
+}
 
 .ember.node-type-report .fieldset-wrapper {
   border: 1px solid #eaeaea;
@@ -258,8 +260,6 @@ div#geolocation-help-7-0 {
 
 .panel-pane.pane-node-form-buttons,
 .panel-pane.pane-node-field-department {
-  width: 49%;
-  float: right;
   min-height: 150px;
   background: #fff;
   margin: 0 0 10px 0;
@@ -269,15 +269,18 @@ div#geolocation-help-7-0 {
 .panel-pane.pane-node-field-status {
   width: 50%;
   float: left;
-  margin: 0 0 30px 0;
+  margin: 0 0 14px 0;
   min-height: 150px;
 }
+
+
 
 .panel-pane.pane-node-form-publishing {
   background: #fff;
   padding: 10px;
 }
 
+.pane-node-field-jurisdiction,
 .panel-pane.pane-node-form-publishing h2{
   display:none;
 }

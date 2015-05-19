@@ -93,7 +93,7 @@ function markaspot_open311_requests_create($data) {
     }
 
     if (!in_array($data->service_code, $services_available)) {
-      markaspot_open311_process_services_error('Service_code was not found', 404);
+      markaspot_open311_process_services_error('Service_code was not found.', 404);
     }
 
     // Map request to node object;
@@ -139,7 +139,7 @@ function markaspot_open311_requests_update($request_id, $data) {
     $services_available[] = $service['service_code'];
   }
   if (!in_array($data->service_code, $services_available)) {
-    return services_error('Service_code was not found', 404);
+    return services_error('Service_code was not found.', 404);
   }
 
   // map request to node object (with $uuid);
@@ -185,7 +185,7 @@ function markaspot_open311_requests_retrieve($request_id, $parameters) {
       $node = node_load($service_request_id[$request_id]);
     }
     else {
-      markaspot_open311_process_services_error(t('Service request not found'), 404);
+      markaspot_open311_process_services_error(t('Service request not found.'), 404);
     }
   }
   else {
@@ -254,6 +254,13 @@ function markaspot_open311_requests_index($page, $parameters) {
     $query->fieldCondition('field_status', 'tid', $tids);
   }
 
+  // Checking for jurisdiction-parameter and map the id with its taxonomy term:
+  if (isset($parameters['jurisdiction_id'])) {
+    // Get the service of the current node:
+    $tid = markaspot_open311_get_jurisdiction_tid($parameters['jurisdiction_id']);
+    $query->fieldCondition('field_jurisdiction', 'tid', $tid);
+  }
+
   // start_date param or travel back to 1970
   $start_timestamp = (isset($parameters['start_date']) && $parameters['start_date'] != '') ? strtotime($parameters['start_date']) : strtotime('01-01-1970');
   $query->propertyCondition('created', $start_timestamp, '>=');
@@ -280,7 +287,7 @@ function markaspot_open311_requests_index($page, $parameters) {
     }
   }
   else {
-    markaspot_open311_process_services_error(t('No service requests found'), 404);
+    markaspot_open311_process_services_error(t('No service requests found.'), 404);
 
   }
 
@@ -437,7 +444,7 @@ function markaspot_open311_request_map_node($request_id, $request) {
         $node = node_load($service_request_id[$request_id]);
       }
       else {
-        markaspot_open311_process_services_error(t('Service request not found'), 404);
+        markaspot_open311_process_services_error(t('Service request not found.'), 404);
       }
     }
     else {
@@ -460,7 +467,7 @@ function markaspot_open311_request_map_node($request_id, $request) {
       // Update Statement field
       $node->field_statement[$node->language][0]['value'] = ($request->status_notes != '') ? $request->status_notes : '';
     } else {
-      markaspot_open311_process_services_error(t('Missing or wrong API Key'), 403);
+      markaspot_open311_process_services_error(t('Missing or wrong API Key.'), 403);
     }
 
     // Get the first status tid (of open, closed);
@@ -499,6 +506,7 @@ function markaspot_open311_request_map_node($request_id, $request) {
   $node->body[$node->language][0]['format'] = 'filtered_html';
   if (isset($request->address_string)) {
     $node->field_address[$node->language][0]['value'] = $request->address_string;
+    $node->field_jurisdiction[$node->language][0]['tid'] = markaspot_open311_fill_jurisdiction($request->address_string);
   }
   $node->field_geo[$node->language][0]['lat'] = $request->lat;
   $node->field_geo[$node->language][0]['lng'] = $request->long;
@@ -641,4 +649,47 @@ function markaspot_open311_service_map_tax($service_code) {
     $tid = $term->tid;
   }
   return $tid;
+}
+
+
+/**
+ * Get the according term for jurisdiction.
+ *
+ * @param String $jurisdiction_id
+ *   The jurisdiction_id field defined in the term
+ * @return Integer $tid
+ *   The Terms Id
+ *
+ */
+function markaspot_open311_get_jurisdiction_tid($jurisdiction_id){
+
+  $taxonomies = taxonomy_get_tree(4, $parent = 0, $max_depth = 1, $load_entities = TRUE);
+  foreach ($taxonomies as $term) {
+
+    if ($jurisdiction_id == $term->field_jurisdiction_id[LANGUAGE_NONE][0]['value']){
+      return $term->tid;
+    }
+  }
+}
+
+/**
+ * Fill the taxonomy node reference field for jurisdiction on request.
+ *
+ * @param String $address_string
+ *   The address string fetched from geocoder.
+ * @return Int $field_jurisdiction
+ *
+ */
+function markaspot_open311_fill_jurisdiction($address_string){
+
+  $vid = taxonomy_vocabulary_machine_name_load('jurisdiction')->vid;
+  $taxonomies = taxonomy_get_tree($vid, $parent = 0, $max_depth = 1, $load_entities = TRUE);
+
+  foreach ($taxonomies as $term) {
+    if(strstr($address_string, $term->name)){
+      $field_jurisdiction_tid = $term->tid;
+    }
+  }
+
+  return $field_jurisdiction_tid;
 }

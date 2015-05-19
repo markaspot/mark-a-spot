@@ -1,0 +1,25 @@
+/**
+ * This was copied from twitter bootstrap's mixins.less and given a slight
+ * modification to make it a parametric mixin to hide from CSS output.
+ * 
+ * Look at these locations for more information:
+ *   http://lesscss.org/#-parametric-mixins
+ */
+
+// Clearfix
+// --------
+// For clearing floats like a boss h5bp.com/q
+.clearfix() {
+  *zoom: 1;
+  &:before,
+  &:after {
+    display: table;
+    content: "";
+    // Fixes Opera/contenteditable bug:
+    // http://nicolasgallagher.com/micro-clearfix-hack/#comment-36952
+    line-height: 0;
+  }
+  &:after {
+    clear: both;
+  }
+}

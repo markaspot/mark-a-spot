@@ -5,10 +5,7 @@ core = "7.x"
 
 dependencies[] = "markaspot_logic"
 
-
-; Information added by drush on 2015-02-13
-version = "7.x-2.7+20-dev"
-core = "7.x"
+; Information added by drush on 2015-05-19
+version = "7.x-2.8+0-dev"
 project = "markaspot"
-datestamp = "1423854221"
-
+datestamp = "1432049625"
