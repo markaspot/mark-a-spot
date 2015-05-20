@@ -143,7 +143,15 @@ section#block-markaspot-logic-taxonomy-category {
 
 
 #map .leaflet-top {
-  top: 65px;
+  top: 55px;
+}
+
+#map .leaflet-right {
+  right: 10px;
+}
+
+#map .leaflet-left {
+  left: 5px;
 }
 
 .navbar-fixed #map .leaflet-top {
@@ -151,7 +159,7 @@ section#block-markaspot-logic-taxonomy-category {
 }
 
 .navbar-tray-open #map .leaflet-top {
-  top: 125px;
+  top: 145px;
 }
 
 .front .leaflet-control-container {
@@ -167,7 +175,7 @@ section#block-markaspot-logic-taxonomy-status,
 section#block-markaspot-logic-taxonomy-category,
 {
   z-index:1;
-  background: rgba(225,225,225, 0.8);
+  background: rgba(225,225,225, 1);
   -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
@@ -234,28 +242,28 @@ ul.group-list:after {
   padding: 0;
   position: absolute;
   left: 0;
-  background: -webkit-linear-gradient(0deg, rgba(225,225,225, 0.8), transparent);
-  background: -o-linear-gradient(0deg, rgba(225,225,225, 0.8), transparent);
-  background: -moz-linear-gradient(0deg, rgba(225,225,225, 0.8), transparent);
-  background: linear-gradient(0deg, rgba(225,225,225, 0.8), transparent);
+  background: -webkit-linear-gradient(0deg, rgba(225,225,225, 1), transparent);
+  background: -o-linear-gradient(0deg, rgba(225,225,225, 1), transparent);
+  background: -moz-linear-gradient(0deg, rgba(225,225,225, 1), transparent);
+  background: linear-gradient(0deg, rgba(225,225,225, 1), transparent);
 }
 
 ul.group-list:after {
   @media screen and (min-width: @screen-lg-min) {
-    height: 80px;
-    top: 120px;
+    height: 15px;
+    top: 190px;
   }
   @media screen and (max-width: @screen-lg-min) {
-    height: 80px;
-    top: 120px;
+    height: 15px;
+    top: 190px;
   }
   @media screen and (max-width: @screen-sm-min) {
-    height: 50px;
-    top: 100px;
+    height: 15px;
+    top: 120px;
   }
   @media screen and (max-width: @screen-xs-min) {
-    height: 40px;
-    top: 90px;
+    height: 15px;
+    top: 120px;
 
   }
 }

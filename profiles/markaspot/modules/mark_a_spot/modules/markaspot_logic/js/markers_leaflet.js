@@ -58,27 +58,7 @@
           }
 
           // Add a report button
-          L.easyButton('fa fa-navicon', 'topright',
-            function () {
-              var m = $(".leaflet-control a i.fa-navicon");
-              var s = $(".leaflet-control a i.fa-times");
-
-              if (m.hasClass('fa-navicon')) {
-                m
-                  .removeClass('fa-navicon')
-                  .addClass('fa-times');
-              } else if (s.hasClass('fa-times')) {
-                s
-                  .removeClass('fa-times')
-                  .addClass('fa-navicon');
-              }
-
-              $('#block-markaspot-logic-taxonomy-category, #block-markaspot-logic-taxonomy-status').fadeToggle('fast');
-            },
-            Drupal.t('Report at map center'),
-            Drupal.Markaspot.maps[0]
-          );
-
+          Drupal.markaspot.filterButton();
 
           break;
         case "list":
@@ -94,6 +74,8 @@
       $("#block-markaspot-logic-taxonomy-category .map-menue").click(function (e) {
         e.preventDefault();
         Drupal.markaspot.hideMarkers();
+        Drupal.markaspot.hideFilters();
+
         if (Drupal.markaspot.static_enable() != true) {
           Drupal.markaspot.parse(1, Drupal.markaspot.getTaxId(this.id), "All", false);
         } else {
@@ -104,6 +86,8 @@
       $("#block-markaspot-logic-taxonomy-status .map-menue").click(function (e) {
         e.preventDefault();
         Drupal.markaspot.hideMarkers();
+        Drupal.markaspot.hideFilters();
+
         if (Drupal.markaspot.static_enable() != true) {
           Drupal.markaspot.parse(2, "All", Drupal.markaspot.getTaxId(this.id), false);
         } else {
@@ -398,6 +382,32 @@
     getTaxId: function (id) {
       id = id.split("-");
       return id[1];
+    },
+    hideFilters: function(){
+      $('#block-markaspot-logic-taxonomy-category, #block-markaspot-logic-taxonomy-status').fadeToggle('fast');
+      $(".leaflet-control a i.fa-times").removeClass('fa-times').addClass('fa-navicon');
+    },
+    filterButton: function(){
+      // Add a report button
+      L.easyButton('fa fa-navicon', 'topright',
+        function () {
+          var m = $(".leaflet-control a i.fa-navicon");
+          var s = $(".leaflet-control a i.fa-times");
+
+          if (m.hasClass('fa-navicon')) {
+            m
+              .removeClass('fa-navicon')
+              .addClass('fa-times');
+          } else if (s.hasClass('fa-times')) {
+            s
+              .removeClass('fa-times')
+              .addClass('fa-navicon');
+          }
+          $('#block-markaspot-logic-taxonomy-category, #block-markaspot-logic-taxonomy-status').fadeToggle('fast');
+        },
+        Drupal.t('Report at map center'),
+        Drupal.Markaspot.maps[0]
+      );
     }
 
   }

@@ -47,7 +47,7 @@ dependencies[] = geophp
 dependencies[] = views_geojson
 dependencies[] = navbar
 dependencies[] = ckeditor
-; Information added by drush on 2015-05-19
-version = "7.x-2.8+0-dev"
+; Information added by drush on 2015-05-20
+version = "7.x-2.8+2-dev"
 project = "markaspot"
-datestamp = "1432049625"
+datestamp = "1432100198"
