@@ -2,7 +2,7 @@
  * Builds a nested accordion widget.
  *
  * Invoke on an HTML list element with the jQuery plugin pattern.
- * - For example, $('.menu').drupalNavbarMenu();
+ * - For example, $('.navbar-menu').drupalNavbarMenu();
  */
 
 (function ($, Drupal) {
@@ -19,7 +19,14 @@
     var settings = $.extend({}, {
       twisties: true,
       activeTrail: true,
-      listLevels: true
+      listLevels: true,
+      //A function that returns the list (li) element.
+      findItem: null,
+      // A function that returns the element which should be treated as the
+      // "link" for a menu item.
+      findItemElement: null,
+      // A function that returns the sub-menu element of a menu item.
+      findItemSubMenu: null
     }, options);
 
     var ui = {
@@ -77,33 +84,51 @@
      * @param {jQuery} $menu
      *   The root of the menu to be initialized.
      */
-    function processMenuLinks ($menu, settings) {
+    function processMenuLinks ($items, settings, $menu) {
       // Initialize items and their links.
-      $menu
-        .find('li > a, li > span')
-        .once('navbar-menu')
-        .addClass('navbar-menu-item')
-        .wrap('<div class="navbar-box">');
-        // Add a handle to each list item if it has a menu.
-
+      $items
+        .once('navbar-menu-item')
+        .each(function (index, element) {
+          var $item = $(element);
+          var $handle = settings.findItemElement && settings.findItemElement($item, $menu) || $item.children('a, span');
+          if ($handle.length) {
+            $handle
+              // Add a handle to each list item if it has a menu.
+              .addClass('navbar-menu-item')
+              .wrap('<div class="navbar-box">');
+          }
+          // Store a reference to the box wrapping element so that it needn't be
+          // found again through DOM searching.
+          $item.data({'box': $handle.parent().get(0)});
+        });
+      // Twisties allow for expand/collapse of nested menu items.
       if (settings.twisties) {
         var options = {
           'class': 'navbar-icon navbar-handle',
           'action': ui.handleOpen,
           'text': ''
         };
-        $menu
-          .find('li')
+        $items
           .each(function (index, element) {
             var $item = $(element);
-            var $menus = $item.children('ul.menu').once('navbar-menu');
-            if ($menus.length) {
-              var $box = $item.children('.navbar-box');
-              options.text = Drupal.t('@label', {'@label': $box.find('a').text()});
-              $item
-                .addClass('navbar-twisty')
-                .children('.navbar-box')
-                .append(Drupal.theme('navbarMenuItemToggle', options));
+            // The following code involves a lot of DOM traversing. Exit early
+            // if possible, but don't mark the menu as processed just yet, so
+            // $.once() can't be called here.
+            if ($item.hasClass('navbar-menu-twisties-processed')) {
+              return;
+            }
+            var $menu = settings.findItemSubMenu && settings.findItemSubMenu($item, $menu) || $item.children('ul');
+            if ($menu.length) {
+              // Get the item 'link' element.
+              var $box = $($item.data('box'));
+              if ($box.length) {
+                var $twistyItem = $item.once('navbar-menu-twisties');
+                if ($twistyItem.length) {
+                  options.text = Drupal.t('@label', {'@label': $box.text()});
+                  $item.addClass('navbar-twisty');
+                  $box.append(Drupal.theme('navbarMenuItemToggle', options));
+                }
+              }
             }
           });
       }
@@ -120,14 +145,14 @@
      * @param {Integer} level
      *   The current level number to be assigned to the list elements.
      */
-    function markListLevels ($lists, level) {
+    function markListLevels ($lists, level, settings, $menu) {
       level = (!level) ? 1 : level;
-      $lists = $lists.children('li')
-        .addClass('navbar-level-' + level)
+      var $items = settings.findItem && settings.findItem($lists, $menu) || $lists.children('li');
+      $items.addClass('navbar-level-' + level);
         // Retrieve child menus.
-        .children('ul');
+      var $lists = settings.findItemSubMenu && settings.findItemSubMenu($items, $menu) || $items.children('ul');
       if ($lists.length) {
-        markListLevels($lists, level + 1);
+        markListLevels($lists, level + 1, settings, $menu);
       }
     }
     /**
@@ -187,10 +212,10 @@
           .on('click.navbar', toggleClickHandler);
       }
       // Process components of the menu.
-      processMenuLinks($menu, settings);
+      processMenuLinks($menu.find('li'), settings, $menu);
       // Add a menu level class to each menu item.
       if (settings.listLevels) {
-        markListLevels($menu);
+        markListLevels($menu, 1, settings, $menu);
       }
       // Restore previous and active states.
       if (settings.activeTrail) {

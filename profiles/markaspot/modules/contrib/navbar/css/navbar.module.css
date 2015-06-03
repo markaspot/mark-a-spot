@@ -25,7 +25,6 @@
   -moz-box-shadow: none;
   box-shadow: none;
   -moz-box-sizing: border-box;
-  -o-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
   bottom: auto;
@@ -33,7 +32,6 @@
   content: normal;
   counter-increment: none;
   counter-reset: none;
-  cursor: auto;
   direction: ltr;
   float: none;
   font-style: normal;
@@ -74,6 +72,7 @@
   width: auto;
   word-spacing: normal;
 }
+
 /* These styles will cascade. There is no need to star-select child elements. */
 #navbar-administration {
   font-family: sans-serif;
@@ -136,31 +135,37 @@
   quotes: "" "";
 }
 
+#navbar-administration ul.navbar-menu {
+  border: none;
+  list-style: none;
+  text-align: left; /* LTR */
+}
+
 /* @end */
 
 /**
  * Very specific overrides for Drupal system CSS.
  */
 #navbar-administration li,
-#navbar-administration .menu li,
+#navbar-administration .navbar-menu li,
 #navbar-administration .item-list,
 #navbar-administration .item-list li,
-#navbar-administration .menu li.expanded {
+#navbar-administration .navbar-menu li.expanded {
   list-style-type: none;
   list-style-image: none;
   padding: 0;
 }
 /* Override core system.menus.css */
-#navbar-administration ul.menu li,
+#navbar-administration ul.navbar-menu li,
 /* Override overzealous menu styling in themes. */
 #navbar-administration .navbar-menu-root li {
   margin: 0;
 }
-#navbar-administration .menu li {
+#navbar-administration .navbar-menu li {
   padding-top: 0;
 }
 #navbar-administration .navbar-bar .navbar-tab,
-#navbar-administration .menu li {
+#navbar-administration .navbar-menu li {
   display: block;
 }
 #navbar-administration .navbar-tab > *,
@@ -206,6 +211,7 @@ body.navbar-fixed #navbar-administration.navbar-oriented .navbar-bar {
 body.navbar-tray-open.navbar-fixed.navbar-vertical #navbar-administration.navbar-oriented {
   bottom: 0;
   width: 240px;
+  width: 15rem;
 }
 /* Present the admin navbar tabs horizontally as a default on user agents that
  * do not understand media queries or on user agents where JavaScript is
@@ -252,6 +258,7 @@ body.navbar-tray-open.navbar-fixed.navbar-vertical #navbar-administration.navbar
   left: -100%; /* LTR */
   position: absolute;
   width: 240px;
+  width: 15rem;
 }
 #navbar-administration .navbar-tray-vertical > .navbar-lining {
   min-height: 100%;
@@ -267,10 +274,11 @@ body.navbar-tray-open.navbar-fixed.navbar-vertical #navbar-administration.navbar
   position: fixed;
   top: 0;
   width: 240px;
+  width: 14rem;
   z-index: -1;
 }
 /* Hide secondary menus when the tray is horizontal. */
-#navbar-administration.navbar-oriented .navbar-tray-horizontal .menu li ul {
+#navbar-administration.navbar-oriented .navbar-tray-horizontal .navbar-menu li ul {
   display: none;
 }
 /* When the configured standard breakpoint is active and the tray is in a
@@ -299,6 +307,7 @@ body.navbar-fixed #navbar-administration .navbar-tray-vertical {
  * the page content away from the edge of the viewport. */
 body.navbar-tray-open.navbar-vertical.navbar-fixed {
   margin-left: 240px; /* LTR */
+  margin-left: 15rem; /* LTR */
 }
 
 /**

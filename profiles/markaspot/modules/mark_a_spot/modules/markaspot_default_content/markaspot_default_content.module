@@ -50,7 +50,7 @@ function markaspot_default_content_block_view($delta = '') {
     case 'search_id':
       $block['subject'] = t('Service request search');
       $block['content'] = '<p>'. t('Find out the status of your service request') . '</p>
-        <div class="service-tracker-search"><form action="/list" role="search">
+        <div class="service-tracker-search"><form action="list" role="search">
           <div class="input-group">
               <input type="text" class="form-control" placeholder="'. t('Enter Service Request #') . '" name="query" id="query">
               <div class="input-group-btn">

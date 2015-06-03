@@ -19,7 +19,7 @@ features_exclude[dependencies][mark_a_spot] = mark_a_spot
 no autodetect = 1
 project path = profiles/markaspot/modules
 
-; Information added by drush on 2015-05-20
-version = "7.x-2.8+2-dev"
+; Information added by drush on 2015-06-03
+version = "7.x-2.8+7-dev"
 project = "markaspot"
-datestamp = "1432100198"
+datestamp = "1433346639"

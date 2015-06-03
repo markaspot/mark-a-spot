@@ -30,36 +30,26 @@
   border: 0;
   font-size: 1em;
 }
-#navbar-administration .menu ul .navbar-icon {
+#navbar-administration .navbar-menu ul .navbar-icon {
   padding-left: 1.3333em; /* LTR */
 }
-#navbar-administration .menu ul a.navbar-icon:before {
+#navbar-administration .navbar-menu ul a.navbar-icon:before {
   display: none;
 }
-#navbar-administration .navbar-tray-vertical .menu ul {
-  margin-left: 1.5em; /* LTR */
+#navbar-administration .navbar-tray-vertical .navbar-menu ul a {
+  padding-left: 2.75em; /* LTR */
 }
-#navbar-administration .navbar-tray-vertical .menu ul ul {
-  margin-left: 0.75em; /* LTR */
+#navbar-administration .navbar-tray-vertical .navbar-menu ul ul a {
+  padding-left: 3.75em; /* LTR */
+}
+#navbar-administration .navbar-tray-vertical .navbar-menu a {
+  padding-left: 2.75em; /* LTR */
+  padding-right: 4em; /* LTR */
 }
 
 /**
  * Top level icons.
  */
-.navbar-bar .navbar-icon-home:before {
-  background-image: url("../icons/bebebe/house.svg");
-}
-.no-svg .navbar-bar .navbar-icon-home:before {
-  background-image: url("../icons/bebebe/house.png");
-}
-.navbar-bar .navbar-icon-home:active:before,
-.navbar-bar .navbar-icon-home.navbar-active:before {
-  background-image: url("../icons/ffffff/house.svg");
-}
-.no-svg .navbar-bar .navbar-icon-home:active:before,
-.no-svg .navbar-bar .navbar-icon-home.navbar-active:before {
-  background-image: url("../icons/ffffff/house.png");
-}
 .navbar-bar .navbar-icon-menu:before {
   background-image: url("../icons/bebebe/hamburger.svg");
 }
@@ -87,6 +77,9 @@
 .no-svg .navbar-bar .navbar-icon-help:active:before,
 .no-svg .navbar-bar .navbar-icon-help.navbar-active:before {
   background-image: url("../icons/ffffff/questionmark-disc.png");
+}
+#navbar-administration .navbar-bar .navbar-icon.element-hidden {
+  display: none;
 }
 
 /**
@@ -293,19 +286,55 @@
 }
 
 /**
+ *  Accessibility/focus
+ */
+#navbar-administration .navbar-tab a {
+  border-left: 2px solid transparent; /* LTR */
+}
+#navbar-administration .navbar-tab a:focus {
+  outline: none;
+  border-color: #ddd;
+}
+#navbar-administration .navbar-lining button:focus {
+  outline: none;
+}
+#navbar-administration .navbar-tray-horizontal a,
+#navbar-administration .navbar-box a {
+  border-left: 2px solid transparent; /* LTR */
+}
+#navbar-administration .navbar-tray-horizontal a:focus,
+#navbar-administration .navbar-box a:focus {
+  outline: none;
+  border-color: #4479C0;
+  background-color: #f5f5f5;
+  text-decoration: none;
+}
+#navbar-administration .navbar-box a:hover:focus {
+  text-decoration: underline;
+}
+#navbar-administration .navbar-icon.navbar-handle:focus {
+  outline: none;
+  background-color: #f5f5f5;
+}
+
+/**
  * Handle.
  */
 #navbar-administration .navbar-icon.navbar-handle {
-  width: 3em;
+  width: 4em;
   text-indent: -9999px;
 }
 #navbar-administration .navbar-icon.navbar-handle:before {
+  left: 1.6667em; /* LTR */
+}
+.no-svg #navbar-administration .navbar-icon.navbar-handle:before {
+  left: 1.6667em; /* LTR */
+}
+#navbar-administration .navbar-icon.navbar-handle:before {
   background-image: url("../icons/5181c6/chevron-disc-down.svg");
-  left: 0; /* LTR */
 }
 .no-svg #navbar-administration .navbar-icon.navbar-handle:before {
   background-image: url("../icons/5181c6/chevron-disc-down.png");
-  left: 0; /* LTR */
 }
 #navbar-administration .navbar-icon.navbar-handle.open:before {
   background-image: url("../icons/787878/chevron-disc-up.svg");
@@ -313,21 +342,27 @@
 .no-svg #navbar-administration .navbar-icon.navbar-handle.open:before {
   background-image: url("../icons/787878/chevron-disc-up.png");
 }
-#navbar-administration .menu .menu .navbar-icon.navbar-handle:before {
+#navbar-administration .navbar-menu .navbar-menu .navbar-icon.navbar-handle:before {
   background-image: url("../icons/5181c6/twistie-down.svg");
   background-size: 75%;
 }
-.no-svg #navbar-administration .menu .menu .navbar-icon.navbar-handle:before {
+.no-svg #navbar-administration .navbar-menu .navbar-menu .navbar-icon.navbar-handle:before {
   background-image: url("../icons/5181c6/twistie-down.png");
   background-size: auto auto;
 }
-#navbar-administration .menu .menu .navbar-icon.navbar-handle.open:before {
+#navbar-administration .navbar-menu .navbar-menu .navbar-icon.navbar-handle.open:before {
   background-image: url("../icons/787878/twistie-up.svg");
   background-size: 75%;
 }
-.no-svg #navbar-administration .menu .menu .navbar-icon.navbar-handle.open:before {
+.no-svg #navbar-administration .navbar-menu .navbar-menu .navbar-icon.navbar-handle.open:before {
   background-image: url("../icons/787878/twistie-up.png");
   background-size: auto auto;
+}
+#navbar-administration .navbar-icon-escape-admin:before {
+  background-image: url(../icons/bebebe/chevron-disc-left.svg);
+}
+.no-svg #navbar-administration .navbar-icon-escape-admin:before {
+  background-image: url(../icons/bebebe/chevron-disc-left.png);
 }
 
 /**

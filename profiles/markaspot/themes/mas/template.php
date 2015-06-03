@@ -57,6 +57,24 @@ function mas_preprocess_comment(&$variables) {
   }
 }
 
+
+/**
+ * Implements hook_preprocess_block()
+ */
+
+function mas_preprocess_block(&$vars) {
+  /* Set shortcut variables. Hooray for less typing! */
+  $classes = &$vars['classes_array'];
+
+  switch ($vars['block']->delta) {
+    case 'add_reports':
+    case 'watch_reports':
+      $classes[] = 'col-md-6';
+      break;
+  }
+}
+
+
 /**
  * Implements hook_form_alter().
  */

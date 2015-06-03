@@ -54,7 +54,7 @@ projects[geolocation_osm][subdir] = "contrib"
 projects[geolocation_osm][download][url] = "http://git.drupal.org/project/geolocation_osm.git"
 
 projects[navbar][type] = module
-projects[navbar][version] = 1.4
+projects[navbar][version] = 1.6
 projects[navbar][subdir] = "contrib"
 
 projects[ckeditor][type] = module
@@ -65,6 +65,11 @@ projects[search_api][subdir] = contrib
 projects[search_api_db][subdir] = contrib
 
 projects[less][subdir] = contrib
+
+libraries[jquery-simple-color][type] = libraries
+libraries[jquery-simple-color][download][type] = get
+libraries[jquery-simple-color][download][url] = "https://github.com/recurser/jquery-simple-color/archive/v1.2.1.zip"
+libraries[jquery-simple-color][directory_name] = jquery-simple-color
 
 libraries[chosen][type] = libraries
 libraries[chosen][download][type] = get

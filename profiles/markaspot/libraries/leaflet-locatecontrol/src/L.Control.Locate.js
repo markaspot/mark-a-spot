@@ -93,8 +93,7 @@ You can find the project at: https://github.com/domoritz/leaflet-locatecontrol
         initialize: function (options) {
             L.Map.addInitHook(function () {
                 if (this.options.locateControl) {
-                    this.locateControl = L.control.locate();
-                    this.addControl(this.locateControl);
+                    this.addControl(this);
                 }
             });
 
@@ -476,13 +475,6 @@ You can find the project at: https://github.com/domoritz/leaflet-locatecontrol
             this._active = false;
             this._locateOnNextLocationFound = this.options.setView;
             this._following = false;
-        }
-    });
-
-    L.Map.addInitHook(function () {
-        if (this.options.locateControl) {
-            this.locateControl = L.control.locate();
-            this.addControl(this.locateControl);
         }
     });
 

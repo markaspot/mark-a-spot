@@ -54,13 +54,6 @@
 }
 
 
-// Front Buttons
-section#block-markaspot-default-content-add-reports,
-section#block-markaspot-default-content-watch-reports {
-  width: 48%;
-  float:left
-}
-
 .list .btn-default,
 .add .btn-default {
   opacity: 0.8;
@@ -73,25 +66,40 @@ div.col-md-6.jumbotron {
   border: 1px solid #f8f8f8;
 }
 
+
+div.region-front-image {
+  @media only screen and (max-width : @screen-md-min) {
+    display:none
+  }
+}
+
 .list,
 .add {
-  margin: 20px 0;
+  margin: 20px 0 0 0;
 }
 
 
 div.add a,
-div.list a {
-  @media only screen and (max-width : @screen-md-min) {
-    width: 100%;
-  }
+div.list a  {
+  width: 75%;
 }
 
 
 div.add a h3,
 div.list a h3 {
-  font-size: 18px;
-  /* line-height: 28px; */
-  margin: 10px 0;
+  margin: 10px 0 10px 0;
+  @media only screen and (min-width : @screen-lg-min) {
+    font-size: 18px
+  }
+  @media only screen and (max-width : @screen-lg-min) {
+    font-size: 16px
+  }
+  @media only screen and (max-width : @screen-md-min) {
+    font-size: 16px
+  }
+  @media only screen and (max-width : @screen-sm-min) {
+    font-size: 16px
+  }
 }
 
 .row.welcome {

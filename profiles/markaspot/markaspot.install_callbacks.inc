@@ -1,4 +1,4 @@
-<?
+<?php
 /**
  * @file
  * Contains Batch API callbacks used during installation.

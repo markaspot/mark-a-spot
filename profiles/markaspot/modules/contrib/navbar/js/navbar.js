@@ -145,24 +145,7 @@ Drupal.behaviors.navbar = {
 
     // Invoke the Navbar menu script for core modules.
     $('.navbar-menu-user').drupalNavbarMenu();
-    $('.navbar-menu-shortcuts .navbar-lining > .menu').drupalNavbarMenu();
-  }
-};
-
-/**
- * Removes the clearfix class automatically added menus by Drupal.
- *
- * It's very difficult to remove this class on a case-by-case basis, so
- * we just do it with JavaScript here.
- */
-Drupal.behaviors.navbarShortcuts = {
-
-  attach: function (context) {
-    var $shortcutsTray = $('.navbar-tray-shortcuts').once('navbar');
-
-    if ($shortcutsTray.length) {
-      $shortcutsTray.find('.menu.clearfix').removeClass('clearfix');
-    }
+    $('.navbar-menu-shortcuts .navbar-lining > .navbar-menu').drupalNavbarMenu();
   }
 };
 
@@ -346,13 +329,23 @@ Drupal.navbar = {
   }),
 
   /**
-   * Backbone view for the navbar element.
+   * Backbone view for the navbar element. Listens to mouse & touch.
    */
   NavbarVisualView: Backbone.View.extend({
 
-    events: {
-      'click .navbar-bar [data-navbar-tab-trigger]': 'onTabClick',
-      'click .navbar-toggle-orientation button': 'onOrientationToggleClick'
+    events: function () {
+      // Prevents delay and simulated mouse events.
+      var touchEndToClick = function (event) {
+        event.preventDefault();
+        event.target.click();
+      };
+
+      return {
+        'click .navbar-bar [data-navbar-tab-trigger]': 'onTabClick',
+        'click .navbar-toggle-orientation button': 'onOrientationToggleClick',
+        'touchend .navbar-bar [data-navbar-tab-trigger]': touchEndToClick,
+        'touchend .navbar-toggle-orientation button': touchEndToClick
+      };
     },
 
     /**
@@ -566,7 +559,7 @@ Drupal.navbar = {
       else {
         // The navbar container is invisible. Its placement is used to determine
         // the container for the trays.
-        $trays.css('padding-top', this.$el.find('.navbar-bar').outerHeight());
+        $trays.css('padding-top', this.$el.find('.navbar-bar').outerHeight(true));
       }
     },
 
@@ -651,7 +644,7 @@ Drupal.navbar = {
       // Render the main menu as a nested, collapsible accordion.
       if ('drupalNavbarMenu' in $.fn) {
         this.$el
-          .children('.menu')
+          .children('.navbar-menu')
           .drupalNavbarMenu();
       }
     }

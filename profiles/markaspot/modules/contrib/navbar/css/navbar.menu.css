@@ -1,7 +1,7 @@
 /**
  * @file navbar.menu.css
  */
-#navbar-administration .menu {
+#navbar-administration .navbar-menu {
   list-style: none;
   margin: 0;
   padding: 0;
@@ -12,12 +12,12 @@
   position: relative;
   width: auto;
 }
-#navbar-administration .navbar-tray-horizontal .menu .navbar-handle,
-#navbar-administration .navbar-tray-horizontal .menu .menu,
-#navbar-administration .navbar-tray-vertical .menu > .navbar-twisty > .menu {
+#navbar-administration .navbar-tray-horizontal .navbar-menu .navbar-handle,
+#navbar-administration .navbar-tray-horizontal .navbar-menu .navbar-menu,
+#navbar-administration .navbar-tray-vertical .navbar-menu > .navbar-twisty > .navbar-menu {
   display: none;
 }
-#navbar-administration .navbar-tray-vertical .navbar-twisty.open > .menu {
+#navbar-administration .navbar-tray-vertical .navbar-twisty.open > .navbar-menu {
   display: block; /* Show the sub-menus */
 }
 #navbar-administration .navbar-tray-vertical .navbar-handle + .navbar-menu-item {

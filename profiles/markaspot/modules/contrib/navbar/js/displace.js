@@ -130,19 +130,19 @@
     var placement = $el.offset()[ horizontal ? 'left' : 'top'];
     // Subtract scroll distance from placement to get the distance
     // to the edge of the viewport.
-    placement -= window['scroll' + (horizontal ? 'X' : 'Y')] || document.documentElement['scroll' + (horizontal) ? 'Left' : 'Top'] || 0;
+    placement -= window['scroll' + (horizontal ? 'X' : 'Y')] || window['page' + (horizontal ? 'X' : 'Y') + 'Offset'] || document.documentElement['scroll' + (horizontal) ? 'Left' : 'Top'] || 0;
     // Find the displacement value according to the edge.
     switch (edge) {
       // Left and top elements displace as a sum of their own offset value
       // plus their size.
       case 'top':
         // Total displacment is the sum of the elements placement and size.
-        displacement = placement + $el.outerHeight();
+        displacement = placement + $el.outerHeight(true);
         break;
 
       case 'left':
         // Total displacment is the sum of the elements placement and size.
-        displacement = placement + $el.outerWidth();
+        displacement = placement + $el.outerWidth(true);
         break;
 
       // Right and bottom elements displace according to their left and

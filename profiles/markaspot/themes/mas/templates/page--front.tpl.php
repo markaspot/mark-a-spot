@@ -66,7 +66,7 @@
             print render($page['front_welcome_text']);
           ?>
         </div>
-        <div class="welcome">
+        <div class="welcome row">
           <?php
             print render($page['front_welcome_buttons']);
           ?>
