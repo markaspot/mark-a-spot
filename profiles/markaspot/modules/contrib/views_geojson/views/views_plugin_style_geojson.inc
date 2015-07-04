@@ -39,6 +39,8 @@ class views_plugin_style_geojson extends views_plugin_style {
       }
     }
     else {
+      // Pretty-print the JSON.
+      module_load_include('inc', 'views_geojson', 'views_geojson.helpers');
       foreach (entity_get_info() as $key => $info) {
         if ($view->base_table == $info['base table']) {
           $this->entity_type = $key;
@@ -49,7 +51,7 @@ class views_plugin_style_geojson extends views_plugin_style {
     }
   }
 
-  /*
+  /**
    * Set default options
    */
   function option_definition() {
@@ -66,27 +68,33 @@ class views_plugin_style_geojson extends views_plugin_style {
       ),
     );
     $options['attributes'] = array('default' => NULL, 'translatable' => FALSE);
-    $options['jsonp_prefix'] = array('default' => NULL, 'translatable' => FALSE);
-    $options['content_type'] = array('default' => 'default', 'translatable' => FALSE);
-    $options['using_views_api_mode'] = array('default' => FALSE, 'translatable' => FALSE);
+    $options['jsonp_prefix'] = array(
+      'default' => NULL,
+      'translatable' => FALSE
+    );
+    $options['content_type'] = array(
+      'default' => 'default',
+      'translatable' => FALSE
+    );
+    $options['using_views_api_mode'] = array(
+      'default' => FALSE,
+      'translatable' => FALSE
+    );
     return $options;
   }
 
   /**
    * Provide a form for setting options.
-   *
-   * @param array $form
-   * @param array $form_state
    */
   function options_form(&$form, &$form_state) {
     parent::options_form($form, $form_state);
 
     $fields = array();
 
-    // Get list of fields in this view & flag available geodata fields
+    // Get list of fields in this view & flag available geodata fields.
     $handlers = $this->display->handler->get_handlers('field');
 
-    // Check for any fields, as the view needs them
+    // Check for any fields, as the view needs them.
     if (empty($handlers)) {
       $form['error_markup'] = array(
         '#value' => t('You need to enable at least one field before you can configure your field settings'),
@@ -116,20 +124,14 @@ class views_plugin_style_geojson extends views_plugin_style {
       $fields_info[$field_id]['type'] = $field_info['type'];
     }
 
-    // If this is a page display, notify the user.
-    // @todo At the next major release, remove support for using page display
-    if ($this->display->display_plugin == 'page') {
-      drupal_set_message('<p>' . t('Using the GeoJSON display style on "Page" displays is deprecated, but will continue to work until the next release. Instead, the GeoJSON display style should be used with a "Feed" display.') . '</p>', 'warning');
-    }
-
-    // Default data source
+    // Default data source.
     $data_source_options = array(
       'latlon' => t('Other: Lat/Lon Point'),
       'geofield' => t('Geofield'),
       'wkt' => t('WKT'),
     );
 
-    // Data Source options
+    // Data Source options.
     $form['data_source'] = array(
       '#type' => 'fieldset',
       '#tree' => TRUE,
@@ -145,8 +147,8 @@ class views_plugin_style_geojson extends views_plugin_style {
       '#default_value' => $this->options['data_source']['value'],
     );
 
-    // Other Lat and Lon data sources
-    if (count($fields > 0)) {
+    // Other Lat and Lon data sources.
+    if (count($fields) > 0) {
       $form['data_source']['latitude'] = array(
         '#type' => 'select',
         '#title' => t('Latitude Field'),
@@ -167,7 +169,7 @@ class views_plugin_style_geojson extends views_plugin_style {
         '#dependency' => array('edit-style-options-data-source-value' => array('latlon')),
       );
 
-      // Get Geofield-type fields
+      // Get Geofield-type fields.
       $geofield_fields = array();
       foreach ($fields as $field_id => $field) {
         if ($fields_info[$field_id]['type'] == 'geofield') {
@@ -175,18 +177,18 @@ class views_plugin_style_geojson extends views_plugin_style {
         }
       }
 
-      // Geofield
+      // Geofield.
       $form['data_source']['geofield'] = array(
         '#type' => 'select',
         '#title' => t('Geofield'),
-        '#description' => t('Choose a Geofield field. Any formatter will do; we\'ll access Geofield\'s underlying WKT format.'),
+        '#description' => t("Choose a Geofield field. Any formatter will do; we'll access Geofield's underlying WKT format."),
         '#options' => $geofield_fields,
         '#default_value' => $this->options['data_source']['geofield'],
         '#process' => array('ctools_dependent_process'),
         '#dependency' => array('edit-style-options-data-source-value' => array('geofield')),
       );
 
-      // WKT
+      // WKT.
       $form['data_source']['wkt'] = array(
         '#type' => 'select',
         '#title' => t('WKT'),
@@ -207,16 +209,16 @@ class views_plugin_style_geojson extends views_plugin_style {
     );
 
     $form['data_source']['description_field'] = array(
-      '#type'           => 'select',
-      '#title'          => t('Description'),
-      '#description'    => t('Choose the field or rendering method to appear as
+      '#type' => 'select',
+      '#title' => t('Description'),
+      '#description' => t('Choose the field or rendering method to appear as
           description on tooltips.'),
-      '#required'       => FALSE,
-      '#options'        => array_merge(array(''=>''), $fields),
-      '#default_value'  => $this->options['data_source']['description_field'],
+      '#required' => FALSE,
+      '#options' => array_merge(array('' => ''), $fields),
+      '#default_value' => $this->options['data_source']['description_field'],
     );
 
-    // Attributes and variable styling description
+    // Attributes and variable styling description.
     $form['attributes'] = array(
       '#type' => 'fieldset',
       '#title' => t('Attributes and Styling'),
@@ -233,41 +235,35 @@ class views_plugin_style_geojson extends views_plugin_style {
     );
 
     $form['content_type'] = array(
-      '#type'           => 'radios',
-      '#title'          => t('Content-Type'),
-      '#options'        => array(
-        'default'       => t("Default: application/json"),
-        'text/json'     => t('text/json'),
+      '#type' => 'radios',
+      '#title' => t('Content-Type'),
+      '#options' => array(
+        'default' => t("Default: application/json"),
+        'text/json' => t('text/json'),
       ),
-      '#default_value'  => $this->options['content_type'],
-      '#description'    => t('The Content-Type header that will be sent with the JSON output.')
+      '#default_value' => $this->options['content_type'],
+      '#description' => t('The Content-Type header that will be sent with the JSON output.'),
     );
 
-    if ($this->display->display_plugin == 'page') {
-      $form['using_views_api_mode'] = array(
-        '#type'           => 'checkbox',
-        '#title'          => t('Views API mode'),
-        '#default_value'  => $this->options['using_views_api_mode'],
-        '#description'    => t('Not using View API mode means the JSON gets output directly and the server ceases normal page processing.  Using it means the server does not cease processing after outputting the JSON.  This allows the Views API to be used with the view without having to prematurely terminate page processing.'),
-      );
-    }
-
-    // Make array of attributes
+    // Make array of attributes.
     $variable_fields = array();
-    // Add name and description
+    // Add name and description.
     if (!empty($this->options['data_source']['name_field'])) {
       $variable_fields['name'] = '${name}';
     }
     if (!empty($this->options['data_source']['description_field'])) {
       $variable_fields['description'] = '${description}';
     }
-    // Go through fields
+    // Go through fields.
     foreach ($this->view->display_handler->get_handlers('field') as $field => $handler) {
       if (($field != $this->options['data_source']['name_field']) && ($field != $this->options['data_source']['description_field'])) {
         $variable_fields[$field] = '${' . $field . '}';
       }
     }
-    $variables_list = array('items' => $variable_fields, 'attributes' => array('class' => array('description')));
+    $variables_list = array(
+      'items' => $variable_fields,
+      'attributes' => array('class' => array('description'))
+    );
 
     $markup = '<p class="description">' . t('Fields added to this view will be attached to their respective feature, (point, line, polygon,) as attributes. These attributes can then be used to add variable styling to your themes. This is accomplished by using the %syntax syntax in the values for a style.  The following is a list of formatted variables that are currently available; these can be placed right in the style interface.', array('%syntax' => '${field_name}')) . '</p>';
     $markup .= theme('item_list', $variables_list);
@@ -280,7 +276,7 @@ class views_plugin_style_geojson extends views_plugin_style {
   }
 
   /**
-   * Implementation of view_style_plugin::render()
+   * Implementation of view_style_plugin::render().
    */
   function render() {
     $args = func_get_args();
@@ -317,15 +313,17 @@ class views_plugin_style_geojson extends views_plugin_style {
         $json = "<pre>$json</pre>";
       }
     }
-    else if ($this->display->display_plugin == 'page' && !$this->options['using_views_api_mode']) {
-      // Change the content type header since we're sending a JSON response.
-      $content_type = ($this->options['content_type'] == 'default') ? 'application/json' : $this->options['content_type'];
-      drupal_add_http_header("Content-Type", "$content_type; charset=utf-8");
+    else {
+      if ($this->display->display_plugin == 'page' && !$this->options['using_views_api_mode']) {
+        // Change the content type header since we're sending a JSON response.
+        $content_type = ($this->options['content_type'] == 'default') ? 'application/json' : $this->options['content_type'];
+        drupal_add_http_header("Content-Type", "$content_type; charset=utf-8");
 
-      // Page display prints and exits; this is BAD (prevents caching) but
-      // supports legacy configurations.
-      print $json;
-      drupal_exit();
+        // Page display prints and exits; this is BAD (prevents caching) but
+        // supports legacy configurations.
+        print $json;
+        drupal_exit();
+      }
     }
 
     // Everything else returns output.

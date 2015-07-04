@@ -5,7 +5,7 @@ package = Mark-a-Spot
 
 dependencies[] = fontawesome
 
-; Information added by drush on 2015-06-03
-version = "7.x-2.8+7-dev"
+; Information added by drush on 2015-07-04
+version = "7.x-2.8+10-dev"
 project = "markaspot"
-datestamp = "1433346639"
+datestamp = "1436026449"

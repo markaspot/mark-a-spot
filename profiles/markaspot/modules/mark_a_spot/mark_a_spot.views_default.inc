@@ -559,7 +559,7 @@ function mark_a_spot_views_default_views() {
   $handler->display->display_options['pager']['options']['id'] = '0';
   $handler->display->display_options['pager']['options']['quantity'] = '9';
   $handler->display->display_options['defaults']['style_plugin'] = FALSE;
-  $handler->display->display_options['style_plugin'] = 'views_geojson';
+  $handler->display->display_options['style_plugin'] = 'views_geojson_feed';
   $handler->display->display_options['style_options']['data_source']['value'] = 'latlon';
   $handler->display->display_options['style_options']['data_source']['latitude'] = 'field_geo';
   $handler->display->display_options['style_options']['data_source']['longitude'] = 'field_geo_1';
@@ -740,7 +740,7 @@ function mark_a_spot_views_default_views() {
   $handler->display->display_options['pager']['type'] = 'none';
   $handler->display->display_options['pager']['options']['offset'] = '0';
   $handler->display->display_options['defaults']['style_plugin'] = FALSE;
-  $handler->display->display_options['style_plugin'] = 'views_geojson';
+  $handler->display->display_options['style_plugin'] = 'views_geojson_feed';
   $handler->display->display_options['style_options']['data_source']['value'] = 'latlon';
   $handler->display->display_options['style_options']['data_source']['latitude'] = 'field_geo';
   $handler->display->display_options['style_options']['data_source']['longitude'] = 'field_geo_1';
