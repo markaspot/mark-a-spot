@@ -12,7 +12,7 @@ features[rules_config][] = rules_new_report_notification
 features[rules_config][] = rules_report_added
 mtime = 1416117874
 
-; Information added by drush on 2015-07-04
-version = "7.x-2.8+10-dev"
+; Information added by drush on 2015-12-28
+version = "7.x-2.8+21-dev"
 project = "markaspot"
-datestamp = "1436026449"
+datestamp = "1451294916"

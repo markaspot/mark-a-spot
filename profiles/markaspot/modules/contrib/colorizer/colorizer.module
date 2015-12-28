@@ -104,15 +104,12 @@ function colorizer_menu() {
 }
 
 /**
- * Implements hook_init().
+ * Implements hook_preprocess_html().
  * Add the colorized style sheet to the site
  */
-function colorizer_init() {
+function colorizer_preprocess_html(&$vars){
   global $theme_key;
-  if (variable_get('install_task') != 'done') {
-    // don't run colorizer during installer
-    return;
-  }
+
   // If update hasn't run, this won't run.
   if (!db_table_exists('colorizer_instance')) {
     return;

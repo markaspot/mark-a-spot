@@ -1,8 +1,8 @@
 /*!
-Waypoints Debug - 3.1.1
+Waypoints Debug - 4.0.0
 Copyright © 2011-2015 Caleb Troughton
 Licensed under the MIT license.
-https://github.com/imakewebthings/waypoints/blog/master/licenses.txt
+https://github.com/imakewebthings/waypoints/blob/master/licenses.txt
 */
 (function() {
   'use strict'

@@ -8,6 +8,7 @@
 define('FONTAWESOME_LIBRARY', 'fontawesome');
 define('FONTAWESOME_NAME', 'Font Awesome');
 define('FONTAWESOME_URL', 'http://fontawesome.io');
+define('FONTAWESOME_CDN_URL', '//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css');
 define('FONTAWESOME_DOWNLOAD_URL', 'https://github.com/FortAwesome/Font-Awesome/archive/v4.2.0.zip');
 define('FONTAWESOME_PREFIX', 'fa');
 
@@ -49,14 +50,39 @@ function fontawesome_libraries_info() {
 }
 
 /**
- * Implements hook_preprocess_page().
+ * Implements hook_preprocess_html().
  *
  * Purposefully only load on page requests and not hook_init(). This is
  * required so it does not increase the bootstrap time of Drupal when it isn't
  * necessary.
  */
-function fontawesome_preprocess_page() {
-  libraries_load(FONTAWESOME_LIBRARY);
+function fontawesome_preprocess_html() {
+  if (variable_get('fontawesome_use_cdn', FALSE)) {
+    drupal_add_css(FONTAWESOME_CDN_URL, array('type' => 'external'));
+  }
+  else {
+    $library = libraries_load(FONTAWESOME_LIBRARY);
+    if (!$library['loaded']) {
+      drupal_set_message($library['error message'] . t('Please make sure that '
+              . 'fontawesome was download & extracted at sites/all/libraries/fontawesome directory.'
+              . 'Please check README.txt for more details.'), 
+              'warning');
+    }
+  }
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ *
+ * Add a checkbox to Drupal Bandwidth optimization settings in performance page
+ * to provide an option to load CDN version of FontAwesome.
+ */
+function fontawesome_form_system_performance_settings_alter(&$form, &$form_state, $form_id) {
+  $form['bandwidth_optimization']['fontawesome_use_cdn'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Use CDN version of FontAwesome.'),
+    '#default_value' => variable_get('fontawesome_use_cdn', FALSE),
+  );
 }
 
 /**

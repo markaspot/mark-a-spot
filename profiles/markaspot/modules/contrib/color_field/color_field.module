@@ -163,7 +163,7 @@ function color_field_field_widget_info() {
   $widgets = array();
 
   $widgets['color_field_default_widget'] = array(
-    'label' => t('Pre-selected Color Boxes'),
+    'label' => t('Pre-selected color boxes'),
     'field types' => array('color_field_rgb'),
     'weight' => 2,
   );
@@ -177,7 +177,7 @@ function color_field_field_widget_info() {
   // Check if color_field_simple_color can become color_field_simple_widget
   if ($jquery_simple_color_picker_enable) {
     $widgets['color_field_simple_widget'] = array(
-      'label' => t('Simple Color-Picker'),
+      'label' => t('Simple color picker'),
       'field types' => array('color_field_rgb'),
       'weight' => 3,
     );
@@ -202,7 +202,7 @@ function color_field_field_widget_info() {
   // Color_field_eyecon_widget need more work before release.
   if ($jquery_spectrum_color_picker_enable) {
     $widgets['color_field_spectrum_widget'] = array(
-      'label' => t('Spectrum Color-Picker'),
+      'label' => t('Spectrum color picker'),
       'field types' => array('color_field_rgb'),
       'weight' => 4,
     );
@@ -328,13 +328,13 @@ function color_field_field_settings_form($field, $instance, $has_data) {
         '#type' => 'checkbox',
         '#title' => t('Show Palette'),
         '#default_value' => isset($settings['show_palette']) ? $settings['show_palette'] : FALSE,
-        '#description' => t('Show or hide Palette in Spectrum Widget'),
+        '#description' => t('Show or hide the palette in the widget.'),
       );
       $form['palette'] = array(
         '#type' => 'textarea',
         '#title' => t('Color Palette'),
         '#default_value' => isset($settings['palette']) ? $settings['palette'] : '',
-        '#description' => t('Selectable color palette to accompany the Spectrum Widget'),
+        '#description' => t('Selectable color palette to accompany the widget.'),
         '#states' => array(
           'visible' => array(
             ':input[name="field[settings][show_palette]"]' => array('checked' => TRUE),
@@ -345,7 +345,7 @@ function color_field_field_settings_form($field, $instance, $has_data) {
         '#type' => 'checkbox',
         '#title' => t('Show Palette Only'),
         '#default_value' => isset($settings['show_palette_only']) ? $settings['show_palette_only'] : FALSE,
-        '#description' => t('Only show thePalette in Spectrum Widget and nothing else'),
+        '#description' => t('Only show the palette in the widget and nothing else.'),
         '#states' => array(
           'visible' => array(
             ':input[name="field[settings][show_palette]"]' => array('checked' => TRUE),

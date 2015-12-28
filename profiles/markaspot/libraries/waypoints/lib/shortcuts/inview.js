@@ -1,8 +1,8 @@
 /*!
-Waypoints Inview Shortcut - 3.1.1
+Waypoints Inview Shortcut - 4.0.0
 Copyright © 2011-2015 Caleb Troughton
 Licensed under the MIT license.
-https://github.com/imakewebthings/waypoints/blog/master/licenses.txt
+https://github.com/imakewebthings/waypoints/blob/master/licenses.txt
 */
 (function() {
   'use strict'
@@ -16,6 +16,7 @@ https://github.com/imakewebthings/waypoints/blog/master/licenses.txt
     this.options = Waypoint.Adapter.extend({}, Inview.defaults, options)
     this.axis = this.options.horizontal ? 'horizontal' : 'vertical'
     this.waypoints = []
+    this.element = this.options.element
     this.createWaypoints()
   }
 
@@ -72,10 +73,12 @@ https://github.com/imakewebthings/waypoints/blog/master/licenses.txt
   Inview.prototype.createWaypoint = function(config) {
     var self = this
     this.waypoints.push(new Waypoint({
+      context: this.options.context,
       element: this.options.element,
+      enabled: this.options.enabled,
       handler: (function(config) {
         return function(direction) {
-          self.options[config[direction]].call(this, direction)
+          self.options[config[direction]].call(self, direction)
         }
       }(config)),
       offset: config.offset,
@@ -91,7 +94,21 @@ https://github.com/imakewebthings/waypoints/blog/master/licenses.txt
     this.waypoints = []
   }
 
+  Inview.prototype.disable = function() {
+    for (var i = 0, end = this.waypoints.length; i < end; i++) {
+      this.waypoints[i].disable()
+    }
+  }
+
+  Inview.prototype.enable = function() {
+    for (var i = 0, end = this.waypoints.length; i < end; i++) {
+      this.waypoints[i].enable()
+    }
+  }
+
   Inview.defaults = {
+    context: window,
+    enabled: true,
     enter: noop,
     entered: noop,
     exit: noop,

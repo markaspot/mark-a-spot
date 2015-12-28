@@ -1425,7 +1425,7 @@ h3 {
 /* FORM ELEMENTS */
 /* Make fake buttons inherit the given styles. */
 .form-select, .form-select:focus, .form-select:active {
-  background: white url('../images/select_sprite.svg?1430323676') no-repeat;
+  background: white url('../images/select_sprite.svg?1450193324') no-repeat;
 }
 [dir="ltr"] .form-select {
   padding-right: 3.51961em;
@@ -1452,6 +1452,10 @@ h3 {
 }
 .form-managed-file .form-submit {
   margin: 0;
+}
+
+.form-item {
+  margin-bottom: 1em;
 }
 
 .tips,
@@ -1495,7 +1499,7 @@ ul.admin-list {
   padding: 0;
 }
 ul.admin-list li {
-  background: url('../images/list-item.png?1430323676') no-repeat scroll 0 0 transparent;
+  background: url('../images/list-item.png?1450193324') no-repeat scroll 0 0 transparent;
   background-size: 18px;
   background-position: 0 1px;
   list-style-image: none;
@@ -1534,14 +1538,14 @@ div.add-or-remove-shortcuts {
 div.add-or-remove-shortcuts a span.icon {
   display: block;
   width: 24px;
-  background: transparent url('../images/no_shortcut.svg?1430323676') no-repeat scroll 0 0;
+  background: transparent url('../images/no_shortcut.svg?1450193324') no-repeat scroll 0 0;
   height: 24px;
   float: right;
   margin-left: 8px;
 }
 
 div.add-shortcut a:focus span.icon, div.add-shortcut a:hover span.icon {
-  background: transparent url('../images/shortcut.svg?1430323676') no-repeat scroll 0 0;
+  background: transparent url('../images/shortcut.svg?1450193324') no-repeat scroll 0 0;
   -webkit-transition: all 1s;
   -moz-transition: all 1s;
   -o-transition: all 1s;
@@ -1549,10 +1553,10 @@ div.add-shortcut a:focus span.icon, div.add-shortcut a:hover span.icon {
 }
 
 div.remove-shortcut a span.icon {
-  background: transparent url('../images/no_shortcut.svg?1430323676') no-repeat scroll 0 0;
+  background: transparent url('../images/no_shortcut.svg?1450193324') no-repeat scroll 0 0;
 }
 div.remove-shortcut a:focus span.icon, div.remove-shortcut a:hover span.icon {
-  background: transparent url('../images/no_shortcut.svg?1430323676') no-repeat scroll 0 0;
+  background: transparent url('../images/no_shortcut.svg?1450193324') no-repeat scroll 0 0;
   -webkit-transition: all 1s;
   -moz-transition: all 1s;
   -o-transition: all 1s;
@@ -2554,14 +2558,14 @@ ol.task-list li {
   /* LTR */
 }
 ol.task-list li.active {
-  background: transparent url('../images/task-item.png?1430323676') no-repeat 3px 50%;
+  background: transparent url('../images/task-item.png?1450193324') no-repeat 3px 50%;
   /* LTR */
   color: #000;
   padding: 0.5em 1em 0.5em 20px;
   /* LTR */
 }
 ol.task-list li.done {
-  background: transparent url('../images/task-check.png?1430323676') no-repeat 0 50%;
+  background: transparent url('../images/task-check.png?1450193324') no-repeat 0 50%;
   color: green;
 }
 
@@ -3698,7 +3702,7 @@ div.dashboard-block {
 }
 
 dl.page-manager-wizards {
-  background: url('../images/list-item.png?1430323676') no-repeat scroll 0 0 transparent;
+  background: url('../images/list-item.png?1450193324') no-repeat scroll 0 0 transparent;
   margin: 0 0 1em;
   padding: 0 0 0 2.5em;
 }
@@ -3930,6 +3934,30 @@ code strong {
   margin: 0;
   width: 90%;
   overflow: hidden;
+}
+
+#drupal-modal {
+  padding: 10px;
+}
+#drupal-modal label {
+  padding: 5px .1em;
+}
+#drupal-modal #entity-embed-dialog-form label[for="edit-attributes-data-entity-id-upload"] {
+  display: inline;
+}
+#drupal-modal #entity-embed-dialog-form #edit-attributes-data-entity-id-upload {
+  display: inline-block;
+}
+#drupal-modal #entity-embed-dialog-form #edit-attributes-data-entity-id-upload .button {
+  display: inline-block;
+}
+#drupal-modal #editor-ckeditor-dialog-form label[for="edit-fid-upload"] {
+  padding: 5px 1em 5px 0;
+  margin-bottom: 10px;
+}
+#drupal-modal #editor-ckeditor-dialog-form label[for="edit-attributes-src"] {
+  padding: 5px 1em;
+  margin-bottom: 10px;
 }
 
 /* Ember overrides of workbench CSS */

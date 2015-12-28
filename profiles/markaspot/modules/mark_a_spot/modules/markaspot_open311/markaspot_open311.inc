@@ -392,7 +392,7 @@ function markaspot_open311_node_map_request($node, $status, $parameters) {
 
   // Media Url:
   if (isset($node->field_image[$node->language])) {
-    $image_uri = image_style_url("large", file_build_uri($node->field_image[$node->language][0]['filename']));
+    $image_uri = file_create_url($node->field_image[$node->language][0]['uri']);
     $request['media_url'] = $image_uri;
   }
 

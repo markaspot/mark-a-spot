@@ -16,12 +16,44 @@ function fontawesome_requirements($phase) {
     // Make sure Libraries is loaded before loading Font Awesome.
     drupal_load('module', 'libraries');
     $fontawesome = libraries_detect('fontawesome');
+
     $requirements['fontawesome'] = array(
       'title' => $fontawesome['name'],
-      'severity' => $fontawesome['installed'] ? REQUIREMENT_OK : REQUIREMENT_WARNING,
-      'value' => $fontawesome['installed'] ? $fontawesome['version'] : $fontawesome['error message'],
     );
+
+    // Don't really check for Font Awesome if we are using the CDN version.
+    if (variable_get('fontawesome_use_cdn', FALSE)) {
+      $requirements['fontawesome']['severity'] = REQUIREMENT_OK;
+      $requirements['fontawesome']['value'] = t('Using CDN version: ') . FONTAWESOME_CDN_URL;
+    }
+    else {
+      $requirements['fontawesome']['severity'] = $fontawesome['installed'] ? REQUIREMENT_OK : REQUIREMENT_WARNING;
+      $requirements['fontawesome']['value'] = $fontawesome['installed'] ? $fontawesome['version'] : $fontawesome['error message'];
+    }
   }
 
   return $requirements;
+}
+
+/**
+* Implementation of hook_install
+*
+*/
+function fontawesome_uninstall(){
+  // Delete set variables.
+  db_query("DELETE FROM {variable} WHERE name like 'fontawesome_%'");
+  
+  //Icon API module : Delete fontawesome icon bundle & clear cache
+  if(module_exists('icon') && ($cache = cache_get('icon_bundles')) && !empty($cache->data)){
+    $fa_icon_bundle = isset($cache->data['fontawesome']) ? $cache->data['fontawesome'] : array();
+    $fa_icon_bundle['path'] = isset($fa_icon_bundle['path']) ? $fa_icon_bundle['path'] : 'fontawesome';
+    icon_bundle_delete($fa_icon_bundle);
+  }
+}
+
+/**
+* Update the fontawesome module from 1.x to 2.x version
+*/
+function fontawesome_update_7001(&$sandbox) {
+  registry_rebuild();
 }

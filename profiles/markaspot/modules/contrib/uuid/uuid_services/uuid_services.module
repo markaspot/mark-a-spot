@@ -158,7 +158,15 @@ function _uuid_services_entity_update($entity_type, $uuid, $entity) {
  */
 function _uuid_services_entity_delete($entity_type, $uuid) {
   try {
-    $return = entity_uuid_delete($entity_type, array($uuid));
+    $uuid_exist = (bool) entity_get_id_by_uuid($entity_type, array($uuid));
+    if (!$uuid_exist) {
+      /* UUID not found. Don't try to delete something that doesn't exist. */
+      $args = array('@uuid' => $uuid, '@type' => $entity_type);
+      watchdog('uuid_services', 'UUID @uuid not found for entity type @type', $args, WATCHDOG_WARNING);
+      return TRUE;
+    }
+
+    $return = entity_uuid_delete($entity_type, array($uuid)) !== FALSE;
     return $return;
   }
   catch (Exception $exception) {
@@ -208,10 +216,9 @@ function _uuid_services_entity_access($op, $args) {
     if ($op == 'update' && empty($entity_ids)) {
       $op = 'create';
     }
-    // Taxonomy and Comment module uses 'edit' instead of 'update'.
-    // Oh, how I love Drupal consistency.
-    if (($entity_type == 'taxonomy_term' || $entity_type == 'comment') && $op == 'update') {
-      $op = 'edit';
+    // If the user doesn't exist return 406 like services does.
+    if (($entity_type == 'user' && empty($entity) && $op == 'view')) {
+      return services_error(t('There is no user with UUID @uuid.', array('@uuid' => $args[1])), 406);;
     }
     // The following code is taken from entity_access() with some extra logic
     // to handle the case where an entity type is not defining an access
@@ -226,19 +233,4 @@ function _uuid_services_entity_access($op, $args) {
     watchdog_exception('uuid_services', $exception);
     return services_error($exception, 406, $entity_type);
   }
-}
-
-/**
- * Implements hook_services_resources().
- */
-function uuid_services_services_resources() {
-  module_load_include('inc', 'uuid_services', 'resources/field_collection.resource');
-
-  $resources = array(
-    '#api_version' => 3002,
-  );
-
-  $resources += _field_collection_resource_definition();
-
-  return $resources;
 }

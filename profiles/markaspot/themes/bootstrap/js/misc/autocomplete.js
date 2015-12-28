@@ -4,25 +4,36 @@
  * Attaches the autocomplete behavior to all required fields.
  */
 Drupal.behaviors.autocomplete = {
-  attach: function (context, settings) {
+  attach: function (context) {
+    var $context = $(context);
     var acdb = [];
-    $('input.autocomplete', context).once('autocomplete', function () {
+    $context.find('input.autocomplete').once('autocomplete', function () {
       var uri = this.value;
       if (!acdb[uri]) {
         acdb[uri] = new Drupal.ACDB(uri);
       }
-      var $input = $('#' + this.id.substr(0, this.id.length - 13))
+      var $input = $context.find('#' + this.id.substr(0, this.id.length - 13))
         .attr('autocomplete', 'OFF')
         .attr('aria-autocomplete', 'list');
-      $($input[0].form).submit(Drupal.autocompleteSubmit);
-      $input
-        .after($('<span class="element-invisible" aria-live="assertive"></span>')
+      $context.find($input[0].form).submit(Drupal.autocompleteSubmit);
+      $input.parents('.form-item')
+        .attr('role', 'application')
+        .append($('<span class="element-invisible" aria-live="assertive"></span>')
           .attr('id', $input.attr('id') + '-autocomplete-aria-live')
-        );
-      $input.parent().parent().attr('role', 'application');
-      new Drupal.jsAC($input, acdb[uri]);
+      );
+      new Drupal.jsAC($input, acdb[uri], $context);
     });
   }
+};
+
+/**
+ * Prevents the form from submitting if the suggestions popup is open
+ * and closes the suggestions popup when doing so.
+ */
+Drupal.autocompleteSubmit = function () {
+  return $('.form-autocomplete > .dropdown').each(function () {
+    this.owner.hidePopup();
+  }).length == 0;
 };
 
 /**
@@ -105,19 +116,40 @@ Drupal.jsAC.prototype.found = function (matches) {
 };
 
 Drupal.jsAC.prototype.setStatus = function (status) {
-  var $throbber = $('.glyphicon-refresh', $('#' + this.input.id).parent());
-
+  var $throbber = $(this.input).parent().find('.glyphicon-refresh, .autocomplete-throbber').first();
+  var throbbingClass = $throbber.is('.autocomplete-throbber') ? 'throbbing' : 'glyphicon-spin';
   switch (status) {
     case 'begin':
-      $throbber.addClass('glyphicon-spin');
+      $throbber.addClass(throbbingClass);
       $(this.ariaLive).html(Drupal.t('Searching for matches...'));
       break;
     case 'cancel':
     case 'error':
     case 'found':
-      $throbber.removeClass('glyphicon-spin');
+      $throbber.removeClass(throbbingClass);
       break;
   }
 };
+
+// Save the previous autocomplete prototype.
+var oldPrototype = Drupal.jsAC.prototype;
+
+/**
+ * Override the autocomplete constructor.
+ */
+Drupal.jsAC = function ($input, db, $context) {
+  var ac = this;
+  this.$context = $context;
+  this.input = $input[0];
+  this.ariaLive = $context.find('#' + this.input.id + '-autocomplete-aria-live');
+  this.db = db;
+  $input
+    .keydown(function (event) { return ac.onkeydown(this, event); })
+    .keyup(function (event) { ac.onkeyup(this, event); })
+    .blur(function () { ac.hidePopup(); ac.db.cancel(); });
+};
+
+// Restore the previous prototype.
+Drupal.jsAC.prototype = oldPrototype;
 
 })(jQuery);

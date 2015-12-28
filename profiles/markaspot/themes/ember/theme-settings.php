@@ -21,4 +21,11 @@ function ember_form_system_theme_settings_alter(&$form, &$form_state) {
     '#default_value' => theme_get_setting('ember_no_fadein_effect'),
     '#description' => t('If checked, the fade-in effect will not occur.'),
   );
+  $form['ember']['views_ui_override'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Enable Views UI overrides'),
+    '#default_value' => theme_get_setting('views_ui_override'),
+    '#description' => t('Ember makes several improvements to the Views admin interface. You can disable those overrides here.'),
+  );
+
 }

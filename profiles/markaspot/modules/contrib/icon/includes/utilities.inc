@@ -74,7 +74,7 @@ function icon_archive_extract($file, $directory) {
  *     array('key' => 'new value')
  *   ) === array('key' => array('org value', 'new value'));
  * @endcode
- * 
+ *
  * array_merge_recursive_distinct does not change the datatypes of the values
  * in the arrays. Matching keys' values in the second array overwrite those in
  * the first array, as is the case with array_merge, i.e.:
@@ -85,10 +85,10 @@ function icon_archive_extract($file, $directory) {
  *     array('key' => 'new value')
  *   ) === array('key' => 'new value');
  * @endcode
- * 
+ *
  * Parameters are passed by reference, though only for performance reasons.
  * They're not altered by this function.
- * 
+ *
  * @param array $array1
  *   Base array.
  * @param array $array2
@@ -274,7 +274,12 @@ function icon_enabled_themes() {
       $themes[] = $theme->name;
       // Merge in the base themes if this is a sub-theme.
       if (isset($theme->base_themes)) {
-        $themes += array_keys($theme->base_themes);
+        // Only add the theme if it's not already in the list.
+        foreach (array_keys($theme->base_themes) as $name) {
+          if (!in_array($name, $themes)) {
+            $themes[] = $name;
+          }
+        }
       }
     }
   }

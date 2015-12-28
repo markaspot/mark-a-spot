@@ -9,9 +9,9 @@ files[] = icon_menu.module
 dependencies[] = icon
 dependencies[] = menu
 
-; Information added by Drupal.org packaging script on 2015-05-17
-version = "7.x-1.0-beta5+6-dev"
+; Information added by Drupal.org packaging script on 2015-10-13
+version = "7.x-1.0-beta6+1-dev"
 core = "7.x"
 project = "icon"
-datestamp = "1431828183"
+datestamp = "1444769940"
 

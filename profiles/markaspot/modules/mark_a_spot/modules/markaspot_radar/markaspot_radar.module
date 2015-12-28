@@ -44,19 +44,20 @@ function  markaspot_radar_search_api_views_query_alter(view &$view, SearchApiVie
     if (isset($params['nwLat'])) {
       $status_archives = array_values(variable_get('markaspot_logic_archive_tids', markaspot_logic_defaults('markaspot_logic_archive_tids')));
       foreach ($query->where as &$condition_group) {
-        foreach ($condition_group['conditions'] as &$condition) {
-            $subfilter = $query->createFilter('AND');
-            $base_filter = $query->createFilter('AND');
+        if (isset($condition_group['conditions'])){
+          foreach ($condition_group['conditions'] as &$condition) {
+              $subfilter = $query->createFilter('AND');
+              $base_filter = $query->createFilter('AND');
 
-            $subfilter
-              ->condition('field_geo:lat', $params['nwLat'] , '<=')
-              ->condition('field_geo:lng', $params['nwLng'], '>=')
-              ->condition('field_geo:lat', $params['seLat'], '>=')
-              ->condition('field_geo:lng', $params['seLng'], '<=')
-              ->condition('field_status', $open_tids, 'IN');
-            $base_filter->filter($subfilter);
-            $query->filter($base_filter);
-
+              $subfilter
+                ->condition('field_geo:lat', $params['nwLat'] , '<=')
+                ->condition('field_geo:lng', $params['nwLng'], '>=')
+                ->condition('field_geo:lat', $params['seLat'], '>=')
+                ->condition('field_geo:lng', $params['seLng'], '<=')
+                ->condition('field_status', $open_tids, 'IN');
+              $base_filter->filter($subfilter);
+              $query->filter($base_filter);
+          }
         }
       }
     }

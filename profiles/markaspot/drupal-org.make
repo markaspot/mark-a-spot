@@ -129,7 +129,7 @@ libraries[leaflet.bouncemarker][directory_name] = leaflet.bouncemarker
 
 libraries[Leaflet][type] = libraries
 libraries[Leaflet][download][type] = file
-libraries[Leaflet][download][url] = "http://leaflet-cdn.s3.amazonaws.com/build/leaflet-0.7.2.zip"
+libraries[Leaflet][download][url] = "http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.zip"
 libraries[Leaflet][directory_name] = leaflet
 
 libraries[spin.js][type] = libraries

@@ -59,6 +59,7 @@
 </div>
 <div class="mapheader masthead">
   <div class="container stage">
+    <?php print $messages; ?>
     <div>
       <div class="col-md-7">
         <div class="welcome-text well">
@@ -100,7 +101,6 @@
         <h1 class="page-header element-invisible"><?php print $title; ?></h1>
       <?php endif; ?>
       <?php print render($title_suffix); ?>
-      <?php print $messages; ?>
       <?php if (!empty($tabs)): ?>
         <?php print render($tabs); ?>
       <?php endif; ?>

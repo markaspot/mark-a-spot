@@ -76,3 +76,33 @@
     overflow: hidden;
   }
 }
+
+// various media style layout fixes in modals
+
+#drupal-modal {
+  padding:10px;
+  label {
+    padding:5px .1em;
+  }
+  #entity-embed-dialog-form{
+    label[for="edit-attributes-data-entity-id-upload"] {
+      display:inline;
+    }
+    #edit-attributes-data-entity-id-upload {
+      display:inline-block;
+      .button {
+        display: inline-block;
+      }
+    }
+  }
+  #editor-ckeditor-dialog-form {
+    label[for="edit-fid-upload"] {
+      padding:5px 1em 5px 0;
+      margin-bottom:10px;
+    }
+    label[for="edit-attributes-src"] {
+       padding:5px 1em;
+       margin-bottom:10px;
+    }
+  }
+}

@@ -22,7 +22,7 @@ function  markaspot_open311_client_help($path, $arg) {
  * Implements hook_page_build().
  */
 function markaspot_open311_client_page_build(&$page) {
-  if (arg(0) == "map" || arg(0) == "list" || drupal_is_front_page() == TRUE) {
+  if (arg(0) == "map") {
     drupal_add_js(drupal_get_path('profile', 'markaspot') . '/libraries/Leaflet.Sync/L.Map.Sync.js', NULL);
     drupal_add_js(drupal_get_path('module', 'markaspot_open311_client') . '/markaspot_open311_client.js', array('scope' => 'footer', 'weight' => 5));
     drupal_add_css(drupal_get_path('module', 'markaspot_open311_client') . '/markaspot_open311_client.css', array('weight' => -1000));

@@ -215,15 +215,20 @@ function uuid_redirector() {
 
   $entity_info = entity_get_info($entity_data['entity_type']);
   if (empty($entity_info['uuid'])) {
-    return drupal_not_found();
+    return MENU_NOT_FOUND;
   }
 
   $entities = entity_uuid_load($entity_data['entity_type'], array($entity_data['uuid']));
   if (!count($entities)) {
-    return drupal_not_found();
+    return MENU_NOT_FOUND;
   }
 
   $uri = entity_uri($entity_data['entity_type'], current($entities));
-  drupal_goto($uri['path'], array(), 301);
+
+  if (!drupal_valid_path($uri['path'])) {
+    return MENU_ACCESS_DENIED;
+  }
+
+  drupal_goto($uri['path'], $uri['options'], 301);
 }
 

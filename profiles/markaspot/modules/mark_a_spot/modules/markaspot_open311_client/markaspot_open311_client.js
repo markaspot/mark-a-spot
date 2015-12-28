@@ -47,10 +47,10 @@
       L.easyButton('fa fa-edit', 'topright',
         function () {
           if (!localStorage['tour']) {
-            bootbox.alert(Drupal.t('Click or drag marker to file an issue at this location. You can then adjust the location in the opening report form'), tourDone);
             function tourDone() {
               localStorage['tour'] = true;
             }
+            bootbox.alert(Drupal.t('Click or drag marker to file an issue at this location. You can then adjust the location in the opening report form'), tourDone);
           }
           Drupal.markaspotOpen311Client.setMapMarker(map.getCenter(), 0);
         },

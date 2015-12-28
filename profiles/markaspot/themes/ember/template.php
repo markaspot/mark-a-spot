@@ -209,6 +209,13 @@ function ember_links__ctools_dropbutton($variables) {
  * @see views_ui_edit_form_get_bucket()
  */
 function ember_views_ui_display_tab_alter(&$build, &$view, $display_id) {
+
+  // First check that the setting is enabled.
+  if (theme_get_setting('views_ui_override') == FALSE) {
+    // Do nothing if the setting is not enabled.
+    return;
+  }
+
   $display = $view->display[$display_id];
   $root_url = "admin/structure/views/nojs/config-item/$view->name/$display_id";
 
@@ -269,19 +276,26 @@ function ember_views_ui_display_tab_alter(&$build, &$view, $display_id) {
  *   An a tag with HTML inside which splits the link text into components.
  */
 function _ember_views_ui_field_link($field, $handler, array $relationships, $type, $root_url) {
-  // Split out the title into its components.
-  // @see views_handler_field::ui_name()
-  // Add the new field descriptions to the output, replacing the default.
-  $new_label = "<span class='views-field-entity-type'>{$handler->definition['group']}:</span>";
-  $new_label .= "<span class='views-field-title'>{$handler->definition['title']}</span> ";
-
-  if (!empty($field['relationship']) && !empty($relationships[$field['relationship']])) {
-    $new_label .= "<span class='views-field-relationship'>{$relationships[$field['relationship']]}</span>";
+  // If an administrative title is set, use that for anchor text.
+  if (isset($field['ui_name']) && trim($field['ui_name']) !== '') {
+    $link_text = $field['ui_name'];
   }
+  // Otherwise, build up some structured anchor text.
+  else {
+    // Split out the title into its components.
+    // @see views_handler_field::ui_name()
+    // Add the new field descriptions to the output, replacing the default.
+    $new_label = "<span class='views-field-entity-type'>{$handler->definition['group']}:</span>";
+    $new_label .= "<span class='views-field-title'>{$handler->definition['title']}</span> ";
 
-  // Reuse some code from the parent function to build up the link again.
-  $description = filter_xss_admin($handler->admin_summary());
-  $link_text = $new_label . (empty($description) ? '' : "<span class='views-field-label'>($description)</span>");
+    if (!empty($field['relationship']) && !empty($relationships[$field['relationship']])) {
+      $new_label .= "<span class='views-field-relationship'>{$relationships[$field['relationship']]}</span>";
+    }
+
+    // Reuse some code from the parent function to build up the link again.
+    $description = filter_xss_admin($handler->admin_summary());
+    $link_text = $new_label . (empty($description) ? '' : "<span class='views-field-label'>($description)</span>");
+  }
 
   $link_text = "<div class='views-field-description'>{$link_text}</div>";
 

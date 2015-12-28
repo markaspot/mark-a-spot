@@ -2,7 +2,7 @@
   border: 1px solid #ffffff;
   cursor: pointer;
   font-family: monospace;
-  font-size: 1.2em;
+  font-size: 12px;
   margin: 0 3px;
   padding: 1px 8px;
 }
@@ -25,5 +25,5 @@
   padding: 10px 16px;
 }
 .hide_input {
-  diplay: none;
+  display: none;
 }

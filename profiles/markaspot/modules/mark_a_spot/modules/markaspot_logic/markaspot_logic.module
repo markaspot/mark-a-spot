@@ -19,7 +19,9 @@ function markaspot_logic_form_report_node_form_alter(&$form, &$form_state, $form
     $form['field_e_mail'][LANGUAGE_NONE][0]['value']['#default_value'] = $user->mail;
   }
   $form['#validate'][] = 'markaspot_logic_validate';
-  $form['#submit'][] = 'markaspot_logic_fill_jurisdiction';
+  $form['actions']['submit']['#submit'][] = 'markaspot_logic_redirect';
+  $form['actions']['submit']['#submit'][] = 'markaspot_logic_fill_jurisdiction';
+  // $form['#submit'][] = 'markaspot_logic_fill_jurisdiction';
 }
 
 /**
@@ -99,6 +101,19 @@ function markaspot_logic_validate($form, &$form_state) {
 }
 
 /**
+ * Redirect user to start after submit
+ *
+ * @param Array $form_state
+ *   The state of the form.
+ * @return Array $form_state
+ *
+ */
+function markaspot_logic_redirect($form, &$form_state){
+  $form_state['redirect'] = '/';
+  return $form_state;
+}
+
+/**
  * Fill the taxonomy form field for jurisdiction on submit.
  *
  * @param String $address
@@ -119,6 +134,7 @@ function markaspot_logic_fill_jurisdiction($form, &$form_state){
       $form_state['values']['field_jurisdiction'][LANGUAGE_NONE][0]['tid'] = $term->tid;
     }
   }
+  $form_state['redirect'] = '/node';
 
   return $form_state;
 }

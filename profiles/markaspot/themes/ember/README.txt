@@ -18,6 +18,9 @@ In the root directory of Ember:
 :bundle install
 :compass watch
 
+If compass watch doesnt work with your setup, you can also try running (at ember root directory):
+:bundle exec compass watch
+
 Compass should now be polling for changes in that directory and will compile on save.
 
 

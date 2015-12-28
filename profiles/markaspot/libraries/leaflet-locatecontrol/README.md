@@ -1,6 +1,9 @@
 # Leaflet.Locate
 
-A useful control to geolocate the user with many options.
+[![Bower version](https://badge.fury.io/bo/leaflet.locatecontrol.svg)](http://badge.fury.io/bo/leaflet.locatecontrol)
+[![npm version](https://badge.fury.io/js/leaflet.locatecontrol.svg)](http://badge.fury.io/js/leaflet.locatecontrol)
+
+A useful control to geolocate the user with many options. Official [Leaflet](http://leafletjs.com/plugins.html#geolocation) and [MapBox plugin](https://www.mapbox.com/mapbox.js/example/v1.0.0/leaflet-locatecontrol/).
 
 Tested with [Leaflet](http://leafletjs.com/) 0.7 in Firefox, Webkit and mobile Webkit. Tested with [Font Awesome](https://fortawesome.github.io/Font-Awesome/) 4.3.0.
 
@@ -69,6 +72,7 @@ The locate controls inherits options from [Leaflet Controls](http://leafletjs.co
 ```js
 L.control.locate({
 	position: 'topleft',  // set the location of the control
+    layer: new L.LayerGroup(),  // use your own layer for the location marker
     drawCircle: true,  // controls whether a circle is drawn that shows the uncertainty about the location
     follow: false,  // follow the user's location
     setView: true, // automatically sets the map view to the user's location, enabled if `follow` is true
@@ -174,7 +178,7 @@ map.addControl(L.control.locate({
 
 Sites that use this locate control:
 
-* [OpenStreetMap](http://www.openstreetmap.org/)
+* [OpenStreetMap](http://www.openstreetmap.org/) on the start page
 * [MapBox](https://www.mapbox.com/mapbox.js/example/v1.0.0/leaflet-locatecontrol/)
 * [wheelmap.org](http://wheelmap.org/map)
 * [OpenMensa](http://openmensa.org/)
@@ -190,7 +194,7 @@ To generate the minified JS and CSS files, use [grunt](http://gruntjs.com/gettin
 
 ## Making a release (only core developer)
 
-A new version is released with `grunt bump:minor`. Then recompile the JS/CSS with `grunt` and commit the changes into the previous commit with `git commit -a --amend`. Then push the new code with `git push` and `git push --tags` and publish to npm with `npm publish`.
+A new version is released with `grunt bump:minor`. Then recompile the JS/CSS with `grunt` and commit the changes into the previous commit with `git commit -a --amend`. Then push the new code with `git push && git push --tags` and publish to npm with `npm publish`.
 
 
 ## Thanks
