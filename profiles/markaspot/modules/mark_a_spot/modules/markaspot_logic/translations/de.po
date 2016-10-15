@@ -1,9 +1,0 @@
-# $Id: de.po,v 1.0 2009/06/06 15:42:46 libeco Exp $
-#
-# German translation of Drupal (general)
-# Copyright YEAR NAME <EMAIL@ADDRESS>
-# Generated from files:
-#  markaspot_logic.module,v 1.0
-#
-msgid ""
-msgstr ""

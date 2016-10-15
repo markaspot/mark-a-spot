@@ -1,7 +1,0 @@
-<?php
-/**
- * @file
- * Code for the Mark-a-Spot Default Content feature.
- */
-
-include_once 'mark_a_spot_default_content.features.inc';
