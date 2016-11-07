@@ -2,6 +2,15 @@
 
 This repo provides a starter kit for Mark-a-Spot 3.x. It is very closely based on the [Drupal Composer project](https://github.com/drupal-composer/drupal-project) and the [version of platform.sh](https://github.com/platformsh/platformsh-example-drupal8/tree/drupal-8-2).
 
+## Install Mark-a-Spot
+
+
+```
+$ git clone -b master-8.x --single-branch https://github.com/markaspot/mark-a-spot.git
+$ composer install
+
+```
+
 ## Managing a Mark-a-Spot 3.x site built with Composer
 
 Once the site is installed, there is no difference between a site hosted on Platform.sh
