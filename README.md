@@ -7,6 +7,7 @@ This repo provides a starter kit for Mark-a-Spot 3.x. It is very closely based o
 
 ```
 $ git clone -b master-8.x --single-branch https://github.com/markaspot/mark-a-spot.git
+$ cd mark-a-spot
 $ composer install
 
 ```
