@@ -1,6 +1,6 @@
 {
     "name": "markaspot/mark-a-spot",
-    "description": "Mark-a-Spot is distribution for crowdmapping and public civic issue tracking",
+    "description": "Mark-a-Spot is a Drupal distribution for crowdmapping and public civic issue tracking",
     "type": "project",
     "license": "GPL-2.0+",
     "authors": [
@@ -234,10 +234,11 @@
         "domoritz/leaflet-locatecontrol": "0.55.0",
         "perliedman/leaflet-control-geocoder": "1.5.3",
         "FortAwesome/Font-Awesome": "4.6.3",
-        "drupal/address": "1.x-dev",
-        "drupal/features": "3.0-beta9",
-        "drupal/core": "8.2.1",
+        "drupal/address": "1.0.0-rc3",
+        "drupal/color_field": "2.x-dev",
+        "drupal/core": "8.2.3",
         "drupal/console": "~1.0",
+        "drupal/features": "3.0-beta9",
         "drupal/radix": "3.x-dev",
         "drupal/pathauto": "1.x-dev",
         "drupal/admin_toolbar": "1.x-dev",
