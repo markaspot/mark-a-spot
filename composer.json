@@ -1,11 +1,11 @@
 {
-    "name": "drupal-composer/drupal-project",
-    "description": "Project template for Drupal 8 projects with composer",
+    "name": "markaspot/mark-a-spot",
+    "description": "Mark-a-Spot is a Drupal distribution for crowdmapping and public civic issue tracking",
     "type": "project",
     "license": "GPL-2.0+",
     "authors": [
         {
-            "name": "",
+            "name": "Holger Kreis",
             "role": ""
         }
     ],
@@ -342,10 +342,6 @@
             },
             "drupal/color_field": {
                 "Palette instead of default_colors": "https://www.drupal.org/files/issues/default_colors_box-2807783-1.patch"
-            },
-            "drupal/form_mode_manager": {
-                "Move the Edit as XXX": "https://www.drupal.org/files/issues/form_mode_manager-Move_local_task_one_level_below-2752449-2--8.x.patch",
-                "Fix page title": "https://www.drupal.org/files/issues/page-title-label-2831635-2.patch"
             }
         }
     },
