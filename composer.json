@@ -1,6 +1,6 @@
 {
-    "name": "markaspot/mark-a-spot",
-    "description": "Mark-a-Spot is a Drupal distribution for crowdmapping and public civic issue tracking",
+    "name": "drupal-composer/drupal-project",
+    "description": "Project template for Drupal 8 projects with composer",
     "type": "project",
     "license": "GPL-2.0+",
     "authors": [
@@ -199,6 +199,21 @@
                     "composer/installers": "~1.0"
                 }
             }
+        },
+        {
+            "type": "package",
+            "package": {
+                "name": "itsjavi/fontawesome-iconpicker",
+                "version": "1.22",
+                "type": "drupal-library",
+                "dist": {
+                    "url": "https://github.com/itsjavi/fontawesome-iconpicker/archive/1.2.2.zip",
+                    "type": "zip"
+                },
+                "require": {
+                    "composer/installers": "~1.0"
+                }
+            }
         }
     ],
     "require": {
@@ -216,11 +231,10 @@
         "markaspot/api_key_auth": "8.1.0",
         "markaspot/markaspot_map": "dev-8.x-3.x",
         "markaspot/markaspot_features": "dev-master",
-        "markaspot/service_request": "dev-master",
         "markaspot/markaspot_validation": "dev-master",
         "markaspot/masradix": "dev-master",
         "kartik-v/bootstrap-fileinput": "dev-master",
-        "markaspot/geolocation_nominatim": "dev-8.x-1.mas",
+        "itsjavi/fontawesome-iconpicker": "1.22",
         "Leaflet/Leaflet": "1.0.1",
         "lvoogdt/Leaflet.awesome-markers": "2.0.2",
         "Leaflet/Leaflet.fullscreen": "1.0.1",
@@ -235,10 +249,9 @@
         "perliedman/leaflet-control-geocoder": "1.5.3",
         "FortAwesome/Font-Awesome": "4.6.3",
         "drupal/address": "1.0.0-rc3",
-        "drupal/color_field": "2.x-dev",
+        "drupal/features": "3.0-beta9",
         "drupal/core": "8.2.3",
         "drupal/console": "~1.0",
-        "drupal/features": "3.0-beta9",
         "drupal/radix": "3.x-dev",
         "drupal/pathauto": "1.x-dev",
         "drupal/admin_toolbar": "1.x-dev",
@@ -246,16 +259,18 @@
         "drupal/token": "1.0-beta2",
         "drupal/shariff": "1.0",
         "drupal/r4032login": "dev-1.x",
-        "drupal/geolocation": "dev-1.x",
         "drupal/message": "1.0-alpha1",
-        "drupal/field_permissions": "1.x-dev",
         "drupal/views_bootstrap": "3.x-dev",
         "drupal/better_normalizers": "1.x-dev",
         "drupal/ctools": "3.x-dev",
         "markaspot/markaspot_default_content": "dev-master",
         "drupal/image_effects": "1.x-dev",
         "drupal/paragraphs": "1.x-dev",
-        "drupal/diff": "1.x-dev"
+        "drupal/diff": "1.x-dev",
+        "markaspot/service_request": "dev-master",
+        "drupal/field_group": "1.x-dev",
+        "drupal/facets": "1.x-dev",
+        "drupal/Form_mode_manager": "1.x-dev"
     },
     "require-dev": {
         "behat/mink": "~1.7",
@@ -322,11 +337,15 @@
             "drupal/core": {
                 "Redirect to install.php on empty DB": "https://www.drupal.org/files/issues/drupal-redirect_to_install-728702-92.patch"
             },
-            "drupal/geolocation":{
-                "Add leaflet widget and formatter": "https://www.drupal.org/files/issues/geolocation-add-leaflet-2786447-1.patch"
-            },
             "drupal/views_bootstrap": {
-                "Port grid plugin to D8":"https://www.drupal.org/files/issues/views_bootstrap-port_grid_plugin_to_d8-2462305-25.patch"
+                "Port grid plugin to D8": "https://www.drupal.org/files/issues/views_bootstrap-port_grid_plugin_to_d8-2462305-25.patch"
+            },
+            "drupal/color_field": {
+                "Palette instead of default_colors": "https://www.drupal.org/files/issues/default_colors_box-2807783-1.patch"
+            },
+            "drupal/form_mode_manager": {
+                "Move the Edit as XXX": "https://www.drupal.org/files/issues/form_mode_manager-Move_local_task_one_level_below-2752449-2--8.x.patch",
+                "Fix page title": "https://www.drupal.org/files/issues/page-title-label-2831635-2.patch"
             }
         }
     },
