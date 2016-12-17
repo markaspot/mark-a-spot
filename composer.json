@@ -1,0 +1,351 @@
+{
+    "name": "markaspot/mark-a-spot",
+    "description": "Mark-a-Spot is a Drupal distribution for crowdmapping and public civic issue tracking",
+    "type": "project",
+    "license": "GPL-2.0+",
+    "authors": [
+        {
+            "name": "Holger Kreis",
+            "role": ""
+        }
+    ],
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://packages.drupal.org/8"
+        },
+        {
+            "type": "package",
+            "package": {
+                "name": "Leaflet/Leaflet",
+                "version": "1.0.1",
+                "type": "drupal-library",
+                "dist": {
+                    "url": "https://github.com/Leaflet/Leaflet/archive/v1.0.1.zip",
+                    "type": "zip"
+                }
+            }
+        },
+        {
+            "type": "package",
+            "package": {
+                "name": "lvoogdt/Leaflet.awesome-markers",
+                "version": "2.0.2",
+                "type": "drupal-library",
+                "dist": {
+                    "url": "https://github.com/lvoogdt/Leaflet.awesome-markers/archive/v2.0.2.zip",
+                    "type": "zip"
+                }
+            }
+        },
+        {
+            "type": "package",
+            "package": {
+                "name": "Leaflet/Leaflet.fullscreen",
+                "version": "1.0.1",
+                "type": "drupal-library",
+                "dist": {
+                    "url": "https://github.com/Leaflet/Leaflet.fullscreen/archive/v1.0.1.zip",
+                    "type": "zip"
+                }
+            }
+        },
+        {
+            "type": "package",
+            "package": {
+                "name": "CliffCloud/Leaflet.EasyButton",
+                "version": "1.3.1",
+                "type": "drupal-library",
+                "dist": {
+                    "url": "https://github.com/CliffCloud/Leaflet.EasyButton/archive/v1.3.1.zip",
+                    "type": "zip"
+                }
+            }
+        },
+        {
+            "type": "package",
+            "package": {
+                "name": "perliedman/leaflet-control-geocoder",
+                "version": "1.5.3",
+                "dist": {
+                    "type": "zip",
+                    "url": "https://github.com/perliedman/leaflet-control-geocoder/archive/v1.5.3.zip"
+                },
+                "type": "drupal-library"
+            }
+        },
+        {
+            "type": "package",
+            "package": {
+                "name": "domoritz/leaflet-locatecontrol",
+                "version": "0.55.0",
+                "type": "drupal-library",
+                "dist": {
+                    "url": "https://github.com/domoritz/leaflet-locatecontrol/archive/v0.55.0.zip",
+                    "type": "zip"
+                }
+            }
+        },
+        {
+            "type": "package",
+            "package": {
+                "name": "imakewebthings/waypoints",
+                "version": "4.0.0",
+                "type": "drupal-library",
+                "dist": {
+                    "url": "https://github.com/imakewebthings/waypoints/archive/4.0.0.zip",
+                    "type": "zip"
+                }
+            }
+        },
+        {
+            "type": "package",
+            "package": {
+                "name": "socib/Leaflet.TimeDimension",
+                "version": "1.0.6",
+                "type": "drupal-library",
+                "dist": {
+                    "url": "https://github.com/socib/Leaflet.TimeDimension/archive/v1.0.6.zip",
+                    "type": "zip"
+                }
+            }
+        },
+        {
+            "type": "package",
+            "package": {
+                "name": "nezasa/iso8601-js-period",
+                "version": "0.2.0.0",
+                "type": "drupal-library",
+                "dist": {
+                    "url": "https://github.com/nezasa/iso8601-js-period/archive/v0.2.0.0.zip",
+                    "type": "zip"
+                }
+            }
+        },
+        {
+            "type": "package",
+            "package": {
+                "name": "StevenLevithan/dateFormat",
+                "version": "1.2.3",
+                "type": "drupal-library",
+                "dist": {
+                    "url": "https://gist.github.com/eralston/968809/archive/a18b38bede4e3d0e2f1c720bd1e4c010e646bb6d.zip",
+                    "type": "zip"
+                }
+            }
+        },
+        {
+            "type": "package",
+            "package": {
+                "name": "Leaflet/Leaflet.heat",
+                "version": "0.2.0",
+                "type": "drupal-library",
+                "dist": {
+                    "url": "https://github.com/Leaflet/Leaflet.heat/archive/v0.2.0.zip",
+                    "type": "zip"
+                }
+            }
+        },
+        {
+            "type": "package",
+            "package": {
+                "name": "Leaflet/Leaflet.markercluster",
+                "version": "1.0.0",
+                "type": "drupal-library",
+                "dist": {
+                    "url": "https://github.com/Leaflet/Leaflet.markercluster/archive/v1.0.0.zip",
+                    "type": "zip"
+                }
+            }
+        },
+        {
+            "type": "package",
+            "package": {
+                "name": "FortAwesome/Font-Awesome",
+                "version": "4.6.3",
+                "type": "drupal-library",
+                "dist": {
+                    "url": "https://github.com/FortAwesome/Font-Awesome/archive/v4.6.3.zip",
+                    "type": "zip"
+                }
+            }
+        },
+        {
+            "type": "package",
+            "package": {
+                "name": "heiseonline/shariff",
+                "version": "master",
+                "type": "drupal-library",
+                "dist": {
+                    "url": "https://github.com/heiseonline/shariff/archive/master.zip",
+                    "type": "zip"
+                },
+                "require": {
+                    "composer/installers": "~1.0"
+                }
+            }
+        },
+        {
+            "type": "package",
+            "package": {
+                "name": "kartik-v/bootstrap-fileinput",
+                "version": "master",
+                "type": "drupal-library",
+                "dist": {
+                    "url": "https://github.com/kartik-v/bootstrap-fileinput/archive/master.zip",
+                    "type": "zip"
+                },
+                "require": {
+                    "composer/installers": "~1.0"
+                }
+            }
+        },
+        {
+            "type": "package",
+            "package": {
+                "name": "itsjavi/fontawesome-iconpicker",
+                "version": "1.22",
+                "type": "drupal-library",
+                "dist": {
+                    "url": "https://github.com/itsjavi/fontawesome-iconpicker/archive/1.2.2.zip",
+                    "type": "zip"
+                },
+                "require": {
+                    "composer/installers": "~1.0"
+                }
+            }
+        }
+    ],
+    "require": {
+        "composer/installers": "^1.0.20",
+        "drupal-composer/drupal-scaffold": "^2.2",
+        "wikimedia/composer-merge-plugin": "^1.3",
+        "cweagans/composer-patches": "~1.0",
+        "drush/drush": "~8.0",
+        "markaspot/markaspot": "dev-master",
+        "markaspot/markaspot_open311": "dev-8.x-3.x",
+        "markaspot/markaspot_blocks": "dev-master",
+        "markaspot/markaspot_uuid": "dev-master",
+        "markaspot/markaspot_ui": "dev-master",
+        "markaspot/markaspot_static_json": "dev-master",
+        "markaspot/api_key_auth": "8.1.0",
+        "markaspot/markaspot_map": "dev-8.x-3.x",
+        "markaspot/markaspot_features": "dev-master",
+        "markaspot/markaspot_validation": "dev-master",
+        "markaspot/masradix": "dev-master",
+        "kartik-v/bootstrap-fileinput": "dev-master",
+        "itsjavi/fontawesome-iconpicker": "1.22",
+        "Leaflet/Leaflet": "1.0.1",
+        "lvoogdt/Leaflet.awesome-markers": "2.0.2",
+        "Leaflet/Leaflet.fullscreen": "1.0.1",
+        "CliffCloud/Leaflet.EasyButton": "1.3.1",
+        "imakewebthings/waypoints": "4.0.0",
+        "socib/Leaflet.TimeDimension": "1.0.6",
+        "nezasa/iso8601-js-period": "0.2.0.0",
+        "StevenLevithan/dateFormat": "1.2.3",
+        "Leaflet/Leaflet.heat": "0.2.0",
+        "Leaflet/Leaflet.markercluster": "1.0.0",
+        "domoritz/leaflet-locatecontrol": "0.55.0",
+        "perliedman/leaflet-control-geocoder": "1.5.3",
+        "FortAwesome/Font-Awesome": "4.6.3",
+        "drupal/address": "1.0.0-rc3",
+        "drupal/features": "3.0-beta9",
+        "drupal/core": "8.2.3",
+        "drupal/console": "~1.0",
+        "drupal/radix": "3.x-dev",
+        "drupal/pathauto": "1.x-dev",
+        "drupal/admin_toolbar": "1.x-dev",
+        "drupal/restui": "1.x-dev",
+        "drupal/token": "1.0-beta2",
+        "drupal/shariff": "1.0",
+        "drupal/r4032login": "dev-1.x",
+        "drupal/message": "1.0-alpha1",
+        "drupal/views_bootstrap": "3.x-dev",
+        "drupal/better_normalizers": "1.x-dev",
+        "drupal/ctools": "3.x-dev",
+        "markaspot/markaspot_default_content": "dev-master",
+        "drupal/image_effects": "1.x-dev",
+        "drupal/paragraphs": "1.x-dev",
+        "drupal/diff": "1.x-dev",
+        "markaspot/service_request": "dev-master",
+        "drupal/field_group": "1.x-dev",
+        "drupal/facets": "1.x-dev",
+        "drupal/Form_mode_manager": "1.x-dev"
+    },
+    "require-dev": {
+        "behat/mink": "~1.7",
+        "behat/mink-goutte-driver": "~1.2",
+        "jcalderonzumba/gastonjs": "~1.0.2",
+        "jcalderonzumba/mink-phantomjs-driver": "~0.3.1",
+        "mikey179/vfsStream": "~1.2",
+        "phpunit/phpunit": "~4.8",
+        "symfony/css-selector": "~2.8"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "autoload": {
+        "classmap": [
+            "scripts/composer/ScriptHandler.php"
+        ]
+    },
+    "scripts": {
+        "drupal-scaffold": "DrupalComposer\\DrupalScaffold\\Plugin::scaffold",
+        "pre-install-cmd": [
+            "DrupalProject\\composer\\ScriptHandler::checkComposerVersion"
+        ],
+        "pre-update-cmd": [
+            "DrupalProject\\composer\\ScriptHandler::checkComposerVersion"
+        ],
+        "post-install-cmd": [
+            "DrupalProject\\composer\\ScriptHandler::createRequiredFiles"
+        ],
+        "post-update-cmd": [
+            "DrupalProject\\composer\\ScriptHandler::createRequiredFiles"
+        ]
+    },
+    "extra": {
+        "merge-plugin": {
+            "include": [
+                "composer.json",
+                "web/modules/contrib/markaspot_map/composer.json"
+            ],
+            "recurse": true,
+            "merge-extra": true,
+            "merge-extra-deep": true
+        },
+        "installer-paths": {
+            "web/core": [
+                "type:drupal-core"
+            ],
+            "web/modules/contrib/{$name}": [
+                "type:drupal-module"
+            ],
+            "web/profiles/contrib/{$name}": [
+                "type:drupal-profile"
+            ],
+            "web/themes/contrib/{$name}": [
+                "type:drupal-theme"
+            ],
+            "drush/contrib/{$name}": [
+                "type:drupal-drush"
+            ],
+            "web/libraries/{$name}": [
+                "type:drupal-library"
+            ]
+        },
+        "patches": {
+            "drupal/core": {
+                "Redirect to install.php on empty DB": "https://www.drupal.org/files/issues/drupal-redirect_to_install-728702-92.patch"
+            },
+            "drupal/views_bootstrap": {
+                "Port grid plugin to D8": "https://www.drupal.org/files/issues/views_bootstrap-port_grid_plugin_to_d8-2462305-25.patch"
+            },
+            "drupal/color_field": {
+                "Palette instead of default_colors": "https://www.drupal.org/files/issues/default_colors_box-2807783-1.patch"
+            }
+        }
+    },
+    "replace": {
+        "drupal/drupal": "*"
+    }
+}

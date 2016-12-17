@@ -1,37 +1,24 @@
-# Mark-a-Spot
+# Mark-a-Spot project template for Development
 
-Mark-a-Spot is a full packaged Drupal distribution for public civic issue tracking, including an Open311 GeoReport v2 server. Basic Drupal knowledge is required to 
-customize it for your own needs.
+This repo provides a starter kit for Mark-a-Spot 3.x. It is very closely based on the [Drupal Composer project](https://github.com/drupal-composer/drupal-project) and the [version of platform.sh](https://github.com/platformsh/platformsh-example-drupal8/tree/drupal-8-2).
 
-You are allowed to and *please* do say that your product is based on Mark-a-Spot, inspired by Mark-a-Spot, but you can’t call your product or service Mark-a-Spot.
+## Install Mark-a-Spot
 
-This software is based on Drupal 7. 
-It's source-code is licensed and made available under the GNU General Public License (GPL) version 2.
 
-## Demo
-* [Install on simplytest.me](http://simplytest.me/project/markaspot/7.x-2.x) latest commit
-* [Installation Video](https://vimeo.com/43443940)
+```
+$ git clone -b master-8.x --single-branch https://github.com/markaspot/mark-a-spot.git
+$ cd mark-a-spot
+$ composer install
 
-## Initial configuration
-1. Make sure that clean-urls are supported and active: http://yourserver/?q=admin/config/search/clean-urls
+```
 
-2. Start with changing the field settings of the field_geo field by choosing a starting position.
-http://yourserver/admin/structure/types/manage/report/fields
+## Managing a Mark-a-Spot 3.x site built with Composer
 
-3. Copy and paste the lat/lon values into the settings of the Mark-a-Spot configuration screen
-http://yourserver/admin/config/system/mark_a_spot
+Once the site is installed, there is no difference between a site hosted on Platform.sh
+and a site hosted anywhere else.  It's just Composer.  See the [Drupal documentation](https://www.drupal.org/node/2404989) for tips on how best to leverage Composer with Drupal 8.
 
-4. Go to Structure / Taxonomy and configure the terms of category and status vocabularies. There you can just overwrite the default term-name, change colors and icons. 
+## How does this starter kit differ from vanilla Drupal from Drupal.org?
 
-## Open311 GeoReport Resources
-http://yourserver/georeport/v2/services.format (xml/json)
-http://yourserver/georeport/v2/requests.format (xml/json)
-http://yourserver/georeport/v2/discovery.format (xml/json)
-
-## Updating from 2.5 or 2.6
-After cloning the repository run update.php. Beware that the data model of the category and status terms have changed.
-Depending on your theme you have to update your templates for displaying status and category colors. Color field module and Icon API modules are required.
-
-## Contact
-Holger Kreis | @markaspot | http://mark-a-spot.org
-
+1. The `vendor` directory (where non-Drupal code lives) and the `config` directory
+   (used for syncing configuration from development to production) are outside
+   the web root. This is a bit more secure as those files are now not web-accessible.

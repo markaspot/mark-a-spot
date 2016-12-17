@@ -1,6 +1,0 @@
-<?php
-
-function markaspot_uuid_enable(){
-  _uuid_install_uuid_fields();
-  markaspot_uuid_uuid_sync();
-}

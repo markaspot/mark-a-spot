@@ -1,9 +1,0 @@
-name = Mark-a-Spot Static GeoJSON file Generator
-description = generates static geojson file in /geojson/All.geojson
-package = "Mark-a-Spot"
-core = "7.x"
-
-; Information added by drush on 2015-12-28
-version = "7.x-2.8+21-dev"
-project = "markaspot"
-datestamp = "1451294916"

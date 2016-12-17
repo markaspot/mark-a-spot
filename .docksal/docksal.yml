@@ -1,0 +1,59 @@
+# Docker and Docker Compose based environment for Drupal.
+# See https://github.com/docksal/docksal for more information and documentation.
+
+# This is a shared configuration file that is intended to be stored in the project repo.
+# For local overrides:
+# - create .docksal/docksal-local.yml file and put local docker-compose configuration overrides there
+# - add .docksal/docksal-local.yml to .gitignore
+
+# Docksal stiches several docker-compose configuration files together.
+# Run "fin config" to see which files are involved and the resulting configration.
+
+version: "2.1"
+
+services:
+  # Web
+  web:
+    hostname: web
+    image: docksal/web:1.0-apache2.2
+    volumes:
+      # Project root volume
+      - project_root:/var/www:ro
+    labels:
+      - io.docksal.virtual-host=${VIRTUAL_HOST}
+      - io.docksal.project-root=${PROJECT_ROOT}
+    environment:
+      - APACHE_DOCUMENTROOT=/var/www/${DOCROOT:-docroot}
+      - VIRTUAL_HOST=${VIRTUAL_HOST}
+    depends_on:
+      - cli
+
+  # DB
+  db:
+    hostname: db
+    image: docksal/db:1.0-mysql-5.5
+    ports:
+      - "${MYSQL_PORT_MAPPING:-3306}"
+    volumes:
+      # Project root volume
+      - project_root:/var/www:ro
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-root}
+      - MYSQL_USER=${MYSQL_USER:-user}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD:-user}
+      - MYSQL_DATABASE=${MYSQL_DATABASE:-default}
+
+  # CLI
+  # Used for all console commands and tools.
+  cli:
+    hostname: cli
+    image: docksal/cli:1.0-php7
+    volumes:
+      # Project root volume
+      - project_root:/var/www:rw
+      # Host home volume (for SSH keys and other credentials).
+      - host_home:/.home:ro
+      # Shared ssh-agent socket
+      - docksal_ssh_agent:/.ssh-agent:ro
+    environment:
+      - XDEBUG_ENABLED=${XDEBUG_ENABLED:-0}
