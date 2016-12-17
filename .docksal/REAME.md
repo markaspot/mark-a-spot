@@ -1,6 +1,6 @@
 # Docksal Integration
 
-This folder provides [Docksa](http://docksal.io/) integration, an easy to use set of docker containers for local development.
+This folder provides [Docksal](http://docksal.io/) integration, an easy to use set of docker containers for local development.
 
 To use:
 
@@ -25,4 +25,3 @@ Run `fin st` and look at the database port. Should be something like ``0.0.0.0:3
 ### Finding the Database Host 
 
 Type ``env | grep DOCKER_HOST``. The IP address is the host
-
