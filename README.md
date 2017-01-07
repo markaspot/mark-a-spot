@@ -1,24 +1,23 @@
-# Mark-a-Spot project template for Development
+# Mark-a-Spot
 
-This repo provides a starter kit for Mark-a-Spot 3.x. It is very closely based on the [Drupal Composer project](https://github.com/drupal-composer/drupal-project) and the [version of platform.sh](https://github.com/platformsh/platformsh-example-drupal8/tree/drupal-8-2).
+Mark-a-Spot is a full packaged Drupal distribution for public civic issue tracking, including an Open311 GeoReport v2 server. Basic Drupal knowledge is required to 
+customize it for your own needs.
 
-## Install Mark-a-Spot
+This software is based on Drupal 8. 
+It's source-code is licensed and made available under the GNU General Public License (GPL) version 2.
 
+## Open311 GeoReport Resources
+http://yourserver/georeport/v2/services.format (xml/json)
+http://yourserver/georeport/v2/requests.format (xml/json)
+http://yourserver/georeport/v2/discovery.format (xml/json)
+
+## Support, Hosting
+Holger Kreis | @markaspot | http://mark-a-spot.org
+
+## Installation
 
 ```
 $ git clone -b master-8.x --single-branch https://github.com/markaspot/mark-a-spot.git
 $ cd mark-a-spot
 $ composer install
-
 ```
-
-## Managing a Mark-a-Spot 3.x site built with Composer
-
-Once the site is installed, there is no difference between a site hosted on Platform.sh
-and a site hosted anywhere else.  It's just Composer.  See the [Drupal documentation](https://www.drupal.org/node/2404989) for tips on how best to leverage Composer with Drupal 8.
-
-## How does this starter kit differ from vanilla Drupal from Drupal.org?
-
-1. The `vendor` directory (where non-Drupal code lives) and the `config` directory
-   (used for syncing configuration from development to production) are outside
-   the web root. This is a bit more secure as those files are now not web-accessible.
