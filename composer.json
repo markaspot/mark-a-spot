@@ -231,7 +231,7 @@
         "markaspot/markaspot_ui": "dev-master",
         "markaspot/markaspot_static_json": "dev-master",
         "markaspot/api_key_auth": "8.1.0",
-        "markaspot/markaspot_map": "dev-8.x-3.x",
+        "markaspot/markaspot_map": "8.3.0-beta1",
         "markaspot/markaspot_features": "dev-master",
         "markaspot/markaspot_validation": "dev-master",
         "markaspot/masradix": "dev-master",
@@ -252,7 +252,7 @@
         "fortawesome-mas/font-awesome": "4.7.0",
         "drupal/address": "1.0.0-rc3",
         "drupal/features": "3.0-beta9",
-        "drupal/core": "8.2.6",
+        "drupal/core": "8.3.0-beta1",
         "drupal/console": "1.0.0-rc15",
         "drupal/radix": "3.x-dev",
         "drupal/pathauto": "1.x-dev",
@@ -285,7 +285,7 @@
         "symfony/css-selector": "~2.8"
     },
     "minimum-stability": "dev",
-    "prefer-stable": false,
+    "prefer-stable": true,
     "autoload": {
         "classmap": [
             "scripts/composer/ScriptHandler.php"
@@ -309,8 +309,7 @@
     "extra": {
         "merge-plugin": {
             "include": [
-                "composer.json",
-                "web/modules/contrib/markaspot_map/composer.json"
+                "composer.json"
             ],
             "recurse": true,
             "merge-extra": true,
@@ -337,12 +336,6 @@
             ]
         },
         "patches": {
-            "drupal/core": {
-                "Redirect to install.php on empty DB": "https://www.drupal.org/files/issues/drupal-redirect_to_install-728702-92.patch"
-            },
-            "drupal/views_bootstrap": {
-                "Port grid plugin to D8": "https://www.drupal.org/files/issues/views_bootstrap-port_grid_plugin_to_d8-2462305-25.patch"
-            },
             "drupal/color_field": {
                 "Palette instead of default_colors": "https://www.drupal.org/files/issues/default_colors_box-2807783-1.patch"
             },
@@ -350,7 +343,8 @@
                 "Type definition error": "https://www.drupal.org/files/issues/rules-Fix_type_definition_error-2694685-30.patch",
                 "TokenProcessor Array to sting warning": "https://www.drupal.org/files/issues/rules-user_has_role-2824360-2-8x3x.patch",
                 "Action send mail, implode error": "https://www.drupal.org/files/issues/system-send-email-action-fails-if-to-is-a-string-2827183-2.patch",
-                "Send mail text field 2 textarea": "https://www.drupal.org/files/issues/453.patch"
+                "Send mail text field 2 textarea": "https://www.drupal.org/files/issues/453.patch",
+                "Implement missing PluginDefinitionInterface methods in RulesUiDefinition": "https://www.drupal.org/files/issues/rules-fix-tests.patch"
             }
         }
     },
