@@ -83,10 +83,10 @@
             "type": "package",
             "package": {
                 "name": "domoritz/leaflet-locatecontrol",
-                "version": "0.55.0",
+                "version": "0.60.0",
                 "type": "drupal-library",
                 "dist": {
-                    "url": "https://github.com/domoritz/leaflet-locatecontrol/archive/v0.55.0.zip",
+                    "url": "https://github.com/domoritz/leaflet-locatecontrol/archive/v0.60.0.zip",
                     "type": "zip"
                 }
             }
@@ -190,21 +190,6 @@
         {
             "type": "package",
             "package": {
-                "name": "kartik-v/bootstrap-fileinput",
-                "version": "master",
-                "type": "drupal-library",
-                "dist": {
-                    "url": "https://github.com/kartik-v/bootstrap-fileinput/archive/master.zip",
-                    "type": "zip"
-                },
-                "require": {
-                    "composer/installers": "~1.0"
-                }
-            }
-        },
-        {
-            "type": "package",
-            "package": {
                 "name": "itsjavi/fontawesome-iconpicker",
                 "version": "1.22",
                 "type": "drupal-library",
@@ -231,11 +216,10 @@
         "markaspot/markaspot_ui": "dev-master",
         "markaspot/markaspot_static_json": "dev-master",
         "markaspot/api_key_auth": "8.1.0",
-        "markaspot/markaspot_map": "8.3.0-beta1",
+        "markaspot/markaspot_map": "dev-8.x-3.x",
         "markaspot/markaspot_features": "dev-master",
         "markaspot/markaspot_validation": "dev-master",
         "markaspot/masradix": "dev-master",
-        "kartik-v/bootstrap-fileinput": "dev-master",
         "itsjavi/fontawesome-iconpicker": "1.22",
         "imakewebthings/waypoints": "4.0.0",
         "socib/Leaflet-timedimension": "1.0.6",
@@ -245,14 +229,14 @@
         "leaflet/leaflet-heat": "0.2.0",
         "leaflet/leaflet-markercluster": "1.0.0",
         "leaflet/leaflet-fullscreen": "1.0.1",
-        "domoritz/leaflet-locatecontrol": "0.55.0",
+        "domoritz/leaflet-locatecontrol": "0.60.0",
         "perliedman/leaflet-control-geocoder": "1.5.3",
         "cliffcloud/leaflet-easyButton": "2.0.0",
         "lvoogdt/leaflet-awesome-markers": "2.0.2",
         "fortawesome-mas/font-awesome": "4.7.0",
         "drupal/address": "1.0.0-rc3",
         "drupal/features": "3.0-beta9",
-        "drupal/core": "8.3.0-beta1",
+        "drupal/core": "8.3.0-rc1",
         "drupal/console": "1.0.0-rc15",
         "drupal/radix": "3.x-dev",
         "drupal/pathauto": "1.x-dev",
