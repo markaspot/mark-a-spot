@@ -19,10 +19,34 @@
             "type": "package",
             "package": {
                 "name": "leaflet-mas/leaflet",
-                "version": "v1.0.2",
+                "version": "1.0.3",
                 "type": "drupal-library",
                 "dist": {
-                    "url": "https://github.com/Leaflet/Leaflet/archive/v1.0.2.zip",
+                    "url": "https://github.com/Leaflet/Leaflet/archive/v1.0.3.zip",
+                    "type": "zip"
+                }
+            }
+        },
+        {
+            "type": "package",
+            "package": {
+                "name": "hubspot/pace",
+                "version": "0.7.5",
+                "type": "drupal-library",
+                "dist": {
+                    "url": "https://github.com/HubSpot/pace/archive/v0.7.5.zip",
+                    "type": "zip"
+                }
+            }
+        },
+        {
+            "type": "package",
+            "package": {
+                "name": "mango/slideout",
+                "version": "v1.0.1",
+                "type": "drupal-library",
+                "dist": {
+                    "url": "https://github.com/Mango/slideout/archive/v1.0.1.zip",
                     "type": "zip"
                 }
             }
@@ -190,6 +214,21 @@
         {
             "type": "package",
             "package": {
+                "name": "kartik-v/bootstrap-fileinput",
+                "version": "master",
+                "type": "drupal-library",
+                "dist": {
+                    "url": "https://github.com/kartik-v/bootstrap-fileinput/archive/master.zip",
+                    "type": "zip"
+                },
+                "require": {
+                    "composer/installers": "~1.0"
+                }
+            }
+        },
+        {
+            "type": "package",
+            "package": {
                 "name": "itsjavi/fontawesome-iconpicker",
                 "version": "1.22",
                 "type": "drupal-library",
@@ -201,31 +240,28 @@
                     "composer/installers": "~1.0"
                 }
             }
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/mishal/GeoPHP"
         }
     ],
     "require": {
-        "composer/installers": "^1.0.20",
+        "composer/installers": "^1.2",
         "drupal-composer/drupal-scaffold": "^2.2",
-        "wikimedia/composer-merge-plugin": "^1.3",
         "cweagans/composer-patches": "~1.0",
         "drush/drush": "~8.0",
-        "markaspot/markaspot": "dev-master",
-        "markaspot/markaspot_open311": "dev-8.x-3.x",
-        "markaspot/markaspot_blocks": "dev-master",
-        "markaspot/markaspot_uuid": "dev-master",
-        "markaspot/markaspot_ui": "dev-master",
-        "markaspot/markaspot_static_json": "dev-master",
-        "markaspot/api_key_auth": "8.1.0",
-        "markaspot/markaspot_map": "dev-8.x-3.x",
-        "markaspot/markaspot_features": "dev-master",
-        "markaspot/markaspot_validation": "dev-master",
-        "markaspot/masradix": "dev-master",
+        "commerceguys/intl": "~0.7",
+        "commerceguys/addressing": "~1.0",
+        "commerceguys/zone": "~1.0",
+        "willdurand/geocoder": "^3.3",
+        "mango/slideout": "1.0.1",
         "itsjavi/fontawesome-iconpicker": "1.22",
         "imakewebthings/waypoints": "4.0.0",
         "socib/Leaflet-timedimension": "1.0.6",
         "nezasa/iso8601-js-period": "0.2.0.0",
         "stevenlevithan/dateFormat": "1.2.3",
-        "leaflet-mas/leaflet": "1.0.2",
+        "leaflet-mas/leaflet": "1.0.3",
         "leaflet/leaflet-heat": "0.2.0",
         "leaflet/leaflet-markercluster": "1.0.0",
         "leaflet/leaflet-fullscreen": "1.0.1",
@@ -234,30 +270,8 @@
         "cliffcloud/leaflet-easyButton": "2.0.0",
         "lvoogdt/leaflet-awesome-markers": "2.0.2",
         "fortawesome-mas/font-awesome": "4.7.0",
-        "drupal/address": "1.0.0-rc3",
-        "drupal/features": "3.0-beta9",
-        "drupal/core": "8.3.0-rc1",
-        "drupal/console": "1.0.0-rc15",
-        "drupal/radix": "3.x-dev",
-        "drupal/pathauto": "1.x-dev",
-        "drupal/admin_toolbar": "1.x-dev",
-        "drupal/restui": "1.x-dev",
-        "drupal/token": "1.0-beta2",
-        "drupal/shariff": "1.0",
-        "drupal/r4032login": "dev-1.x",
-        "drupal/message": "1.0-alpha1",
-        "drupal/views_bootstrap": "3.x-dev",
-        "drupal/better_normalizers": "1.x-dev",
-        "drupal/ctools": "3.x-dev",
-        "markaspot/markaspot_default_content": "dev-master",
-        "drupal/image_effects": "1.x-dev",
-        "drupal/paragraphs": "1.x-dev",
-        "drupal/diff": "1.x-dev",
-        "markaspot/service_request": "dev-master",
-        "drupal/field_group": "1.x-dev",
-        "drupal/facets": "1.x-dev",
-        "drupal/form_mode_manager": "1.x-dev",
-        "drupal/geolocation": "1.x-dev"
+        "hubspot/pace": "0.7.5",
+        "drupal/markaspot": "dev-3.x"
     },
     "require-dev": {
         "behat/mink": "~1.7",
@@ -290,49 +304,26 @@
             "DrupalProject\\composer\\ScriptHandler::createRequiredFiles"
         ]
     },
+    "replace": {
+        "drupal/drupal": "*"
+    },
     "extra": {
         "merge-plugin": {
             "include": [
-                "composer.json"
+                "composer.json",
+                "web/contrib/profiles/markaspot/composer.json"
             ],
             "recurse": true,
             "merge-extra": true,
             "merge-extra-deep": true
         },
         "installer-paths": {
-            "web/core": [
-                "type:drupal-core"
-            ],
-            "web/modules/contrib/{$name}": [
-                "type:drupal-module"
-            ],
-            "web/profiles/contrib/{$name}": [
-                "type:drupal-profile"
-            ],
-            "web/themes/contrib/{$name}": [
-                "type:drupal-theme"
-            ],
-            "drush/contrib/{$name}": [
-                "type:drupal-drush"
-            ],
-            "web/libraries/{$name}": [
-                "type:drupal-library"
-            ]
-        },
-        "patches": {
-            "drupal/color_field": {
-                "Palette instead of default_colors": "https://www.drupal.org/files/issues/default_colors_box-2807783-1.patch"
-            },
-            "drupal/rules": {
-                "Type definition error": "https://www.drupal.org/files/issues/rules-Fix_type_definition_error-2694685-30.patch",
-                "TokenProcessor Array to sting warning": "https://www.drupal.org/files/issues/rules-user_has_role-2824360-2-8x3x.patch",
-                "Action send mail, implode error": "https://www.drupal.org/files/issues/system-send-email-action-fails-if-to-is-a-string-2827183-2.patch",
-                "Send mail text field 2 textarea": "https://www.drupal.org/files/issues/453.patch",
-                "Implement missing PluginDefinitionInterface methods in RulesUiDefinition": "https://www.drupal.org/files/issues/rules-fix-tests.patch"
-            }
+            "web/core": ["type:drupal-core"],
+            "web/libraries/{$name}": ["type:drupal-library"],
+            "web/modules/contrib/{$name}": ["type:drupal-module"],
+            "web/profiles/contrib/{$name}": ["type:drupal-profile"],
+            "web/themes/contrib/{$name}": ["type:drupal-theme"],
+            "drush/contrib/{$name}": ["type:drupal-drush"]
         }
-    },
-    "replace": {
-        "drupal/drupal": "*"
     }
 }
