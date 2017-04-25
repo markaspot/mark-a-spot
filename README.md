@@ -21,7 +21,7 @@ Holger Kreis | @markaspot | http://mark-a-spot.org
 ## Installation
 
 ```
-$ git clone -b master-8.x --single-branch https://github.com/markaspot/mark-a-spot.git
+$ git clone -b master --single-branch https://github.com/markaspot/mark-a-spot.git
 $ cd mark-a-spot
 $ composer install
 ```
