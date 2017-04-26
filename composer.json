@@ -89,7 +89,6 @@
                     "composer/installers": "~1.0"
                 }
             }
-
         },
         {
             "type": "package",
@@ -247,44 +246,45 @@
         }
     ],
     "require": {
-        "composer/installers": "^1.0",
-        "drupal-composer/drupal-scaffold": "^2.0.0",
-        "cweagans/composer-patches": "^1.6.0",
-        "drush/drush": "~8.0",
-        "commerceguys/intl": "~0.7",
-        "commerceguys/addressing": "~1.0",
-        "commerceguys/zone": "~1.0",
-        "willdurand/geocoder": "^3.3",
-        "mango/slideout": "1.0.1",
-        "itsjavi/fontawesome-iconpicker": "1.22",
-        "imakewebthings/waypoints": "4.0.0",
-        "socib/Leaflet-timedimension": "1.0.6",
-        "nezasa/iso8601-js-period": "0.2.0.0",
-        "stevenlevithan/dateFormat": "1.2.3",
-        "leaflet-mas/leaflet": "1.0.3",
-        "leaflet/leaflet-heat": "0.2.0",
-        "leaflet/leaflet-markercluster": "1.0.0",
-        "leaflet/leaflet-fullscreen": "1.0.1",
-        "domoritz/leaflet-locatecontrol": "0.60.0",
-        "perliedman/leaflet-control-geocoder": "1.5.3",
         "cliffcloud/leaflet-easyButton": "2.0.0",
-        "lvoogdt/leaflet-awesome-markers": "2.0.2",
+        "commerceguys/addressing": "~1.0",
+        "commerceguys/intl": "~0.7",
+        "commerceguys/zone": "~1.0",
+        "composer/installers": "^1.2",
+        "cweagans/composer-patches": "^1.6",
+        "domoritz/leaflet-locatecontrol": "0.60.0",
+        "drupal-composer/drupal-scaffold": "^2.2",
+        "drupal/console": "~1.0",
+        "drupal/core": "~8.0",
+        "drupal/markaspot": "3.x-dev",
+        "drush/drush": "~8.0",
         "fortawesome-mas/font-awesome": "4.7.0",
         "hubspot/pace": "0.7.5",
-        "drupal/markaspot": "3.x-dev"
+        "imakewebthings/waypoints": "4.0.0",
+        "itsjavi/fontawesome-iconpicker": "1.22",
+        "leaflet-mas/leaflet": "1.0.3",
+        "leaflet/leaflet-fullscreen": "1.0.1",
+        "leaflet/leaflet-heat": "0.2.0",
+        "leaflet/leaflet-markercluster": "1.0.0",
+        "lvoogdt/leaflet-awesome-markers": "2.0.2",
+        "mango/slideout": "1.0.1",
+        "markaspot/markaspot": "dev-8.x-3.x",
+        "nezasa/iso8601-js-period": "0.2.0.0",
+        "perliedman/leaflet-control-geocoder": "1.5.3",
+        "socib/Leaflet-timedimension": "1.0.6",
+        "stevenlevithan/dateFormat": "1.2.3",
+        "webflo/drupal-finder": "^0.2.1",
+        "webmozart/path-util": "^2.3",
+        "willdurand/geocoder": "^3.3"
     },
     "require-dev": {
-        "drupal/drupal-extension": "^3.2",
         "behat/mink": "~1.7",
         "behat/mink-goutte-driver": "~1.2",
         "jcalderonzumba/gastonjs": "~1.0.2",
-        "drupal/coder": "8.*",
-        "mikey179/vfsStream": "~1.2",
-        "phpunit/phpunit": "~4.8",
-        "symfony/css-selector": "~2.8",
-        "behat/behat": "^3.0",
-        "se/selenium-server-standalone": "^2.53",
-        "composer/composer": "^1.3"
+        "jcalderonzumba/mink-phantomjs-driver": "~0.3.1",
+        "mikey179/vfsstream": "~1.2",
+        "phpunit/phpunit": ">=4.8.28 <5",
+        "symfony/css-selector": "~2.8"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
@@ -294,22 +294,46 @@
         ]
     },
     "scripts": {
+        "drupal-scaffold": "DrupalComposer\\DrupalScaffold\\Plugin::scaffold",
+        "pre-install-cmd": [
+            "DrupalProject\\composer\\ScriptHandler::checkComposerVersion"
+        ],
+        "pre-update-cmd": [
+            "DrupalProject\\composer\\ScriptHandler::checkComposerVersion"
+        ],
         "post-install-cmd": [
-            "DrupalComposer\\DrupalScaffold\\Plugin::scaffold"
+            "DrupalProject\\composer\\ScriptHandler::createRequiredFiles"
         ],
         "post-update-cmd": [
-            "DrupalComposer\\DrupalScaffold\\Plugin::scaffold"
+            "DrupalProject\\composer\\ScriptHandler::createRequiredFiles"
         ]
     },
     "extra": {
         "installer-paths": {
-            "web/core": ["type:drupal-core"],
-            "web/libraries/{$name}": ["type:drupal-library"],
-            "web/modules/contrib/{$name}": ["type:drupal-module"],
-            "web/profiles/contrib/{$name}": ["type:drupal-profile"],
-            "web/themes/contrib/{$name}": ["type:drupal-theme"],
-            "drush/contrib/{$name}": ["type:drupal-drush"]
-        },
-        "enable-patching": true
+            "web/core": [
+                "type:drupal-core"
+            ],
+            "web/libraries/{$name}": [
+                "type:drupal-library"
+            ],
+            "web/modules/contrib/{$name}": [
+                "type:drupal-module"
+            ],
+            "web/profiles/contrib/{$name}": [
+                "type:drupal-profile"
+            ],
+            "web/themes/contrib/{$name}": [
+                "type:drupal-theme"
+            ],
+            "drush/contrib/{$name}": [
+                "type:drupal-drush"
+            ]
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "conflict": {
+        "drupal/drupal": "*"
     }
 }
