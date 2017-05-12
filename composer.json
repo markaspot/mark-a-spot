@@ -256,7 +256,6 @@
         "drupal-composer/drupal-scaffold": "^2.2",
         "drupal/console": "~1.0",
         "drupal/core": "~8.0",
-        "drupal/markaspot": "3.x-dev",
         "drush/drush": "~8.0",
         "fortawesome-mas/font-awesome": "4.7.0",
         "hubspot/pace": "0.7.5",
@@ -268,7 +267,7 @@
         "leaflet/leaflet-markercluster": "1.0.0",
         "lvoogdt/leaflet-awesome-markers": "2.0.2",
         "mango/slideout": "1.0.1",
-        "markaspot/markaspot": "dev-8.x-3.x",
+        "markaspot/markaspot": "dev-master",
         "nezasa/iso8601-js-period": "0.2.0.0",
         "perliedman/leaflet-control-geocoder": "1.5.3",
         "socib/Leaflet-timedimension": "1.0.6",
@@ -288,6 +287,7 @@
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
+    "prefer-dist": true,
     "autoload": {
         "classmap": [
             "scripts/composer/ScriptHandler.php"
