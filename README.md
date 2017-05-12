@@ -1,27 +1,29 @@
-# Mark-a-Spot
+# Mark-a-Spot composer-based installer
 
-Mark-a-Spot is a full packaged Drupal distribution for public civic issue tracking and crowd mapping, including an Open311 GeoReport v2 server. Basic Drupal knowledge is required to customize it for your own needs.
-
-This software is based on Drupal 8 and leaflet.js.
-It's source-code is licensed and made available under the GNU General Public License (GPL) version 2.
-
-## Open311 GeoReport Resources
-
-After installation point your browser to http://yourserver/open311 to get more info about the GeoReport features. 
-
-```
-http://yourserver/georeport/v2/services.format (xml/json)
-http://yourserver/georeport/v2/requests.format (xml/json)
-http://yourserver/georeport/v2/discovery.format (xml/json)
-```
-
-## Support, Hosting
-Holger Kreis | @markaspot | http://mark-a-spot.org
+This is a composer-based installer for the [Mark-a-Spot](https://www.drupal.org/project/markaspot) Drupal distribution.
+It can be used to start a project based on this crowdmapping platform. 
 
 ## Installation
 
+Please follow the installation instructions and configuration guide at the official [documentation](http://docs.markaspot.de).
+
+
+### TL;TR
 ```
-$ git clone -b master --single-branch https://github.com/markaspot/mark-a-spot.git
-$ cd mark-a-spot
-$ composer install
+$ curl -s https://getcomposer.org/installer | php
+$ sudo mv composer.phar /usr/local/bin/composer
+$ composer create-project markaspot/mark-a-spot project-dir --stability dev
 ```
+
+This command will install the Mark-a-Spot distribution into a project directory.
+
+You may then use the [included](https://github.com/markaspot/mark-a-spot/tree/master/.docksal) Docksal integration for easy development or go on with drush in your local dev environment.
+Otherwise just replace the connection string with credentials of your database and run the following drush command.
+
+```
+$ drush si markaspot -y  --db-url=mysql://root:root@db:3306/markaspot
+
+```
+
+## Support, Hosting
+Holger Kreis | twitter: @markaspot | http://mark-a-spot.org
