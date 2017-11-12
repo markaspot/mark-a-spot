@@ -16,64 +16,12 @@
             "url": "https://packages.drupal.org/8"
         },
         {
-            "type": "package",
-            "package": {
-                "name": "leaflet-mas/leaflet",
-                "version": "1.0.3",
-                "type": "drupal-library",
-                "dist": {
-                    "url": "https://github.com/Leaflet/Leaflet/archive/v1.0.3.zip",
-                    "type": "zip"
-                }
-            }
+            "type": "composer",
+            "url": "https://asset-packagist.org"
         },
         {
-            "type": "package",
-            "package": {
-                "name": "hubspot/pace",
-                "version": "0.7.5",
-                "type": "drupal-library",
-                "dist": {
-                    "url": "https://github.com/HubSpot/pace/archive/v0.7.5.zip",
-                    "type": "zip"
-                }
-            }
-        },
-        {
-            "type": "package",
-            "package": {
-                "name": "mango/slideout",
-                "version": "v1.0.1",
-                "type": "drupal-library",
-                "dist": {
-                    "url": "https://github.com/Mango/slideout/archive/v1.0.1.zip",
-                    "type": "zip"
-                }
-            }
-        },
-        {
-            "type": "package",
-            "package": {
-                "name": "lvoogdt/leaflet-awesome-markers",
-                "version": "2.0.2",
-                "type": "drupal-library",
-                "dist": {
-                    "url": "https://github.com/lvoogdt/Leaflet.awesome-markers/archive/v2.0.2.zip",
-                    "type": "zip"
-                }
-            }
-        },
-        {
-            "type": "package",
-            "package": {
-                "name": "leaflet/leaflet-fullscreen",
-                "version": "1.0.1",
-                "type": "drupal-library",
-                "dist": {
-                    "url": "https://github.com/Leaflet/Leaflet.fullscreen/archive/v1.0.1.zip",
-                    "type": "zip"
-                }
-            }
+            "type": "vcs",
+            "url": "https://github.com/markaspot/GeoPHP"
         },
         {
             "type": "package",
@@ -82,199 +30,24 @@
                 "version": "master",
                 "type": "drupal-library",
                 "dist": {
-                    "url": "https://github.com/heiseonline/shariff/archive/master.zip",
+                    "url": "https://github.com/heiseonline/shariff/releases/download/2.0.2/shariff-2.0.2.zip",
                     "type": "zip"
                 },
                 "require": {
                     "composer/installers": "~1.0"
                 }
             }
-        },
-        {
-            "type": "package",
-            "package": {
-                "name": "perliedman/leaflet-control-geocoder",
-                "version": "1.5.3",
-                "dist": {
-                    "type": "zip",
-                    "url": "https://github.com/perliedman/leaflet-control-geocoder/archive/v1.5.3.zip"
-                },
-                "type": "drupal-library"
-            }
-        },
-        {
-            "type": "package",
-            "package": {
-                "name": "domoritz/leaflet-locatecontrol",
-                "version": "0.60.0",
-                "type": "drupal-library",
-                "dist": {
-                    "url": "https://github.com/domoritz/leaflet-locatecontrol/archive/v0.60.0.zip",
-                    "type": "zip"
-                }
-            }
-        },
-        {
-            "type": "package",
-            "package": {
-                "name": "imakewebthings/waypoints",
-                "version": "4.0.0",
-                "type": "drupal-library",
-                "dist": {
-                    "url": "https://github.com/imakewebthings/waypoints/archive/4.0.0.zip",
-                    "type": "zip"
-                }
-            }
-        },
-        {
-            "type": "package",
-            "package": {
-                "name": "socib/leaflet-timedimension",
-                "version": "1.0.6",
-                "type": "drupal-library",
-                "dist": {
-                    "url": "https://github.com/socib/Leaflet.TimeDimension/archive/v1.0.6.zip",
-                    "type": "zip"
-                }
-            }
-        },
-        {
-            "type": "package",
-            "package": {
-                "name": "nezasa/iso8601-js-period",
-                "version": "0.2.0.0",
-                "type": "drupal-library",
-                "dist": {
-                    "url": "https://github.com/nezasa/iso8601-js-period/archive/v0.2.0.0.zip",
-                    "type": "zip"
-                }
-            }
-        },
-        {
-            "type": "package",
-            "package": {
-                "name": "stevenLevithan/dateFormat",
-                "version": "1.2.3",
-                "type": "drupal-library",
-                "dist": {
-                    "url": "https://gist.github.com/eralston/968809/archive/a18b38bede4e3d0e2f1c720bd1e4c010e646bb6d.zip",
-                    "type": "zip"
-                }
-            }
-        },
-        {
-            "type": "package",
-            "package": {
-                "name": "leaflet/leaflet-heat",
-                "version": "0.2.0",
-                "type": "drupal-library",
-                "dist": {
-                    "url": "https://github.com/Leaflet/Leaflet.heat/archive/v0.2.0.zip",
-                    "type": "zip"
-                }
-            }
-        },
-        {
-            "type": "package",
-            "package": {
-                "name": "leaflet/leaflet-markercluster",
-                "version": "1.0.0",
-                "type": "drupal-library",
-                "dist": {
-                    "url": "https://github.com/Leaflet/Leaflet.markercluster/archive/v1.0.0.zip",
-                    "type": "zip"
-                }
-            }
-        },
-        {
-            "type": "package",
-            "package": {
-                "name": "fortawesome-mas/font-awesome",
-                "version": "4.7.0",
-                "type": "drupal-library",
-                "dist": {
-                    "url": "https://github.com/FortAwesome/Font-Awesome/archive/v4.7.0.zip",
-                    "type": "zip"
-                }
-            }
-        },
-        {
-            "type": "package",
-            "package": {
-                "name": "cliffcloud/leaflet-easyButton",
-                "version": "2.0.0",
-                "type": "drupal-library",
-                "dist": {
-                    "url": "https://github.com/CliffCloud/Leaflet.EasyButton/archive/v2.0.0.zip",
-                    "type": "zip"
-                }
-            }
-        },
-        {
-            "type": "package",
-            "package": {
-                "name": "kartik-v/bootstrap-fileinput",
-                "version": "master",
-                "type": "drupal-library",
-                "dist": {
-                    "url": "https://github.com/kartik-v/bootstrap-fileinput/archive/master.zip",
-                    "type": "zip"
-                },
-                "require": {
-                    "composer/installers": "~1.0"
-                }
-            }
-        },
-        {
-            "type": "package",
-            "package": {
-                "name": "itsjavi/fontawesome-iconpicker",
-                "version": "1.22",
-                "type": "drupal-library",
-                "dist": {
-                    "url": "https://github.com/itsjavi/fontawesome-iconpicker/archive/1.2.2.zip",
-                    "type": "zip"
-                },
-                "require": {
-                    "composer/installers": "~1.0"
-                }
-            }
-        },
-        {
-            "type": "vcs",
-            "url": "https://github.com/mishal/GeoPHP"
         }
     ],
     "require": {
-        "cliffcloud/leaflet-easyButton": "2.0.0",
-        "commerceguys/addressing": "~1.0",
-        "commerceguys/intl": "~0.7",
-        "commerceguys/zone": "~1.0",
-        "composer/installers": "^1.2",
         "cweagans/composer-patches": "^1.6",
-        "domoritz/leaflet-locatecontrol": "0.60.0",
         "drupal-composer/drupal-scaffold": "^2.2",
-        "drupal/console": "~1.0",
         "drupal/core": "~8.0",
         "drush/drush": "~8.0",
-        "fortawesome-mas/font-awesome": "4.7.0",
-        "hubspot/pace": "0.7.5",
-        "imakewebthings/waypoints": "4.0.0",
-        "itsjavi/fontawesome-iconpicker": "1.22",
-        "leaflet-mas/leaflet": "1.0.3",
-        "leaflet/leaflet-fullscreen": "1.0.1",
-        "leaflet/leaflet-heat": "0.2.0",
-        "leaflet/leaflet-markercluster": "1.0.0",
-        "lvoogdt/leaflet-awesome-markers": "2.0.2",
-        "mango/slideout": "1.0.1",
-        "markaspot/markaspot": "8.3.0",
-        "nezasa/iso8601-js-period": "0.2.0.0",
-        "perliedman/leaflet-control-geocoder": "1.5.3",
-        "socib/Leaflet-timedimension": "1.0.6",
-        "stevenlevithan/dateFormat": "1.2.3",
+        "markaspot/markaspot": "^8.3",
+        "oomphinc/composer-installers-extender": "^1.1",
         "webflo/drupal-finder": "^0.2.1",
-        "webmozart/path-util": "^2.3",
-        "willdurand/geocoder": "^3.3"
+        "webmozart/path-util": "^2.3"
     },
     "require-dev": {
         "behat/mink": "~1.7",
@@ -309,12 +82,18 @@
         ]
     },
     "extra": {
+        "installer-types": [
+            "bower-asset",
+            "npm-asset"
+        ],
         "installer-paths": {
             "web/core": [
                 "type:drupal-core"
             ],
             "web/libraries/{$name}": [
-                "type:drupal-library"
+                "type:drupal-library",
+                "type:bower-asset",
+                "type:npm-asset"
             ],
             "web/modules/contrib/{$name}": [
                 "type:drupal-module"
@@ -328,6 +107,12 @@
             "drush/contrib/{$name}": [
                 "type:drupal-drush"
             ]
+        },
+        "enable-patching": true,
+        "patches": {
+            "drupal/shariff": {
+                "Installing shariff with composer": "https://www.drupal.org/files/issues/installing_with_composer-2770807-11.patch"
+            }
         }
     },
     "config": {
