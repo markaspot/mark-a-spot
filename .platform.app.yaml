@@ -1,50 +1,77 @@
 # This file describes an application. You can have multiple applications
 # in the same project.
+#
+# See https://docs.platform.sh/user_guide/reference/platform-app-yaml.html
 
 # The name of this app. Must be unique within a project.
-name: app
+name: 'app'
 
 # The runtime the application uses.
-type: "php:7.0"
+type: 'php:7.1'
+
+# The relationships of the application with services or other applications.
+#
+# The left-hand side is the name of the relationship as it will be exposed
+# to the application in the PLATFORM_RELATIONSHIPS variable. The right-hand
+# side is in the form `<service name>:<endpoint name>`.
+relationships:
+    database: 'mysqldb:mysql'
+#    solr: 'solrsearch:solr'
+#    redis: 'rediscache:redis'
+
+# The size of the persistent disk of the application (in MB).
+disk: 2048
+
+# The 'mounts' describe writable, persistent filesystem mounts in the application. The keys are
+# directory paths, relative to the application root. The values are strings such as
+# 'shared:files/NAME', where NAME is just a unique name for the mount.
+mounts:
+    '/web/sites/default/files': 'shared:files/files'
+    '/tmp': 'shared:files/tmp'
+    '/private': 'shared:files/private'
+    '/drush-backups': 'shared:files/drush-backups'
+
 
 # Configuration of the build of this application.
 build:
     flavor: composer
 
-# The build-time dependencies of the app.
-dependencies:
-    php:
-        "drush/drush": "^8.0"
-        "drupal/console": "@stable"
-
-# The relationships of the application with services or other applications.
-# The left-hand side is the name of the relationship as it will be exposed
-# to the application in the PLATFORM_RELATIONSHIPS variable. The right-hand
-# side is in the form `<service name>:<endpoint name>`.
-relationships:
-    database: "mysqldb:mysql"
-#    solr: "solrsearch:solr"
-#    redis: "rediscache:redis"
+# The hooks executed at various points in the lifecycle of the application.
+hooks:
+    # The deploy hook runs after your application has been deployed and started.
+    deploy: |
+      cd web
+      drush -y cache-rebuild
+      drush -y updatedb
+      drush -y config-import
+      drush -y entup
 
 # The configuration of app when it is exposed to the web.
 web:
     # Specific parameters for different URL prefixes.
     locations:
-        "/":
-            # The folder to serve static assets for this location from.
-            # (Relative to the application root.)
-            root: "web"
+        '/':
+            # The folder from which to serve static assets, for this location.
+            #
+            # This is a filesystem path, relative to the application root.
+            root: 'web'
 
             # How long to allow static assets from this location to be cached.
-            # (Can be a time or -1 for no caching. Times can be suffixed with
-            # "ms" (milliseconds), "s" (seconds), "m" (minutes), "h" (hours),
-            # "d" (days), "w" (weeks), "M" (months, 30d) or "y" (years, 365d).)
-            expires: -1
+            #
+            # Can be a time in seconds, or -1 for no caching. Times can be
+            # suffixed with "s" (seconds), "m" (minutes), "h" (hours), "d"
+            # (days), "w" (weeks), "M" (months, as 30 days) or "y" (years, as
+            # 365 days).
+            expires: 5m
 
             # Whether to forward disallowed and missing resources from this
             # location to the application.
-            # (Can be true, false or a URI path string.)
-            passthru: "/index.php"
+            #
+            # Can be true, false or a URI path string.
+            passthru: '/index.php'
+
+            # Deny access to static files in this location.
+            allow: false
 
             # Rules for specific URI patterns.
             rules:
@@ -68,32 +95,11 @@ web:
 
             rules:
                 # Provide a longer TTL (2 weeks) for aggregated CSS and JS files.
-                '^/sites/default/files/(css|jss)':
+                '^/sites/default/files/(css|js)':
                     expires: 2w
 
-# The size of the persistent disk of the application (in MB).
-disk: 2048
-
-# The mounts that will be performed when the package is deployed.
-mounts:
-    "/web/sites/default/files": "shared:files/files"
-    "/tmp": "shared:files/tmp"
-    "/private": "shared:files/private"
-
-# The hooks executed at various points in the lifecycle of the application.
-hooks:
-    # We run deploy hook after your application has been deployed and started.
-    # @TODO Re-import configuration
-    deploy: |
-      cd web
-      drush -y cache-rebuild
-      drush -y updatedb
-      drush -y fra --bundle=social
-      drush -y entup
-
 # The configuration of scheduled execution.
-# @TODO Add more crons to make sure the stream is up to date.
 crons:
-    drupal_cron1:
-        spec: "*/5 * * * *"
-        cmd: "cd web ; drush core-cron"
+    drupal:
+        spec: '*/20 * * * *'
+        cmd: 'cd web ; drush core-cron'

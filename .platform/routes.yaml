@@ -3,10 +3,15 @@
 # Each route describes how an incoming URL is going
 # to be processed by Platform.sh.
 
-"http://{default}/":
+"https://{default}/":
     type: upstream
     upstream: "app:http"
+    cache:
+      enabled: true
 
-"http://www.{default}/":
+      # Base the cache on the session cookie. Ignore all other cookies.
+      cookies: ['/^SS?ESS/']
+
+"https://www.{default}/":
     type: redirect
-    to: "http://{default}/"
+    to: "https://{default}/"

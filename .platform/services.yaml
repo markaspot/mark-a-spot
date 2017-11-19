@@ -4,12 +4,12 @@
 # to power your Platform.sh project.
 
 mysqldb:
-    type: "mysql:10.0"
+    type: mysql:10.2
     disk: 2048
 #
 #rediscache:
-#    type: "redis:3.0"
+#    type: redis:3.2
 #
 #solrsearch:
-#    type: "solr:4.10"
+#    type: solr:6.6
 #    disk: 1024
