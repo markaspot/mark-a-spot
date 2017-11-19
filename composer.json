@@ -111,12 +111,7 @@
                 "type:drupal-drush"
             ]
         },
-        "enable-patching": true,
-        "patches": {
-            "drupal/shariff": {
-                "Installing shariff with composer": "https://www.drupal.org/files/issues/installing_with_composer-2770807-11.patch"
-            }
-        }
+        "enable-patching": true
     },
     "config": {
         "sort-packages": true
