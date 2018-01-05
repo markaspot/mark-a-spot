@@ -15,45 +15,51 @@ services:
   # Web
   web:
     hostname: web
-    image: docksal/web:1.0-apache2.2
+    image: docksal/web:2.1-apache2.4
     volumes:
       # Project root volume
-      - project_root:/var/www:ro
+      - project_root:/var/www:ro,nocopy
     labels:
-      - io.docksal.virtual-host=${VIRTUAL_HOST}
+      - io.docksal.virtual-host=${VIRTUAL_HOST},*.${VIRTUAL_HOST}
       - io.docksal.project-root=${PROJECT_ROOT}
     environment:
       - APACHE_DOCUMENTROOT=/var/www/${DOCROOT:-docroot}
-      - VIRTUAL_HOST=${VIRTUAL_HOST}
+      - APACHE_BASIC_AUTH_USER
+      - APACHE_BASIC_AUTH_PASS
     depends_on:
       - cli
+    dns:
+      - ${DOCKSAL_DNS1}
+      - ${DOCKSAL_DNS2}
 
   # DB
   db:
     hostname: db
-    image: docksal/db:1.0-mysql-5.5
+    image: docksal/db:1.0-mysql-5.7
     ports:
       - "${MYSQL_PORT_MAPPING:-3306}"
-    volumes:
-      # Project root volume
-      - project_root:/var/www:ro
     environment:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-root}
       - MYSQL_USER=${MYSQL_USER:-user}
       - MYSQL_PASSWORD=${MYSQL_PASSWORD:-user}
       - MYSQL_DATABASE=${MYSQL_DATABASE:-default}
-
-  # CLI
-  # Used for all console commands and tools.
+    dns:
+      - ${DOCKSAL_DNS1}
+      - ${DOCKSAL_DNS2}
+  # CLI - Used for all console commands and tools.
   cli:
     hostname: cli
-    image: docksal/cli:1.0-php7
+    image: docksal/cli:edge-php7.1
     volumes:
-      # Project root volume
-      - project_root:/var/www:rw
-      # Host home volume (for SSH keys and other credentials).
-      # - host_home:/.home:ro
-      # Shared ssh-agent socket
-      - docksal_ssh_agent:/.ssh-agent:ro
+      - project_root:/var/www:rw,nocopy  # Project root volume
+      - docksal_ssh_agent:/.ssh-agent:ro  # Shared ssh-agent socket
     environment:
+      - HOST_UID
+      - HOST_GID
+      - DOCROOT
       - XDEBUG_ENABLED=${XDEBUG_ENABLED:-0}
+      - XDEBUG_CONFIG=remote_connect_back=0 remote_host=${DOCKSAL_HOST_IP}  # Point xdebug to the host IP
+      - PHP_IDE_CONFIG=serverName=${VIRTUAL_HOST}  # This helps with console scripts debugging in PHPStorm
+    dns:
+      - ${DOCKSAL_DNS1}
+      - ${DOCKSAL_DNS2}
