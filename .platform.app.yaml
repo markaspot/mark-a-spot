@@ -40,6 +40,7 @@ build:
 hooks:
     # The deploy hook runs after your application has been deployed and started.
     deploy: |
+      set -e
       cd web
       drush -y cache-rebuild
       drush -y updatedb
