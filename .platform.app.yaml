@@ -29,6 +29,7 @@ mounts:
     '/web/sites/default/files': 'shared:files/files'
     '/tmp': 'shared:files/tmp'
     '/private': 'shared:files/private'
+    '/.drush': 'shared:files/.drush'
     '/drush-backups': 'shared:files/drush-backups'
 
 
@@ -84,6 +85,12 @@ web:
                 '^/sitemap\.xml$':
                     allow: true
 
+                # Deny direct access to configuration files.
+                '^/sites/sites\.php$':
+                    scripts: false
+                '^/sites/[^/]+/settings.*?\.php$':
+                    scripts: false
+                                        
         '/sites/default/files':
             # Allow access to all files in the public files directory.
             allow: true
