@@ -2,7 +2,7 @@
     "name": "markaspot/mark-a-spot",
     "description": "Mark-a-Spot is a Drupal distribution for crowdmapping and public civic issue tracking",
     "type": "project",
-    "license": "GPL-2.0+",
+    "license": "GPL-2.0-or-later",
     "authors": [
         {
             "name": "Holger Kreis",
