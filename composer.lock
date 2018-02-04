@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "5e50b92100d3d9417fb7052e0706d169",
+    "content-hash": "c52f32f681111f9fc6cb86811f92ca54",
     "packages": [
         {
             "name": "anthonymartin/geo-location",
@@ -1448,6 +1448,61 @@
             "time": "2017-05-03T02:35:27+00:00"
         },
         {
+            "name": "drupal/bootstrap_layouts",
+            "version": "5.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupal.org/project/bootstrap_layouts",
+                "reference": "8.x-5.1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/bootstrap_layouts-8.x-5.1.zip",
+                "reference": "8.x-5.1",
+                "shasum": "b304b1c9d0ea30646e6dff7aa32405a21a11d49f"
+            },
+            "require": {
+                "drupal/core": "*"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "branch-alias": {
+                    "dev-5.x": "5.x-dev"
+                },
+                "drupal": {
+                    "version": "8.x-5.1",
+                    "datestamp": "1516598286",
+                    "security-coverage": {
+                        "status": "covered",
+                        "message": "Covered by Drupal's security advisory policy"
+                    }
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0+"
+            ],
+            "authors": [
+                {
+                    "name": "darol100",
+                    "homepage": "https://www.drupal.org/user/2667123"
+                },
+                {
+                    "name": "hctom",
+                    "homepage": "https://www.drupal.org/user/112790"
+                },
+                {
+                    "name": "markcarver",
+                    "homepage": "https://www.drupal.org/user/501638"
+                }
+            ],
+            "description": "This module is going to generate layouts with Bootstrap grid system.",
+            "homepage": "https://www.drupal.org/project/bootstrap_layouts",
+            "support": {
+                "source": "http://cgit.drupalcode.org/bootstrap_layouts"
+            }
+        },
+        {
             "name": "drupal/color_field",
             "version": "dev-2.x",
             "source": {
@@ -1887,6 +1942,88 @@
             "time": "2017-12-25T19:06:17+00:00"
         },
         {
+            "name": "drupal/devel",
+            "version": "1.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupal.org/project/devel",
+                "reference": "8.x-1.2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/devel-8.x-1.2.zip",
+                "reference": "8.x-1.2",
+                "shasum": "01f3349ef75f6e21fceef24be9d3d6506ca29647"
+            },
+            "require": {
+                "drupal/core": "~8.0"
+            },
+            "suggest": {
+                "symfony/var-dumper": "Pretty print complex values better with var-dumper available"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "branch-alias": {
+                    "dev-1.x": "1.x-dev"
+                },
+                "drupal": {
+                    "version": "8.x-1.2",
+                    "datestamp": "1507197844",
+                    "security-coverage": {
+                        "status": "covered",
+                        "message": "Covered by Drupal's security advisory policy"
+                    }
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0+"
+            ],
+            "authors": [
+                {
+                    "name": "Moshe Weitzman",
+                    "homepage": "https://github.com/weitzman",
+                    "email": "weitzman@tejasa.com",
+                    "role": "Maintainer"
+                },
+                {
+                    "name": "Hans Salvisberg",
+                    "homepage": "https://www.drupal.org/u/salvis",
+                    "email": "drupal@salvisberg.com",
+                    "role": "Maintainer"
+                },
+                {
+                    "name": "Luca Lusso",
+                    "homepage": "https://www.drupal.org/u/lussoluca",
+                    "role": "Maintainer"
+                },
+                {
+                    "name": "Marco (willzyx)",
+                    "homepage": "https://www.drupal.org/u/willzyx",
+                    "role": "Maintainer"
+                },
+                {
+                    "name": "See contributors",
+                    "homepage": "https://www.drupal.org/node/3236/committers"
+                },
+                {
+                    "name": "salvis",
+                    "homepage": "https://www.drupal.org/user/82964"
+                },
+                {
+                    "name": "willzyx",
+                    "homepage": "https://www.drupal.org/user/1043862"
+                }
+            ],
+            "description": "Various blocks, pages, and functions for developers.",
+            "homepage": "http://drupal.org/project/devel",
+            "support": {
+                "source": "http://cgit.drupalcode.org/devel",
+                "issues": "http://drupal.org/project/devel",
+                "irc": "irc://irc.freenode.org/drupal-contribute"
+            }
+        },
+        {
             "name": "drupal/diff",
             "version": "1.0.0-rc1",
             "source": {
@@ -1970,6 +2107,53 @@
             "support": {
                 "source": "http://cgit.drupalcode.org/diff",
                 "issues": "https://www.drupal.org/project/issues/diff"
+            }
+        },
+        {
+            "name": "drupal/entity_clone",
+            "version": "1.0.0-alpha2",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupal.org/project/entity_clone",
+                "reference": "8.x-1.0-alpha2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/entity_clone-8.x-1.0-alpha2.zip",
+                "reference": "8.x-1.0-alpha2",
+                "shasum": "55a533e56853b78f949796040ee68881a68917b5"
+            },
+            "require": {
+                "drupal/core": "~8.0"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "branch-alias": {
+                    "dev-1.x": "1.x-dev"
+                },
+                "drupal": {
+                    "version": "8.x-1.0-alpha2",
+                    "datestamp": "1513145285",
+                    "security-coverage": {
+                        "status": "not-covered",
+                        "message": "Alpha releases are not covered by Drupal security advisories."
+                    }
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0+"
+            ],
+            "authors": [
+                {
+                    "name": "vpeltot",
+                    "homepage": "https://www.drupal.org/user/1361586"
+                }
+            ],
+            "description": "Add a clone action for all entities",
+            "homepage": "https://www.drupal.org/project/entity_clone",
+            "support": {
+                "source": "http://cgit.drupalcode.org/entity_clone"
             }
         },
         {
@@ -2103,6 +2287,61 @@
             }
         },
         {
+            "name": "drupal/field_formatter_class",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupal.org/project/field_formatter_class",
+                "reference": "8.x-1.0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/field_formatter_class-8.x-1.0.zip",
+                "reference": "8.x-1.0",
+                "shasum": "7a28ee1d8d3047fd7704d586fdb333588d68eaab"
+            },
+            "require": {
+                "drupal/core": "*"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "branch-alias": {
+                    "dev-1.x": "1.x-dev"
+                },
+                "drupal": {
+                    "version": "8.x-1.0",
+                    "datestamp": "1488471783",
+                    "security-coverage": {
+                        "status": "covered",
+                        "message": "Covered by Drupal's security advisory policy"
+                    }
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0+"
+            ],
+            "authors": [
+                {
+                    "name": "Dave Reid",
+                    "homepage": "https://www.drupal.org/user/53892"
+                },
+                {
+                    "name": "andrewmacpherson",
+                    "homepage": "https://www.drupal.org/user/265648"
+                },
+                {
+                    "name": "mfer",
+                    "homepage": "https://www.drupal.org/user/25701"
+                }
+            ],
+            "description": "Provides custom HTML class settings for field formatters.",
+            "homepage": "https://www.drupal.org/project/field_formatter_class",
+            "support": {
+                "source": "http://cgit.drupalcode.org/field_formatter_class"
+            }
+        },
+        {
             "name": "drupal/field_group",
             "version": "1.0.0",
             "source": {
@@ -2222,17 +2461,17 @@
         },
         {
             "name": "drupal/form_mode_manager",
-            "version": "1.3.0",
+            "version": "2.0.0-beta1",
             "source": {
                 "type": "git",
                 "url": "https://git.drupal.org/project/form_mode_manager",
-                "reference": "8.x-1.3"
+                "reference": "8.x-2.0-beta1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/form_mode_manager-8.x-1.3.zip",
-                "reference": "8.x-1.3",
-                "shasum": "833e9130176eb14ac4286dcf454c5ef9cada0cae"
+                "url": "https://ftp.drupal.org/files/projects/form_mode_manager-8.x-2.0-beta1.zip",
+                "reference": "8.x-2.0-beta1",
+                "shasum": "92c644adb8da05e8ae76b07e5ce7ea64506b0e86"
             },
             "require": {
                 "drupal/core": "*"
@@ -2240,14 +2479,14 @@
             "type": "drupal-module",
             "extra": {
                 "branch-alias": {
-                    "dev-1.x": "1.x-dev"
+                    "dev-2.x": "2.x-dev"
                 },
                 "drupal": {
-                    "version": "8.x-1.3",
-                    "datestamp": "1513953485",
+                    "version": "8.x-2.0-beta1",
+                    "datestamp": "1513953786",
                     "security-coverage": {
-                        "status": "covered",
-                        "message": "Covered by Drupal's security advisory policy"
+                        "status": "not-covered",
+                        "message": "Beta releases are not covered by Drupal security advisories."
                     }
                 }
             },
@@ -2325,6 +2564,53 @@
             "homepage": "https://www.drupal.org/project/geolocation",
             "support": {
                 "source": "http://cgit.drupalcode.org/geolocation"
+            }
+        },
+        {
+            "name": "drupal/hide_revision_field",
+            "version": "1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupal.org/project/hide_revision_field",
+                "reference": "8.x-1.1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/hide_revision_field-8.x-1.1.zip",
+                "reference": "8.x-1.1",
+                "shasum": "572ad7ae8e442c8b8e7e51ec47483f5c1b035d7b"
+            },
+            "require": {
+                "drupal/core": "~8.0"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "branch-alias": {
+                    "dev-1.x": "1.x-dev"
+                },
+                "drupal": {
+                    "version": "8.x-1.1",
+                    "datestamp": "1463677947",
+                    "security-coverage": {
+                        "status": "covered",
+                        "message": "Covered by Drupal's security advisory policy"
+                    }
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0+"
+            ],
+            "authors": [
+                {
+                    "name": "NickWilde",
+                    "homepage": "https://www.drupal.org/user/3094661"
+                }
+            ],
+            "description": "Controls visibility of the revision field on content add/edit forms.",
+            "homepage": "https://www.drupal.org/project/hide_revision_field",
+            "support": {
+                "source": "http://cgit.drupalcode.org/hide_revision_field"
             }
         },
         {
@@ -2434,6 +2720,154 @@
                 "source": "http://cgit.drupalcode.org/maillog"
             },
             "time": "2016-08-05T21:18:07+00:00"
+        },
+        {
+            "name": "drupal/page_manager",
+            "version": "4.0.0-beta2",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupal.org/project/page_manager",
+                "reference": "8.x-4.0-beta2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/page_manager-8.x-4.0-beta2.zip",
+                "reference": "8.x-4.0-beta2",
+                "shasum": "29a4dda0f068b5df5971eb8319c675cd8e5c78b3"
+            },
+            "require": {
+                "drupal/core": "^8.0.5",
+                "drupal/ctools": "~3"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "branch-alias": {
+                    "dev-4.x": "4.x-dev"
+                },
+                "drupal": {
+                    "version": "8.x-4.0-beta2",
+                    "datestamp": "1493410443",
+                    "security-coverage": {
+                        "status": "not-covered",
+                        "message": "Project has not opted into security advisory coverage!"
+                    }
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0+"
+            ],
+            "authors": [
+                {
+                    "name": "Tim Plunkett",
+                    "homepage": "https://www.drupal.org/u/tim.plunkett",
+                    "role": "Maintainer"
+                },
+                {
+                    "name": "dsnopek",
+                    "homepage": "https://www.drupal.org/user/266527"
+                },
+                {
+                    "name": "japerry",
+                    "homepage": "https://www.drupal.org/user/45640"
+                },
+                {
+                    "name": "tim.plunkett",
+                    "homepage": "https://www.drupal.org/user/241634"
+                }
+            ],
+            "description": "Provides a way to place blocks on a custom page.",
+            "homepage": "https://www.drupal.org/project/page_manager",
+            "support": {
+                "source": "https://git.drupal.org/project/page_manager.git",
+                "issues": "https://www.drupal.org/project/issues/page_manager",
+                "irc": "irc://irc.freenode.org/drupal-contribute"
+            }
+        },
+        {
+            "name": "drupal/panels",
+            "version": "4.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupal.org/project/panels",
+                "reference": "8.x-4.2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/panels-8.x-4.2.zip",
+                "reference": "8.x-4.2",
+                "shasum": "6991377531eafaec09f9c7a31e091592e455137b"
+            },
+            "require": {
+                "drupal/core": "^8.3",
+                "drupal/ctools": ">=3.0.0"
+            },
+            "require-dev": {
+                "drupal/page_manager": "*"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "branch-alias": {
+                    "dev-4.x": "4.x-dev"
+                },
+                "drupal": {
+                    "version": "8.x-4.2",
+                    "datestamp": "1500497642",
+                    "security-coverage": {
+                        "status": "covered",
+                        "message": "Covered by Drupal's security advisory policy"
+                    }
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0+"
+            ],
+            "authors": [
+                {
+                    "name": "Jakob Perry",
+                    "homepage": "https://www.drupal.org/u/japerry"
+                },
+                {
+                    "name": "Samuel Mortenson",
+                    "homepage": "https://www.drupal.org/u/samuel.mortenson"
+                },
+                {
+                    "name": "See other contributors",
+                    "homepage": "https://www.drupal.org/node/74958/committers"
+                },
+                {
+                    "name": "japerry",
+                    "homepage": "https://www.drupal.org/user/45640"
+                },
+                {
+                    "name": "merlinofchaos",
+                    "homepage": "https://www.drupal.org/user/26979"
+                },
+                {
+                    "name": "neclimdul",
+                    "homepage": "https://www.drupal.org/user/48673"
+                },
+                {
+                    "name": "samuel.mortenson",
+                    "homepage": "https://www.drupal.org/user/2582268"
+                },
+                {
+                    "name": "sdboyer",
+                    "homepage": "https://www.drupal.org/user/146719"
+                },
+                {
+                    "name": "tim.plunkett",
+                    "homepage": "https://www.drupal.org/user/241634"
+                }
+            ],
+            "description": "Core Panels display functions; provides no external UI, at least one other Panels module should be enabled.",
+            "homepage": "https://www.drupal.org/project/panels",
+            "support": {
+                "source": "http://git.drupal.org/project/panels.git",
+                "issues": "https://www.drupal.org/project/issues/panels",
+                "irc": "irc://irc.freenode.org/drupal-scotch"
+            }
         },
         {
             "name": "drupal/paragraphs",
@@ -2567,6 +3001,104 @@
             "homepage": "https://www.drupal.org/project/pathauto",
             "support": {
                 "source": "http://cgit.drupalcode.org/pathauto"
+            }
+        },
+        {
+            "name": "drupal/pbf",
+            "version": "1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupal.org/project/pbf",
+                "reference": "8.x-1.1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/pbf-8.x-1.1.zip",
+                "reference": "8.x-1.1",
+                "shasum": "8cb202792604523827bad945105b96dc35506720"
+            },
+            "require": {
+                "drupal/core": "~8.0"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "branch-alias": {
+                    "dev-1.x": "1.x-dev"
+                },
+                "drupal": {
+                    "version": "8.x-1.1",
+                    "datestamp": "1472327339",
+                    "security-coverage": {
+                        "status": "covered",
+                        "message": "Covered by Drupal's security advisory policy"
+                    }
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0+"
+            ],
+            "authors": [
+                {
+                    "name": "flocondetoile",
+                    "homepage": "https://www.drupal.org/user/2006064"
+                }
+            ],
+            "description": "Manage access entity by field",
+            "homepage": "https://www.drupal.org/project/pbf",
+            "keywords": [
+                "Drupal"
+            ],
+            "support": {
+                "source": "http://cgit.drupalcode.org/pbf",
+                "issues": "https://www.drupal.org/project/issues/pbf"
+            }
+        },
+        {
+            "name": "drupal/quick_node_clone",
+            "version": "1.7.0",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupal.org/project/quick_node_clone",
+                "reference": "8.x-1.7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/quick_node_clone-8.x-1.7.zip",
+                "reference": "8.x-1.7",
+                "shasum": "651743f28534e7dd8f4bbeb6e57034c7fded3985"
+            },
+            "require": {
+                "drupal/core": "*"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "branch-alias": {
+                    "dev-1.x": "1.x-dev"
+                },
+                "drupal": {
+                    "version": "8.x-1.7",
+                    "datestamp": "1516726685",
+                    "security-coverage": {
+                        "status": "not-covered",
+                        "message": "Project has not opted into security advisory coverage!"
+                    }
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0+"
+            ],
+            "authors": [
+                {
+                    "name": "vilepickle",
+                    "homepage": "https://www.drupal.org/user/783006"
+                }
+            ],
+            "description": "Quickly clone a node with regular fields.",
+            "homepage": "https://www.drupal.org/project/quick_node_clone",
+            "support": {
+                "source": "http://cgit.drupalcode.org/quick_node_clone"
             }
         },
         {
@@ -2785,7 +3317,7 @@
                 "patches_applied": {
                     "Type definition error": "https://www.drupal.org/files/issues/rules-Fix_type_definition_error-2694685-30.patch",
                     "Action send mail, implode error": "https://www.drupal.org/files/issues/system-send-email-action-fails-if-to-is-a-string-2827183-2.patch",
-                    "Send mail text field 2 textarea": "https://www.drupal.org/files/issues/453.patch"
+                    "Send mail text field 2 textarea": "https://www.drupal.org/files/issues/rules_sendmail_textarea-2724129-34.patch"
                 }
             },
             "notification-url": "https://packages.drupal.org/8/downloads",
@@ -2960,7 +3492,9 @@
                         "message": "Covered by Drupal's security advisory policy"
                     }
                 },
-                "patches_applied": []
+                "patches_applied": {
+                    "Update library path for shariff latest version using npm-asset": "https://gist.githubusercontent.com/markaspot/d493f888f7fb85a23d94352f44f0d6d7/raw/3f31724a33197631da56ff4d597992f6e02641fb/gistfile1.txt"
+                }
             },
             "notification-url": "https://packages.drupal.org/8/downloads",
             "license": [
@@ -2993,6 +3527,57 @@
             "support": {
                 "source": "https://drupal.org/project/shariff",
                 "issues": "https://drupal.org/project/issues/shariff"
+            }
+        },
+        {
+            "name": "drupal/tac_lite",
+            "version": "1.4.0",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupal.org/project/tac_lite",
+                "reference": "8.x-1.4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/tac_lite-8.x-1.4.zip",
+                "reference": "8.x-1.4",
+                "shasum": "63bbd0118293107551cf657de0054ba4f161e041"
+            },
+            "require": {
+                "drupal/core": "*"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "branch-alias": {
+                    "dev-1.x": "1.x-dev"
+                },
+                "drupal": {
+                    "version": "8.x-1.4",
+                    "datestamp": "1509970385",
+                    "security-coverage": {
+                        "status": "covered",
+                        "message": "Covered by Drupal's security advisory policy"
+                    }
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0+"
+            ],
+            "authors": [
+                {
+                    "name": "Dave Cohen",
+                    "homepage": "https://www.drupal.org/user/18468"
+                },
+                {
+                    "name": "mukila",
+                    "homepage": "https://www.drupal.org/user/3223526"
+                }
+            ],
+            "description": "Simple access control based on categories.",
+            "homepage": "https://www.drupal.org/project/tac_lite",
+            "support": {
+                "source": "http://cgit.drupalcode.org/tac_lite"
             }
         },
         {
@@ -3060,6 +3645,61 @@
             "homepage": "https://www.drupal.org/project/token",
             "support": {
                 "source": "http://cgit.drupalcode.org/token"
+            }
+        },
+        {
+            "name": "drupal/twig_tweak",
+            "version": "2.0.0-rc2",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupal.org/project/twig_tweak",
+                "reference": "8.x-2.0-rc2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/twig_tweak-8.x-2.0-rc2.zip",
+                "reference": "8.x-2.0-rc2",
+                "shasum": "4eee47706d3f79d293fde2d594b12f0e17a3d591"
+            },
+            "require": {
+                "drupal/core": "~8.0"
+            },
+            "suggest": {
+                "symfony/var-dumper": "better dump() function for debugging Twig variables"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "branch-alias": {
+                    "dev-2.x": "2.x-dev"
+                },
+                "drupal": {
+                    "version": "8.x-2.0-rc2",
+                    "datestamp": "1512379985",
+                    "security-coverage": {
+                        "status": "not-covered",
+                        "message": "RC releases are not covered by Drupal security advisories."
+                    }
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0+"
+            ],
+            "authors": [
+                {
+                    "name": "Chi",
+                    "homepage": "https://www.drupal.org/user/556138"
+                }
+            ],
+            "description": "A Twig extension with some useful functions and filters for Drupal development.",
+            "homepage": "https://www.drupal.org/project/twig_tweak",
+            "keywords": [
+                "Drupal",
+                "Twig"
+            ],
+            "support": {
+                "source": "http://cgit.drupalcode.org/twig_tweak",
+                "issues": "https://www.drupal.org/project/issues/twig_tweak"
             }
         },
         {
@@ -3169,6 +3809,120 @@
             ],
             "support": {
                 "source": "http://cgit.drupalcode.org/views_bootstrap"
+            }
+        },
+        {
+            "name": "drupal/views_bulk_edit",
+            "version": "2.0.0-beta3",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupal.org/project/views_bulk_edit",
+                "reference": "8.x-2.0-beta3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/views_bulk_edit-8.x-2.0-beta3.zip",
+                "reference": "8.x-2.0-beta3",
+                "shasum": "d2d8776ec020b45471e07ba0c21815b40f36c210"
+            },
+            "require": {
+                "drupal/core": "*"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "branch-alias": {
+                    "dev-2.x": "2.x-dev"
+                },
+                "drupal": {
+                    "version": "8.x-2.0-beta3",
+                    "datestamp": "1517743384",
+                    "security-coverage": {
+                        "status": "not-covered",
+                        "message": "Beta releases are not covered by Drupal security advisories."
+                    }
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0+"
+            ],
+            "authors": [
+                {
+                    "name": "Graber",
+                    "homepage": "https://www.drupal.org/user/1599440"
+                },
+                {
+                    "name": "benjy",
+                    "homepage": "https://www.drupal.org/user/1852732"
+                }
+            ],
+            "description": "Allows bulk edition of entity field values.",
+            "homepage": "https://www.drupal.org/project/views_bulk_edit",
+            "support": {
+                "source": "http://cgit.drupalcode.org/views_bulk_edit"
+            }
+        },
+        {
+            "name": "drupal/views_bulk_operations",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupal.org/project/views_bulk_operations",
+                "reference": "8.x-1.0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/views_bulk_operations-8.x-1.0.zip",
+                "reference": "8.x-1.0",
+                "shasum": "41c7774e3b2c42ea9d9a2ceec51986baa842f99c"
+            },
+            "require": {
+                "drupal/core": "*"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "branch-alias": {
+                    "dev-1.x": "1.x-dev"
+                },
+                "drupal": {
+                    "version": "8.x-1.0",
+                    "datestamp": "1513587185",
+                    "security-coverage": {
+                        "status": "covered",
+                        "message": "Covered by Drupal's security advisory policy"
+                    }
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0+"
+            ],
+            "authors": [
+                {
+                    "name": "Graber",
+                    "homepage": "https://www.drupal.org/user/1599440"
+                },
+                {
+                    "name": "Jon Pugh",
+                    "homepage": "https://www.drupal.org/user/17028"
+                },
+                {
+                    "name": "bojanz",
+                    "homepage": "https://www.drupal.org/user/86106"
+                },
+                {
+                    "name": "infojunkie",
+                    "homepage": "https://www.drupal.org/user/48424"
+                },
+                {
+                    "name": "joelpittet",
+                    "homepage": "https://www.drupal.org/user/160302"
+                }
+            ],
+            "description": "Views Bulk Operation",
+            "homepage": "https://www.drupal.org/project/views_bulk_operations",
+            "support": {
+                "source": "http://cgit.drupalcode.org/views_bulk_operations"
             }
         },
         {
@@ -3762,122 +4516,87 @@
             "time": "2015-04-20T18:58:01+00:00"
         },
         {
-            "name": "markaspot/fa_icon_class",
-            "version": "8.1.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/markaspot/fa_icon_class.git",
-                "reference": "b647d36a6690cda5d864b5b6549555c18078d6ce"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/markaspot/fa_icon_class/zipball/b647d36a6690cda5d864b5b6549555c18078d6ce",
-                "reference": "b647d36a6690cda5d864b5b6549555c18078d6ce",
-                "shasum": ""
-            },
-            "require": {
-                "npm-asset/font-awesome": "^4.7",
-                "npm-asset/fontawesome-iconpicker": "^1.3"
-            },
-            "type": "drupal-module",
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "GPL-2.0+"
-            ],
-            "description": "Font Awesome Icon Field Widget and Formatter",
-            "homepage": "https://github.com/markaspot/fa_icon_class",
-            "keywords": [
-                "drupal",
-                "font awesome"
-            ],
-            "time": "2017-12-16T04:35:02+00:00"
-        },
-        {
-            "name": "markaspot/geolocation_nominatim",
-            "version": "dev-8.x-1.mas",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/markaspot/geolocation_nominatim.git",
-                "reference": "f94b8a2ca02b849763556e9782f8ddc0dde03d1f"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/markaspot/geolocation_nominatim/zipball/f94b8a2ca02b849763556e9782f8ddc0dde03d1f",
-                "reference": "f94b8a2ca02b849763556e9782f8ddc0dde03d1f",
-                "shasum": ""
-            },
-            "require": {
-                "npm-asset/leaflet-control-geocoder": "1.5.6",
-                "npm-asset/leaflet.locatecontrol": "0.62.0"
-            },
-            "type": "drupal-module",
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "GPL-2.0+"
-            ],
-            "description": "Temp Home for A Nominatim based geocoder and widget for geolocation.",
-            "homepage": "https://www.drupal.org/project/geolocation_nominatim",
-            "keywords": [
-                "drupal"
-            ],
-            "time": "2017-12-14T10:07:29+00:00"
-        },
-        {
             "name": "markaspot/markaspot",
-            "version": "8.3.9",
+            "version": "8.4.0-beta4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/markaspot/markaspot.git",
-                "reference": "b360237697255c30a688e66391d3fee9c79bfb24"
+                "reference": "9a1b0ca7f91da75c964d854f8fcb9f05ffd9f704"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/markaspot/markaspot/zipball/b360237697255c30a688e66391d3fee9c79bfb24",
-                "reference": "b360237697255c30a688e66391d3fee9c79bfb24",
+                "url": "https://api.github.com/repos/markaspot/markaspot/zipball/9a1b0ca7f91da75c964d854f8fcb9f05ffd9f704",
+                "reference": "9a1b0ca7f91da75c964d854f8fcb9f05ffd9f704",
                 "shasum": ""
             },
             "require": {
+                "anthonymartin/geo-location": "^1.0",
+                "bower-asset/slideout.js": "1.0.1",
                 "composer/installers": "^1.2",
                 "cweagans/composer-patches": "~1.6",
                 "drupal-composer/drupal-scaffold": "^2.2",
                 "drupal/address": "~1.0",
                 "drupal/admin_toolbar": "1.*",
+                "drupal/better_exposed_filters": "^3.0",
                 "drupal/better_normalizers": "1.x-dev",
+                "drupal/bootstrap_layouts": "^5.0",
+                "drupal/color_field": "2.x-dev",
                 "drupal/core": "8.4.*",
                 "drupal/ctools": "3.x-dev",
+                "drupal/default_content": "1.x-dev",
+                "drupal/devel": "^1.2",
                 "drupal/diff": "^1.0",
+                "drupal/entity_clone": "^1.0@alpha",
                 "drupal/entity_reference_revisions": "^1.3",
                 "drupal/features": "^3.0",
+                "drupal/field_formatter_class": "^1.0",
                 "drupal/field_group": "^1.0",
-                "drupal/form_mode_manager": "^1.2",
+                "drupal/field_permissions": "1.x-dev",
+                "drupal/form_mode_manager": "~2",
                 "drupal/geolocation": "^1.11",
+                "drupal/hide_revision_field": "^1.1",
                 "drupal/image_effects": "1.x-dev",
                 "drupal/maillog": "1.x-dev",
+                "drupal/page_manager": "^4.0@beta",
+                "drupal/panels": "^4.2",
                 "drupal/paragraphs": "^1.2",
                 "drupal/pathauto": "^1.0@RC",
+                "drupal/pbf": "^1.1",
+                "drupal/quick_node_clone": "^1.5",
                 "drupal/r4032login": "dev-1.x",
                 "drupal/radix": "3.*",
                 "drupal/restui": "^1.15",
                 "drupal/rules": "3.x-dev",
+                "drupal/search_api": "^1.5",
                 "drupal/services_api_key_auth": "1.*",
-                "drupal/shariff": ">=1.1",
+                "drupal/shariff": ">=1.3",
+                "drupal/tac_lite": "^1.4",
                 "drupal/token": "1.*",
+                "drupal/twig_tweak": "^2.0",
                 "drupal/views_bootstrap": "^3.0",
+                "drupal/views_bulk_edit": "^2",
+                "drupal/views_bulk_operations": "1.0.0",
+                "drupal/views_infinite_scroll": "^1.5",
                 "drush/drush": "~8.0",
-                "markaspot/fa_icon_class": "^8.1@RC",
-                "markaspot/markaspot_blocks": ">8@dev",
-                "markaspot/markaspot_default_content": ">8@dev",
-                "markaspot/markaspot_features": ">8@dev",
-                "markaspot/markaspot_map": ">8@dev",
-                "markaspot/markaspot_open311": "*",
-                "markaspot/markaspot_static_json": ">8@dev",
-                "markaspot/markaspot_token": ">8@dev",
-                "markaspot/markaspot_ui": ">8@dev",
-                "markaspot/markaspot_uuid": ">8@dev",
-                "markaspot/markaspot_validation": ">8@dev",
-                "markaspot/masradix": "8.3.13",
-                "markaspot/service_request": "8.3.1",
-                "oomphinc/composer-installers-extender": "^1.1"
+                "npm-asset/bootstrap-select": "^1",
+                "npm-asset/dateformat": "3.0.2",
+                "npm-asset/drmonty-leaflet-awesome-markers": "2.0.2",
+                "npm-asset/font-awesome": "4.7.0",
+                "npm-asset/fontawesome-iconpicker": "^1.3",
+                "npm-asset/iso8601-js-period": "0.2.0",
+                "npm-asset/leaflet": "~1.0.0",
+                "npm-asset/leaflet-control-geocoder": "1.5.6",
+                "npm-asset/leaflet-easybutton": "2.2.2",
+                "npm-asset/leaflet-fullscreen": "1.0.2",
+                "npm-asset/leaflet-timedimension": "^1.0",
+                "npm-asset/leaflet.heat": "0.2.0",
+                "npm-asset/leaflet.locatecontrol": "0.62.0",
+                "npm-asset/leaflet.markercluster": "1.2.0",
+                "npm-asset/pace-js": "^0.7",
+                "npm-asset/shariff": "2.0.2",
+                "npm-asset/waypoints": "4.0.1",
+                "oomphinc/composer-installers-extender": "^1.1",
+                "phayes/geophp": "dev-master"
             },
             "type": "drupal-profile",
             "extra": {
@@ -3914,18 +4633,17 @@
                     },
                     "drupal/rules": {
                         "Type definition error": "https://www.drupal.org/files/issues/rules-Fix_type_definition_error-2694685-30.patch",
-                        "TokenProcessor Array to sting warning": "https://www.drupal.org/files/issues/rules-user_has_role-2824360-2-8x3x.patch",
                         "Action send mail, implode error": "https://www.drupal.org/files/issues/system-send-email-action-fails-if-to-is-a-string-2827183-2.patch",
-                        "Send mail text field 2 textarea": "https://www.drupal.org/files/issues/453.patch"
+                        "Send mail text field 2 textarea": "https://www.drupal.org/files/issues/rules_sendmail_textarea-2724129-34.patch"
                     },
                     "drupal/shariff": {
-                        "Update library path for shariff latest version": "https://gist.githubusercontent.com/markaspot/d493f888f7fb85a23d94352f44f0d6d7/raw/9e15e8bdff4c73d0d2ca7f1fab0e626a0ce3f332/update-lib-path.patch"
+                        "Update library path for shariff latest version using npm-asset": "https://gist.githubusercontent.com/markaspot/d493f888f7fb85a23d94352f44f0d6d7/raw/3f31724a33197631da56ff4d597992f6e02641fb/gistfile1.txt"
                     }
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
-                "GPL-2.0+"
+                "GPL-2.0-or-later"
             ],
             "authors": [
                 {
@@ -3936,380 +4654,7 @@
             ],
             "description": "Installation profile of the Mark-a-Spot D8 Distribution",
             "homepage": "https://github.com/markaspot/markaspot.git",
-            "time": "2018-01-05T12:39:03+00:00"
-        },
-        {
-            "name": "markaspot/markaspot_blocks",
-            "version": "8.3.0-rc1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/markaspot/markaspot_blocks.git",
-                "reference": "3b56f39ee7ee43f15da55035e1de5441f2bbaa67"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/markaspot/markaspot_blocks/zipball/3b56f39ee7ee43f15da55035e1de5441f2bbaa67",
-                "reference": "3b56f39ee7ee43f15da55035e1de5441f2bbaa67",
-                "shasum": ""
-            },
-            "type": "drupal-module",
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "GPL-2.0+"
-            ],
-            "authors": [
-                {
-                    "name": "Holger Kreis (markaspot)",
-                    "homepage": "https://www.drupal.org/u/markaspot",
-                    "role": "Maintainer"
-                }
-            ],
-            "description": "This module provides several blocks in code for a Mark-a-Spot Installation",
-            "homepage": "https://github.com/markaspot/markaspot_blocks",
-            "keywords": [
-                "drupal"
-            ],
-            "time": "2017-03-26T06:58:50+00:00"
-        },
-        {
-            "name": "markaspot/markaspot_default_content",
-            "version": "8.3.0-rc2",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/markaspot/markaspot_default_content.git",
-                "reference": "6909197b08ecbcee2902439f5a20e6c3cc5971f1"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/markaspot/markaspot_default_content/zipball/6909197b08ecbcee2902439f5a20e6c3cc5971f1",
-                "reference": "6909197b08ecbcee2902439f5a20e6c3cc5971f1",
-                "shasum": ""
-            },
-            "type": "drupal-module",
-            "notification-url": "https://packagist.org/downloads/",
-            "authors": [
-                {
-                    "name": "Holger Kreis (markaspot)",
-                    "homepage": "https://www.drupal.org/u/markaspot",
-                    "role": "Maintainer"
-                }
-            ],
-            "description": "Provides some default content for entities of the Mark-a-Spot ditribution.",
-            "homepage": "https://github.com/markaspot/markaspot_default_content",
-            "time": "2017-05-05T18:04:52+00:00"
-        },
-        {
-            "name": "markaspot/markaspot_features",
-            "version": "8.3.0-rc2",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/markaspot/markaspot_features.git",
-                "reference": "e982cc3c6c02dd62c19a854e09f159c07ee3af2d"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/markaspot/markaspot_features/zipball/e982cc3c6c02dd62c19a854e09f159c07ee3af2d",
-                "reference": "e982cc3c6c02dd62c19a854e09f159c07ee3af2d",
-                "shasum": ""
-            },
-            "type": "drupal-module",
-            "notification-url": "https://packagist.org/downloads/",
-            "authors": [
-                {
-                    "name": "Holger Kreis (markaspot)",
-                    "homepage": "https://www.drupal.org/u/markaspot",
-                    "role": "Maintainer"
-                }
-            ],
-            "description": "Feature bundle for the Drupal 8 Mark-a-Spot Distribution",
-            "homepage": "https://github.com/markaspot/markaspot_features",
-            "time": "2017-05-14T15:18:20+00:00"
-        },
-        {
-            "name": "markaspot/markaspot_map",
-            "version": "8.3.0-rc7",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/markaspot/markaspot_map.git",
-                "reference": "64ad531251cf4cf963531695f1f6069bd2472bc6"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/markaspot/markaspot_map/zipball/64ad531251cf4cf963531695f1f6069bd2472bc6",
-                "reference": "64ad531251cf4cf963531695f1f6069bd2472bc6",
-                "shasum": ""
-            },
-            "require": {
-                "composer/installers": "~1.0",
-                "drupal/better_exposed_filters": "^3.0",
-                "drupal/search_api": "^1.5",
-                "drupal/views_infinite_scroll": "^1.5",
-                "markaspot/service_request": "^8",
-                "npm-asset/dateformat": "3.0.2",
-                "npm-asset/drmonty-leaflet-awesome-markers": "2.0.2",
-                "npm-asset/font-awesome": "4.7.0",
-                "npm-asset/iso8601-js-period": "0.2.0",
-                "npm-asset/leaflet": "~1.0.0",
-                "npm-asset/leaflet-easybutton": "2.2.2",
-                "npm-asset/leaflet-fullscreen": "1.0.2",
-                "npm-asset/leaflet-timedimension": "^1.0",
-                "npm-asset/leaflet.heat": "0.2.0",
-                "npm-asset/leaflet.markercluster": "1.2.0",
-                "npm-asset/waypoints": "4.0.1",
-                "oomphinc/composer-installers-extender": "^1.1"
-            },
-            "type": "drupal-module",
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "GPL-2.0+"
-            ],
-            "authors": [
-                {
-                    "name": "Holger Kreis (markaspot)",
-                    "homepage": "https://www.drupal.org/u/markaspot",
-                    "role": "Maintainer"
-                }
-            ],
-            "description": "Mark-a-Spot map visualisation",
-            "homepage": "https://github.com/markaspot/markaspot_map",
-            "keywords": [
-                "drupal"
-            ],
-            "time": "2017-12-14T16:56:16+00:00"
-        },
-        {
-            "name": "markaspot/markaspot_open311",
-            "version": "8.3.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/markaspot/markaspot_open311.git",
-                "reference": "bfd7f94b939e2b745e73eebea14d39e1ba6f263d"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/markaspot/markaspot_open311/zipball/bfd7f94b939e2b745e73eebea14d39e1ba6f263d",
-                "reference": "bfd7f94b939e2b745e73eebea14d39e1ba6f263d",
-                "shasum": ""
-            },
-            "require": {
-                "drupal/services_api_key_auth": "1.*"
-            },
-            "type": "drupal-module",
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "GPL-2.0+"
-            ],
-            "description": "Open311 georeport v2 server",
-            "homepage": "https://github.com/markaspot/markaspot_open311",
-            "keywords": [
-                "drupal"
-            ],
-            "time": "2017-11-05T15:01:52+00:00"
-        },
-        {
-            "name": "markaspot/markaspot_static_json",
-            "version": "8.3.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/markaspot/markaspot_static_json.git",
-                "reference": "2b0f0248b7aefe0816939ad2304874f21abf2265"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/markaspot/markaspot_static_json/zipball/2b0f0248b7aefe0816939ad2304874f21abf2265",
-                "reference": "2b0f0248b7aefe0816939ad2304874f21abf2265",
-                "shasum": ""
-            },
-            "type": "drupal-module",
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "GPL-2.0+"
-            ],
-            "description": "Generate static json for map view's heatmap and timecontroller",
-            "homepage": "https://github.com/markaspot/markaspot_static_json",
-            "keywords": [
-                "drupal"
-            ],
-            "time": "2018-01-05T13:13:36+00:00"
-        },
-        {
-            "name": "markaspot/markaspot_token",
-            "version": "8.3.0-rc1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/markaspot/markaspot_token.git",
-                "reference": "3cf2641e6bf754184746145b0e6c69cf2b8bc377"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/markaspot/markaspot_token/zipball/3cf2641e6bf754184746145b0e6c69cf2b8bc377",
-                "reference": "3cf2641e6bf754184746145b0e6c69cf2b8bc377",
-                "shasum": ""
-            },
-            "type": "drupal-module",
-            "notification-url": "https://packagist.org/downloads/",
-            "authors": [
-                {
-                    "name": "Holger Kreis (markaspot)",
-                    "homepage": "https://www.drupal.org/u/markaspot",
-                    "role": "Maintainer"
-                }
-            ],
-            "description": "Adds custom tokens",
-            "homepage": "https://github.com/markaspot/markaspot_blocks",
-            "keywords": [
-                "drupal"
-            ],
-            "time": "2017-05-13T05:36:49+00:00"
-        },
-        {
-            "name": "markaspot/markaspot_ui",
-            "version": "8.3.0-rc1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/markaspot/markaspot_ui.git",
-                "reference": "c578a9e468df19b1183cf07fdee5cdee2898f457"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/markaspot/markaspot_ui/zipball/c578a9e468df19b1183cf07fdee5cdee2898f457",
-                "reference": "c578a9e468df19b1183cf07fdee5cdee2898f457",
-                "shasum": ""
-            },
-            "type": "drupal-module",
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "GPL-2.0+"
-            ],
-            "description": "UI and Menubar for the Mark-a-Spot Distro",
-            "homepage": "https://github.com/markaspot/markaspot_ui",
-            "keywords": [
-                "drupal"
-            ],
-            "time": "2017-01-28T16:53:42+00:00"
-        },
-        {
-            "name": "markaspot/markaspot_uuid",
-            "version": "8.3.0-rc3",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/markaspot/markaspot_uuid.git",
-                "reference": "ece036ede34b6e2b832afdf11b7a892c3a73e335"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/markaspot/markaspot_uuid/zipball/ece036ede34b6e2b832afdf11b7a892c3a73e335",
-                "reference": "ece036ede34b6e2b832afdf11b7a892c3a73e335",
-                "shasum": ""
-            },
-            "type": "drupal-module",
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "GPL-2.0+"
-            ],
-            "description": "Mark-a-Spot custom UUID component",
-            "homepage": "https://github.com/markaspot/markaspot_uuid",
-            "keywords": [
-                "drupal"
-            ],
-            "time": "2017-12-14T17:09:26+00:00"
-        },
-        {
-            "name": "markaspot/markaspot_validation",
-            "version": "8.3.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/markaspot/markaspot_validation.git",
-                "reference": "8ad4d2512a85a9505cef7684c0fba8d2f781cb7f"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/markaspot/markaspot_validation/zipball/8ad4d2512a85a9505cef7684c0fba8d2f781cb7f",
-                "reference": "8ad4d2512a85a9505cef7684c0fba8d2f781cb7f",
-                "shasum": ""
-            },
-            "require": {
-                "anthonymartin/geo-location": "^1.0",
-                "phayes/geophp": "dev-master"
-            },
-            "type": "drupal-module",
-            "notification-url": "https://packagist.org/downloads/",
-            "authors": [
-                {
-                    "name": "Holger Kreis (markaspot)",
-                    "homepage": "https://www.drupal.org/u/markaspot",
-                    "role": "Maintainer"
-                }
-            ],
-            "description": "Provides some constraints for entities of the Mark-a-Spot ditribution.",
-            "homepage": "https://github.com/markaspot/markaspot_validation",
-            "time": "2017-11-08T15:04:26+00:00"
-        },
-        {
-            "name": "markaspot/masradix",
-            "version": "8.3.13",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/markaspot/masradix.git",
-                "reference": "7445bbdb9fc9b68865f4d1f2ace8b3759ec3c231"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/markaspot/masradix/zipball/7445bbdb9fc9b68865f4d1f2ace8b3759ec3c231",
-                "reference": "7445bbdb9fc9b68865f4d1f2ace8b3759ec3c231",
-                "shasum": ""
-            },
-            "require": {
-                "bower-asset/slideout.js": "1.0.1",
-                "npm-asset/pace-js": "^0.7",
-                "npm-asset/shariff": "2.0.2"
-            },
-            "type": "drupal-theme",
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "GPL-2.0+"
-            ],
-            "description": "Mark-a-Spot Radix Theme",
-            "homepage": "https://github.com/markaspot/masradix",
-            "keywords": [
-                "drupal"
-            ],
-            "time": "2017-12-14T16:59:57+00:00"
-        },
-        {
-            "name": "markaspot/service_request",
-            "version": "8.3.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/markaspot/service_request.git",
-                "reference": "229e2128b2ccbf03b71143a7510aeed1a3c87e02"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/markaspot/service_request/zipball/229e2128b2ccbf03b71143a7510aeed1a3c87e02",
-                "reference": "229e2128b2ccbf03b71143a7510aeed1a3c87e02",
-                "shasum": ""
-            },
-            "require": {
-                "drupal/color_field": "2.x-dev",
-                "drupal/default_content": "1.x-dev",
-                "drupal/field_permissions": "1.x-dev",
-                "drupal/geolocation": ">=1.5",
-                "markaspot/fa_icon_class": "^8.1",
-                "markaspot/geolocation_nominatim": "dev-8.x-1.mas"
-            },
-            "type": "drupal-module",
-            "notification-url": "https://packagist.org/downloads/",
-            "authors": [
-                {
-                    "name": "Holger Kreis (markaspot)",
-                    "homepage": "https://www.drupal.org/u/markaspot",
-                    "role": "Maintainer"
-                }
-            ],
-            "description": "Service Requests for Mark-a-Spot Open 311 Server and mapping platform",
-            "homepage": "https://github.com/markaspot/service_request",
-            "time": "2017-11-18T15:47:03+00:00"
+            "time": "2018-02-04T19:07:18+00:00"
         },
         {
             "name": "masterminds/html5",
@@ -4463,6 +4808,23 @@
                 "php"
             ],
             "time": "2018-01-25T21:31:33+00:00"
+        },
+        {
+            "name": "npm-asset/bootstrap-select",
+            "version": "1.12.4",
+            "dist": {
+                "type": "tar",
+                "url": "https://registry.npmjs.org/bootstrap-select/-/bootstrap-select-1.12.4.tgz",
+                "reference": null,
+                "shasum": null
+            },
+            "require": {
+                "npm-asset/jquery": ">=1.8"
+            },
+            "type": "npm-asset",
+            "license": [
+                "MIT"
+            ]
         },
         {
             "name": "npm-asset/dateformat",
