@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "c52f32f681111f9fc6cb86811f92ca54",
+    "content-hash": "960945ab4cbb842b5f9b76a8a76f8a27",
     "packages": [
         {
             "name": "anthonymartin/geo-location",
@@ -1792,7 +1792,7 @@
             "source": {
                 "type": "git",
                 "url": "https://git.drupal.org/project/ctools",
-                "reference": "d62c7287efd57fc79e7e18baf313c75811b6ec54"
+                "reference": "3999ab88597b5c0ee486f78a2506b49cbde2fec2"
             },
             "require": {
                 "drupal/core": "~8.0"
@@ -1842,6 +1842,10 @@
                     "role": "Maintainer"
                 },
                 {
+                    "name": "joelpittet",
+                    "homepage": "https://www.drupal.org/user/160302"
+                },
+                {
                     "name": "merlinofchaos",
                     "homepage": "https://www.drupal.org/user/26979"
                 },
@@ -1868,7 +1872,7 @@
                 "source": "http://cgit.drupalcode.org/ctools",
                 "issues": "https://www.drupal.org/project/issues/ctools"
             },
-            "time": "2017-07-11T17:46:05+00:00"
+            "time": "2018-02-05T16:23:10+00:00"
         },
         {
             "name": "drupal/default_content",
@@ -3464,17 +3468,11 @@
         },
         {
             "name": "drupal/shariff",
-            "version": "1.3.0",
+            "version": "dev-1.x",
             "source": {
                 "type": "git",
                 "url": "https://git.drupal.org/project/shariff",
-                "reference": "8.x-1.3"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/shariff-8.x-1.3.zip",
-                "reference": "8.x-1.3",
-                "shasum": "b4918fc5e3126d45f8be6a81427defce148e5002"
+                "reference": "2106f351442fc2b9cbc917d627ae21c2b5436474"
             },
             "require": {
                 "drupal/core": "~8.0"
@@ -3485,15 +3483,15 @@
                     "dev-1.x": "1.x-dev"
                 },
                 "drupal": {
-                    "version": "8.x-1.3",
-                    "datestamp": "1513343588",
+                    "version": "8.x-1.2+6-dev",
+                    "datestamp": "1512691684",
                     "security-coverage": {
-                        "status": "covered",
-                        "message": "Covered by Drupal's security advisory policy"
+                        "status": "not-covered",
+                        "message": "Dev releases are not covered by Drupal security advisories."
                     }
                 },
                 "patches_applied": {
-                    "Update library path for shariff latest version using npm-asset": "https://gist.githubusercontent.com/markaspot/d493f888f7fb85a23d94352f44f0d6d7/raw/3f31724a33197631da56ff4d597992f6e02641fb/gistfile1.txt"
+                    "Use dist path for shariff library": "https://gist.githubusercontent.com/markaspot/e36e7f6a21f47a984711c6d5ca40a543/raw/965f199c1d22623771d049f7e94f3a7105e1c45f/shariff%2520drupal%2520dist%2520path"
                 }
             },
             "notification-url": "https://packages.drupal.org/8/downloads",
@@ -3527,7 +3525,8 @@
             "support": {
                 "source": "https://drupal.org/project/shariff",
                 "issues": "https://drupal.org/project/issues/shariff"
-            }
+            },
+            "time": "2018-02-05T20:13:06+00:00"
         },
         {
             "name": "drupal/tac_lite",
@@ -4517,16 +4516,16 @@
         },
         {
             "name": "markaspot/markaspot",
-            "version": "8.4.0-beta4",
+            "version": "8.4.0-rc1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/markaspot/markaspot.git",
-                "reference": "9a1b0ca7f91da75c964d854f8fcb9f05ffd9f704"
+                "reference": "271f70e510871dca28df19894a1843194655c38c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/markaspot/markaspot/zipball/9a1b0ca7f91da75c964d854f8fcb9f05ffd9f704",
-                "reference": "9a1b0ca7f91da75c964d854f8fcb9f05ffd9f704",
+                "url": "https://api.github.com/repos/markaspot/markaspot/zipball/271f70e510871dca28df19894a1843194655c38c",
+                "reference": "271f70e510871dca28df19894a1843194655c38c",
                 "shasum": ""
             },
             "require": {
@@ -4569,7 +4568,7 @@
                 "drupal/rules": "3.x-dev",
                 "drupal/search_api": "^1.5",
                 "drupal/services_api_key_auth": "1.*",
-                "drupal/shariff": ">=1.3",
+                "drupal/shariff": "dev-1.x",
                 "drupal/tac_lite": "^1.4",
                 "drupal/token": "1.*",
                 "drupal/twig_tweak": "^2.0",
@@ -4634,10 +4633,11 @@
                     "drupal/rules": {
                         "Type definition error": "https://www.drupal.org/files/issues/rules-Fix_type_definition_error-2694685-30.patch",
                         "Action send mail, implode error": "https://www.drupal.org/files/issues/system-send-email-action-fails-if-to-is-a-string-2827183-2.patch",
-                        "Send mail text field 2 textarea": "https://www.drupal.org/files/issues/rules_sendmail_textarea-2724129-34.patch"
+                        "Send mail text field 2 textarea": "https://www.drupal.org/files/issues/rules_sendmail_textarea-2724129-34.patch",
+                        "Set New revision to false on entity save": "https://gist.githubusercontent.com/markaspot/049453ad442cea2df105b4b9b74bc331/raw/ae409ed4a23899f33911635c77e52e76960570f9/save%2520entity%2520no%2520revisions"
                     },
                     "drupal/shariff": {
-                        "Update library path for shariff latest version using npm-asset": "https://gist.githubusercontent.com/markaspot/d493f888f7fb85a23d94352f44f0d6d7/raw/3f31724a33197631da56ff4d597992f6e02641fb/gistfile1.txt"
+                        "Use dist path for shariff library": "https://gist.githubusercontent.com/markaspot/e36e7f6a21f47a984711c6d5ca40a543/raw/965f199c1d22623771d049f7e94f3a7105e1c45f/shariff%2520drupal%2520dist%2520path"
                     }
                 }
             },
@@ -4654,7 +4654,7 @@
             ],
             "description": "Installation profile of the Mark-a-Spot D8 Distribution",
             "homepage": "https://github.com/markaspot/markaspot.git",
-            "time": "2018-02-04T19:07:18+00:00"
+            "time": "2018-02-06T16:22:10+00:00"
         },
         {
             "name": "masterminds/html5",
