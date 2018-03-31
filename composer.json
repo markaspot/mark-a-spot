@@ -48,7 +48,7 @@
         "drupal/console": "^1.5",
         "drupal/core": "~8.0",
         "drush/drush": "~8.0",
-        "markaspot/markaspot": "^8.4.0-rc3",
+        "markaspot/markaspot": "^8.4.1",
         "oomphinc/composer-installers-extender": "^1.1",
         "webflo/drupal-finder": "^1.0.0",
         "webmozart/path-util": "^2.3"
