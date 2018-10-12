@@ -702,16 +702,16 @@
         },
         {
             "name": "consolidation/annotated-command",
-            "version": "2.8.5",
+            "version": "2.9.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/consolidation/annotated-command.git",
-                "reference": "1e8ff512072422b850b44aa721b5b303e4a5ebb3"
+                "reference": "851c6b7f490262748586e05bcb6fc69686519233"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/consolidation/annotated-command/zipball/1e8ff512072422b850b44aa721b5b303e4a5ebb3",
-                "reference": "1e8ff512072422b850b44aa721b5b303e4a5ebb3",
+                "url": "https://api.github.com/repos/consolidation/annotated-command/zipball/851c6b7f490262748586e05bcb6fc69686519233",
+                "reference": "851c6b7f490262748586e05bcb6fc69686519233",
                 "shasum": ""
             },
             "require": {
@@ -750,7 +750,7 @@
                 }
             ],
             "description": "Initialize Symfony Console commands from annotated command class methods.",
-            "time": "2018-08-18T23:51:49+00:00"
+            "time": "2018-09-19T03:49:30+00:00"
         },
         {
             "name": "consolidation/config",
@@ -4301,17 +4301,17 @@
         },
         {
             "name": "drupal/quick_node_clone",
-            "version": "1.10.0",
+            "version": "1.11.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupal.org/project/quick_node_clone",
-                "reference": "8.x-1.10"
+                "reference": "8.x-1.11"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/quick_node_clone-8.x-1.10.zip",
-                "reference": "8.x-1.10",
-                "shasum": "f10f31b09e8c1cf99bbca335c81f120053a9ff0d"
+                "url": "https://ftp.drupal.org/files/projects/quick_node_clone-8.x-1.11.zip",
+                "reference": "8.x-1.11",
+                "shasum": "140ea02b5a79539e3a963ecd17cfc15cf5a76142"
             },
             "require": {
                 "drupal/core": "*"
@@ -4322,8 +4322,8 @@
                     "dev-1.x": "1.x-dev"
                 },
                 "drupal": {
-                    "version": "8.x-1.10",
-                    "datestamp": "1524849184",
+                    "version": "8.x-1.11",
+                    "datestamp": "1537281784",
                     "security-coverage": {
                         "status": "not-covered",
                         "message": "Project has not opted into security advisory coverage!"
@@ -5979,16 +5979,16 @@
         },
         {
             "name": "markaspot/markaspot",
-            "version": "8.4.3",
+            "version": "8.4.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/markaspot/markaspot.git",
-                "reference": "9e464bfa17a8e4a6a6df6b09dbb396895bbc238b"
+                "reference": "4faefc1dcf6d7dcbb0bd4158fc0625579ad7f609"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/markaspot/markaspot/zipball/9e464bfa17a8e4a6a6df6b09dbb396895bbc238b",
-                "reference": "9e464bfa17a8e4a6a6df6b09dbb396895bbc238b",
+                "url": "https://api.github.com/repos/markaspot/markaspot/zipball/4faefc1dcf6d7dcbb0bd4158fc0625579ad7f609",
+                "reference": "4faefc1dcf6d7dcbb0bd4158fc0625579ad7f609",
                 "shasum": ""
             },
             "require": {
@@ -6113,7 +6113,7 @@
             ],
             "description": "Installation profile of the Mark-a-Spot D8 Distribution",
             "homepage": "https://github.com/markaspot/markaspot.git",
-            "time": "2018-09-17T17:15:34+00:00"
+            "time": "2018-09-19T02:33:42+00:00"
         },
         {
             "name": "masterminds/html5",
@@ -6219,16 +6219,16 @@
         },
         {
             "name": "nikic/php-parser",
-            "version": "v4.0.3",
+            "version": "v4.0.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nikic/PHP-Parser.git",
-                "reference": "bd088dc940a418f09cda079a9b5c7c478890fb8d"
+                "reference": "fa6ee28600d21d49b2b4e1006b48426cec8e579c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/bd088dc940a418f09cda079a9b5c7c478890fb8d",
-                "reference": "bd088dc940a418f09cda079a9b5c7c478890fb8d",
+                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/fa6ee28600d21d49b2b4e1006b48426cec8e579c",
+                "reference": "fa6ee28600d21d49b2b4e1006b48426cec8e579c",
                 "shasum": ""
             },
             "require": {
@@ -6266,7 +6266,7 @@
                 "parser",
                 "php"
             ],
-            "time": "2018-07-15T17:25:16+00:00"
+            "time": "2018-09-18T07:03:24+00:00"
         },
         {
             "name": "npm-asset/dateformat",
