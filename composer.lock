@@ -2265,7 +2265,7 @@
             "version": "dev-1.x",
             "source": {
                 "type": "git",
-                "url": "https://git.drupal.org/project/better_normalizers",
+                "url": "https://git.drupalcode.org/project/better_normalizers.git",
                 "reference": "57dc5eb4a757db7ef35eff5bdb7f6c28ade30268"
             },
             "require": {
