@@ -2374,7 +2374,7 @@
             "version": "dev-2.x",
             "source": {
                 "type": "git",
-                "url": "https://git.drupal.org/project/color_field",
+                "url": "https://git.drupalcode.org/project/color_field.git",
                 "reference": "3ea1cd565fa34436e8ed922600459ea3085d84bd"
             },
             "require": {
