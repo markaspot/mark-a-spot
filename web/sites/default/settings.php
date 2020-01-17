@@ -41,3 +41,15 @@ if (file_exists($app_root . '/' . $site_path . '/settings.platformsh.php')) {
 if (file_exists($app_root . '/' . $site_path . '/settings.local.php')) {
   include $app_root . '/' . $site_path . '/settings.local.php';
 }
+$databases['default']['default'] = array (
+  'database' => 'default',
+  'username' => 'user',
+  'password' => 'user',
+  'prefix' => '',
+  'host' => 'db',
+  'port' => '3306',
+  'namespace' => 'Drupal\\Core\\Database\\Driver\\mysql',
+  'driver' => 'mysql',
+);
+$settings['hash_salt'] = 'aLtLvObN4fKWidQm0ULP4nq-S3h2gbdF2JvFdrHx2-S60APCcr2eWcYpGF56sgbWoQExqbr1ZA';
+$settings['install_profile'] = 'markaspot';

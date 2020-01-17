@@ -26,6 +26,21 @@
         {
             "type": "package",
             "package": {
+                "name": "markaspot/leaflet-control-geocoder",
+                "version": "1.10.0",
+                "type": "drupal-library",
+                "dist": {
+                    "url": "https://github.com/markaspot/leaflet-control-geocoder/archive/v1.10.0.zip",
+                    "type": "zip"
+                },
+                "require": {
+                    "composer/installers": "~1.0"
+                }
+            }
+        },
+        {
+            "type": "package",
+            "package": {
                 "name": "heiseonline/shariff",
                 "version": "master",
                 "type": "drupal-library",
@@ -43,7 +58,7 @@
         "commerceguys/addressing": "~1.0",
         "commerceguys/intl": "~0.7",
         "commerceguys/zone": "~1.0",
-        "markaspot/markaspot": "^8.4",
+        "markaspot/markaspot": "dev-8.5.x-dev",
         "oomphinc/composer-installers-extender": "^1.1",
         "composer/installers": "^1.2",
         "cweagans/composer-patches": "^1.6.5",
