@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+fin project rm -f
+fin project start
