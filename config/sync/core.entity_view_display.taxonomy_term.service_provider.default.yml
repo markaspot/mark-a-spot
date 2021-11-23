@@ -1,0 +1,31 @@
+uuid: 58906ac1-bbfe-465d-882f-bed05d60076c
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.taxonomy_term.service_provider.field_sp_email
+    - taxonomy.vocabulary.service_provider
+  module:
+    - text
+id: taxonomy_term.service_provider.default
+targetEntityType: taxonomy_term
+bundle: service_provider
+mode: default
+content:
+  description:
+    type: text_default
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    weight: 0
+    region: content
+  field_sp_email:
+    type: basic_string
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 1
+    region: content
+hidden:
+  langcode: true
+  search_api_excerpt: true

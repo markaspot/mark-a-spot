@@ -1,0 +1,24 @@
+uuid: 262d5157-fa9a-4fec-88e2-6e2810d8d9a7
+langcode: en
+status: true
+dependencies:
+  module:
+    - field_permissions
+    - node
+third_party_settings:
+  field_permissions:
+    permission_type: public
+_core:
+  default_config_hash: null
+id: node.field_gdpr
+field_name: field_gdpr
+entity_type: node
+type: boolean
+settings: {  }
+module: core
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

@@ -1,0 +1,23 @@
+uuid: 6f08e6fd-3274-4644-9bda-78ae3e453faa
+langcode: en
+status: true
+dependencies:
+  module:
+    - system
+  theme:
+    - mas_custom
+id: mas_custom_sitebranding
+theme: mas_custom
+region: header
+weight: -7
+provider: null
+plugin: system_branding_block
+settings:
+  id: system_branding_block
+  label: 'Site branding'
+  label_display: '0'
+  provider: system
+  use_site_logo: true
+  use_site_name: false
+  use_site_slogan: false
+visibility: {  }

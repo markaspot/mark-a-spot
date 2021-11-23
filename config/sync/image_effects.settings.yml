@@ -1,0 +1,15 @@
+_core:
+  default_config_hash: null
+langcode: en
+color_selector:
+  plugin_id: html_color
+  plugin_settings:
+    html_color: {  }
+image_selector:
+  plugin_id: basic
+  plugin_settings:
+    basic: {  }
+font_selector:
+  plugin_id: basic
+  plugin_settings:
+    basic: {  }

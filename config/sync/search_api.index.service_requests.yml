@@ -1,0 +1,421 @@
+uuid: ac54ae49-5024-4e19-b6d8-29ddd67c2c20
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_address
+    - field.storage.node.body
+    - field.storage.node.field_category
+    - field.storage.node.field_e_mail
+    - field.storage.node.field_organisation
+    - field.storage.node.field_phone
+    - field.storage.node.field_status
+    - field.storage.node.field_geolocation
+    - search_api.server.database
+  module:
+    - node
+    - search_api
+  enforced: {  }
+_core:
+  default_config_hash: null
+id: service_requests
+name: service_requests
+description: ''
+read_only: false
+field_settings:
+  additional_name:
+    label: 'Address » The additional name.'
+    datasource_id: 'entity:node'
+    property_path: 'field_address:additional_name'
+    type: string
+    dependencies:
+      config:
+        - field.storage.node.field_address
+  address_line1:
+    label: 'Address » The first line of the address block.'
+    datasource_id: 'entity:node'
+    property_path: 'field_address:address_line1'
+    type: text
+    dependencies:
+      config:
+        - field.storage.node.field_address
+  address_line2:
+    label: 'Address » The second line of the address block.'
+    datasource_id: 'entity:node'
+    property_path: 'field_address:address_line2'
+    type: string
+    dependencies:
+      config:
+        - field.storage.node.field_address
+  administrative_area:
+    label: 'Address » The top-level administrative subdivision of the country.'
+    datasource_id: 'entity:node'
+    property_path: 'field_address:administrative_area'
+    type: string
+    dependencies:
+      config:
+        - field.storage.node.field_address
+  body:
+    label: Body
+    datasource_id: 'entity:node'
+    property_path: body
+    type: text
+    dependencies:
+      config:
+        - field.storage.node.body
+  changed:
+    label: Changed
+    datasource_id: 'entity:node'
+    property_path: changed
+    type: date
+    dependencies:
+      module:
+        - node
+  country_code:
+    label: 'Address » The two-letter country code.'
+    datasource_id: 'entity:node'
+    property_path: 'field_address:country_code'
+    type: string
+    dependencies:
+      config:
+        - field.storage.node.field_address
+  created:
+    label: 'Authored on'
+    datasource_id: 'entity:node'
+    property_path: created
+    type: date
+    dependencies:
+      module:
+        - node
+  dependent_locality:
+    label: 'Address » The dependent locality (i.e. neighbourhood).'
+    datasource_id: 'entity:node'
+    property_path: 'field_address:dependent_locality'
+    type: string
+    dependencies:
+      config:
+        - field.storage.node.field_address
+  family_name:
+    label: 'Address » The family name.'
+    datasource_id: 'entity:node'
+    property_path: 'field_address:family_name'
+    type: string
+    dependencies:
+      config:
+        - field.storage.node.field_address
+  field_category:
+    label: Category
+    datasource_id: 'entity:node'
+    property_path: field_category
+    type: integer
+    dependencies:
+      config:
+        - field.storage.node.field_category
+  field_e_mail:
+    label: E-Mail
+    datasource_id: 'entity:node'
+    property_path: field_e_mail
+    type: text
+    dependencies:
+      config:
+        - field.storage.node.field_e_mail
+  field_e_mail_1:
+    label: E-Mail
+    datasource_id: 'entity:node'
+    property_path: field_e_mail
+    type: string
+    dependencies:
+      config:
+        - field.storage.node.field_e_mail
+  field_organisation:
+    label: Dienststelle
+    datasource_id: 'entity:node'
+    property_path: field_organisation
+    type: integer
+    dependencies:
+      config:
+        - field.storage.node.field_organisation
+  field_phone:
+    label: Phone
+    datasource_id: 'entity:node'
+    property_path: field_phone
+    type: text
+    dependencies:
+      config:
+        - field.storage.node.field_phone
+  field_status:
+    label: Status
+    datasource_id: 'entity:node'
+    property_path: field_status
+    type: integer
+    dependencies:
+      config:
+        - field.storage.node.field_status
+  given_name:
+    label: 'Address » The given name.'
+    datasource_id: 'entity:node'
+    property_path: 'field_address:given_name'
+    type: string
+    dependencies:
+      config:
+        - field.storage.node.field_address
+  langcode:
+    label: 'Address » The language code.'
+    datasource_id: 'entity:node'
+    property_path: 'field_address:langcode'
+    type: string
+    dependencies:
+      config:
+        - field.storage.node.field_address
+  lat:
+    label: 'Location » Latitude'
+    datasource_id: 'entity:node'
+    property_path: 'field_geolocation:lat'
+    type: decimal
+    dependencies:
+      config:
+        - field.storage.node.field_geolocation
+  lng:
+    label: 'Location » Longitude'
+    datasource_id: 'entity:node'
+    property_path: 'field_geolocation:lng'
+    type: decimal
+    dependencies:
+      config:
+        - field.storage.node.field_geolocation
+  locality:
+    label: 'Address » The locality (i.e. city).'
+    datasource_id: 'entity:node'
+    property_path: 'field_address:locality'
+    type: string
+    dependencies:
+      config:
+        - field.storage.node.field_address
+  nid:
+    label: ID
+    datasource_id: 'entity:node'
+    property_path: nid
+    type: integer
+    dependencies:
+      module:
+        - node
+  node_grants:
+    label: 'Node access information'
+    property_path: search_api_node_grants
+    type: string
+    indexed_locked: true
+    type_locked: true
+    hidden: true
+  organization:
+    label: 'Address » The organization'
+    datasource_id: 'entity:node'
+    property_path: 'field_address:organization'
+    type: string
+    dependencies:
+      config:
+        - field.storage.node.field_address
+  postal_code:
+    label: 'Address » The postal code.'
+    datasource_id: 'entity:node'
+    property_path: 'field_address:postal_code'
+    type: text
+    dependencies:
+      config:
+        - field.storage.node.field_address
+  sorting_code:
+    label: 'Address » The sorting code.'
+    datasource_id: 'entity:node'
+    property_path: 'field_address:sorting_code'
+    type: string
+    dependencies:
+      config:
+        - field.storage.node.field_address
+  status:
+    label: 'Publishing status'
+    datasource_id: 'entity:node'
+    property_path: status
+    type: boolean
+    indexed_locked: true
+    type_locked: true
+    dependencies:
+      module:
+        - node
+  title:
+    label: Title
+    datasource_id: 'entity:node'
+    property_path: title
+    type: text
+    dependencies:
+      module:
+        - node
+  type:
+    label: 'Content type'
+    datasource_id: 'entity:node'
+    property_path: type
+    type: string
+    dependencies:
+      module:
+        - node
+  uid:
+    label: uid
+    datasource_id: 'entity:node'
+    property_path: uid
+    type: integer
+    indexed_locked: true
+    type_locked: true
+    dependencies:
+      module:
+        - node
+datasource_settings:
+  'entity:node':
+    bundles:
+      default: false
+      selected:
+        - service_request
+    languages:
+      default: true
+      selected: {  }
+processor_settings:
+  add_group_name: {  }
+  add_url:
+    plugin_id: add_url
+    settings: {  }
+  aggregated_field:
+    plugin_id: aggregated_field
+    settings: {  }
+  content_access:
+    weights:
+      preprocess_query: -30
+    plugin_id: content_access
+    settings:
+      weights:
+        preprocess_query: -10
+  entity_type: {  }
+  hierarchy:
+    weights:
+      preprocess_index: -45
+    fields:
+      field_category: taxonomy_term-parent
+  highlight:
+    weights:
+      postprocess_query: 0
+    prefix: '<strong>'
+    suffix: '</strong>'
+    excerpt: true
+    excerpt_always: false
+    excerpt_length: 256
+    exclude_fields: {  }
+    highlight: always
+    highlight_partial: false
+  html_filter:
+    weights:
+      preprocess_index: -15
+      preprocess_query: -15
+    all_fields: false
+    fields:
+      - additional_name
+      - address_line1
+      - address_line2
+      - administrative_area
+      - body
+      - country_code
+      - dependent_locality
+      - family_name
+      - given_name
+      - langcode
+      - locality
+      - organization
+      - postal_code
+      - sorting_code
+      - title
+      - type
+    title: true
+    alt: true
+    tags:
+      b: 2
+      h1: 5
+      h2: 3
+      h3: 2
+      strong: 2
+  ignore_character:
+    weights:
+      preprocess_index: -10
+      preprocess_query: -10
+    all_fields: false
+    fields:
+      - additional_name
+      - address_line1
+      - address_line2
+      - administrative_area
+      - body
+      - country_code
+      - dependent_locality
+      - family_name
+      - field_e_mail
+      - field_e_mail_1
+      - field_phone
+      - given_name
+      - langcode
+      - locality
+      - organization
+      - postal_code
+      - sorting_code
+      - title
+      - type
+    ignorable: "['¿¡!?,.:;]"
+    ignorable_classes:
+      - Pc
+      - Pd
+      - Pe
+      - Pf
+      - Pi
+      - Po
+      - Ps
+  ignorecase:
+    weights:
+      preprocess_index: -20
+      preprocess_query: -20
+    all_fields: false
+    fields:
+      - additional_name
+      - address_line1
+      - address_line2
+      - administrative_area
+      - body
+      - country_code
+      - dependent_locality
+      - family_name
+      - given_name
+      - langcode
+      - locality
+      - organization
+      - postal_code
+      - sorting_code
+      - title
+      - type
+  language_with_fallback: {  }
+  rendered_item:
+    plugin_id: rendered_item
+    settings: {  }
+  reverse_entity_references: {  }
+  tokenizer:
+    weights:
+      preprocess_index: -6
+      preprocess_query: -6
+    all_fields: false
+    fields:
+      - body
+      - field_e_mail
+      - title
+    spaces: ''
+    ignored: ._-
+    overlap_cjk: 1
+    minimum_word_size: '3'
+tracker_settings:
+  default:
+    indexing_order: fifo
+options:
+  cron_limit: 50
+  index_directly: true
+  track_changes_in_references: true
+server: database

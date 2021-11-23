@@ -1,0 +1,17 @@
+uuid: 7e7b7069-d9ad-4b5a-b0e4-6747492b9659
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.organisation
+    - node.type.service_request
+  module:
+    - gnode
+    - node
+id: organisation-449f6e9915493991502
+group_type: organisation
+content_plugin: 'group_node:service_request'
+plugin_config:
+  group_cardinality: 0
+  entity_cardinality: 1
+  use_creation_wizard: false

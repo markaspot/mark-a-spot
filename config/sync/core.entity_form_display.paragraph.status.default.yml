@@ -1,0 +1,42 @@
+uuid: d3a83a33-8350-4eeb-8374-b48087f25040
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.status.field_boilerplate
+    - field.field.paragraph.status.field_status_note
+    - field.field.paragraph.status.field_status_term
+    - paragraphs.paragraphs_type.status
+  module:
+    - text
+_core:
+  default_config_hash: null
+id: paragraph.status.default
+targetEntityType: paragraph
+bundle: status
+mode: default
+content:
+  field_boilerplate:
+    type: options_select
+    weight: 1
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_status_note:
+    type: text_textarea
+    weight: 2
+    region: content
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
+  field_status_term:
+    type: options_select
+    weight: 0
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+hidden:
+  created: true
+  status: true
+  uid: true

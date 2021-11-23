@@ -1,0 +1,25 @@
+uuid: 96987b77-0767-4d21-8f89-124ffe5cfad7
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_gdpr
+    - node.type.service_request
+_core:
+  default_config_hash: null
+id: node.service_request.field_gdpr
+field_name: field_gdpr
+entity_type: node
+bundle: service_request
+label: GDPR
+description: 'I agree.'
+required: true
+translatable: false
+default_value:
+  -
+    value: 0
+default_value_callback: ''
+settings:
+  on_label: An
+  off_label: Aus
+field_type: boolean

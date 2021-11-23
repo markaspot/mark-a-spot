@@ -1,0 +1,23 @@
+uuid: 3f10e65a-4348-41bd-b6dc-9ece8d89c2b8
+langcode: en
+status: true
+dependencies:
+  module:
+    - node
+  theme:
+    - olivero
+_core:
+  default_config_hash: null
+id: olivero_syndicate
+theme: olivero
+region: social
+weight: 0
+provider: null
+plugin: node_syndicate_block
+settings:
+  id: node_syndicate_block
+  label: 'RSS feed'
+  label_display: '0'
+  provider: node
+  block_count: 10
+visibility: {  }

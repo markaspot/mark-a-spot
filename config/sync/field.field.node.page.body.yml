@@ -1,0 +1,25 @@
+uuid: 8ba859ab-cbf1-4703-8de5-7a839918b90a
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.body
+    - node.type.page
+  module:
+    - text
+_core:
+  default_config_hash: null
+id: node.page.body
+field_name: body
+entity_type: node
+bundle: page
+label: Textkörper
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  display_summary: true
+  required_summary: false
+field_type: text_with_summary

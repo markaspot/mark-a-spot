@@ -1,0 +1,26 @@
+uuid: 5185be43-8467-411d-ac46-c8104e329291
+langcode: en
+status: true
+dependencies:
+  config:
+    - rest.resource.georeport_request_index_resource
+    - rest.resource.georeport_request_resource
+    - rest.resource.georeport_service_index_resource
+  module:
+    - field_permissions
+    - markaspot_open311
+    - rest
+id: api_user
+label: 'API User'
+weight: -3
+is_admin: null
+permissions:
+  - 'create field_service_provider_notes'
+  - 'restful get georeport_request_index_resource'
+  - 'restful get georeport_request_resource'
+  - 'restful get georeport_service_index_resource'
+  - 'restful post georeport_request_index_resource'
+  - 'update open311 plus all properties'
+  - 'view field_service_provider'
+  - 'view field_service_provider_notes'
+  - 'view field_sp_attachment'

@@ -1,0 +1,12 @@
+uuid: 25052f43-78ef-4872-b66e-2fb553df1e37
+langcode: en
+status: true
+dependencies: {  }
+id: jurisdiction
+label: Jurisdiction
+description: "Use this group type for hierarchical access authorisation of content.\r\n"
+new_revision: true
+creator_membership: true
+creator_wizard: true
+creator_roles:
+  - jurisdiction-admin

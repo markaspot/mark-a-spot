@@ -1,0 +1,7 @@
+_core:
+  default_config_hash: null
+langcode: en
+metadata_cache:
+  enabled: true
+  expiration: 172800
+  disallowed_paths: {  }

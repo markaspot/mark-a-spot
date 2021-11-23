@@ -1,0 +1,14 @@
+uuid: 345761ab-66f6-4110-b042-c79dfde8c4c8
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.organisation
+id: organisation-admin
+label: Admin
+weight: -8
+admin: true
+scope: individual
+global_role: null
+group_type: organisation
+permissions: {  }

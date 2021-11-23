@@ -1,0 +1,21 @@
+uuid: 73c1f047-4442-48e7-9071-accff9276e44
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_e_mail
+    - node.type.service_request
+_core:
+  default_config_hash: null
+id: node.service_request.field_e_mail
+field_name: field_e_mail
+entity_type: node
+bundle: service_request
+label: E-Mail
+description: 'If you enter a valid e-mail address, we will inform you on updates.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: email

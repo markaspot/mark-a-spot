@@ -1,0 +1,120 @@
+uuid: 89c8d0b7-6a4f-4e33-96f3-7a64b7ced85e
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.node.article.body
+    - field.field.node.boilerplate.body
+    - field.field.node.page.body
+    - field.field.node.service_request.body
+    - field.field.node.service_request.field_address
+    - field.field.node.service_request.field_category
+    - field.field.node.service_request.field_organisation
+    - field.storage.node.body
+    - field.storage.node.field_address
+    - field.storage.node.field_category
+    - field.storage.node.field_organisation
+    - node.type.service_request
+  module:
+    - eca_content
+    - eca_user
+    - group_action
+id: process_apply_group
+modeller: bpmn_io
+label: 'Apply Groups'
+version: ''
+weight: null
+events:
+  Create_Service_Request:
+    plugin: 'content_entity:insert'
+    label: 'Create Service Request'
+    configuration:
+      type: 'node service_request'
+    successors:
+      -
+        id: Activy_Set_Current_User
+        condition: ''
+conditions: {  }
+gateways: {  }
+actions:
+  Activy_Set_Current_User:
+    plugin: eca_switch_account
+    label: 'Set Current User'
+    configuration:
+      user_id: '1'
+    successors:
+      -
+        id: Activity_1yd51fx
+        condition: ''
+  Activity_1yd51fx:
+    plugin: eca_token_load_entity
+    label: 'Load Service Request'
+    configuration:
+      token_name: service_request
+      from: current
+      entity_type: _none
+      entity_id: ''
+      revision_id: ''
+      properties: ''
+      langcode: _interface
+      latest_revision: false
+      unchanged: false
+      object: ''
+    successors:
+      -
+        id: Activity_Apply_Group
+        condition: ''
+  Activity_Apply_Group:
+    plugin: group_add_content
+    label: 'Apply Group'
+    configuration:
+      replace_tokens: false
+      values: {  }
+      operation: create
+      content_plugin: 'group_node:service_request'
+      group_id: '[node:field_category:entity:field_category_gid]'
+      entity_id: ''
+      add_method: skip_existing
+      object: ''
+    successors:
+      -
+        id: Activiy_save_group
+        condition: ''
+  Activiy_save_group:
+    plugin: eca_set_field_value
+    label: 'Save Group'
+    configuration:
+      field_name: field_organisation.target_id
+      field_value: '[node:field_category:entity:field_category_gid]'
+      method: 'set:clear'
+      strip_tags: false
+      trim: false
+      save_entity: true
+      object: node
+    successors:
+      -
+        id: Activity_notify_group
+        condition: ''
+  Activity_notify_group:
+    plugin: action_send_email_action
+    label: 'Notify Group'
+    configuration:
+      replace_tokens: false
+      recipient: '[node:field_organisation:entity:field_head_organisation_e_mail]'
+      subject: 'A request #[node:request_id] for the category [node:field_category]'
+      message: |-
+        Hello,
+        a citizen request has been assigned to your organization:
+        
+        Category: [node:title]
+        Detailed Description: [node:body]
+        Location of the request: [node:field_address]
+        
+        To process the request, please click on the following link:
+        [site:url]/[node:nid]/edit         
+        
+        Not registered yet today? [site:url]/[node:nid]/user 
+        
+        --
+        This is an automatically generated email and cannot be replied to.
+successors: {  }

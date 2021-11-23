@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ruleset name="phpcs">
+    <description>PHP Code Sniffer configuration</description>
+    <!-- file>web/modules/custom</file -->
+    <file>web/profiles/contrib</file>
+    <arg name="extensions"
+         value="php,
+                module,
+                inc,
+                install,
+                test,
+                profile,
+                theme,
+                css,
+                info,
+                txt,
+                md,
+                yml" />
+    <config name="drupal_core_version"
+            value="9" />
+    <rule ref="vendor/drupal/coder/coder_sniffer/Drupal" />
+    <rule ref="vendor/drupal/coder/coder_sniffer/DrupalPractice"/>
+</ruleset>

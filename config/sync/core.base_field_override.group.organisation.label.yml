@@ -1,0 +1,18 @@
+uuid: bca74222-edf6-4cd6-b9b5-79d721b412cc
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.organisation
+id: group.organisation.label
+field_name: label
+entity_type: group
+bundle: organisation
+label: Name
+description: ''
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

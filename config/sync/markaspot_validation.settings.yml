@@ -1,0 +1,15 @@
+locality:
+  - Mascity
+unit: meters
+radius: '10'
+days: '21'
+wkt: 'POLYGON((-74.379155587496 40.280844412504,-73.480844412504 40.280844412504,-73.480844412504 41.179155587496,-74.379155587496 41.179155587496,-74.379155587496 40.280844412504))'
+_core:
+  default_config_hash: null
+langcode: en
+hint: 1
+duplicate_check: 1
+treshold: '1'
+defaultLocation: 1
+multiple_reports: 1
+max_count: '2'

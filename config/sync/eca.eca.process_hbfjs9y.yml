@@ -1,0 +1,53 @@
+uuid: 95fda2ba-d4b9-4c5f-a7f5-d70153c14104
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_form_display.node.service_request.management
+    - node.type.service_request
+  module:
+    - eca_content
+    - eca_user
+id: process_hbfjs9y
+modeller: bpmn_io
+label: noname
+version: ''
+weight: null
+events:
+  Event_0n923i7:
+    plugin: 'content_entity:prepareform'
+    label: 'Prepare Form'
+    configuration:
+      type: 'node service_request'
+    successors:
+      -
+        id: Gateway_1j8m4k3
+        condition: Flow_16utpm6
+      -
+        id: Gateway_1j8m4k3
+        condition: Flow_1hfex0v
+conditions:
+  Flow_16utpm6:
+    plugin: eca_current_user_role
+    configuration:
+      negate: false
+      role: moderator
+  Flow_1hfex0v:
+    plugin: eca_current_user_role
+    configuration:
+      negate: false
+      role: authenticated
+gateways:
+  Gateway_1j8m4k3:
+    type: 0
+    successors:
+      -
+        id: Activity_1k65tc0
+        condition: ''
+actions:
+  Activity_1k65tc0:
+    plugin: eca_content_set_form_display
+    label: Activity_1k65tc0
+    configuration:
+      display_mode: management
+    successors: {  }

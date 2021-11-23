@@ -1,0 +1,29 @@
+uuid: 704afbf0-8c4b-43c6-ab91-874588a18af9
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_service_provider
+    - node.type.service_request
+    - taxonomy.vocabulary.service_provider
+id: node.service_request.field_service_provider
+field_name: field_service_provider
+entity_type: node
+bundle: service_request
+label: 'Service Provider'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:taxonomy_term'
+  handler_settings:
+    target_bundles:
+      service_provider: service_provider
+    sort:
+      field: name
+      direction: asc
+    auto_create: false
+    auto_create_bundle: ''
+field_type: entity_reference

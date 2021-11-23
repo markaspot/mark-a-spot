@@ -1,0 +1,27 @@
+uuid: 2b8e97e5-1356-46ef-aaba-dc45f685f42b
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_sp_attachment
+    - node.type.service_request
+  module:
+    - file
+id: node.service_request.field_sp_attachment
+field_name: field_sp_attachment
+entity_type: node
+bundle: service_request
+label: Attachments
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:file'
+  handler_settings: {  }
+  file_directory: '[date:custom:Y]-[date:custom:m]-sp-files'
+  file_extensions: 'pdf xls doc xlsx docx'
+  max_filesize: ''
+  description_field: false
+field_type: file

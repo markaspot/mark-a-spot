@@ -1,0 +1,29 @@
+uuid: 64adb949-1874-4dcd-a132-846cf8a4df7c
+langcode: en
+status: true
+dependencies:
+  module:
+    - markaspot_open311
+    - serialization
+    - services_api_key_auth
+    - user
+_core:
+  default_config_hash: null
+id: georeport_request_index_resource
+plugin_id: georeport_request_index_resource
+granularity: method
+configuration:
+  GET:
+    supported_formats:
+      - xml
+      - json
+    supported_auth:
+      - api_key_auth
+      - cookie
+  POST:
+    supported_formats:
+      - xml
+      - form
+      - json
+    supported_auth:
+      - api_key_auth

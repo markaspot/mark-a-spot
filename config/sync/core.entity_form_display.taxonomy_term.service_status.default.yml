@@ -1,0 +1,70 @@
+uuid: 9cbf1f32-16f2-4994-873c-4ed24a9a2a45
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.taxonomy_term.service_status.field_status_hex
+    - field.field.taxonomy_term.service_status.field_status_icon
+    - taxonomy.vocabulary.service_status
+  module:
+    - color_field
+    - fa_icon_class
+    - path
+    - text
+_core:
+  default_config_hash: null
+id: taxonomy_term.service_status.default
+targetEntityType: taxonomy_term
+bundle: service_status
+mode: default
+content:
+  description:
+    type: text_textarea
+    weight: 1
+    region: content
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
+  field_status_hex:
+    type: color_field_widget_box
+    weight: 4
+    region: content
+    settings:
+      default_colors: '#FF0000,#8B0000,#FFA500,#008000,#006400,#0000FF,#00008B,#A020F0,#871F78,#5F9EA0,#ADD8E6,#D3D3D3,#808080,#000000,#F5F5DC,#FFFFFF'
+    third_party_settings: {  }
+  field_status_icon:
+    type: fa_icon_class
+    weight: 5
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  langcode:
+    type: language_select
+    weight: 2
+    region: content
+    settings:
+      include_locked: true
+    third_party_settings: {  }
+  name:
+    type: string_textfield
+    weight: 0
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  path:
+    type: path
+    weight: 2
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  status:
+    type: boolean_checkbox
+    weight: 100
+    region: content
+    settings:
+      display_label: true
+    third_party_settings: {  }
+hidden: {  }

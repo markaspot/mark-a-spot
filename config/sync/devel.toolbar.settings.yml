@@ -1,0 +1,13 @@
+_core:
+  default_config_hash: null
+langcode: en
+toolbar_items:
+  - devel.cache_clear
+  - devel.container_info.service
+  - devel.route_info.item
+  - devel.admin_settings_link
+  - devel.phpinfo
+  - devel.menu_rebuild
+  - devel.reinstall
+  - devel.route_info
+  - devel.run_cron

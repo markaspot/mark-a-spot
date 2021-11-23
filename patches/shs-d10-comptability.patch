@@ -1,0 +1,36 @@
+diff --git a/modules/shs_chosen/shs_chosen.info.yml b/modules/shs_chosen/shs_chosen.info.yml
+index 06dd8ad..d543915 100644
+--- a/modules/shs_chosen/shs_chosen.info.yml
++++ b/modules/shs_chosen/shs_chosen.info.yml
+@@ -4,5 +4,5 @@ description: 'Integrates Chosen with Simple hierarchical select.'
+ dependencies:
+   - chosen:chosen
+   - shs:shs
+-core_version_requirement: ^8.8 || ^9
++core_version_requirement: ^9 || ^10
+ package: User interface
+diff --git a/shs.info.yml b/shs.info.yml
+index 7984253..83ec93a 100644
+--- a/shs.info.yml
++++ b/shs.info.yml
+@@ -4,5 +4,5 @@ description: 'Creates a simple hierarchical select widget for taxonomy fields.'
+ dependencies:
+   - drupal:system (>=8.6)
+   - drupal:taxonomy
+-core_version_requirement: ^8.8 || ^9
++core_version_requirement: ^9 || ^10
+ package: User interface
+diff --git a/shs.libraries.yml b/shs.libraries.yml
+index d48af21..62c2076 100644
+--- a/shs.libraries.yml
++++ b/shs.libraries.yml
+@@ -21,8 +21,7 @@ shs.form:
+     - core/jquery
+     - core/drupal
+     - core/drupalSettings
+-    - core/backbone
+-    - core/jquery.once
++    - core/once
+ 
+ shs.formatter:
+   version: VERSION

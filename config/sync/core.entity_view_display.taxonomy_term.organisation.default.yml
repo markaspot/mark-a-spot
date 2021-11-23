@@ -1,0 +1,44 @@
+uuid: 52626dc2-8ff3-4e62-9438-06ca08e1e608
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.taxonomy_term.organisation.field_head_organisation_e_mail
+    - field.field.taxonomy_term.organisation.field_organisation_e_mail
+    - taxonomy.vocabulary.organisation
+  module:
+    - text
+_core:
+  default_config_hash: null
+id: taxonomy_term.organisation.default
+targetEntityType: taxonomy_term
+bundle: organisation
+mode: default
+content:
+  description:
+    type: text_default
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    weight: 0
+    region: content
+  field_head_organisation_e_mail:
+    type: basic_string
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 2
+    region: content
+  field_organisation_e_mail:
+    type: basic_string
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 1
+    region: content
+hidden:
+  entity_print_view_epub: true
+  entity_print_view_pdf: true
+  entity_print_view_word_docx: true
+  langcode: true
+  search_api_excerpt: true

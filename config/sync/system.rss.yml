@@ -1,0 +1,8 @@
+_core:
+  default_config_hash: null
+langcode: en
+items:
+  view_mode: fulltext
+  limit: 20
+channel:
+  description: "Service Request. "

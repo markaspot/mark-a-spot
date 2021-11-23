@@ -1,0 +1,41 @@
+uuid: 7b7f0fbd-2730-43f1-9fca-d09751800f29
+langcode: en
+status: true
+dependencies:
+  module:
+    - field_permissions
+    - file
+    - image
+    - node
+  enforced:
+    module:
+      - service_request
+third_party_settings:
+  field_permissions:
+    permission_type: public
+_core:
+  default_config_hash: null
+id: node.field_request_image
+field_name: field_request_image
+entity_type: node
+type: image
+settings:
+  target_type: file
+  display_field: false
+  display_default: false
+  uri_scheme: public
+  default_image:
+    uuid: 28092016578ed0b641-35fa-18405-a389-0b64135fa87e53ae389afc372908628092016
+    alt: 'No image uploaded'
+    title: ''
+    width: 900
+    height: 450
+module: image
+locked: false
+cardinality: 1
+translatable: true
+indexes:
+  target_id:
+    - target_id
+persist_with_no_fields: false
+custom_storage: false

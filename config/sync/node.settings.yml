@@ -1,0 +1,4 @@
+_core:
+  default_config_hash: null
+langcode: en
+use_admin_theme: true

@@ -1,0 +1,12 @@
+uuid: 11e3836b-acd0-4e0e-92a7-92585b2fd2d3
+langcode: en
+status: true
+dependencies: {  }
+id: organisation
+label: Organisation
+description: 'Use this group type for non-hierarchical access authorisation of content.'
+new_revision: true
+creator_membership: true
+creator_wizard: true
+creator_roles:
+  - organisation-admin

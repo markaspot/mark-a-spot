@@ -1,0 +1,42 @@
+uuid: 1fbd0544-0c82-4436-8490-16cf89d46487
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.status.field_boilerplate
+    - field.field.paragraph.status.field_status_note
+    - field.field.paragraph.status.field_status_term
+    - paragraphs.paragraphs_type.status
+  module:
+    - field_formatter_class
+    - text
+_core:
+  default_config_hash: null
+id: paragraph.status.default
+targetEntityType: paragraph
+bundle: status
+mode: default
+content:
+  field_status_note:
+    type: text_default
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    weight: 0
+    region: content
+  field_status_term:
+    type: entity_reference_label
+    label: hidden
+    settings:
+      link: false
+    third_party_settings:
+      field_formatter_class:
+        class: 'col-[paragraph:field_status_term:entity:field_status_hex] badge label'
+    weight: 1
+    region: content
+hidden:
+  entity_print_view_epub: true
+  entity_print_view_pdf: true
+  entity_print_view_word_docx: true
+  field_boilerplate: true
+  search_api_excerpt: true

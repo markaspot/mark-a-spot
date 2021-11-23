@@ -1,0 +1,33 @@
+uuid: 62123665-427c-4fe3-ae02-7030caa0e8f1
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_status_term
+    - paragraphs.paragraphs_type.status
+    - taxonomy.vocabulary.service_status
+_core:
+  default_config_hash: null
+id: paragraph.status.field_status_term
+field_name: field_status_term
+entity_type: paragraph
+bundle: status
+label: Status
+description: 'Den Status ändern - erscheint öffentlich.'
+required: false
+translatable: false
+default_value:
+  -
+    target_uuid: 150520163425c8221-9e89-18527-82c6-c82219e89085f3e82c64a8411890c15052016
+    default_value_callback: ''
+default_value_callback: ''
+settings:
+  handler: 'default:taxonomy_term'
+  handler_settings:
+    target_bundles:
+      service_status: service_status
+    sort:
+      field: _none
+    auto_create: false
+    auto_create_bundle: ''
+field_type: entity_reference

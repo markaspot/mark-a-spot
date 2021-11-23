@@ -1,0 +1,23 @@
+uuid: 8ccda1c4-7202-4d5c-ac32-05c636f65fbd
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_feedback
+    - node.type.service_request
+  module:
+    - text
+_core:
+  default_config_hash: null
+id: node.service_request.field_feedback
+field_name: field_feedback
+entity_type: node
+bundle: service_request
+label: 'Additional Feedback'
+description: 'This is additional citizen feedback which has been collected via E-Mail.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: text_long

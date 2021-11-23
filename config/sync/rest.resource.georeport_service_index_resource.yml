@@ -1,0 +1,20 @@
+uuid: 5247be66-2812-4c46-90a1-d90329a2f8bc
+langcode: en
+status: true
+dependencies:
+  module:
+    - markaspot_open311
+    - serialization
+    - user
+_core:
+  default_config_hash: null
+id: georeport_service_index_resource
+plugin_id: georeport_service_index_resource
+granularity: method
+configuration:
+  GET:
+    supported_formats:
+      - xml
+      - json
+    supported_auth:
+      - cookie

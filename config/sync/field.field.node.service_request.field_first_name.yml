@@ -1,0 +1,19 @@
+uuid: d91c3504-86d3-4e67-b1c8-602719c1fd6e
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_first_name
+    - node.type.service_request
+id: node.service_request.field_first_name
+field_name: field_first_name
+entity_type: node
+bundle: service_request
+label: Prename
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

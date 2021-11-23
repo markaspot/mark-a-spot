@@ -1,0 +1,12 @@
+_core:
+  default_config_hash: null
+langcode: en
+first_day: 1
+country:
+  default: DE
+timezone:
+  default: Europe/Berlin
+  user:
+    configurable: false
+    default: 0
+    warn: false

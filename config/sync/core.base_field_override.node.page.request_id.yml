@@ -1,0 +1,18 @@
+uuid: 36e1b46d-fd06-4b84-b71d-34df5be517f4
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.page
+id: node.page.request_id
+field_name: request_id
+entity_type: node
+bundle: page
+label: 'Request ID'
+description: 'This is a custom request-id'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

@@ -1,0 +1,60 @@
+uuid: 9646d36c-d413-4f2d-a5a2-4ed2d10c3039
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.taxonomy_term.service_provider.field_sp_email
+    - taxonomy.vocabulary.service_provider
+  module:
+    - path
+    - text
+id: taxonomy_term.service_provider.default
+targetEntityType: taxonomy_term
+bundle: service_provider
+mode: default
+content:
+  description:
+    type: text_textarea
+    weight: 2
+    region: content
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
+  field_sp_email:
+    type: email_default
+    weight: 1
+    region: content
+    settings:
+      placeholder: ''
+      size: 60
+    third_party_settings: {  }
+  langcode:
+    type: language_select
+    weight: 3
+    region: content
+    settings:
+      include_locked: true
+    third_party_settings: {  }
+  name:
+    type: string_textfield
+    weight: 0
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  path:
+    type: path
+    weight: 4
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  status:
+    type: boolean_checkbox
+    weight: 5
+    region: content
+    settings:
+      display_label: true
+    third_party_settings: {  }
+hidden: {  }

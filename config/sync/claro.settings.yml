@@ -1,0 +1,12 @@
+favicon:
+  use_default: true
+features:
+  comment_user_picture: true
+  comment_user_verification: false
+  favicon: true
+  node_user_picture: true
+logo:
+  use_default: true
+third_party_settings:
+  shortcut:
+    module_link: true

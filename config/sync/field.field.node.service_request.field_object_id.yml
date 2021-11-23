@@ -1,0 +1,19 @@
+uuid: 1926251c-8505-442f-b79b-6ae31c8ef7b0
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_object_id
+    - node.type.service_request
+id: node.service_request.field_object_id
+field_name: field_object_id
+entity_type: node
+bundle: service_request
+label: 'Object ID'
+description: 'Auf vielen Einrichtungen und Objekten befindet sich eine Nummer (z.B. auf Papierkörben, Laternen, Parkscheinautomaten, Spielplätzen). Tragen Sie hier diese Nummern ein.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

@@ -1,0 +1,36 @@
+uuid: 5765a97f-dc47-40f0-ab1c-51a845c0b5ba
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.group.jurisdiction.field_head_organisation_e_mail
+    - group.type.jurisdiction
+id: group.jurisdiction.default
+targetEntityType: group
+bundle: jurisdiction
+mode: default
+content:
+  field_head_organisation_e_mail:
+    type: basic_string
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: -4
+    region: content
+  label:
+    type: string
+    label: hidden
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: -5
+    region: content
+hidden:
+  changed: true
+  created: true
+  entity_print_view_epub: true
+  entity_print_view_pdf: true
+  entity_print_view_word_docx: true
+  langcode: true
+  search_api_excerpt: true
+  uid: true

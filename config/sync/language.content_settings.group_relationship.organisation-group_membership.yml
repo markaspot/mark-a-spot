@@ -1,0 +1,18 @@
+uuid: 601e6666-e064-4f97-b20a-74d8731bc815
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.relationship_type.organisation-group_membership
+  module:
+    - content_translation
+third_party_settings:
+  content_translation:
+    enabled: false
+    bundle_settings:
+      untranslatable_fields_hide: '0'
+id: group_relationship.organisation-group_membership
+target_entity_type_id: group_relationship
+target_bundle: organisation-group_membership
+default_langcode: site_default
+language_alterable: false

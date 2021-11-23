@@ -1,0 +1,18 @@
+uuid: 2e078c9c-3e53-412e-828e-88f69e013706
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.relationship_type.jurisdiction-group_membership
+id: group_relationship.jurisdiction-group_membership.created
+field_name: created
+entity_type: group_relationship
+bundle: jurisdiction-group_membership
+label: 'Created on'
+description: 'The time that the group relationship was created.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: created

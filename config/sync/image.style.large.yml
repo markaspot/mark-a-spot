@@ -1,0 +1,25 @@
+uuid: 3420b87f-e8c5-42ef-86e0-98fb672b025d
+langcode: en
+status: true
+dependencies:
+  module:
+    - image_effects
+name: large
+label: Large
+effects:
+  c5a48a26-589e-4cf4-8df6-c7a93b1be855:
+    uuid: c5a48a26-589e-4cf4-8df6-c7a93b1be855
+    id: image_effects_scale_and_smart_crop
+    weight: -9
+    data:
+      width: '480'
+      height: '480'
+      upscale: false
+      simulate: false
+      algorithm: entropy_slice
+  bc8cf16b-bb74-4584-8005-b1eec1366f97:
+    uuid: bc8cf16b-bb74-4584-8005-b1eec1366f97
+    id: image_effects_auto_orient
+    weight: -10
+    data:
+      scan_exif: true

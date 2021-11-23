@@ -1,0 +1,20 @@
+uuid: 1e58ed65-329f-4d82-a610-33544df6074b
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.boilerplate
+_core:
+  default_config_hash: null
+id: node.boilerplate.title
+field_name: title
+entity_type: node
+bundle: boilerplate
+label: Identifier
+description: ''
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

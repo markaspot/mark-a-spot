@@ -1,0 +1,306 @@
+uuid: 9901c4d0-f9ec-41a6-90aa-3e4b412c1460
+langcode: en
+status: true
+dependencies:
+  config:
+    - eca.eca.process_tunr6d6
+id: process_tunr6d6
+label: 'Notify Status'
+tags:
+  - untagged
+documentation: ''
+filename: ''
+modeldata: |
+  <?xml version="1.0" encoding="UTF-8"?>
+  <bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:qa="http://some-company/schema/bpmn/qa" id="sample-diagram" targetNamespace="http://bpmn.io/schema/bpmn" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd">
+    <bpmn2:process id="Process_tUnr6D6" name="Notify Status" isExecutable="true" camunda:versionTag="1.0">
+      <bpmn2:startEvent id="Event_04bz8yl" name="Update Service Request" camunda:modelerTemplate="org.drupal.event.content_entity:update">
+        <bpmn2:extensionElements>
+          <camunda:properties>
+            <camunda:property name="pluginid" value="content_entity:update" />
+          </camunda:properties>
+          <camunda:field name="type">
+            <camunda:string>node service_request</camunda:string>
+          </camunda:field>
+        </bpmn2:extensionElements>
+        <bpmn2:outgoing>Flow_1bodg9x</bpmn2:outgoing>
+      </bpmn2:startEvent>
+      <bpmn2:exclusiveGateway id="Gateway_02ldgot">
+        <bpmn2:incoming>Flow_1bodg9x</bpmn2:incoming>
+        <bpmn2:outgoing>Flow_0ktblta</bpmn2:outgoing>
+      </bpmn2:exclusiveGateway>
+      <bpmn2:sequenceFlow id="Flow_1bodg9x" camunda:modelerTemplate="org.drupal.condition.eca_entity_field_value_changed" sourceRef="Event_04bz8yl" targetRef="Gateway_02ldgot">
+        <bpmn2:extensionElements>
+          <camunda:properties>
+            <camunda:property name="pluginid" value="eca_entity_field_value_changed" />
+          </camunda:properties>
+          <camunda:field name="field_name">
+            <camunda:string>field_status.target_id</camunda:string>
+          </camunda:field>
+          <camunda:field name="negate">
+            <camunda:string></camunda:string>
+          </camunda:field>
+          <camunda:field name="entity">
+            <camunda:string></camunda:string>
+          </camunda:field>
+        </bpmn2:extensionElements>
+      </bpmn2:sequenceFlow>
+      <bpmn2:task id="Activity_1u8e4au" name="Send E-Mail Closed" camunda:modelerTemplate="org.drupal.action.action_send_email_action">
+        <bpmn2:extensionElements>
+          <camunda:properties>
+            <camunda:property name="pluginid" value="action_send_email_action" />
+          </camunda:properties>
+          <camunda:field name="recipient">
+            <camunda:string>[node:field_e_mail:value]</camunda:string>
+          </camunda:field>
+          <camunda:field name="subject">
+            <camunda:string>Resolved! Your request #[node:request_id]</camunda:string>
+          </camunda:field>
+          <camunda:field name="message">
+            <camunda:string>Good day!
+
+  Your request with number #[node:request_id] has been received, and the handling has been assigned to the responsible department.
+  Please click on the following link to view additional information about your request at any time:
+
+    [site:url][node:url:path]
+            </camunda:string>
+
+          </camunda:field>
+          <camunda:field name="replace_tokens">
+            <camunda:string></camunda:string>
+          </camunda:field>
+        </bpmn2:extensionElements>
+        <bpmn2:incoming>Flow_0kbs1sz</bpmn2:incoming>
+      </bpmn2:task>
+      <bpmn2:sequenceFlow id="Flow_0kbs1sz" name="Is Status Closed?" camunda:modelerTemplate="org.drupal.condition.eca_entity_field_value" sourceRef="Gateway_0nyfe5b" targetRef="Activity_1u8e4au">
+        <bpmn2:extensionElements>
+          <camunda:properties>
+            <camunda:property name="pluginid" value="eca_entity_field_value" />
+          </camunda:properties>
+          <camunda:field name="field_name">
+            <camunda:string>field_status.target_id</camunda:string>
+          </camunda:field>
+          <camunda:field name="operator">
+            <camunda:string>equal</camunda:string>
+          </camunda:field>
+          <camunda:field name="expected_value">
+            <camunda:string>5</camunda:string>
+          </camunda:field>
+          <camunda:field name="type">
+            <camunda:string>value</camunda:string>
+          </camunda:field>
+          <camunda:field name="case">
+            <camunda:string></camunda:string>
+          </camunda:field>
+          <camunda:field name="negate">
+            <camunda:string></camunda:string>
+          </camunda:field>
+          <camunda:field name="entity">
+            <camunda:string></camunda:string>
+          </camunda:field>
+        </bpmn2:extensionElements>
+      </bpmn2:sequenceFlow>
+      <bpmn2:sequenceFlow id="Flow_0ktblta" camunda:modelerTemplate="org.drupal.condition.eca_entity_field_value" sourceRef="Gateway_02ldgot" targetRef="Gateway_0nyfe5b">
+        <bpmn2:extensionElements>
+          <camunda:properties>
+            <camunda:property name="pluginid" value="eca_entity_field_value" />
+          </camunda:properties>
+          <camunda:field name="field_name">
+            <camunda:string>field_notification.value</camunda:string>
+          </camunda:field>
+          <camunda:field name="operator">
+            <camunda:string>equal</camunda:string>
+          </camunda:field>
+          <camunda:field name="expected_value">
+            <camunda:string>1</camunda:string>
+          </camunda:field>
+          <camunda:field name="type">
+            <camunda:string>value</camunda:string>
+          </camunda:field>
+          <camunda:field name="case">
+            <camunda:string></camunda:string>
+          </camunda:field>
+          <camunda:field name="negate">
+            <camunda:string></camunda:string>
+          </camunda:field>
+          <camunda:field name="entity">
+            <camunda:string></camunda:string>
+          </camunda:field>
+        </bpmn2:extensionElements>
+      </bpmn2:sequenceFlow>
+      <bpmn2:exclusiveGateway id="Gateway_0nyfe5b">
+        <bpmn2:incoming>Flow_0ktblta</bpmn2:incoming>
+        <bpmn2:outgoing>Flow_0kbs1sz</bpmn2:outgoing>
+        <bpmn2:outgoing>Flow_0bs2byv</bpmn2:outgoing>
+        <bpmn2:outgoing>Flow_1joltme</bpmn2:outgoing>
+      </bpmn2:exclusiveGateway>
+      <bpmn2:task id="Activity_1rxwbas" name="Send E-Mail" camunda:modelerTemplate="org.drupal.action.action_send_email_action">
+        <bpmn2:extensionElements>
+          <camunda:properties>
+            <camunda:property name="pluginid" value="action_send_email_action" />
+          </camunda:properties>
+          <camunda:field name="recipient">
+            <camunda:string>[node:field_e_mail:value]</camunda:string>
+          </camunda:field>
+          <camunda:field name="subject">
+            <camunda:string>Your request #[node:request_id]. Unfortunately, we are not responsible for it..</camunda:string>
+          </camunda:field>
+          <camunda:field name="message">
+            <camunda:string>
+              Good day!
+
+              Your request has been reviewed and unfortunately cannot be further processed. The city of Mascity is not responsible for this type of request.
+
+              Please click on the following link to view additional information about your request at any time:
+
+              [site:url][node:url:path]
+
+              Please note: If your matter is an urgent emergency or poses an immediate threat, please contact the police (110) or fire department (112) immediately.
+
+            </camunda:field>
+          <camunda:field name="replace_tokens">
+            <camunda:string></camunda:string>
+          </camunda:field>
+        </bpmn2:extensionElements>
+        <bpmn2:incoming>Flow_0bs2byv</bpmn2:incoming>
+      </bpmn2:task>
+      <bpmn2:sequenceFlow id="Flow_0bs2byv" name="Is Status No Jurisdiction?" camunda:modelerTemplate="org.drupal.condition.eca_entity_field_value" sourceRef="Gateway_0nyfe5b" targetRef="Activity_1rxwbas">
+        <bpmn2:extensionElements>
+          <camunda:properties>
+            <camunda:property name="pluginid" value="eca_entity_field_value" />
+          </camunda:properties>
+          <camunda:field name="field_name">
+            <camunda:string>field_status.target_id</camunda:string>
+          </camunda:field>
+          <camunda:field name="operator">
+            <camunda:string>equal</camunda:string>
+          </camunda:field>
+          <camunda:field name="expected_value">
+            <camunda:string>30</camunda:string>
+          </camunda:field>
+          <camunda:field name="type">
+            <camunda:string>value</camunda:string>
+          </camunda:field>
+          <camunda:field name="case">
+            <camunda:string></camunda:string>
+          </camunda:field>
+          <camunda:field name="negate">
+            <camunda:string></camunda:string>
+          </camunda:field>
+          <camunda:field name="entity">
+            <camunda:string></camunda:string>
+          </camunda:field>
+        </bpmn2:extensionElements>
+      </bpmn2:sequenceFlow>
+      <bpmn2:task id="Activity_1w5ikso" name="Send E-Mail Update" camunda:modelerTemplate="org.drupal.action.action_send_email_action">
+        <bpmn2:extensionElements>
+          <camunda:properties>
+            <camunda:property name="pluginid" value="action_send_email_action" />
+          </camunda:properties>
+          <camunda:field name="recipient">
+            <camunda:string>[node:field_e_mail:value]</camunda:string>
+          </camunda:field>
+          <camunda:field name="subject">
+            <camunda:string>Update! Your request #[node:request_id]</camunda:string>
+          </camunda:field>
+          <camunda:field name="message">
+            <camunda:string>
+              Hello! Thank you very much for your contribution. Your request has been forwarded to the relevant department and is now being processed. You will receive a final response via email once it has been completed.
+            </camunda:string>
+          </camunda:field>
+          <camunda:field name="replace_tokens">
+            <camunda:string></camunda:string>
+          </camunda:field>
+        </bpmn2:extensionElements>
+        <bpmn2:incoming>Flow_1joltme</bpmn2:incoming>
+      </bpmn2:task>
+      <bpmn2:sequenceFlow id="Flow_1joltme" name="Is Status Update?" camunda:modelerTemplate="org.drupal.condition.eca_entity_field_value" sourceRef="Gateway_0nyfe5b" targetRef="Activity_1w5ikso">
+        <bpmn2:extensionElements>
+          <camunda:properties>
+            <camunda:property name="pluginid" value="eca_entity_field_value" />
+          </camunda:properties>
+          <camunda:field name="field_name">
+            <camunda:string>field_status.target_id</camunda:string>
+          </camunda:field>
+          <camunda:field name="operator">
+            <camunda:string>equal</camunda:string>
+          </camunda:field>
+          <camunda:field name="expected_value">
+            <camunda:string>4</camunda:string>
+          </camunda:field>
+          <camunda:field name="type">
+            <camunda:string>value</camunda:string>
+          </camunda:field>
+          <camunda:field name="case">
+            <camunda:string></camunda:string>
+          </camunda:field>
+          <camunda:field name="negate">
+            <camunda:string></camunda:string>
+          </camunda:field>
+          <camunda:field name="entity">
+            <camunda:string></camunda:string>
+          </camunda:field>
+        </bpmn2:extensionElements>
+      </bpmn2:sequenceFlow>
+    </bpmn2:process>
+    <bpmndi:BPMNDiagram id="sid-dc788ffe-60bb-4a6b-9784-f4bdfe915d1c">
+      <bpmndi:BPMNPlane id="sid-3b15008f-c925-4a55-a0a8-953e7525fd0e" bpmnElement="Process_tUnr6D6">
+        <bpmndi:BPMNShape id="Event_04bz8yl_di" bpmnElement="Event_04bz8yl">
+          <dc:Bounds x="202" y="132" width="36" height="36" />
+          <bpmndi:BPMNLabel>
+            <dc:Bounds x="183" y="175" width="76" height="27" />
+          </bpmndi:BPMNLabel>
+        </bpmndi:BPMNShape>
+        <bpmndi:BPMNShape id="Gateway_02ldgot_di" bpmnElement="Gateway_02ldgot" isMarkerVisible="true">
+          <dc:Bounds x="365" y="125" width="50" height="50" />
+        </bpmndi:BPMNShape>
+        <bpmndi:BPMNShape id="Activity_1u8e4au_di" bpmnElement="Activity_1u8e4au">
+          <dc:Bounds x="630" y="180" width="100" height="80" />
+          <bpmndi:BPMNLabel />
+        </bpmndi:BPMNShape>
+        <bpmndi:BPMNShape id="Gateway_0nyfe5b_di" bpmnElement="Gateway_0nyfe5b" isMarkerVisible="true">
+          <dc:Bounds x="475" y="195" width="50" height="50" />
+        </bpmndi:BPMNShape>
+        <bpmndi:BPMNShape id="Activity_1rxwbas_di" bpmnElement="Activity_1rxwbas">
+          <dc:Bounds x="630" y="290" width="100" height="80" />
+          <bpmndi:BPMNLabel />
+        </bpmndi:BPMNShape>
+        <bpmndi:BPMNShape id="Activity_1w5ikso_di" bpmnElement="Activity_1w5ikso">
+          <dc:Bounds x="630" y="70" width="100" height="80" />
+          <bpmndi:BPMNLabel />
+        </bpmndi:BPMNShape>
+        <bpmndi:BPMNEdge id="Flow_1bodg9x_di" bpmnElement="Flow_1bodg9x">
+          <di:waypoint x="238" y="150" />
+          <di:waypoint x="365" y="150" />
+        </bpmndi:BPMNEdge>
+        <bpmndi:BPMNEdge id="Flow_0kbs1sz_di" bpmnElement="Flow_0kbs1sz">
+          <di:waypoint x="525" y="220" />
+          <di:waypoint x="630" y="220" />
+          <bpmndi:BPMNLabel>
+            <dc:Bounds x="535" y="202" width="87" height="14" />
+          </bpmndi:BPMNLabel>
+        </bpmndi:BPMNEdge>
+        <bpmndi:BPMNEdge id="Flow_0ktblta_di" bpmnElement="Flow_0ktblta">
+          <di:waypoint x="390" y="175" />
+          <di:waypoint x="390" y="220" />
+          <di:waypoint x="470" y="220" />
+        </bpmndi:BPMNEdge>
+        <bpmndi:BPMNEdge id="Flow_0bs2byv_di" bpmnElement="Flow_0bs2byv">
+          <di:waypoint x="500" y="245" />
+          <di:waypoint x="500" y="330" />
+          <di:waypoint x="630" y="330" />
+          <bpmndi:BPMNLabel>
+            <dc:Bounds x="483" y="305" width="62" height="27" />
+          </bpmndi:BPMNLabel>
+        </bpmndi:BPMNEdge>
+        <bpmndi:BPMNEdge id="Flow_1joltme_di" bpmnElement="Flow_1joltme">
+          <di:waypoint x="500" y="195" />
+          <di:waypoint x="500" y="110" />
+          <di:waypoint x="630" y="110" />
+          <bpmndi:BPMNLabel>
+            <dc:Bounds x="472" y="150" width="88" height="14" />
+          </bpmndi:BPMNLabel>
+        </bpmndi:BPMNEdge>
+      </bpmndi:BPMNPlane>
+    </bpmndi:BPMNDiagram>
+  </bpmn2:definitions>

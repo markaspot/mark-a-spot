@@ -1,0 +1,36 @@
+_core:
+  default_config_hash: null
+langcode: en
+all:
+  - language_interface
+  - language_content
+  - language_url
+configurable:
+  - language_interface
+negotiation:
+  language_content:
+    enabled:
+      language-interface: 0
+    method_weights:
+      language-content-entity: -9
+      language-url: -8
+      language-session: -6
+      language-user: -4
+      language-browser: -2
+      language-interface: 9
+      language-selected: 12
+  language_url:
+    enabled:
+      language-url: 0
+      language-url-fallback: 1
+  language_interface:
+    enabled:
+      language-user-admin: -20
+      language-selected: -19
+    method_weights:
+      language-selected: -19
+      language-user-admin: -20
+      language-user: -18
+      language-url: -17
+      language-session: -16
+      language-browser: -15

@@ -1,0 +1,22 @@
+uuid: 30e8e109-a504-42c5-ac60-f63515513ec5
+langcode: en
+status: true
+dependencies:
+  config:
+    - taxonomy.vocabulary.service_provider
+id: taxonomy_term.service_provider.status
+field_name: status
+entity_type: taxonomy_term
+bundle: service_provider
+label: Published
+description: ''
+required: false
+translatable: false
+default_value:
+  -
+    value: 1
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean

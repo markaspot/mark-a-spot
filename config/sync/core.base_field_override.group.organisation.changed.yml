@@ -1,0 +1,18 @@
+uuid: 3a97253a-fc33-485d-bd8d-a9fb98679936
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.organisation
+id: group.organisation.changed
+field_name: changed
+entity_type: group
+bundle: organisation
+label: 'Changed on'
+description: 'The time that the group was last edited.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: changed

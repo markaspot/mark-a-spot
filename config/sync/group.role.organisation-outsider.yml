@@ -1,0 +1,16 @@
+uuid: 2a9bd34f-a16f-4c17-ad95-dcee63fcd713
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.organisation
+    - user.role.authenticated
+id: organisation-outsider
+label: Outsider
+weight: -10
+admin: false
+scope: outsider
+global_role: authenticated
+group_type: organisation
+permissions:
+  - 'view group'

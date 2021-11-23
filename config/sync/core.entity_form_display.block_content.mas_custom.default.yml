@@ -1,0 +1,45 @@
+uuid: ec242a8d-ccf5-20354-91f9-42a8dccf5cf820811f9237a2532c5
+langcode: en
+status: true
+dependencies:
+  config:
+    - block_content.type.mas_custom
+    - field.field.block_content.mas_custom.body
+  module:
+    - text
+_core:
+  default_config_hash: null
+id: block_content.mas_custom.default
+targetEntityType: block_content
+bundle: mas_custom
+mode: default
+content:
+  body:
+    type: text_textarea_with_summary
+    weight: 26
+    region: content
+    settings:
+      rows: 9
+      summary_rows: 3
+      placeholder: ''
+      show_summary: false
+    third_party_settings: {  }
+  info:
+    type: string_textfield
+    weight: -5
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  langcode:
+    type: language_select
+    weight: 2
+    region: content
+    settings:
+      include_locked: true
+    third_party_settings: {  }
+  translation:
+    weight: 10
+    region: content
+hidden: {  }

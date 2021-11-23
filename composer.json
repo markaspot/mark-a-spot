@@ -1,7 +1,6 @@
 {
     "name": "markaspot/mark-a-spot",
-    "description": "Mark-a-Spot is a Drupal distribution for crowdmapping and public civic issue tracking",
-    "type": "project",
+    "description": "Mark-a-Spot is a Drupal distribution for crowdmapping and public civic issue tracking",    "type": "project",
     "license": "GPL-2.0-or-later",
     "authors": [
         {
@@ -20,89 +19,78 @@
             "url": "https://asset-packagist.org"
         },
         {
-            "type": "vcs",
-            "url": "https://github.com/markaspot/GeoPHP"
-        },
-        {
-            "type": "package",
-            "package": {
-                "name": "markaspot/leaflet-control-geocoder",
-                "version": "1.10.0",
-                "type": "drupal-library",
-                "dist": {
-                    "url": "https://github.com/markaspot/leaflet-control-geocoder/archive/v1.10.0.zip",
-                    "type": "zip"
-                },
-                "require": {
-                    "composer/installers": "~1.0"
-                }
-            }
-        },
-        {
-            "type": "package",
-            "package": {
-                "name": "heiseonline/shariff",
-                "version": "master",
-                "type": "drupal-library",
-                "dist": {
-                    "url": "https://github.com/heiseonline/shariff/releases/download/2.0.2/shariff-2.0.2.zip",
-                    "type": "zip"
-                },
-                "require": {
-                    "composer/installers": "~1.0"
-                }
-            }
+            "type": "composer",
+            "url": "https://packages.drupal.org/8"
         }
     ],
     "require": {
-        "commerceguys/addressing": "~1.0",
-        "commerceguys/intl": "~0.7",
-        "commerceguys/zone": "~1.0",
-        "markaspot/markaspot": "dev-8.5.x-dev",
-        "oomphinc/composer-installers-extender": "^1.1",
         "composer/installers": "^1.2",
-        "cweagans/composer-patches": "^1.6.5",
-        "drupal-composer/drupal-scaffold": "^2.5",
-        "drupal/console": "^1.0.2",
-        "drupal/core": "^8",
-        "drush/drush": "^9.0.0",
+        "cweagans/composer-patches": "^1.7.0",
+        "drupal/backup_migrate": "^5",
+        "drupal/bpmn_io": "^1.0@rc",
+        "drupal/core": "^10.0",
+        "drupal/core-composer-scaffold": "^10.0",
+        "drupal/core-recommended": "^10.0",
+        "drupal/csv_serialization": "^3",
+        "drupal/default_content": "dev-2.0.x",
+        "drupal/devel": "^5",
+        "drupal/eca": "^1.0@rc",
+        "drupal/elasticsearch_connector": "^7.0@alpha",
+        "drupal/eu_cookie_compliance": "^1.9",
+        "drupal/gin": "^3",
+        "drupal/gin_toolbar": "^1",
+        "drupal/group": "^3",
+        "drupal/group_action": "^1.1",
+        "drupal/inline_entity_form": "1.x-dev@dev",
+        "drupal/jquery_ui": "^1.6",
+        "drupal/jquery_ui_draggable": "^1.2",
+        "drupal/layout_library": "^1.0@beta",
+        "drupal/mailsystem": "^4.4",
+        "drupal/phpmailer_smtp": "^2.1",
+        "drupal/s3fs": "^3.1",
+        "drupal/structure_sync": "^2.0",
+        "drupal/upgrade_status": "^4.0",
+        "drupal/views_data_export": "^1.0",
+        "drupal/xls_serialization": "^1.2",
+        "drush/drush": "11.5",
+        "markaspot/markaspot": "dev-10.6.x-dev",
         "vlucas/phpdotenv": "^2.4",
         "webflo/drupal-finder": "^1.0.0",
-        "webmozart/path-util": "^2.3"
+        "webmozart/assert": "1.11.0",
+        "zaporylie/composer-drupal-optimizations": "^1.2.0"
     },
     "require-dev": {
-        "behat/mink": "~1.7",
-        "behat/mink-goutte-driver": "~1.2",
-        "jcalderonzumba/gastonjs": "~1.0.2",
-        "jcalderonzumba/mink-phantomjs-driver": "~0.3.1",
-        "mikey179/vfsstream": "~1.2",
-        "phpunit/phpunit": ">=4.8.28 <5",
-        "symfony/css-selector": "~2.8"
+        "drupal/coder": "^8.3",
+        "mglaman/phpstan-drupal": "^1.1",
+        "palantirnet/drupal-rector": "^0.13.0",
+        "phpstan/extension-installer": "^1.1",
+        "phpstan/phpstan": "^1.8",
+        "phpstan/phpstan-deprecation-rules": "^1.0",
+        "squizlabs/php_codesniffer": "*"
+    },
+    "conflict": {
+        "drupal/drupal": "*"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
-    "prefer-dist": true,
-    "autoload": {
-        "classmap": [
-            "scripts/composer/ScriptHandler.php"
-        ]
-    },
+    "prefer-source": true,
     "scripts": {
-        "drupal-scaffold": "DrupalComposer\\DrupalScaffold\\Plugin::scaffold",
-        "pre-install-cmd": [
-            "DrupalProject\\composer\\ScriptHandler::checkComposerVersion"
-        ],
-        "pre-update-cmd": [
-            "DrupalProject\\composer\\ScriptHandler::checkComposerVersion"
-        ],
-        "post-install-cmd": [
-            "DrupalProject\\composer\\ScriptHandler::createRequiredFiles"
-        ],
-        "post-update-cmd": [
-            "DrupalProject\\composer\\ScriptHandler::createRequiredFiles"
-        ]
+        "test": "phpunit --color=always",
+        "drush": "drush"
     },
     "extra": {
+        "drupal-scaffold": {
+            "locations": {
+                "web-root": "./web"
+            },
+            "excludes": [
+                ".htaccess"
+            ],
+            "initial": {
+                ".editorconfig": "../.editorconfig",
+                ".gitattributes": "../.gitattributes"
+            }
+        },
         "installer-types": [
             "bower-asset",
             "npm-asset"
@@ -127,14 +115,32 @@
             ],
             "drush/contrib/{$name}": [
                 "type:drupal-drush"
+            ],
+            "drush/Commands/contrib/{$name}": [
+                "type:drupal-drush"
             ]
         },
-        "enable-patching": true
+        "enable-patching": false,
+        "patches": {
+            "drupal/core": {
+                "Method not allowed // AccessAwareRouter does not respect HTTP method": "https://www.drupal.org/files/issues/2022-02-01/2706241-67.patch"
+            },
+            "drupal/shs": {
+                "Use core/internal.backbone lib\n": "https://www.drupal.org/files/issues/2023-04-28/3357151_change_backbone_lib_001.patch"
+            }
+        }
     },
     "config": {
-        "sort-packages": true
-    },
-    "conflict": {
-        "drupal/drupal": "*"
+        "sort-packages": true,
+        "allow-plugins": {
+            "composer/installers": true,
+            "cweagans/composer-patches": true,
+            "drupal/core-composer-scaffold": true,
+            "oomphinc/composer-installers-extender": true,
+            "zaporylie/composer-drupal-optimizations": true,
+            "phpstan/extension-installer": true,
+            "dealerdirect/phpcodesniffer-composer-installer": true,
+            "simplesamlphp/composer-module-installer": false
+        }
     }
 }

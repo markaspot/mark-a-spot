@@ -1,0 +1,19 @@
+uuid: b38319c3-9ed7-4fcf-a3a5-6a17faf4715e
+langcode: en
+status: true
+dependencies:
+  module:
+    - search_api_db
+_core:
+  default_config_hash: null
+id: database
+name: database
+description: ''
+backend: search_api_db
+backend_config:
+  database: 'default:default'
+  min_chars: 3
+  matching: partial
+  autocomplete:
+    suggest_suffix: true
+    suggest_words: true

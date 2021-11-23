@@ -1,0 +1,6 @@
+services:
+  markaspotcommands:
+    class: Drush\Commands\MarkaspotCommands
+    arguments: ['@config.factory']
+    tags:
+      - { name: drush.command }

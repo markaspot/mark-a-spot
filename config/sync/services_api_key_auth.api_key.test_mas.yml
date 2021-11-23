@@ -1,0 +1,10 @@
+uuid: 8272971a-d304-18285-9a65-2971ad304d76dad9a65ec95ce04ae
+langcode: en
+status: true
+dependencies: {  }
+_core:
+  default_config_hash: null
+id: test_mas
+label: test.mas
+key: fef2be12841525e0ebdf385aa893313d
+user_uuid: 1aa9c4bf-d744-47cb-aa4f-7aa7ecfe4ec8

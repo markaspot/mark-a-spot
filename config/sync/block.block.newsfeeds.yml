@@ -1,0 +1,21 @@
+uuid: c0d7a5e4-f520-43cb-9f0d-1df0a1dacf25
+langcode: en
+status: true
+dependencies:
+  module:
+    - node
+  theme:
+    - mas_olivero
+id: newsfeeds
+theme: mas_olivero
+region: social
+weight: -12
+provider: null
+plugin: node_syndicate_block
+settings:
+  id: node_syndicate_block
+  label: Newsfeeds
+  label_display: '0'
+  provider: node
+  block_count: 10
+visibility: {  }

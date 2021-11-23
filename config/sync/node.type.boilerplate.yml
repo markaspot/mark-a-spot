@@ -1,0 +1,20 @@
+uuid: afa5544a-be05-4f64-bd44-f71185c41671
+langcode: en
+status: true
+dependencies:
+  module:
+    - menu_ui
+third_party_settings:
+  menu_ui:
+    available_menus:
+      - main
+    parent: 'main:'
+_core:
+  default_config_hash: null
+name: Boilerplate
+type: boilerplate
+description: 'Boilerplates for status notes'
+help: ''
+new_revision: true
+preview_mode: 1
+display_submitted: false

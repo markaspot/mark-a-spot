@@ -7,6 +7,7 @@
 <IfModule !mod_authz_core.c>
   Deny from all
 </IfModule>
+
 # Turn off all options we don't need.
 Options -Indexes -ExecCGI -Includes -MultiViews
 
@@ -18,6 +19,6 @@ SetHandler Drupal_Security_Do_Not_Remove_See_SA_2006_006
 </Files>
 
 # If we know how to do it safely, disable the PHP engine entirely.
-<IfModule mod_php5.c>
+<IfModule mod_php7.c>
   php_flag engine off
 </IfModule>

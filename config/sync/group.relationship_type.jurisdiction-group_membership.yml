@@ -1,0 +1,15 @@
+uuid: 6c65e960-172b-499e-9997-fbc82df04879
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.jurisdiction
+  module:
+    - user
+id: jurisdiction-group_membership
+group_type: jurisdiction
+content_plugin: group_membership
+plugin_config:
+  group_cardinality: 0
+  entity_cardinality: 1
+  use_creation_wizard: false

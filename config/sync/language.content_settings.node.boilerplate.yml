@@ -1,0 +1,20 @@
+uuid: d56870d4-9682-47e8-8a82-f02f2f2f877d
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.boilerplate
+  module:
+    - content_translation
+third_party_settings:
+  content_translation:
+    enabled: false
+    bundle_settings:
+      untranslatable_fields_hide: '0'
+_core:
+  default_config_hash: null
+id: node.boilerplate
+target_entity_type_id: node
+target_bundle: boilerplate
+default_langcode: site_default
+language_alterable: false

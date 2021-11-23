@@ -1,0 +1,25 @@
+uuid: 3e4e949c-a1c8-45ab-bb4a-efcae9da31ae
+langcode: en
+status: true
+dependencies:
+  module:
+    - address
+    - field_permissions
+    - node
+third_party_settings:
+  field_permissions:
+    permission_type: custom
+_core:
+  default_config_hash: null
+id: node.field_address
+field_name: field_address
+entity_type: node
+type: address
+settings: {  }
+module: address
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

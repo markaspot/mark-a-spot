@@ -1,0 +1,27 @@
+uuid: 20f493b3-6df6-4475-8a98-ab05fbd83c05
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_attachment
+    - node.type.service_request
+  module:
+    - file
+id: node.service_request.field_attachment
+field_name: field_attachment
+entity_type: node
+bundle: service_request
+label: Attachment
+description: 'Use this field for internal documents.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:file'
+  handler_settings: {  }
+  file_directory: '[date:custom:Y]-[date:custom:m]-attachments'
+  file_extensions: 'txt png jpg pdf doc docx eml'
+  max_filesize: ''
+  description_field: false
+field_type: file

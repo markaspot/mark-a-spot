@@ -1,0 +1,19 @@
+uuid: f16dd400-d0f6-4ad2-b5b4-ddad30d58e4b
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_last_name
+    - node.type.service_request
+id: node.service_request.field_last_name
+field_name: field_last_name
+entity_type: node
+bundle: service_request
+label: 'Last Name'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

@@ -1,0 +1,13 @@
+uuid: 1b80c2d2-ada4-4571-b176-f9ab764800cc
+langcode: en
+status: true
+dependencies:
+  enforced:
+    module:
+      - service_request
+_core:
+  default_config_hash: null
+name: Category
+vid: service_category
+description: 'Public Service Categories used as Open311 Services'
+weight: 0

@@ -1,0 +1,378 @@
+uuid: e00efca0-da71-49b3-bc80-062663ebd198
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_form_mode.node.management
+    - field.field.node.service_request.body
+    - field.field.node.service_request.field_address
+    - field.field.node.service_request.field_approved
+    - field.field.node.service_request.field_attachment
+    - field.field.node.service_request.field_category
+    - field.field.node.service_request.field_e_mail
+    - field.field.node.service_request.field_feedback
+    - field.field.node.service_request.field_first_name
+    - field.field.node.service_request.field_gdpr
+    - field.field.node.service_request.field_geolocation
+    - field.field.node.service_request.field_last_name
+    - field.field.node.service_request.field_notes
+    - field.field.node.service_request.field_notification
+    - field.field.node.service_request.field_object_id
+    - field.field.node.service_request.field_organisation
+    - field.field.node.service_request.field_phone
+    - field.field.node.service_request.field_priority
+    - field.field.node.service_request.field_request_image
+    - field.field.node.service_request.field_request_media
+    - field.field.node.service_request.field_service_provider
+    - field.field.node.service_request.field_service_provider_notes
+    - field.field.node.service_request.field_sp_attachment
+    - field.field.node.service_request.field_status
+    - field.field.node.service_request.field_status_notes
+    - node.type.service_request
+  module:
+    - address
+    - field_group
+    - file
+    - geolocation_nominatim
+    - inline_entity_form
+    - paragraphs
+    - path
+    - shs
+    - text
+  enforced:
+    module:
+      - service_request
+third_party_settings:
+  field_group:
+    group_edit_service_request:
+      children:
+        - group_citizen_input
+        - group_administration
+      label: 'Edit Service Request'
+      region: content
+      parent_name: ''
+      weight: 0
+      format_type: tabs
+      format_settings:
+        classes: ''
+        id: ''
+        direction: horizontal
+    group_citizen_input:
+      children:
+        - field_category
+        - body
+        - field_e_mail
+        - field_geolocation
+        - field_address
+        - field_first_name
+        - field_last_name
+        - field_gdpr
+      label: 'Citizen information'
+      region: content
+      parent_name: group_edit_service_request
+      weight: 16
+      format_type: tab
+      format_settings:
+        classes: ''
+        id: ''
+        formatter: open
+        description: ''
+        required_fields: true
+    group_administration:
+      children:
+        - field_organisation
+        - status
+        - field_priority
+        - group_status
+        - group_service_provider
+        - group_internal
+      label: Management
+      region: content
+      parent_name: group_edit_service_request
+      weight: 17
+      format_type: tab
+      format_settings:
+        classes: ''
+        id: ''
+        formatter: closed
+        description: ''
+        required_fields: true
+    group_internal:
+      children:
+        - field_notes
+        - field_notification
+        - field_attachment
+      label: 'Internal'
+      region: content
+      parent_name: group_administration
+      weight: 31
+      format_type: fieldset
+      format_settings:
+        classes: ''
+        id: ''
+        description: 'Internal Notes / not visible in public'
+        required_fields: true
+    group_status:
+      children:
+        - field_status
+        - field_status_notes
+      label: Status
+      region: content
+      parent_name: group_administration
+      weight: 29
+      format_type: fieldset
+      format_settings:
+        classes: ''
+        id: ''
+        description: ''
+        required_fields: true
+    group_service_provider:
+      children:
+        - field_service_provider
+        - field_service_provider_notes
+        - field_sp_attachment
+      label: Service Provider
+      region: content
+      parent_name: group_administration
+      weight: 30
+      format_type: fieldset
+      format_settings:
+        classes: ''
+        id: ''
+        description: ''
+        required_fields: true
+_core:
+  default_config_hash: null
+id: node.service_request.management
+targetEntityType: node
+bundle: service_request
+mode: management
+content:
+  body:
+    type: text_textarea_with_summary
+    weight: 3
+    region: content
+    settings:
+      rows: 9
+      summary_rows: 3
+      placeholder: ''
+      show_summary: false
+    third_party_settings: {  }
+  created:
+    type: datetime_timestamp
+    weight: 1
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_address:
+    type: address_default
+    weight: 6
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_attachment:
+    type: file_generic
+    weight: 4
+    region: content
+    settings:
+      progress_indicator: throbber
+    third_party_settings: {  }
+  field_category:
+    type: options_shs
+    weight: 2
+    region: content
+    settings:
+      display_node_count: false
+      create_new_items: false
+      create_new_levels: false
+      force_deepest: false
+    third_party_settings: {  }
+  field_e_mail:
+    type: email_default
+    weight: 4
+    region: content
+    settings:
+      placeholder: ''
+      size: 60
+    third_party_settings: {  }
+  field_first_name:
+    type: string_textfield
+    weight: 7
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  field_gdpr:
+    type: boolean_checkbox
+    weight: 10
+    region: content
+    settings:
+      display_label: true
+    third_party_settings: {  }
+  field_geolocation:
+    type: geolocation_nominatim_widget
+    weight: 5
+    region: content
+    settings:
+      zoom: '18'
+      center_lat: 40.73
+      center_lng: -73.93
+      limit_countrycodes: de
+      limit_viewbox: '-74.379155587496,41.179155587496,-73.480844412504,40.280844412504'
+      city: Mascity
+      set_address_field: '1'
+      tileServerUrl: 'https://stamen-tiles.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}.png'
+      wmsLayer: ''
+      customAttribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://www.openstreetmap.org/copyright">ODbL</a>.'
+      serviceUrl: 'https://nominatim.openstreetmap.org/'
+      LocationIQToken: ''
+      fullscreenControl: '1'
+      streetNumberFormat: '1'
+      autoLocate: 0
+    third_party_settings: {  }
+  field_image:
+    type: image_image
+    weight: 6
+    region: content
+    settings:
+      progress_indicator: throbber
+      preview_image_style: thumbnail
+    third_party_settings: {  }
+  field_last_name:
+    type: string_textfield
+    weight: 9
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  field_notes:
+    type: text_textarea
+    weight: 1
+    region: content
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
+  field_notification:
+    type: boolean_checkbox
+    weight: 2
+    region: content
+    settings:
+      display_label: true
+    third_party_settings: {  }
+  field_organisation:
+    type: options_select
+    weight: 26
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_priority:
+    type: boolean_checkbox
+    weight: 28
+    region: content
+    settings:
+      display_label: true
+    third_party_settings: {  }
+  field_request_media:
+    type: inline_entity_form_simple
+    weight: 7
+    region: content
+    settings:
+      form_mode: default
+      override_labels: false
+      label_singular: ''
+      label_plural: ''
+      collapsible: false
+      collapsed: false
+      revision: false
+    third_party_settings: {  }
+  field_service_provider:
+    type: options_select
+    weight: 28
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_service_provider_notes:
+    type: text_textarea
+    weight: 29
+    region: content
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
+  field_sp_attachment:
+    type: file_generic
+    weight: 31
+    region: content
+    settings:
+      progress_indicator: throbber
+    third_party_settings: {  }
+  field_status:
+    type: options_buttons
+    weight: 26
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_status_notes:
+    type: entity_reference_paragraphs
+    weight: 28
+    region: content
+    settings:
+      title: Paragraph
+      title_plural: Paragraphs
+      edit_mode: preview
+      add_mode: dropdown
+      form_display_mode: default
+      default_paragraph_type: status
+    third_party_settings: {  }
+  path:
+    type: path
+    weight: 6
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  promote:
+    type: boolean_checkbox
+    weight: 2
+    region: content
+    settings:
+      display_label: true
+    third_party_settings: {  }
+  status:
+    type: boolean_checkbox
+    weight: 27
+    region: content
+    settings:
+      display_label: true
+    third_party_settings: {  }
+  sticky:
+    type: boolean_checkbox
+    weight: 5
+    region: content
+    settings:
+      display_label: true
+    third_party_settings: {  }
+  uid:
+    type: entity_reference_autocomplete
+    weight: 3
+    region: content
+    settings:
+      match_operator: CONTAINS
+      match_limit: 10
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+hidden:
+  field_approved: true
+  field_feedback: true
+  field_object_id: true
+  field_phone: true
+  field_request_image: true
+  group_content: true
+  groups: true
+  groups_type_organisation: true
+  langcode: true
+  request_id: true
+  title: true

@@ -1,0 +1,20 @@
+uuid: 2e32c135-592a-491a-aef4-c454f95e14c3
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.user.field_internal_orga
+  module:
+    - user
+id: user.user.field_internal_orga
+field_name: field_internal_orga
+entity_type: user
+bundle: user
+label: 'Internal Organisation'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

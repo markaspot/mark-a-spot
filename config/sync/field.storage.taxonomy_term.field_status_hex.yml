@@ -1,0 +1,25 @@
+uuid: 1159a440-e52c-451a-a5aa-f861de9338a5
+langcode: en
+status: true
+dependencies:
+  module:
+    - color_field
+    - taxonomy
+  enforced:
+    module:
+      - service_request
+_core:
+  default_config_hash: null
+id: taxonomy_term.field_status_hex
+field_name: field_status_hex
+entity_type: taxonomy_term
+type: color_field_type
+settings:
+  format: '#HEXHEX'
+module: color_field
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

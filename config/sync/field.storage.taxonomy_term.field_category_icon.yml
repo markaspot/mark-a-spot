@@ -1,0 +1,25 @@
+uuid: fa7b6dce-73be-470f-84b0-dbdeaf3e62f8
+langcode: en
+status: true
+dependencies:
+  module:
+    - fa_icon_class
+    - field_permissions
+    - taxonomy
+third_party_settings:
+  field_permissions:
+    permission_type: public
+_core:
+  default_config_hash: null
+id: taxonomy_term.field_category_icon
+field_name: field_category_icon
+entity_type: taxonomy_term
+type: fa_icon_class
+settings: {  }
+module: fa_icon_class
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

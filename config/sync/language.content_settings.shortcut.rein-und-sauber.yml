@@ -1,0 +1,18 @@
+uuid: aad857f3-9f74-4ce8-b1db-bd3847b38b30
+langcode: en
+status: true
+dependencies:
+  config:
+    - shortcut.set.rein-und-sauber
+  module:
+    - content_translation
+third_party_settings:
+  content_translation:
+    enabled: false
+    bundle_settings:
+      untranslatable_fields_hide: '0'
+id: shortcut.rein-und-sauber
+target_entity_type_id: shortcut
+target_bundle: rein-und-sauber
+default_langcode: site_default
+language_alterable: false

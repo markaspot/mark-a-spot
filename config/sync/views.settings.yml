@@ -1,0 +1,49 @@
+_core:
+  default_config_hash: null
+langcode: en
+display_extenders: {  }
+skip_cache: true
+sql_signature: true
+ui:
+  show:
+    additional_queries: false
+    advanced_column: true
+    performance_statistics: true
+    preview_information: true
+    sql_query:
+      enabled: true
+      where: above
+    display_embed: true
+    master_display: true
+  always_live_preview: true
+  exposed_filter_any_label: old_any
+field_rewrite_elements:
+  div: DIV
+  span: SPAN
+  h1: H1
+  h2: H2
+  h3: H3
+  h4: H4
+  h5: H5
+  h6: H6
+  p: P
+  header: HEADER
+  footer: FOOTER
+  article: ARTICLE
+  section: SECTION
+  aside: ASIDE
+  details: DETAILS
+  blockquote: BLOCKQUOTE
+  figure: FIGURE
+  address: ADDRESS
+  code: CODE
+  pre: PRE
+  var: VAR
+  samp: SAMP
+  kbd: KBD
+  strong: STRONG
+  em: EM
+  del: DEL
+  ins: INS
+  q: Q
+  s: S

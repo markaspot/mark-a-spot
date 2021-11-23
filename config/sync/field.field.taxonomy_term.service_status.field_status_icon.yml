@@ -1,0 +1,25 @@
+uuid: 2f258383-caa1-4940-b626-01b88b39476e
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.taxonomy_term.field_status_icon
+    - taxonomy.vocabulary.service_status
+  module:
+    - fa_icon_class
+_core:
+  default_config_hash: null
+id: taxonomy_term.service_status.field_status_icon
+field_name: field_status_icon
+entity_type: taxonomy_term
+bundle: service_status
+label: 'Status Icon'
+description: ''
+required: false
+translatable: false
+default_value:
+  -
+    value: fa-check
+default_value_callback: ''
+settings: {  }
+field_type: fa_icon_class

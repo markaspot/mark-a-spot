@@ -1,0 +1,8 @@
+uuid: f9e214d2-ad66-458f-bbf0-44bf23bbdb6f
+langcode: en
+status: true
+dependencies: {  }
+id: editor
+label: editor
+key: fd4995db1f17485d2827deca16fbb821
+user_uuid: 7dafd39f-0ccc-4e3a-b720-b578ab5f22f2

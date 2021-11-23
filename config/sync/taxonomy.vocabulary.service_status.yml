@@ -1,0 +1,13 @@
+uuid: b8ae2692-0e61-4154-af60-822a19069c45
+langcode: en
+status: true
+dependencies:
+  enforced:
+    module:
+      - service_request
+_core:
+  default_config_hash: null
+name: Status
+vid: service_status
+description: 'Der aktuelle Status des Anliegen.'
+weight: 0

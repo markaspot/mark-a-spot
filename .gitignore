@@ -18,3 +18,18 @@ web/sites/*/files
 
 # Ignore configuration files that may contain sensitive information.
 web/sites/*/settings.local.php
+/.csslintrc
+/.editorconfig
+/.eslintignore
+/.eslintrc.json
+/.gitattributes
+/.ht.router.php
+/.htaccess
+/INSTALL.txt
+/README.txt
+/autoload.php
+/example.gitignore
+/index.php
+/robots.txt
+/update.php
+/web.config

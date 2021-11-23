@@ -1,0 +1,12 @@
+<?php
+
+/**
+ * Implements hook_theme_suggestions_HOOK_alter for blocks.
+ */
+function mas_custom_theme_suggestions_block_alter(&$suggestions, $variables) {
+
+  // Load theme suggestions for blocks from parent theme.
+  foreach ($suggestions as &$suggestion) {
+    $suggestion = str_replace('mas_custom_', 'mas_olivero_', $suggestion);
+  }
+}

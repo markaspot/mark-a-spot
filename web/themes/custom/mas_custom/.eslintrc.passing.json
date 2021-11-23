@@ -1,0 +1,11 @@
+{
+  "extends": "./.eslintrc.json",
+  "rules": {
+    "no-shadow": "off",
+    "no-new": "off",
+    "no-continue": "off",
+    "new-cap": "off",
+    "max-len": "off",
+    "default-case": "off"
+  }
+}

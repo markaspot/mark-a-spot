@@ -1,0 +1,43 @@
+uuid: 3fbc2086-62ff-4e58-8d7b-48382a116be1
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_request_image
+    - node.type.service_request
+  module:
+    - image
+  enforced:
+    module:
+      - service_request
+_core:
+  default_config_hash: null
+id: node.service_request.field_request_image
+field_name: field_request_image
+entity_type: node
+bundle: service_request
+label: Image
+description: '<span class="visible"><i class="fa fa-image"></i>Helfen Sie uns mit einem Foto.</span>'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:file'
+  handler_settings: {  }
+  file_directory: '[date:custom:Y]-[date:custom:m]'
+  file_extensions: 'png gif jpg jpeg'
+  max_filesize: '25 MB'
+  max_resolution: ''
+  min_resolution: ''
+  alt_field: false
+  alt_field_required: false
+  title_field: false
+  title_field_required: false
+  default_image:
+    uuid: ''
+    alt: ''
+    title: ''
+    width: null
+    height: null
+field_type: image

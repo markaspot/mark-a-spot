@@ -1,0 +1,82 @@
+_core:
+  default_config_hash: null
+langcode: en
+definitions:
+  contact__site_page:
+    menu_name: footer
+    parent: ''
+    weight: -46
+    expanded: false
+    enabled: false
+  markaspot__front_page:
+    menu_name: main
+    parent: ''
+    weight: -49
+    expanded: false
+    enabled: true
+  markaspot__add:
+    menu_name: main
+    parent: ''
+    weight: -48
+    expanded: false
+    enabled: true
+  system__admin_content:
+    menu_name: admin
+    parent: system.admin
+    weight: -95
+    expanded: false
+    enabled: true
+  system__admin_structure:
+    menu_name: admin
+    parent: system.admin
+    weight: -94
+    expanded: false
+    enabled: true
+  system__themes_page:
+    menu_name: admin
+    parent: system.admin
+    weight: -93
+    expanded: false
+    enabled: true
+  system__modules_list:
+    menu_name: admin
+    parent: system.admin
+    weight: -92
+    expanded: false
+    enabled: true
+  system__admin_config:
+    menu_name: admin
+    parent: system.admin
+    weight: -91
+    expanded: false
+    enabled: true
+  system__admin_group:
+    menu_name: admin
+    parent: system.admin
+    weight: -88
+    expanded: false
+    enabled: true
+  entity__user__collection:
+    menu_name: admin
+    parent: system.admin
+    weight: -87
+    expanded: false
+    enabled: true
+  system__admin_reports:
+    menu_name: admin
+    parent: system.admin
+    weight: -86
+    expanded: false
+    enabled: true
+  help__main:
+    menu_name: admin
+    parent: system.admin
+    weight: -85
+    expanded: false
+    enabled: true
+  user__page:
+    menu_name: account
+    parent: ''
+    weight: -10
+    expanded: false
+    enabled: true

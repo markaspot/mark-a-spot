@@ -1,0 +1,175 @@
+uuid: b41069ee-c1a9-458b-8886-4394cfbadc69
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.node.service_request.body
+    - field.field.node.service_request.field_address
+    - field.field.node.service_request.field_approved
+    - field.field.node.service_request.field_attachment
+    - field.field.node.service_request.field_category
+    - field.field.node.service_request.field_e_mail
+    - field.field.node.service_request.field_feedback
+    - field.field.node.service_request.field_first_name
+    - field.field.node.service_request.field_gdpr
+    - field.field.node.service_request.field_geolocation
+    - field.field.node.service_request.field_last_name
+    - field.field.node.service_request.field_notes
+    - field.field.node.service_request.field_notification
+    - field.field.node.service_request.field_object_id
+    - field.field.node.service_request.field_organisation
+    - field.field.node.service_request.field_phone
+    - field.field.node.service_request.field_priority
+    - field.field.node.service_request.field_request_image
+    - field.field.node.service_request.field_request_media
+    - field.field.node.service_request.field_service_provider
+    - field.field.node.service_request.field_service_provider_notes
+    - field.field.node.service_request.field_sp_attachment
+    - field.field.node.service_request.field_status
+    - field.field.node.service_request.field_status_notes
+    - node.type.service_request
+  module:
+    - geolocation_nominatim
+    - inline_entity_form
+    - shs
+    - telephone
+    - text
+  enforced:
+    module:
+      - service_request
+_core:
+  default_config_hash: null
+id: node.service_request.default
+targetEntityType: node
+bundle: service_request
+mode: default
+content:
+  body:
+    type: text_textarea_with_summary
+    weight: 2
+    region: content
+    settings:
+      rows: 9
+      summary_rows: 3
+      placeholder: 'Kurze Beschreibung'
+      show_summary: false
+    third_party_settings: {  }
+  field_category:
+    type: options_shs
+    weight: 1
+    region: content
+    settings:
+      display_node_count: false
+      create_new_items: false
+      create_new_levels: false
+      force_deepest: true
+    third_party_settings: {  }
+  field_e_mail:
+    type: email_default
+    weight: 4
+    region: content
+    settings:
+      placeholder: ''
+      size: 60
+    third_party_settings: {  }
+  field_first_name:
+    type: string_textfield
+    weight: 5
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  field_gdpr:
+    type: boolean_checkbox
+    weight: 8
+    region: content
+    settings:
+      display_label: true
+    third_party_settings: {  }
+  field_geolocation:
+    type: geolocation_nominatim_widget
+    weight: 0
+    region: content
+    settings:
+      zoom: '18'
+      center_lat: 40.73
+      center_lng: -73.93
+      limit_countrycodes: de
+      limit_viewbox: '-74.379155587496,41.179155587496,-73.480844412504,40.280844412504'
+      city: Mascity
+      set_address_field: '1'
+      tileServerUrl: 'https://stamen-tiles.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}.png'
+      wmsLayer: ''
+      customAttribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://www.openstreetmap.org/copyright">ODbL</a>.'
+      serviceUrl: 'https://nominatim.openstreetmap.org/'
+      LocationIQToken: ''
+      fullscreenControl: '1'
+      streetNumberFormat: '1'
+      autoLocate: 0
+    third_party_settings: {  }
+  field_image:
+    type: image_image
+    weight: 6
+    region: content
+    settings:
+      progress_indicator: throbber
+      preview_image_style: thumbnail
+    third_party_settings: {  }
+  field_last_name:
+    type: string_textfield
+    weight: 6
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  field_phone:
+    type: telephone_default
+    weight: 7
+    region: content
+    settings:
+      placeholder: '+49 2151 2345678'
+    third_party_settings: {  }
+  field_request_media:
+    type: inline_entity_form_simple
+    weight: 3
+    region: content
+    settings:
+      form_mode: default
+      override_labels: false
+      label_singular: ''
+      label_plural: ''
+      collapsible: false
+      collapsed: false
+      revision: false
+    third_party_settings: {  }
+hidden:
+  created: true
+  entitygroupfield: true
+  field_address: true
+  field_approved: true
+  field_attachment: true
+  field_feedback: true
+  field_notes: true
+  field_notification: true
+  field_object_id: true
+  field_organisation: true
+  field_priority: true
+  field_request_image: true
+  field_service_provider: true
+  field_service_provider_notes: true
+  field_sp_attachment: true
+  field_status: true
+  field_status_notes: true
+  group_content: true
+  groups: true
+  groups_type_organisation: true
+  langcode: true
+  path: true
+  promote: true
+  request_id: true
+  status: true
+  sticky: true
+  title: true
+  uid: true

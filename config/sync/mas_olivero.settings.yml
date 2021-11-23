@@ -1,0 +1,11 @@
+features:
+  node_user_picture: true
+  comment_user_picture: true
+  comment_user_verification: 1
+  favicon: 1
+logo:
+  use_default: 1
+favicon:
+  use_default: 1
+mobile_menu_all_widths: 0
+site_branding_bg_color: white

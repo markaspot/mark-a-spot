@@ -1,0 +1,25 @@
+uuid: 6c0d3fae-8071-4040-80ed-90167cc4032e
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_approved
+    - node.type.service_request
+_core:
+  default_config_hash: null
+id: node.service_request.field_approved
+field_name: field_approved
+entity_type: node
+bundle: service_request
+label: Approved
+description: 'Meldeperson hat E-Mail bestätigt und stimmt Kontaktaufnahme zu.'
+required: false
+translatable: false
+default_value:
+  -
+    value: 0
+default_value_callback: ''
+settings:
+  on_label: An
+  off_label: Aus
+field_type: boolean

@@ -1,0 +1,10 @@
+global-styling:
+  version: VERSION
+  css:
+    theme:
+      assets/css/mas_custom.css: {}
+      assets/css/fonts.css: {}
+      assets/css/color.css: {}
+
+  js:
+    assets/js/mas_custom.script.js: {}

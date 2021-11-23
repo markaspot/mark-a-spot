@@ -1,0 +1,20 @@
+uuid: 083c18cc-c514-4820-a621-82627795feed
+langcode: en
+status: true
+dependencies:
+  config:
+    - taxonomy.vocabulary.service_provider
+  module:
+    - path
+id: taxonomy_term.service_provider.path
+field_name: path
+entity_type: taxonomy_term
+bundle: service_provider
+label: 'URL alias'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: path

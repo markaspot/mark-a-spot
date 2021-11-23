@@ -1,0 +1,20 @@
+uuid: f972dea6-2283-4dfe-b953-d8619c2053f3
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.boilerplate
+id: node.boilerplate.menu_link
+field_name: menu_link
+entity_type: node
+bundle: boilerplate
+label: 'Menu link'
+description: 'Computed menu link for the node (only available during node saving).'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: default
+  handler_settings: {  }
+field_type: entity_reference

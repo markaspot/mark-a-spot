@@ -1,0 +1,22 @@
+uuid: 825cc84a-d442-477c-b899-b19d27d40779
+langcode: en
+status: true
+dependencies:
+  module:
+    - group
+_core:
+  default_config_hash: null
+id: group.subgroup_right
+field_name: subgroup_right
+entity_type: group
+type: integer
+settings:
+  unsigned: true
+  size: normal
+module: core
+locked: true
+cardinality: 1
+translatable: false
+indexes: {  }
+persist_with_no_fields: true
+custom_storage: false

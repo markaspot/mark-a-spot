@@ -1,29 +1,90 @@
-# Mark-a-Spot composer-based installer
+# Mark-a-Spot Drupal Docker Setup
 
-This is a composer-based installer for the [Mark-a-Spot](https://www.drupal.org/project/markaspot) Drupal distribution.
-It can be used to start a project based on this crowdmapping platform. 
+Mark-a-Spot is an open-source Civic Issue Tracking and Open311 Server built on Drupal CMS. This repository provides a Docker setup to facilitate running Mark-a-Spot.
 
-## Installation
+## Getting Started
 
-Please follow the installation instructions and configuration guide at the official [documentation](http://docs.markaspot.de).
+These instructions will guide you through getting a copy of the project up and running on your local machine for development and testing purposes.
 
+### Prerequisites
 
-### TL;TR
-```
-$ curl -s https://getcomposer.org/installer | php
-$ sudo mv composer.phar /usr/local/bin/composer
-$ composer create-project markaspot/mark-a-spot project-dir --stability dev
-```
+- Docker
+- Docker Compose
 
-This command will install the Mark-a-Spot distribution into a project directory.
+### Installation
 
-You may then use the [included](https://github.com/markaspot/mark-a-spot/tree/master/.docksal) Docksal integration for easy development or go on with drush in your local dev environment.
-Otherwise just replace the connection string with credentials of your database and run the following drush command.
+1. Clone this repository:
+    ```bash
+    git clone https://github.com/markaspot/mark-a-spot.git
+    cd mark-a-spot
+    ```
 
-```
-$ drush si markaspot -y  --db-url=mysql://root:root@db:3306/markaspot
+2. Build and run the Docker containers:
+    ```bash
+    docker-compose up -d
+    docker exec -it markaspot ./scripts/start.sh
+    ```
 
-```
+   The `start.sh` script has two options:
+   - `-y` For automatic installation with predefined values (latitude: 40.73, longitude: -73.93, city: New York, locale: en_US)
+   - `-t` To import translation file from the `/translations` directory and enable translations for terms
 
-## Support, Hosting
-Holger Kreis | twitter: @markaspot | http://mark-a-spot.org
+After running these commands, you should be able to access the application at `http://localhost`.
+
+### Services
+
+The Docker Compose setup includes the following services:
+
+- `web`: The Nginx web server
+- `markaspot`: The Mark-a-Spot Drupal application
+- `db`: The MariaDB database
+- `phpmyadmin`: PHPMyAdmin for database management
+
+### Configuration
+
+You can adjust the configuration of the Docker services by editing the `docker-compose.yml` file. For example, you can modify the database username and password, the PHP memory limit, and other settings.
+
+## Usage
+
+Access the Drupal application at `http://localhost`.
+
+PHPMyAdmin is available at `http://localhost:8080` for database management.
+
+## Development
+
+For local development, we recommend using [Docksal](https://docksal.io/), a Docker-based development environment.
+
+### Prerequisites
+
+- Docksal
+- Docker
+- Docker Compose
+
+### Installation
+
+1. Install Docksal on your machine, following the instructions on the [Docksal website](https://docksal.io/installation).
+
+2. Clone this repository:
+
+    ```bash
+    git clone https://github.com/markaspot/mark-a-spot.git
+    cd mark-a-spot
+    ```
+
+3. Initialize the Docksal project:
+
+    ```bash
+    fin up
+    ```
+
+### Configuration
+
+You can adjust the configuration of the Docker services by editing the `docksal.yml` file. For example, you can modify the database username and password, the PHP memory limit, and other settings.
+
+### Usage
+
+You can access the Drupal application at `http://mark-a-spot.docksal.site`.
+
+## License
+
+Mark-a-Spot is freely available under the [GNU General Public License, version 2 or any later version](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html) license.

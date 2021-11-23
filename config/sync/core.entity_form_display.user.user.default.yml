@@ -1,0 +1,55 @@
+uuid: a4b65e7d-5b63-4181-94cb-4c859eabaf2b
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.user.user.field_internal_orga
+    - field.field.user.user.field_internal_phone
+  module:
+    - telephone
+    - user
+_core:
+  default_config_hash: null
+id: user.user.default
+targetEntityType: user
+bundle: user
+mode: default
+content:
+  account:
+    weight: 0
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_internal_orga:
+    type: string_textfield
+    weight: 4
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  field_internal_phone:
+    type: telephone_default
+    weight: 3
+    region: content
+    settings:
+      placeholder: ''
+    third_party_settings: {  }
+  langcode:
+    type: language_select
+    weight: 1
+    region: content
+    settings:
+      include_locked: false
+    third_party_settings: {  }
+  language:
+    weight: 2
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+hidden:
+  contact: true
+  groups: true
+  groups_type_organisation: true
+  path: true
+  timezone: true

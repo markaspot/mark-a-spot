@@ -1,0 +1,13 @@
+uuid: fdc22e78-0eed-43dd-b4a8-02387c6fde1f
+langcode: en
+status: true
+dependencies:
+  module:
+    - comment
+_core:
+  default_config_hash: null
+id: comment_save_action
+label: 'Save comment'
+type: comment
+plugin: 'entity:save_action:comment'
+configuration: {  }

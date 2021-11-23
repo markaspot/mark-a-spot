@@ -1,0 +1,23 @@
+uuid: 066ab759-abd0-4591-a143-db8f05d5f532
+langcode: en
+status: true
+dependencies:
+  module:
+    - field_permissions
+    - telephone
+    - user
+third_party_settings:
+  field_permissions:
+    permission_type: public
+id: user.field_internal_phone
+field_name: field_internal_phone
+entity_type: user
+type: telephone
+settings: {  }
+module: telephone
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

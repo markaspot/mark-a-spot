@@ -1,0 +1,19 @@
+uuid: e84f8716-84c5-43ec-b852-5856efce8b5d
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.taxonomy_term.field_category_gid
+    - taxonomy.vocabulary.service_category
+id: taxonomy_term.service_category.field_category_gid
+field_name: field_category_gid
+entity_type: taxonomy_term
+bundle: service_category
+label: 'Category Group ID'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

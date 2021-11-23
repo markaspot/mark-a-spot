@@ -1,0 +1,18 @@
+uuid: d8484152-542e-459c-a69f-d28de90afd12
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.boilerplate
+id: node.boilerplate.changed
+field_name: changed
+entity_type: node
+bundle: boilerplate
+label: Changed
+description: 'The time that the node was last edited.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: changed

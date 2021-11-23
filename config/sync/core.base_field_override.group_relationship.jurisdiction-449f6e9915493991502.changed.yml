@@ -1,0 +1,18 @@
+uuid: d51e1a6e-cc94-45fb-acd5-400d89e54750
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.relationship_type.jurisdiction-449f6e9915493991502
+id: group_relationship.jurisdiction-449f6e9915493991502.changed
+field_name: changed
+entity_type: group_relationship
+bundle: jurisdiction-449f6e9915493991502
+label: 'Changed on'
+description: 'The time that the group relationship was last edited.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: changed

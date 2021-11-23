@@ -1,0 +1,19 @@
+uuid: fea37c2f-8f0d-4c68-82d2-099b7a7f4b71
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.taxonomy_term.field_sp_email
+    - taxonomy.vocabulary.service_provider
+id: taxonomy_term.service_provider.field_sp_email
+field_name: field_sp_email
+entity_type: taxonomy_term
+bundle: service_provider
+label: 'Service Provider E-Mail '
+description: 'This address will be used when notifying the service provider.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: email

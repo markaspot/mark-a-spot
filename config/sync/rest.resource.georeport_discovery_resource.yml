@@ -1,0 +1,20 @@
+uuid: e7ad342f-c46d-4094-965a-394700669949
+langcode: en
+status: true
+dependencies:
+  module:
+    - markaspot_open311
+    - serialization
+    - user
+_core:
+  default_config_hash: null
+id: georeport_discovery_resource
+plugin_id: georeport_discovery_resource
+granularity: method
+configuration:
+  GET:
+    supported_formats:
+      - xml
+      - json
+    supported_auth:
+      - cookie

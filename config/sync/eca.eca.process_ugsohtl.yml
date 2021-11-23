@@ -1,0 +1,168 @@
+uuid: 62b6c2b6-68c1-4957-8df0-4431e2818ac5
+langcode: en
+status: false
+dependencies:
+  config:
+    - field.field.node.service_request.field_e_mail
+    - field.field.node.service_request.field_status
+    - field.storage.node.field_e_mail
+    - field.storage.node.field_status
+    - node.type.service_request
+  module:
+    - eca_base
+    - eca_content
+    - eca_user
+id: process_ugsohtl
+modeller: bpmn_io
+label: 'Set Initital Status'
+version: 0.1.1
+weight: -10
+events:
+  Event_1083g6k:
+    plugin: 'content_entity:insert'
+    label: 'Create Service Request'
+    configuration:
+      type: 'node service_request'
+    successors:
+      -
+        id: Gateway_1yh7ygx
+        condition: ''
+conditions:
+  Flow_1v64krg:
+    plugin: eca_scalar
+    configuration:
+      negate: false
+      case: false
+      left: '|50|51|'
+      right: '|[node:field_category:target_id]|'
+      operator: contains
+      type: value
+  Flow_0zazkft:
+    plugin: eca_scalar
+    configuration:
+      left: '|38|39|'
+      right: '|[node:field_category:target_id]|'
+      operator: contains
+      type: value
+      case: true
+      negate: true
+  Flow_02v1hvw:
+    plugin: eca_scalar
+    configuration:
+      case: false
+      left: '|36|37|'
+      right: '|[node:field_category:target_id]|'
+      operator: contains
+      type: value
+      negate: true
+gateways:
+  Gateway_1yh7ygx:
+    type: 0
+    successors:
+      -
+        id: Activity_14s87co
+        condition: Flow_1v64krg
+      -
+        id: Activity_15z9pjj
+        condition: Flow_0zazkft
+      -
+        id: Activity_1regpyc
+        condition: Flow_02v1hvw
+actions:
+  Activity_1regpyc:
+    plugin: action_send_email_action
+    label: 'Send Mail (Welcome Closed)'
+    configuration:
+      recipient: '[node:field_e_mail:value]'
+      subject: "Closed Danke für Ihr Anliegen [node:request_id] bei Sag's uns"
+      message: |-
+        Guten Tag!
+
+        Ihr Anliegen mit der Nummer #[node:request_id]  ist eingegangen und die Erledigung wurde bei der zuständigen Stelle beauftragt.
+
+        Bitte klicken Sie auf den folgenden Link, um sich jederzeit weitere Informationen zu Ihrem Anliegen anzusehen: 
+
+        [site:url][node:url:path]
+
+        Bitte beachten Sie: Sollte es sich bei Ihrem Anliegen um einen dringenden Notfall bzw. einer akuter Gefährdung handeln, wenden Sie sich bitte sofort telefonisch an die Polizei (110) bzw. Feuerwehr (112).
+
+         -- Dies ist eine automatisch generierte E-Mail, auf die Sie leider nicht antworten können.
+      replace_tokens: ''
+    successors:
+      -
+        id: Activity_0d6swsd
+        condition: ''
+  Activity_0fbgn6j:
+    plugin: eca_set_field_value
+    label: 'Set closed'
+    configuration:
+      field_name: field_status.target_id
+      field_value: '5'
+      method: 'set:clear'
+      strip_tags: true
+      trim: true
+      save_entity: true
+      object: node
+    successors: {  }
+  Activity_0d6swsd:
+    plugin: eca_switch_account
+    label: 'Set Currrent User'
+    configuration:
+      user_id: '1'
+    successors:
+      -
+        id: Activity_0fbgn6j
+        condition: ''
+  Activity_14s87co:
+    plugin: action_send_email_action
+    label: 'Send Mail (Welcome Open)'
+    configuration:
+      recipient: '[node:field_e_mail:value]'
+      subject: "Progress Danke für Ihr Anliegen [node:request_id] bei Sag's uns"
+      message: |-
+        Guten Tag!
+
+        Ihr Anliegen mit der Nummer #[node:request_id]  ist eingegangen und wird bald bearbeitet.
+
+        Bitte klicken Sie auf den folgenden Link, um sich jederzeit weitere Informationen zu Ihrem Anliegen anzusehen: 
+
+        [site:url][node:url:path]
+
+        Bitte beachten Sie: Sollte es sich bei Ihrem Anliegen um einen dringenden Notfall bzw. einer akuter Gefährdung handeln, wenden Sie sich bitte sofort telefonisch an die Polizei (110) bzw. Feuerwehr (112).
+
+         -- Dies ist eine automatisch generierte E-Mail, auf die Sie leider nicht antworten können.
+      replace_tokens: ''
+    successors:
+      -
+        id: Activity_1myfe4b
+        condition: ''
+  Activity_1myfe4b:
+    plugin: eca_switch_account
+    label: 'Set Current User'
+    configuration:
+      user_id: '1'
+    successors:
+      -
+        id: Activity_0cqvf6x
+        condition: ''
+  Activity_0cqvf6x:
+    plugin: eca_set_field_value
+    label: 'Set In Progress'
+    configuration:
+      field_name: field_status.target_id
+      field_value: '4'
+      method: 'set:clear'
+      strip_tags: true
+      trim: true
+      save_entity: true
+      object: node
+    successors: {  }
+  Activity_15z9pjj:
+    plugin: action_send_email_action
+    label: 'Send Mail (Welcome Open)'
+    configuration:
+      replace_tokens: false
+      recipient: '[node:field_e_mail:value]'
+      subject: "Open Danke für Ihr Anliegen [node:request_id] bei Sag's uns"
+      message: ''
+    successors: {  }

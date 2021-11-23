@@ -1,0 +1,14 @@
+uuid: 0142b93e-e64f-488e-bd9e-d979b8a045d5
+langcode: en
+status: true
+dependencies:
+  config:
+    - user.role.api_editor
+  module:
+    - user
+id: user_remove_role_action.api_editor
+label: 'Den ausgewählten Benutzern die Rolle API Editor entziehen'
+type: user
+plugin: user_remove_role_action
+configuration:
+  rid: api_editor

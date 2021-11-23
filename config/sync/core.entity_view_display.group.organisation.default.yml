@@ -1,0 +1,36 @@
+uuid: 57cf1720-3eaa-4aeb-8070-23f99f379eff
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.group.organisation.field_head_organisation_e_mail
+    - group.type.organisation
+id: group.organisation.default
+targetEntityType: group
+bundle: organisation
+mode: default
+content:
+  field_head_organisation_e_mail:
+    type: basic_string
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: -4
+    region: content
+  label:
+    type: string
+    label: hidden
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: -5
+    region: content
+hidden:
+  changed: true
+  created: true
+  entity_print_view_epub: true
+  entity_print_view_pdf: true
+  entity_print_view_word_docx: true
+  langcode: true
+  search_api_excerpt: true
+  uid: true

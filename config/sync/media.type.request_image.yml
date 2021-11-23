@@ -1,0 +1,15 @@
+uuid: 4cbfeb51-1be0-42da-bdb0-892667707220
+langcode: en
+status: true
+dependencies: {  }
+_core:
+  default_config_hash: null
+id: request_image
+label: 'Request Image'
+description: ''
+source: image
+queue_thumbnail_downloads: false
+new_revision: true
+source_configuration:
+  source_field: field_media_image
+field_map: {  }

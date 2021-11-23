@@ -1,0 +1,18 @@
+uuid: 58d6d4a7-0f45-4dc7-8ca5-a55835e198e1
+langcode: en
+status: true
+dependencies:
+  theme:
+    - mas_custom
+id: mas_custom_primaryadminactions
+theme: mas_custom
+region: highlighted
+weight: 0
+provider: null
+plugin: local_actions_block
+settings:
+  id: local_actions_block
+  label: 'Primary admin actions'
+  label_display: '0'
+  provider: core
+visibility: {  }

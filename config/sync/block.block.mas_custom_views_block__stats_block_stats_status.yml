@@ -1,0 +1,29 @@
+uuid: c1da3e26-5e10-428f-82a6-013d8f6d4b9e
+langcode: en
+status: false
+dependencies:
+  config:
+    - views.view.stats
+  module:
+    - system
+    - views
+  theme:
+    - mas_custom
+id: mas_custom_views_block__stats_block_stats_status
+theme: mas_custom
+region: header
+weight: -11
+provider: null
+plugin: 'views_block:stats-block_stats_status'
+settings:
+  id: 'views_block:stats-block_stats_status'
+  label: ''
+  label_display: visible
+  provider: views
+  views_label: ''
+  items_per_page: none
+visibility:
+  request_path:
+    id: request_path
+    negate: false
+    pages: '<front>'

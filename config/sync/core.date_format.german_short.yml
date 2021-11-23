@@ -1,0 +1,8 @@
+uuid: 26e7995d-37ca-4374-a4b8-267052bf22ef
+langcode: en
+status: true
+dependencies: {  }
+id: german_short
+label: 'ISO 8601 Datum'
+locked: false
+pattern: c

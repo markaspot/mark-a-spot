@@ -1,0 +1,230 @@
+uuid: 08dfd6e5-376f-4f6f-81e1-816c13c2ede0
+langcode: en
+status: false
+dependencies:
+  config:
+    - eca.eca.process_apply_group
+id: process_apply_group
+label: 'Apply Groups'
+tags:
+  - untagged
+documentation: ''
+filename: ''
+modeldata: |
+  <?xml version="1.0" encoding="UTF-8"?>
+  <bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:qa="http://some-company/schema/bpmn/qa" id="sample-diagram" targetNamespace="http://bpmn.io/schema/bpmn" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd">
+    <bpmn2:process id="Process_apply_group" name="Apply Groups" isExecutable="true">
+      <bpmn2:startEvent id="Create_Service_Request" name="Create Service Request" camunda:modelerTemplate="org.drupal.event.content_entity:insert">
+        <bpmn2:extensionElements>
+          <camunda:properties>
+            <camunda:property name="pluginid" value="content_entity:insert" />
+          </camunda:properties>
+          <camunda:field name="type">
+            <camunda:string>node service_request</camunda:string>
+          </camunda:field>
+        </bpmn2:extensionElements>
+        <bpmn2:outgoing>Flow_1bwpmvy</bpmn2:outgoing>
+      </bpmn2:startEvent>
+      <bpmn2:task id="Activy_Set_Current_User" name="Set Current User" camunda:modelerTemplate="org.drupal.action.eca_switch_account">
+        <bpmn2:extensionElements>
+          <camunda:properties>
+            <camunda:property name="pluginid" value="eca_switch_account" />
+          </camunda:properties>
+          <camunda:field name="user_id">
+            <camunda:string>1</camunda:string>
+          </camunda:field>
+        </bpmn2:extensionElements>
+        <bpmn2:incoming>Flow_1bwpmvy</bpmn2:incoming>
+        <bpmn2:outgoing>Flow_1rmzr0m</bpmn2:outgoing>
+      </bpmn2:task>
+      <bpmn2:sequenceFlow id="Flow_1bwpmvy" sourceRef="Create_Service_Request" targetRef="Activy_Set_Current_User" />
+      <bpmn2:task id="Activity_1yd51fx" name="Load Service Request" camunda:modelerTemplate="org.drupal.action.eca_token_load_entity">
+        <bpmn2:extensionElements>
+          <camunda:properties>
+            <camunda:property name="pluginid" value="eca_token_load_entity" />
+          </camunda:properties>
+          <camunda:field name="token_name">
+            <camunda:string>service_request</camunda:string>
+          </camunda:field>
+          <camunda:field name="from">
+            <camunda:string>current</camunda:string>
+          </camunda:field>
+          <camunda:field name="entity_type">
+            <camunda:string>_none</camunda:string>
+          </camunda:field>
+          <camunda:field name="entity_id">
+            <camunda:string></camunda:string>
+          </camunda:field>
+          <camunda:field name="revision_id">
+            <camunda:string></camunda:string>
+          </camunda:field>
+          <camunda:field name="langcode">
+            <camunda:string>_interface</camunda:string>
+          </camunda:field>
+          <camunda:field name="latest_revision">
+            <camunda:string>no</camunda:string>
+          </camunda:field>
+          <camunda:field name="unchanged">
+            <camunda:string>no</camunda:string>
+          </camunda:field>
+          <camunda:field name="properties">
+            <camunda:string></camunda:string>
+          </camunda:field>
+          <camunda:field name="object">
+            <camunda:string></camunda:string>
+          </camunda:field>
+        </bpmn2:extensionElements>
+        <bpmn2:incoming>Flow_1rmzr0m</bpmn2:incoming>
+        <bpmn2:outgoing>Flow_1qmg5iw</bpmn2:outgoing>
+      </bpmn2:task>
+      <bpmn2:sequenceFlow id="Flow_1rmzr0m" sourceRef="Activy_Set_Current_User" targetRef="Activity_1yd51fx" />
+      <bpmn2:task id="Activity_Apply_Group" name="Apply Group" camunda:modelerTemplate="org.drupal.action.group_add_content">
+        <bpmn2:extensionElements>
+          <camunda:properties>
+            <camunda:property name="pluginid" value="group_add_content" />
+          </camunda:properties>
+          <camunda:field name="content_plugin">
+            <camunda:string>group_node:service_request</camunda:string>
+          </camunda:field>
+          <camunda:field name="group_id">
+            <camunda:string>[node:field_category:entity:field_category_gid]</camunda:string>
+          </camunda:field>
+          <camunda:field name="entity_id">
+            <camunda:string></camunda:string>
+          </camunda:field>
+          <camunda:field name="values">
+            <camunda:string></camunda:string>
+          </camunda:field>
+          <camunda:field name="add_method">
+            <camunda:string>skip_existing</camunda:string>
+          </camunda:field>
+          <camunda:field name="object">
+            <camunda:string></camunda:string>
+          </camunda:field>
+          <camunda:field name="replace_tokens">
+            <camunda:string>no</camunda:string>
+          </camunda:field>
+        </bpmn2:extensionElements>
+        <bpmn2:incoming>Flow_1qmg5iw</bpmn2:incoming>
+        <bpmn2:outgoing>Flow_1gb1xg5</bpmn2:outgoing>
+      </bpmn2:task>
+      <bpmn2:task id="Activiy_save_group" name="Save Group" camunda:modelerTemplate="org.drupal.action.eca_set_field_value">
+        <bpmn2:extensionElements>
+          <camunda:properties>
+            <camunda:property name="pluginid" value="eca_set_field_value" />
+          </camunda:properties>
+          <camunda:field name="method">
+            <camunda:string>set:clear</camunda:string>
+          </camunda:field>
+          <camunda:field name="strip_tags">
+            <camunda:string>no</camunda:string>
+          </camunda:field>
+          <camunda:field name="trim">
+            <camunda:string>no</camunda:string>
+          </camunda:field>
+          <camunda:field name="field_name">
+            <camunda:string>field_organisation.target_id</camunda:string>
+          </camunda:field>
+          <camunda:field name="save_entity">
+            <camunda:string>yes</camunda:string>
+          </camunda:field>
+          <camunda:field name="field_value">
+            <camunda:string>[node:field_category:entity:field_category_gid]</camunda:string>
+          </camunda:field>
+          <camunda:field name="object">
+            <camunda:string>node</camunda:string>
+          </camunda:field>
+        </bpmn2:extensionElements>
+        <bpmn2:incoming>Flow_1gb1xg5</bpmn2:incoming>
+        <bpmn2:outgoing>Flow_12ckjr8</bpmn2:outgoing>
+      </bpmn2:task>
+      <bpmn2:task id="Activity_notify_group" name="Notify Group" camunda:modelerTemplate="org.drupal.action.action_send_email_action">
+        <bpmn2:extensionElements>
+          <camunda:properties>
+            <camunda:property name="pluginid" value="action_send_email_action" />
+          </camunda:properties>
+          <camunda:field name="recipient">
+            <camunda:string>[node:field_organisation:entity:field_head_organisation_e_mail]</camunda:string>
+          </camunda:field>
+          <camunda:field name="subject">
+            <camunda:string>A Service Request #[node:request_id] in the category [node:field_category]</camunda:string>
+          </camunda:field>
+          <camunda:field name="message">
+            <camunda:string>Hello,
+                a citizen request has been assigned to your organization:
+
+                Category: [node:title]
+                Detailed Description: [node:body]
+                Location of the request: [node:field_address]
+
+                To process the request, please click on the following link:
+                  [site:url]/[node:nid]/edit         
+
+                  Not registered yet today? [site:url]/[node:nid]/user 
+
+                  --
+                  This is an automatically generated email and cannot be replied to.
+            </camunda:string>
+
+          </camunda:field>
+          <camunda:field name="replace_tokens">
+            <camunda:string>no</camunda:string>
+          </camunda:field>
+        </bpmn2:extensionElements>
+        <bpmn2:incoming>Flow_12ckjr8</bpmn2:incoming>
+      </bpmn2:task>
+      <bpmn2:sequenceFlow id="Flow_1qmg5iw" sourceRef="Activity_1yd51fx" targetRef="Activity_Apply_Group" />
+      <bpmn2:sequenceFlow id="Flow_1gb1xg5" sourceRef="Activity_Apply_Group" targetRef="Activiy_save_group" />
+      <bpmn2:sequenceFlow id="Flow_12ckjr8" sourceRef="Activiy_save_group" targetRef="Activity_notify_group" />
+    </bpmn2:process>
+    <bpmndi:BPMNDiagram id="sid-67f3edae-4be9-492f-bb22-69f385ea5b1b">
+      <bpmndi:BPMNPlane id="sid-c87c8fb5-6d30-4042-809f-8acca87f74e5" bpmnElement="Process_apply_group">
+        <bpmndi:BPMNShape id="Event_0qls449_di" bpmnElement="Create_Service_Request">
+          <dc:Bounds x="542" y="262" width="36" height="36" />
+          <bpmndi:BPMNLabel>
+            <dc:Bounds x="524" y="305" width="73" height="27" />
+          </bpmndi:BPMNLabel>
+        </bpmndi:BPMNShape>
+        <bpmndi:BPMNShape id="Activity_0w2omqz_di" bpmnElement="Activy_Set_Current_User">
+          <dc:Bounds x="620" y="240" width="100" height="80" />
+          <bpmndi:BPMNLabel />
+        </bpmndi:BPMNShape>
+        <bpmndi:BPMNShape id="Activity_1yd51fx_di" bpmnElement="Activity_1yd51fx">
+          <dc:Bounds x="760" y="240" width="100" height="80" />
+          <bpmndi:BPMNLabel />
+        </bpmndi:BPMNShape>
+        <bpmndi:BPMNShape id="Activity_1f0h5xq_di" bpmnElement="Activity_Apply_Group">
+          <dc:Bounds x="900" y="240" width="100" height="80" />
+          <bpmndi:BPMNLabel />
+        </bpmndi:BPMNShape>
+        <bpmndi:BPMNShape id="Activity_0s3cydx_di" bpmnElement="Activiy_save_group">
+          <dc:Bounds x="1040" y="240" width="100" height="80" />
+          <bpmndi:BPMNLabel />
+        </bpmndi:BPMNShape>
+        <bpmndi:BPMNShape id="Activity_107po62_di" bpmnElement="Activity_notify_group">
+          <dc:Bounds x="1190" y="240" width="100" height="80" />
+          <bpmndi:BPMNLabel />
+        </bpmndi:BPMNShape>
+        <bpmndi:BPMNEdge id="Flow_1bwpmvy_di" bpmnElement="Flow_1bwpmvy">
+          <di:waypoint x="578" y="280" />
+          <di:waypoint x="620" y="280" />
+        </bpmndi:BPMNEdge>
+        <bpmndi:BPMNEdge id="Flow_1rmzr0m_di" bpmnElement="Flow_1rmzr0m">
+          <di:waypoint x="720" y="280" />
+          <di:waypoint x="760" y="280" />
+        </bpmndi:BPMNEdge>
+        <bpmndi:BPMNEdge id="Flow_1qmg5iw_di" bpmnElement="Flow_1qmg5iw">
+          <di:waypoint x="860" y="280" />
+          <di:waypoint x="900" y="280" />
+        </bpmndi:BPMNEdge>
+        <bpmndi:BPMNEdge id="Flow_1gb1xg5_di" bpmnElement="Flow_1gb1xg5">
+          <di:waypoint x="1000" y="280" />
+          <di:waypoint x="1040" y="280" />
+        </bpmndi:BPMNEdge>
+        <bpmndi:BPMNEdge id="Flow_12ckjr8_di" bpmnElement="Flow_12ckjr8">
+          <di:waypoint x="1140" y="280" />
+          <di:waypoint x="1190" y="280" />
+        </bpmndi:BPMNEdge>
+      </bpmndi:BPMNPlane>
+    </bpmndi:BPMNDiagram>
+  </bpmn2:definitions>

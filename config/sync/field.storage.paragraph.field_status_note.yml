@@ -1,0 +1,25 @@
+uuid: 9277fb03-a3b2-4bd9-a522-2b596002a1bd
+langcode: en
+status: true
+dependencies:
+  module:
+    - field_permissions
+    - paragraphs
+    - text
+third_party_settings:
+  field_permissions:
+    permission_type: custom
+_core:
+  default_config_hash: null
+id: paragraph.field_status_note
+field_name: field_status_note
+entity_type: paragraph
+type: text_long
+settings: {  }
+module: text
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

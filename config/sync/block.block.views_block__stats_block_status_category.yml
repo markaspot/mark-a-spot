@@ -1,0 +1,29 @@
+uuid: dca51221-7e57-4be6-b7ce-ad5fc07feebc
+langcode: en
+status: true
+dependencies:
+  config:
+    - views.view.stats
+  module:
+    - system
+    - views
+  theme:
+    - mas_olivero
+id: views_block__stats_block_status_category
+theme: mas_olivero
+region: sidebar
+weight: -12
+provider: null
+plugin: 'views_block:stats-block_status_category'
+settings:
+  id: 'views_block:stats-block_status_category'
+  label: ''
+  label_display: visible
+  provider: views
+  views_label: ''
+  items_per_page: none
+visibility:
+  request_path:
+    id: request_path
+    negate: false
+    pages: '<front>'

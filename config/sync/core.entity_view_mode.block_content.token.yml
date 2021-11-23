@@ -1,0 +1,12 @@
+uuid: 41089512-a355-4ec5-b3e1-aaaf2337e2fa
+langcode: en
+status: true
+dependencies:
+  module:
+    - block_content
+_core:
+  default_config_hash: null
+id: block_content.token
+label: Token
+targetEntityType: block_content
+cache: true

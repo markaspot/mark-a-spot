@@ -1,0 +1,23 @@
+uuid: 8b3a43fa-30be-49b5-8c41-b55316e8a43e
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.paragraph.field_status_note
+    - paragraphs.paragraphs_type.status
+  module:
+    - text
+_core:
+  default_config_hash: null
+id: paragraph.status.field_status_note
+field_name: field_status_note
+entity_type: paragraph
+bundle: status
+label: Statusvermerk
+description: 'für diesen Bearbeitungsschritt'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: text_long

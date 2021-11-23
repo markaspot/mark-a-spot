@@ -1,0 +1,13 @@
+uuid: 9a017866-9fde-4455-ae94-1a8f59ad95e7
+langcode: en
+status: true
+dependencies:
+  module:
+    - comment
+_core:
+  default_config_hash: null
+id: comment_unpublish_action
+label: 'Kommentar offline nehmen'
+type: comment
+plugin: 'entity:unpublish_action:comment'
+configuration: {  }

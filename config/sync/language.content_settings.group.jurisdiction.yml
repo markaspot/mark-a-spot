@@ -1,0 +1,18 @@
+uuid: 758ba344-fbd4-4383-9143-0348e2137b2c
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.jurisdiction
+  module:
+    - content_translation
+third_party_settings:
+  content_translation:
+    enabled: false
+    bundle_settings:
+      untranslatable_fields_hide: '0'
+id: group.jurisdiction
+target_entity_type_id: group
+target_bundle: jurisdiction
+default_langcode: site_default
+language_alterable: false

@@ -1,0 +1,20 @@
+uuid: a78dafd2-6448-4c6d-b720-61a055b3139e
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.jurisdiction
+  module:
+    - path
+id: group.jurisdiction.path
+field_name: path
+entity_type: group
+bundle: jurisdiction
+label: 'URL alias'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: path

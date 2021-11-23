@@ -1,0 +1,31 @@
+uuid: be4b5ab3-298b-4bce-a2b7-feae913590e7
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_request_media
+    - media.type.request_image
+    - node.type.service_request
+_core:
+  default_config_hash: null
+id: node.service_request.field_request_media
+field_name: field_request_media
+entity_type: node
+bundle: service_request
+label: 'Media / Foto'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:media'
+  handler_settings:
+    target_bundles:
+      request_image: request_image
+    sort:
+      field: _none
+      direction: ASC
+    auto_create: false
+    auto_create_bundle: ''
+field_type: entity_reference

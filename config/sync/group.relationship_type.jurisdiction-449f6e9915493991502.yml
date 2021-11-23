@@ -1,0 +1,17 @@
+uuid: ed4c9da4-8781-492b-9771-551b5f2fd4ae
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.jurisdiction
+    - node.type.service_request
+  module:
+    - gnode
+    - node
+id: jurisdiction-449f6e9915493991502
+group_type: jurisdiction
+content_plugin: 'group_node:service_request'
+plugin_config:
+  group_cardinality: 0
+  entity_cardinality: 1
+  use_creation_wizard: false

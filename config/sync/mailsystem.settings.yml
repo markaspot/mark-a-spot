@@ -1,0 +1,6 @@
+_core:
+  default_config_hash: null
+theme: current
+defaults:
+  sender: php_mail
+  formatter: php_mail

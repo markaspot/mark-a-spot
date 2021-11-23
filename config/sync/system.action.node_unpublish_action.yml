@@ -1,0 +1,13 @@
+uuid: c7253a6c-572c-46f6-8096-df7a588c273b
+langcode: en
+status: true
+dependencies:
+  module:
+    - node
+_core:
+  default_config_hash: null
+id: node_unpublish_action
+label: 'Inhalt offline nehmen'
+type: node
+plugin: 'entity:unpublish_action:node'
+configuration: {  }

@@ -1,0 +1,7 @@
+format: 'Y'
+_core:
+  default_config_hash: null
+langcode: en
+rollover: 1
+delimiter: '-'
+start: null

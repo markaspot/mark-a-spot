@@ -1,0 +1,22 @@
+uuid: 6e43eae2-8a2c-4fe2-b713-501a4f4b429d
+langcode: en
+status: true
+dependencies:
+  config:
+    - taxonomy.vocabulary.organisation
+id: taxonomy_term.organisation.status
+field_name: status
+entity_type: taxonomy_term
+bundle: organisation
+label: Published
+description: ''
+required: false
+translatable: false
+default_value:
+  -
+    value: 1
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean

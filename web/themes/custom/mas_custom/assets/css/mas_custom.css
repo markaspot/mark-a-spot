@@ -1,0 +1,70 @@
+
+.site-branding {
+  background-position: center;
+  background-size: cover;
+  & .site-branding__name {
+      font: 800 0.8em/1em 'Overpass', sans-serif, Arial, Verdana, Helvetica !important;
+      margin: 1em 0 0 0;
+    }
+}
+
+.site-branding__logo img {
+  width: 50%;
+}
+
+/* Use a standard media query */
+@media (min-width: 992px) {
+  .site-branding__inner img {
+    margin-right: 1rem
+  }
+}
+
+.site-header__fixable.is-expanded.is-fixed img {
+  width: 50%;
+}
+
+/* Use max-width instead of (max-width: 500px) */
+@media (max-width: 500px) {
+  /* Use a standard media query */
+  .site-branding__inner img {
+    margin-top: 1rem
+  }
+
+
+  h2.node__title {
+    float: right;
+    padding-top: 1rem;
+  }
+}
+
+.service-request h2:before {
+  position: absolute;
+  left: 48%;
+  content: "\f030";
+  opacity: 0.2;
+  color: #fff;
+  font-family: "Font Awesome 5 Free", sans-serif;
+  font-size: xx-large;
+  line-height: 2;
+}
+
+article.node--type-service-request.focus:before {
+  position: absolute;
+  left: 94%;
+  width: 10%;
+  content: "\f041";
+  color: #ddd;
+  font-family: "Font Awesome 5 Free", sans-serif;
+  font-weight: 900;
+  line-height: 4;
+}
+
+.block-field-blocknodeservice-requestfield-category,
+.block-field-blocknodeservice-requestfield-status {
+  padding: 1rem;
+  text-align: center;
+  background: #fff;
+  font-size: 1.3rem;
+}
+
+/* Remove sourceMappingURL */

@@ -1,0 +1,18 @@
+uuid: c432a4b4-2f82-41a6-8a2a-1bc55ae40e65
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.boilerplate
+id: node.boilerplate.created
+field_name: created
+entity_type: node
+bundle: boilerplate
+label: 'Authored on'
+description: 'The time that the node was created.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: created

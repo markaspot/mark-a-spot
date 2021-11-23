@@ -1,0 +1,15 @@
+uuid: 96974757-b269-40ab-9222-334cb2f866af
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.jurisdiction
+    - user.role.administrator
+id: jurisdiction-admin
+label: Admin
+weight: -99
+admin: true
+scope: insider
+global_role: administrator
+group_type: jurisdiction
+permissions: {  }

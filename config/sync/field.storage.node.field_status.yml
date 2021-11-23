@@ -1,0 +1,26 @@
+uuid: d5935e1d-629c-4d5c-b4d6-3ff4de7acaa1
+langcode: en
+status: true
+dependencies:
+  module:
+    - field_permissions
+    - node
+    - taxonomy
+third_party_settings:
+  field_permissions:
+    permission_type: custom
+_core:
+  default_config_hash: null
+id: node.field_status
+field_name: field_status
+entity_type: node
+type: entity_reference
+settings:
+  target_type: taxonomy_term
+module: core
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

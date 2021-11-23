@@ -1,0 +1,22 @@
+uuid: 3331d67d-6f84-468b-97c1-fb333c1c3509
+langcode: en
+status: true
+dependencies:
+  theme:
+    - olivero
+_core:
+  default_config_hash: null
+id: olivero_primary_local_tasks
+theme: olivero
+region: highlighted
+weight: -4
+provider: null
+plugin: local_tasks_block
+settings:
+  id: local_tasks_block
+  label: 'Primary tabs'
+  label_display: '0'
+  provider: core
+  primary: true
+  secondary: false
+visibility: {  }

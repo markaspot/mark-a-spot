@@ -1,0 +1,20 @@
+uuid: cbd2ba04-11d2-4916-aade-3b76f1578e4e
+langcode: en
+status: true
+dependencies:
+  config:
+    - media.type.request_image
+  module:
+    - path
+id: media.request_image.path
+field_name: path
+entity_type: media
+bundle: request_image
+label: 'URL alias'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: path

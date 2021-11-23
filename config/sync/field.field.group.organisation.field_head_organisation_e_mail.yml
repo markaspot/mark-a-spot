@@ -1,0 +1,19 @@
+uuid: 7f5c468e-f457-4d08-93eb-280b29e4c85a
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.group.field_head_organisation_e_mail
+    - group.type.organisation
+id: group.organisation.field_head_organisation_e_mail
+field_name: field_head_organisation_e_mail
+entity_type: group
+bundle: organisation
+label: 'Head Organisation E-Mail'
+description: 'Use this field for one or multiple addresses for reminding notifications.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: email

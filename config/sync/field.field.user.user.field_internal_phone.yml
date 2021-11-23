@@ -1,0 +1,23 @@
+uuid: 7ce33635-e445-4ce3-a593-a21bbec386a1
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.user.field_internal_phone
+  module:
+    - telephone
+    - user
+id: user.user.field_internal_phone
+field_name: field_internal_phone
+entity_type: user
+bundle: user
+label: internal-phone
+description: ''
+required: false
+translatable: false
+default_value:
+  -
+    value: '+49 1234 12345'
+default_value_callback: ''
+settings: {  }
+field_type: telephone

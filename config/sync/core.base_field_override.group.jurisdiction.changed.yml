@@ -1,0 +1,18 @@
+uuid: e56461e6-0cc4-4be8-a4d9-4ba6d4f5baeb
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.jurisdiction
+id: group.jurisdiction.changed
+field_name: changed
+entity_type: group
+bundle: jurisdiction
+label: 'Changed on'
+description: 'The time that the group was last edited.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: changed

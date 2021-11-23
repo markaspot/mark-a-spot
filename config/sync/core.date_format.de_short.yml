@@ -1,0 +1,8 @@
+uuid: e68c1f14-b7fb-4462-ac64-af5e05fed639
+langcode: en
+status: true
+dependencies: {  }
+id: de_short
+label: 'De Short'
+locked: false
+pattern: d.m.Y

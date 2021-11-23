@@ -1,0 +1,30 @@
+uuid: fbc17b88-c22a-4d8c-adb7-38988c177629
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_geolocation
+    - node.type.service_request
+  module:
+    - geolocation
+_core:
+  default_config_hash: null
+id: node.service_request.field_geolocation
+field_name: field_geolocation
+entity_type: node
+bundle: service_request
+label: Location
+description: '<span id="locateMe">Use the GPS-Localization<span> to show your current position on the map.'
+required: false
+translatable: false
+default_value:
+  -
+    lat: '40.73'
+    lng: '-73.93'
+    lat_sin: '0.65249527263419'
+    lat_cos: '0.75779279436402'
+    lng_rad: '-1.2903219159994'
+    value: '40.73, -73.93'
+default_value_callback: ''
+settings: {  }
+field_type: geolocation

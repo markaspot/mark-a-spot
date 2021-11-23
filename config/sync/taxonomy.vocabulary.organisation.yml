@@ -1,0 +1,13 @@
+uuid: 9b643c4d-6550-4ce1-a814-dc07bc0f2a09
+langcode: en
+status: true
+dependencies:
+  enforced:
+    module:
+      - service_request
+_core:
+  default_config_hash: null
+name: Organisation
+vid: organisation
+description: 'Die Organisation, die für die Anliegen verantwortlich ist.'
+weight: 0

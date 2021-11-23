@@ -1,0 +1,90 @@
+uuid: c28a4a0a-e4ef-4427-8829-3ff9f1b9d073
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.taxonomy_term.service_category.field_category_gid
+    - field.field.taxonomy_term.service_category.field_category_hex
+    - field.field.taxonomy_term.service_category.field_category_icon
+    - field.field.taxonomy_term.service_category.field_service_code
+    - taxonomy.vocabulary.service_category
+  module:
+    - color_field
+    - fa_icon_class
+    - path
+    - text
+  enforced:
+    module:
+      - service_request
+_core:
+  default_config_hash: null
+id: taxonomy_term.service_category.default
+targetEntityType: taxonomy_term
+bundle: service_category
+mode: default
+content:
+  description:
+    type: text_textarea
+    weight: 1
+    region: content
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
+  field_category_gid:
+    type: string_textfield
+    weight: 5
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  field_category_hex:
+    type: color_field_widget_html5
+    weight: 6
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_category_icon:
+    type: fa_icon_class
+    weight: 7
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_service_code:
+    type: string_textfield
+    weight: 4
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  langcode:
+    type: language_select
+    weight: 2
+    region: content
+    settings:
+      include_locked: true
+    third_party_settings: {  }
+  name:
+    type: string_textfield
+    weight: 0
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  path:
+    type: path
+    weight: 3
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  status:
+    type: boolean_checkbox
+    weight: 8
+    region: content
+    settings:
+      display_label: true
+    third_party_settings: {  }
+hidden: {  }

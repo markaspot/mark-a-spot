@@ -1,0 +1,13 @@
+uuid: 95ba3eab-fb42-4a25-ad56-ee197c16fef4
+langcode: en
+status: true
+dependencies:
+  module:
+    - comment
+_core:
+  default_config_hash: null
+id: comment_publish_action
+label: 'Publish comment'
+type: comment
+plugin: 'entity:publish_action:comment'
+configuration: {  }

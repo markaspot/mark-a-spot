@@ -1,0 +1,30 @@
+tax_status: service_status
+status_archivable:
+  5: '5'
+status_archived: '6'
+unpublish: 1
+days:
+  35: '10'
+  36: '10'
+  37: '10'
+  38: '10'
+  39: '10'
+  40: '10'
+  41: '10'
+  42: '10'
+  43: '10'
+  44: '10'
+  45: '10'
+  46: '10'
+  47: '10'
+  48: '10'
+  49: '10'
+  50: '10'
+  51: '10'
+  52: '10'
+anonymize: 1
+anonymize_fields:
+  28: '28'
+  33: '33'
+  37: '37'
+langcode: en

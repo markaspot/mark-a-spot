@@ -1,0 +1,20 @@
+uuid: 02fb1a43-9c7f-4a00-a3db-20dbf45cce74
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.jurisdiction
+id: group.jurisdiction.uid
+field_name: uid
+entity_type: group
+bundle: jurisdiction
+label: 'Group creator'
+description: 'The username of the group creator.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: 'Drupal\group\Entity\Group::getDefaultEntityOwner'
+settings:
+  handler: default
+  handler_settings: {  }
+field_type: entity_reference

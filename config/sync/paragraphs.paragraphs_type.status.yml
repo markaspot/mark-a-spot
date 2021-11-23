@@ -1,0 +1,12 @@
+uuid: c51a9510-b302-4335-bbfd-f50c6ded95f7
+langcode: en
+status: true
+dependencies: {  }
+_core:
+  default_config_hash: null
+id: status
+label: Status
+icon_uuid: null
+icon_default: null
+description: null
+behavior_plugins: {  }

@@ -1,0 +1,140 @@
+uuid: 7882d102-5e1e-4883-9013-8e090869bd96
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.node.service_request.field_e_mail
+    - field.storage.node.field_e_mail
+    - node.type.service_request
+  module:
+    - eca_content
+id: process_tunr6d6
+modeller: bpmn_io
+label: 'Notify Status'
+version: '1.0'
+weight: -10
+events:
+  Event_04bz8yl:
+    plugin: 'content_entity:update'
+    label: 'Update Service Request'
+    configuration:
+      type: 'node service_request'
+    successors:
+      - id: Gateway_02ldgot
+        condition: Flow_1bodg9x
+conditions:
+  Flow_1bodg9x:
+    plugin: eca_entity_field_value_changed
+    configuration:
+      field_name: field_status.target_id
+      negate: true
+      entity: ''
+  Flow_0kbs1sz:
+    plugin: eca_entity_field_value
+    configuration:
+      expected_value: '5'
+      field_name: field_status.target_id
+      operator: equal
+      type: value
+      case: true
+      negate: true
+      entity: ''
+  Flow_0ktblta:
+    plugin: eca_entity_field_value
+    configuration:
+      expected_value: '1'
+      field_name: field_notification.value
+      operator: equal
+      type: value
+      case: true
+      negate: true
+      entity: ''
+  Flow_0bs2byv:
+    plugin: eca_entity_field_value
+    configuration:
+      expected_value: '30'
+      field_name: field_status.target_id
+      operator: equal
+      type: value
+      case: true
+      negate: true
+      entity: ''
+  Flow_1joltme:
+    plugin: eca_entity_field_value
+    configuration:
+      expected_value: '4'
+      field_name: field_status.target_id
+      operator: equal
+      type: value
+      case: true
+      negate: true
+      entity: ''
+gateways:
+  Gateway_02ldgot:
+    type: 0
+    successors:
+      - id: Gateway_0nyfe5b
+        condition: Flow_0ktblta
+  Gateway_0nyfe5b:
+    type: 0
+    successors:
+      - id: Activity_1u8e4au
+        condition: Flow_0kbs1sz
+      - id: Activity_1rxwbas
+        condition: Flow_0bs2byv
+      - id: Activity_1w5ikso
+        condition: Flow_1joltme
+actions:
+  Activity_1u8e4au:
+    plugin: action_send_email_action
+    label: 'Send E-Mail Closed'
+    configuration:
+      recipient: '[node:field_e_mail:value]'
+      subject: 'Solved! Your Service Request #[node:request_id]'
+      message: |
+        Good day!
+
+        Your request with number #[node:request_id] has been received, and it has been assigned to the relevant department for processing.
+
+        Please click on the following link to access additional information about your request at any time:
+
+        [site:url][node:url:path]
+
+        Please note: If your matter is an urgent emergency or poses an immediate threat, please contact the police (110) or fire department (112) immediately. Your request will be processed by the City of Mascity during regular business hours.
+
+      replace_tokens: ''
+    successors: {}
+  Activity_1rxwbas:
+    plugin: action_send_email_action
+    label: 'Send E-Mail'
+    configuration:
+      recipient: '[node:field_e_mail:value]'
+      subject: 'Your Request #[node:request_id] in Mängelmelder Mascity. Unfortunately, we are not responsible.'
+      message: |
+        Good day!
+
+        Your request has been reviewed and unfortunately cannot be further processed. The City of Mascity is not responsible for this type of request.
+
+        Please click on the following link to access additional information about your request at any time:
+
+        [site:url][node:url:path]
+
+        Please note: If your matter is an urgent emergency or poses an immediate threat, please contact the police (110) or fire department (112) immediately. Your request will be processed by the City of Mascity during regular business hours.
+
+        For more information about our business hours, please visit: https://www.bonn.de/?sp:id=61983
+
+        --
+        This is an automatically generated email, and unfortunately, you cannot reply to it.
+      replace_tokens: ''
+    successors: {}
+  Activity_1w5ikso:
+    plugin: action_send_email_action
+    label: 'Send E-Mail Update'
+    configuration:
+      recipient: '[node:field_e_mail:value]'
+      subject: 'Update! Your Request #[node:request_id] in Mascity 311'
+      message: |
+        Good day! Thank you for your contribution. Your request has been forwarded to the responsible department and is now being processed. You will receive a final notification by email after it has been completed.
+        -- This is an automatically generated email, and unfortunately, you cannot reply to it.
+      replace_tokens: ''
+    successors: {}

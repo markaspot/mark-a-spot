@@ -1,0 +1,18 @@
+uuid: d17389b0-edb8-4a2b-a151-aaa832937a8e
+langcode: en
+status: true
+dependencies:
+  config:
+    - block_content.type.mas_custom
+id: block_content.mas_custom.info
+field_name: info
+entity_type: block_content
+bundle: mas_custom
+label: 'Block description'
+description: 'A brief description of your block.'
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

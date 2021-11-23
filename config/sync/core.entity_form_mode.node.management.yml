@@ -1,0 +1,10 @@
+uuid: 3843e58d-94f2-4adc-99e7-5b1c7eb2d724
+langcode: en
+status: true
+dependencies:
+  module:
+    - node
+id: node.management
+label: Management
+targetEntityType: node
+cache: true

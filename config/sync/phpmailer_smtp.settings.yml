@@ -1,0 +1,23 @@
+_core:
+  default_config_hash: null
+smtp_host: in-v3.mailjet.com
+smtp_hostbackup: ''
+smtp_port: 25
+smtp_protocol: ''
+smtp_username: b5ce0a88f42e7136a7a55db3cd235828
+smtp_password: f6b42cd8d4f25a40a0760e72200a2ad6
+smtp_hide_password: true
+smtp_authentication_type: basic_auth
+smtp_fromname: ''
+smtp_always_replyto: false
+smtp_keepalive: false
+smtp_debug: 0
+smtp_debug_log: false
+phpmailer_smtp_test: ''
+smtp_ssl_verify_peer: true
+smtp_ssl_verify_peer_name: true
+smtp_ssl_allow_self_signed: false
+smtp_envelope_sender_option: default
+smtp_envelope_sender: ''
+smtp_ehlo_host: ''
+smtp_timeout: 30

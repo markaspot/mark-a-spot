@@ -1,0 +1,20 @@
+uuid: 7e7be491-ee9c-47ac-a422-d1926d365af9
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.relationship_type.organisation-group_membership
+  module:
+    - path
+id: group_relationship.organisation-group_membership.path
+field_name: path
+entity_type: group_relationship
+bundle: organisation-group_membership
+label: 'URL alias'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: path

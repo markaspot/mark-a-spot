@@ -1,0 +1,28 @@
+uuid: 03f288ac-695f-46b3-9bf4-6833305e0799
+langcode: en
+status: true
+dependencies:
+  module:
+    - markaspot_action_stats
+    - system
+  theme:
+    - mas_olivero
+id: markaspotstatsaction
+theme: mas_olivero
+region: hero
+weight: -12
+provider: null
+plugin: 'Markaspot Action Stats'
+settings:
+  id: 'Markaspot Action Stats'
+  label: 'Mark-a-Spot: Stats Action'
+  label_display: '0'
+  provider: markaspot_action_stats
+  body:
+    value: "\r\n      <ul class=\"list-group list-group-horizontal-xxl\">\r\n\t<li class=\"list-group-item heatmap\"><a href=\"#\" tabindex=\"-1\"><i class=\"fas fa-thermometer-empty\">&nbsp;</i>Heatmap</a></li>\r\n\t<li class=\"list-group-item time-control\"><a href=\"#\" tabindex=\"-1\"><i class=\"far fa-clock\">&nbsp;</i> Zeitstrahl</a></li>\r\n</ul>\r\n<p>Here you have the possibility to visualize focal points of the messages in the map or to trace the temporal distribution.</p>\r\n"
+    format: full_html
+visibility:
+  request_path:
+    id: request_path
+    negate: false
+    pages: /visualization

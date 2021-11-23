@@ -1,0 +1,22 @@
+uuid: 58579f33-46bc-4ca5-8849-99d4a50f1c70
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.boilerplate
+id: node.boilerplate.status
+field_name: status
+entity_type: node
+bundle: boilerplate
+label: Published
+description: ''
+required: false
+translatable: false
+default_value:
+  -
+    value: 1
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean

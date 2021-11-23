@@ -1,0 +1,27 @@
+uuid: cb6badee-6fd8-41a4-9768-7cf89f650a24
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.taxonomy_term.field_status_hex
+    - taxonomy.vocabulary.service_status
+  module:
+    - color_field
+  enforced:
+    module:
+      - service_request
+_core:
+  default_config_hash: null
+id: taxonomy_term.service_status.field_status_hex
+field_name: field_status_hex
+entity_type: taxonomy_term
+bundle: service_status
+label: 'Status Color'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  opacity: 1
+field_type: color_field_type

@@ -1,0 +1,66 @@
+uuid: 79a9fd45-8a30-4afa-b44a-e219abbfbdc4
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.taxonomy_term.service_category.field_category_gid
+    - field.field.taxonomy_term.service_category.field_category_hex
+    - field.field.taxonomy_term.service_category.field_category_icon
+    - field.field.taxonomy_term.service_category.field_service_code
+    - taxonomy.vocabulary.service_category
+  module:
+    - color_field
+    - fa_icon_class
+    - text
+  enforced:
+    module:
+      - service_request
+_core:
+  default_config_hash: null
+id: taxonomy_term.service_category.default
+targetEntityType: taxonomy_term
+bundle: service_category
+mode: default
+content:
+  description:
+    type: text_default
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    weight: 0
+    region: content
+  field_category_gid:
+    type: string
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: 1
+    region: content
+  field_category_hex:
+    type: color_field_formatter_css
+    label: above
+    settings:
+      selector: body
+      property: background-color
+      important: '1'
+      opacity: true
+      advanced: false
+      css: ''
+    third_party_settings: {  }
+    weight: 2
+    region: content
+  field_category_icon:
+    type: fa_icon_class
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    weight: 3
+    region: content
+hidden:
+  entity_print_view_epub: true
+  entity_print_view_pdf: true
+  entity_print_view_word_docx: true
+  field_service_code: true
+  langcode: true
+  search_api_excerpt: true

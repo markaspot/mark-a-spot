@@ -1,0 +1,14 @@
+uuid: 6316f6ac-210c-4e11-ad9a-ed99ec4df377
+langcode: en
+status: true
+dependencies:
+  config:
+    - user.role.api_editor
+  module:
+    - user
+id: user_add_role_action.api_editor
+label: 'Den ausgewählten Benutzern die Rolle API Editor zuweisen'
+type: user
+plugin: user_add_role_action
+configuration:
+  rid: api_editor

@@ -1,0 +1,20 @@
+uuid: 9b4f3c0e-d502-4019-bab1-db03f8dd6e9d
+langcode: en
+status: true
+dependencies:
+  config:
+    - media.type.request_image
+id: media.request_image.uid
+field_name: uid
+entity_type: media
+bundle: request_image
+label: 'Authored by'
+description: 'The user ID of the author.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: 'Drupal\media\Entity\Media::getDefaultEntityOwner'
+settings:
+  handler: default
+  handler_settings: {  }
+field_type: entity_reference

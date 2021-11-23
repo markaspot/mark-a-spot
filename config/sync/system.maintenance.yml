@@ -1,0 +1,4 @@
+_core:
+  default_config_hash: null
+langcode: en
+message: '@site is currently under maintenance. We should be back shortly. Thank you for your patience.'

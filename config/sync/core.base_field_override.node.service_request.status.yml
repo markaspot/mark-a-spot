@@ -1,0 +1,22 @@
+uuid: 46e92bed-c348-485f-9905-0bb917708882
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.service_request
+id: node.service_request.status
+field_name: status
+entity_type: node
+bundle: service_request
+label: Veröffentlicht
+description: ''
+required: false
+translatable: false
+default_value:
+  -
+    value: 1
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean

@@ -1,0 +1,14 @@
+uuid: c24ca23f-4cac-4330-baa5-5efc8485b6ae
+langcode: en
+status: true
+dependencies: {  }
+_core:
+  default_config_hash: null
+id: feedback
+label: 'Website feedback'
+recipients:
+  - admin@example.com
+reply: ''
+weight: 0
+message: null
+redirect: null

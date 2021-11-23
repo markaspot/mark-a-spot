@@ -1,0 +1,19 @@
+uuid: 25e4ef2c-830c-46cb-9410-e0295582862e
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.group.field_head_organisation_e_mail
+    - group.type.jurisdiction
+id: group.jurisdiction.field_head_organisation_e_mail
+field_name: field_head_organisation_e_mail
+entity_type: group
+bundle: jurisdiction
+label: 'Head Organisation E-Mail'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: email

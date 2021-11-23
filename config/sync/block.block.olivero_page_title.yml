@@ -1,0 +1,20 @@
+uuid: eed1529e-806d-4e3e-8090-3236198c2f04
+langcode: en
+status: true
+dependencies:
+  theme:
+    - olivero
+_core:
+  default_config_hash: null
+id: olivero_page_title
+theme: olivero
+region: content_above
+weight: -5
+provider: null
+plugin: page_title_block
+settings:
+  id: page_title_block
+  label: 'Page title'
+  label_display: '0'
+  provider: core
+visibility: {  }

@@ -1,0 +1,18 @@
+uuid: 26caa89b-62aa-48b9-8099-892a6e612c11
+langcode: en
+status: true
+dependencies:
+  module:
+    - group
+_core:
+  default_config_hash: null
+id: group_relationship
+label: 'Group relationship'
+type: 'canonical_entities:group_relationship'
+pattern: 'group/[group_relationship:group:id]/[group_relationship:pretty-path-key]/[group_relationship:id]'
+selection_criteria: {  }
+selection_logic: and
+weight: -5
+relationships:
+  'group_relationship:langcode:language':
+    label: Language

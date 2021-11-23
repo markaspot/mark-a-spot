@@ -1,0 +1,18 @@
+uuid: a1b6d118-474f-40af-ac9c-0ac12f1b6e74
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.jurisdiction
+id: group.jurisdiction.label
+field_name: label
+entity_type: group
+bundle: jurisdiction
+label: Name
+description: ''
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

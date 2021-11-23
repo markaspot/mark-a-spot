@@ -1,0 +1,21 @@
+uuid: b5c07030-1edd-4d01-91c2-905634a889c1
+langcode: en
+status: false
+dependencies:
+  module:
+    - node
+  theme:
+    - mas_custom
+id: mas_custom_newsfeeds
+theme: mas_custom
+region: header
+weight: -12
+provider: null
+plugin: node_syndicate_block
+settings:
+  id: node_syndicate_block
+  label: Newsfeeds
+  label_display: '0'
+  provider: node
+  block_count: 10
+visibility: {  }

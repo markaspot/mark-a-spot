@@ -1,0 +1,22 @@
+uuid: a896703f-a2c6-419c-bb7a-96065b496c80
+langcode: en
+status: true
+dependencies:
+  config:
+    - block_content.type.mas_custom
+id: block_content.mas_custom.status
+field_name: status
+entity_type: block_content
+bundle: mas_custom
+label: Published
+description: ''
+required: false
+translatable: false
+default_value:
+  -
+    value: 1
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean

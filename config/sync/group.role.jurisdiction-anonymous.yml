@@ -1,0 +1,15 @@
+uuid: 2f40e0de-18db-49e4-9b65-64df3ad607e0
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.jurisdiction
+    - user.role.anonymous
+id: jurisdiction-anonymous
+label: Anonymous
+weight: -102
+admin: false
+scope: outsider
+global_role: anonymous
+group_type: jurisdiction
+permissions: {  }

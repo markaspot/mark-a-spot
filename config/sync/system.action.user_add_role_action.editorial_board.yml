@@ -1,0 +1,14 @@
+uuid: 2098bada-7430-4b55-8424-335e15971cd8
+langcode: en
+status: true
+dependencies:
+  config:
+    - user.role.editorial_board
+  module:
+    - user
+id: user_add_role_action.editorial_board
+label: 'Add the Editorial board role to the selected user(s)'
+type: user
+plugin: user_add_role_action
+configuration:
+  rid: editorial_board

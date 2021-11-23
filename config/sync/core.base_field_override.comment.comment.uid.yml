@@ -1,0 +1,22 @@
+uuid: 789ee908-eef0-4e40-bd16-88789082b0e7
+langcode: en
+status: true
+dependencies:
+  config:
+    - comment.type.comment
+id: comment.comment.uid
+field_name: uid
+entity_type: comment
+bundle: comment
+label: 'User ID'
+description: 'The user ID of the comment author.'
+required: false
+translatable: false
+default_value:
+  -
+    target_id: '0'
+default_value_callback: ''
+settings:
+  handler: default
+  handler_settings: {  }
+field_type: entity_reference

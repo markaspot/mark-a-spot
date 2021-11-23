@@ -1,0 +1,131 @@
+uuid: 3d0c7c55-00a0-4810-afa7-62211c4db7cb
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.boilerplate
+    - node.type.page
+    - node.type.service_request
+    - taxonomy.vocabulary.service_category
+    - taxonomy.vocabulary.service_provider
+    - taxonomy.vocabulary.service_status
+    - taxonomy.vocabulary.tags
+  module:
+    - contextual
+    - devel
+    - field_permissions
+    - file
+    - maillog
+    - markaspot_open311
+    - markaspot_validation
+    - node
+    - paragraphs
+    - system
+    - taxonomy
+    - toolbar
+_core:
+  default_config_hash: null
+id: editorial_board
+label: 'Editorial board'
+weight: -4
+is_admin: null
+permissions:
+  - 'access administration pages'
+  - 'access content'
+  - 'access content overview'
+  - 'access contextual links'
+  - 'access files overview'
+  - 'access open311 extension'
+  - 'access site in maintenance mode'
+  - 'access site reports'
+  - 'access taxonomy overview'
+  - 'access toolbar'
+  - 'access user profiles'
+  - 'administer maillog'
+  - 'administer nodes'
+  - 'administer users'
+  - 'bypass mas validation'
+  - 'bypass node access'
+  - 'create boilerplate content'
+  - 'create field_address'
+  - 'create field_boilerplate'
+  - 'create field_e_mail'
+  - 'create field_notes'
+  - 'create field_priority'
+  - 'create field_service_provider'
+  - 'create field_service_provider_notes'
+  - 'create field_sp_attachment'
+  - 'create field_status'
+  - 'create field_status_note'
+  - 'create field_status_notes'
+  - 'create page content'
+  - 'create terms in service_category'
+  - 'create terms in service_provider'
+  - 'delete any boilerplate content'
+  - 'delete own boilerplate content'
+  - 'delete terms in service_category'
+  - 'edit any boilerplate content'
+  - 'edit any page content'
+  - 'edit any service_request content'
+  - 'edit field_address'
+  - 'edit field_approved'
+  - 'edit field_attachment'
+  - 'edit field_boilerplate'
+  - 'edit field_e_mail'
+  - 'edit field_notes'
+  - 'edit field_priority'
+  - 'edit field_request_media'
+  - 'edit field_service_provider'
+  - 'edit field_service_provider_notes'
+  - 'edit field_sp_attachment'
+  - 'edit field_status'
+  - 'edit field_status_note'
+  - 'edit field_status_notes'
+  - 'edit own boilerplate content'
+  - 'edit own field_address'
+  - 'edit own field_approved'
+  - 'edit own field_attachment'
+  - 'edit own field_boilerplate'
+  - 'edit own field_e_mail'
+  - 'edit own field_notes'
+  - 'edit own field_priority'
+  - 'edit own field_service_provider'
+  - 'edit own field_service_provider_notes'
+  - 'edit own field_sp_attachment'
+  - 'edit own field_status'
+  - 'edit own field_status_note'
+  - 'edit own field_status_notes'
+  - 'edit own page content'
+  - 'edit own service_request content'
+  - 'edit terms in service_category'
+  - 'edit terms in service_provider'
+  - 'edit terms in service_status'
+  - 'edit terms in tags'
+  - 'switch users'
+  - 'view field_approved'
+  - 'view field_attachment'
+  - 'view field_boilerplate'
+  - 'view field_e_mail'
+  - 'view field_notes'
+  - 'view field_priority'
+  - 'view field_service_provider'
+  - 'view field_service_provider_notes'
+  - 'view field_sp_attachment'
+  - 'view field_status'
+  - 'view field_status_note'
+  - 'view maillog'
+  - 'view own field_address'
+  - 'view own field_approved'
+  - 'view own field_attachment'
+  - 'view own field_e_mail'
+  - 'view own field_notes'
+  - 'view own field_priority'
+  - 'view own field_service_provider'
+  - 'view own field_service_provider_notes'
+  - 'view own field_sp_attachment'
+  - 'view own field_status'
+  - 'view own field_status_note'
+  - 'view own field_status_notes'
+  - 'view own unpublished content'
+  - 'view the administration theme'
+  - 'view unpublished paragraphs'

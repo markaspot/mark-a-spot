@@ -1,0 +1,25 @@
+uuid: a39a960b-61fe-465f-9e5a-32470b8e5c5c
+langcode: en
+status: true
+dependencies:
+  module:
+    - menu_ui
+  enforced:
+    module:
+      - service_request
+    enforced:
+      module:
+        - service_request
+third_party_settings:
+  menu_ui:
+    available_menus: {  }
+    parent: ''
+_core:
+  default_config_hash: null
+name: 'Service Request'
+type: service_request
+description: 'Open311 Service Request'
+help: ''
+new_revision: true
+preview_mode: 1
+display_submitted: false

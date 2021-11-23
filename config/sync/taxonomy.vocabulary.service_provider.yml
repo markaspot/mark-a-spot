@@ -1,0 +1,8 @@
+uuid: de161898-8a86-45a1-a217-eca3dda954ad
+langcode: zxx
+status: true
+dependencies: {  }
+name: 'Service Provider'
+vid: service_provider
+description: 'Service Provider for external editing'
+weight: 0

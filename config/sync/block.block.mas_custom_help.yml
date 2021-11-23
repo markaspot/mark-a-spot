@@ -1,0 +1,20 @@
+uuid: 0165da62-f159-4ab6-8d26-43e9cdb4ab81
+langcode: en
+status: false
+dependencies:
+  module:
+    - help
+  theme:
+    - mas_custom
+id: mas_custom_help
+theme: mas_custom
+region: header
+weight: -11
+provider: null
+plugin: help_block
+settings:
+  id: help_block
+  label: Help
+  label_display: visible
+  provider: help
+visibility: {  }

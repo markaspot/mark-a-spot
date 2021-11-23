@@ -1,0 +1,19 @@
+uuid: a1dc480a-cdb2-44fd-9ea5-869510608b8d
+langcode: en
+status: true
+dependencies:
+  config:
+    - group.type.organisation
+    - user.role.authenticated
+id: organisation-member
+label: Member
+weight: -9
+admin: false
+scope: insider
+global_role: authenticated
+group_type: organisation
+permissions:
+  - 'create group_node:service_request entity'
+  - 'view group'
+  - 'view group_node:service_request entity'
+  - 'view unpublished group_node:service_request entity'

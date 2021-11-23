@@ -1,0 +1,28 @@
+uuid: ef34eef4-22ea-4949-9b3e-20c5c42d96af
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.group_relationship.jurisdiction-group_membership.group_roles
+    - group.relationship_type.jurisdiction-group_membership
+id: group_relationship.jurisdiction-group_membership.default
+targetEntityType: group_relationship
+bundle: jurisdiction-group_membership
+mode: default
+content:
+  group_roles:
+    type: entity_reference_label
+    label: above
+    settings:
+      link: false
+    third_party_settings: {  }
+    weight: -4
+    region: content
+hidden:
+  entity_id: true
+  entity_print_view_epub: true
+  entity_print_view_pdf: true
+  entity_print_view_word_docx: true
+  langcode: true
+  search_api_excerpt: true
+  uid: true

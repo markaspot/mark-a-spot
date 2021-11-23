@@ -1,0 +1,20 @@
+uuid: 66924bf3-7932-457d-b1ab-6053c0f60c4c
+langcode: en
+status: true
+dependencies:
+  theme:
+    - mas_olivero
+id: tabs
+theme: mas_olivero
+region: highlighted
+weight: 0
+provider: null
+plugin: local_tasks_block
+settings:
+  id: local_tasks_block
+  label: Tabs
+  label_display: '0'
+  provider: core
+  primary: true
+  secondary: true
+visibility: {  }

@@ -1,0 +1,25 @@
+uuid: 15dc2d5a-78d8-43ca-aa1a-889b207ef9ba
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.body
+    - node.type.boilerplate
+  module:
+    - text
+_core:
+  default_config_hash: null
+id: node.boilerplate.body
+field_name: body
+entity_type: node
+bundle: boilerplate
+label: Textkörper
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  display_summary: true
+  required_summary: false
+field_type: text_with_summary

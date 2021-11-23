@@ -1,0 +1,20 @@
+uuid: 337465d8-4cd6-4d96-bf86-b95971354257
+langcode: en
+status: true
+dependencies:
+  module:
+    - help
+  theme:
+    - mas_olivero
+id: help
+theme: mas_olivero
+region: content_above
+weight: -11
+provider: null
+plugin: help_block
+settings:
+  id: help_block
+  label: Help
+  label_display: visible
+  provider: help
+visibility: {  }

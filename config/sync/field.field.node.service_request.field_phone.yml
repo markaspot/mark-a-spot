@@ -1,0 +1,23 @@
+uuid: fed98189-ca33-4b16-9c04-e5825900514d
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_phone
+    - node.type.service_request
+  module:
+    - telephone
+id: node.service_request.field_phone
+field_name: field_phone
+entity_type: node
+bundle: service_request
+label: Phone
+description: 'Please enter a telephone number.'
+required: false
+translatable: false
+default_value:
+  -
+    value: '+ 49 228 12345'
+default_value_callback: ''
+settings: {  }
+field_type: telephone

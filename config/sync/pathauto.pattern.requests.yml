@@ -1,0 +1,24 @@
+uuid: 3cb95547-85a8-41e3-b492-251fb8cb88fa
+langcode: en
+status: true
+dependencies:
+  module:
+    - node
+_core:
+  default_config_hash: null
+id: requests
+label: requests
+type: 'canonical_entities:node'
+pattern: '/requests/[node:request_id]'
+selection_criteria:
+  56a8d215-6a30-17841-8aad-8d2156a3045b10d8aadc7b7d069cb:
+    id: 'entity_bundle:node'
+    negate: false
+    uuid: 56a8d215-6a30-17841-8aad-8d2156a3045b10d8aadc7b7d069cb
+    context_mapping:
+      node: node
+    bundles:
+      service_request: service_request
+selection_logic: and
+weight: -5
+relationships: {  }

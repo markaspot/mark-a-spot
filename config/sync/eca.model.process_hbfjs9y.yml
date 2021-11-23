@@ -1,0 +1,102 @@
+uuid: a8f94c1e-9ff0-4db5-9457-c51a72893cc1
+langcode: en
+status: true
+dependencies:
+  config:
+    - eca.eca.process_hbfjs9y
+id: process_hbfjs9y
+label: noname
+tags:
+  - ''
+documentation: ''
+filename: ''
+modeldata: |
+  <?xml version="1.0" encoding="UTF-8"?>
+  <bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:qa="http://some-company/schema/bpmn/qa" id="sample-diagram" targetNamespace="http://bpmn.io/schema/bpmn" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd">
+    <bpmn2:process id="Process_hbfJS9y" isExecutable="true">
+      <bpmn2:extensionElements />
+      <bpmn2:startEvent id="Event_0n923i7" name="Prepare Form" camunda:modelerTemplate="org.drupal.event.content_entity:prepareform">
+        <bpmn2:extensionElements>
+          <camunda:properties>
+            <camunda:property name="pluginid" value="content_entity:prepareform" />
+          </camunda:properties>
+          <camunda:field name="type">
+            <camunda:string>node service_request</camunda:string>
+          </camunda:field>
+        </bpmn2:extensionElements>
+        <bpmn2:outgoing>Flow_16utpm6</bpmn2:outgoing>
+        <bpmn2:outgoing>Flow_1hfex0v</bpmn2:outgoing>
+      </bpmn2:startEvent>
+      <bpmn2:task id="Activity_1k65tc0" camunda:modelerTemplate="org.drupal.action.eca_content_set_form_display">
+        <bpmn2:extensionElements>
+          <camunda:properties>
+            <camunda:property name="pluginid" value="eca_content_set_form_display" />
+          </camunda:properties>
+          <camunda:field name="display_mode">
+            <camunda:string>management</camunda:string>
+          </camunda:field>
+        </bpmn2:extensionElements>
+        <bpmn2:incoming>Flow_10wpw8h</bpmn2:incoming>
+      </bpmn2:task>
+      <bpmn2:sequenceFlow id="Flow_16utpm6" camunda:modelerTemplate="org.drupal.condition.eca_current_user_role" sourceRef="Event_0n923i7" targetRef="Gateway_1j8m4k3">
+        <bpmn2:extensionElements>
+          <camunda:properties>
+            <camunda:property name="pluginid" value="eca_current_user_role" />
+          </camunda:properties>
+          <camunda:field name="role">
+            <camunda:string>moderator</camunda:string>
+          </camunda:field>
+          <camunda:field name="negate">
+            <camunda:string>no</camunda:string>
+          </camunda:field>
+        </bpmn2:extensionElements>
+      </bpmn2:sequenceFlow>
+      <bpmn2:exclusiveGateway id="Gateway_1j8m4k3">
+        <bpmn2:incoming>Flow_16utpm6</bpmn2:incoming>
+        <bpmn2:incoming>Flow_1hfex0v</bpmn2:incoming>
+        <bpmn2:outgoing>Flow_10wpw8h</bpmn2:outgoing>
+      </bpmn2:exclusiveGateway>
+      <bpmn2:sequenceFlow id="Flow_10wpw8h" sourceRef="Gateway_1j8m4k3" targetRef="Activity_1k65tc0" />
+      <bpmn2:sequenceFlow id="Flow_1hfex0v" camunda:modelerTemplate="org.drupal.condition.eca_current_user_role" sourceRef="Event_0n923i7" targetRef="Gateway_1j8m4k3">
+        <bpmn2:extensionElements>
+          <camunda:properties>
+            <camunda:property name="pluginid" value="eca_current_user_role" />
+          </camunda:properties>
+          <camunda:field name="role">
+            <camunda:string>authenticated</camunda:string>
+          </camunda:field>
+          <camunda:field name="negate">
+            <camunda:string>no</camunda:string>
+          </camunda:field>
+        </bpmn2:extensionElements>
+      </bpmn2:sequenceFlow>
+    </bpmn2:process>
+    <bpmndi:BPMNDiagram id="sid-5b7b4b55-627c-4dcf-b89f-ac312aee476a">
+      <bpmndi:BPMNPlane id="sid-f408a4f4-73b7-4473-b16f-32944cd641f6" bpmnElement="Process_hbfJS9y">
+        <bpmndi:BPMNShape id="Event_0n923i7_di" bpmnElement="Event_0n923i7">
+          <dc:Bounds x="142" y="262" width="36" height="36" />
+          <bpmndi:BPMNLabel>
+            <dc:Bounds x="126" y="305" width="68" height="14" />
+          </bpmndi:BPMNLabel>
+        </bpmndi:BPMNShape>
+        <bpmndi:BPMNShape id="Activity_1k65tc0_di" bpmnElement="Activity_1k65tc0">
+          <dc:Bounds x="390" y="240" width="100" height="80" />
+        </bpmndi:BPMNShape>
+        <bpmndi:BPMNShape id="Gateway_1j8m4k3_di" bpmnElement="Gateway_1j8m4k3" isMarkerVisible="true">
+          <dc:Bounds x="305" y="255" width="50" height="50" />
+        </bpmndi:BPMNShape>
+        <bpmndi:BPMNEdge id="Flow_16utpm6_di" bpmnElement="Flow_16utpm6">
+          <di:waypoint x="178" y="280" />
+          <di:waypoint x="305" y="280" />
+        </bpmndi:BPMNEdge>
+        <bpmndi:BPMNEdge id="Flow_10wpw8h_di" bpmnElement="Flow_10wpw8h">
+          <di:waypoint x="355" y="280" />
+          <di:waypoint x="390" y="280" />
+        </bpmndi:BPMNEdge>
+        <bpmndi:BPMNEdge id="Flow_1hfex0v_di" bpmnElement="Flow_1hfex0v">
+          <di:waypoint x="178" y="280" />
+          <di:waypoint x="305" y="280" />
+        </bpmndi:BPMNEdge>
+      </bpmndi:BPMNPlane>
+    </bpmndi:BPMNDiagram>
+  </bpmn2:definitions>

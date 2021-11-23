@@ -1,0 +1,8 @@
+parameters:
+    level: 0
+    paths:
+      - web/modules/custom
+      - web/profiles/contrib/markaspot
+    editorUrl: 'phpstorm://open?file=%%file%%&line=%%line%%'
+    ignoreErrors:
+      - '#Unsafe usage of new static\(\)#'

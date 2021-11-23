@@ -1,0 +1,12 @@
+uuid: fc1487ae-0a7d-4876-8321-489c87114070
+langcode: en
+status: true
+dependencies:
+  module:
+    - node
+_core:
+  default_config_hash: null
+id: node.gallery
+label: Gallery
+targetEntityType: node
+cache: true

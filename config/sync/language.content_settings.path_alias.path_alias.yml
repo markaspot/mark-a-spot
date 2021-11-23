@@ -1,0 +1,13 @@
+uuid: 8c89d0cf-8bf3-4bc7-8018-c08f10a77b74
+langcode: en
+status: true
+dependencies:
+  module:
+    - path_alias
+_core:
+  default_config_hash: null
+id: path_alias.path_alias
+target_entity_type_id: path_alias
+target_bundle: path_alias
+default_langcode: site_default
+language_alterable: false

@@ -1,0 +1,33 @@
+uuid: e11f885a-7f2a-4d4c-8dfd-d734a174bfe7
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_status_notes
+    - node.type.service_request
+    - paragraphs.paragraphs_type.status
+  module:
+    - entity_reference_revisions
+_core:
+  default_config_hash: null
+id: node.service_request.field_status_notes
+field_name: field_status_notes
+entity_type: node
+bundle: service_request
+label: 'Status Notes'
+description: 'Explanation of why status was changed to current state or more details on current status than conveyed with status alone.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:paragraph'
+  handler_settings:
+    target_bundles:
+      status: status
+    negate: 0
+    target_bundles_drag_drop:
+      status:
+        weight: 2
+        enabled: true
+field_type: entity_reference_revisions

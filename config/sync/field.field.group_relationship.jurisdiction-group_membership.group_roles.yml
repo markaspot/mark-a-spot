@@ -1,0 +1,22 @@
+uuid: d4d14672-7824-414a-b787-985e1790cf37
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.group_relationship.group_roles
+    - group.relationship_type.jurisdiction-group_membership
+id: group_relationship.jurisdiction-group_membership.group_roles
+field_name: group_roles
+entity_type: group_relationship
+bundle: jurisdiction-group_membership
+label: Roles
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'group_type:group_role'
+  handler_settings:
+    group_type_id: jurisdiction
+field_type: entity_reference

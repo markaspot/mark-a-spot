@@ -1,0 +1,21 @@
+uuid: fa75ab63-e69c-4266-afc6-a09a4fb29b15
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.taxonomy_term.field_organisation_e_mail
+    - taxonomy.vocabulary.organisation
+_core:
+  default_config_hash: null
+id: taxonomy_term.organisation.field_organisation_e_mail
+field_name: field_organisation_e_mail
+entity_type: taxonomy_term
+bundle: organisation
+label: 'Organisation E-Mail'
+description: 'Use this field for one or multiple e-mail addresses as recipients of notification mails.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: email

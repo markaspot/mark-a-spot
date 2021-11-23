@@ -1,0 +1,10 @@
+uuid: 2e0c3fb4-bf4d-19845-884a-c3fb4bf4d6d8583c84af18e47836b
+langcode: en
+status: true
+dependencies: {  }
+_core:
+  default_config_hash: null
+id: mas_custom
+label: 'Mark-a-Spot Custom'
+revision: 0
+description: ''

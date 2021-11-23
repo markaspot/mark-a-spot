@@ -1,0 +1,93 @@
+uuid: 92c9332c-333e-43e3-8834-3a2ab2004013
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.service_request
+  module:
+    - devel
+    - field_permissions
+    - markaspot_open311
+    - markaspot_validation
+    - node
+    - paragraphs
+    - system
+    - toolbar
+_core:
+  default_config_hash: null
+id: moderator
+label: Moderator
+weight: -5
+is_admin: null
+permissions:
+  - 'access content'
+  - 'access open311 extension'
+  - 'access toolbar'
+  - 'bypass mas validation'
+  - 'create field_address'
+  - 'create field_boilerplate'
+  - 'create field_e_mail'
+  - 'create field_notes'
+  - 'create field_priority'
+  - 'create field_service_provider'
+  - 'create field_service_provider_notes'
+  - 'create field_sp_attachment'
+  - 'create field_status'
+  - 'create field_status_note'
+  - 'create field_status_notes'
+  - 'edit any service_request content'
+  - 'edit field_address'
+  - 'edit field_approved'
+  - 'edit field_attachment'
+  - 'edit field_boilerplate'
+  - 'edit field_e_mail'
+  - 'edit field_notes'
+  - 'edit field_priority'
+  - 'edit field_request_media'
+  - 'edit field_service_provider'
+  - 'edit field_service_provider_notes'
+  - 'edit field_sp_attachment'
+  - 'edit field_status'
+  - 'edit field_status_note'
+  - 'edit field_status_notes'
+  - 'edit own field_address'
+  - 'edit own field_approved'
+  - 'edit own field_attachment'
+  - 'edit own field_boilerplate'
+  - 'edit own field_e_mail'
+  - 'edit own field_notes'
+  - 'edit own field_priority'
+  - 'edit own field_service_provider'
+  - 'edit own field_service_provider_notes'
+  - 'edit own field_sp_attachment'
+  - 'edit own field_status'
+  - 'edit own field_status_note'
+  - 'edit own field_status_notes'
+  - 'edit own service_request content'
+  - 'switch users'
+  - 'view field_approved'
+  - 'view field_attachment'
+  - 'view field_boilerplate'
+  - 'view field_e_mail'
+  - 'view field_notes'
+  - 'view field_priority'
+  - 'view field_service_provider'
+  - 'view field_service_provider_notes'
+  - 'view field_sp_attachment'
+  - 'view field_status'
+  - 'view field_status_note'
+  - 'view own field_address'
+  - 'view own field_approved'
+  - 'view own field_attachment'
+  - 'view own field_e_mail'
+  - 'view own field_notes'
+  - 'view own field_priority'
+  - 'view own field_service_provider'
+  - 'view own field_service_provider_notes'
+  - 'view own field_sp_attachment'
+  - 'view own field_status'
+  - 'view own field_status_note'
+  - 'view own field_status_notes'
+  - 'view own unpublished content'
+  - 'view the administration theme'
+  - 'view unpublished paragraphs'
