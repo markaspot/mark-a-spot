@@ -6532,12 +6532,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/markaspot/markaspot.git",
-                "reference": "48d17b1fc48cfc0995ad09da64587329a39c5a31"
+                "reference": "53faebea0f86ab081d975327345433085d324dce"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/markaspot/markaspot/zipball/48d17b1fc48cfc0995ad09da64587329a39c5a31",
-                "reference": "48d17b1fc48cfc0995ad09da64587329a39c5a31",
+                "url": "https://api.github.com/repos/markaspot/markaspot/zipball/53faebea0f86ab081d975327345433085d324dce",
+                "reference": "53faebea0f86ab081d975327345433085d324dce",
                 "shasum": ""
             },
             "require": {
@@ -6652,7 +6652,7 @@
                 "issues": "https://github.com/markaspot/markaspot/issues",
                 "source": "https://github.com/markaspot/markaspot/tree/10.6.x-dev"
             },
-            "time": "2023-07-02T14:50:40+00:00"
+            "time": "2023-07-02T15:55:06+00:00"
         },
         {
             "name": "markbaker/complex",
