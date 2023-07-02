@@ -45,6 +45,8 @@ RUN curl -OL https://github.com/drush-ops/drush-launcher/releases/latest/downloa
     --no-dev \
     --prefer-dist;
 
+RUN mkdir -p /app/data/web/sites/default/files
+
 # Set the permissions
 RUN chown -R www-data:www-data /app/data && \
     find /app/data/web/sites/default/files -type d -exec chmod 755 {} \; && \
