@@ -16,8 +16,6 @@ RUN apk add --no-cache \
     libpng \
     libpng-dev \
     mysql-client \
-    nodejs \
-    npm \
     patch \
     libzip-dev \
  && apk add --no-cache --virtual .build-deps \
