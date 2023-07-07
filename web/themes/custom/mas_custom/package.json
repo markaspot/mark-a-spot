@@ -15,7 +15,7 @@
   },
   "devDependencies": {
     "postcss-reporter": "^7.0.5",
-    "stylelint": "^15.3.0",
+    "stylelint": "^15.10.1",
     "stylelint-config-standard": "^31.0.0",
     "stylelint-order": "^6.0.3"
   }
