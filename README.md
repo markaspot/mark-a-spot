@@ -76,10 +76,26 @@ For local development, we recommend using [Docksal](https://docksal.io/), a Dock
     ```bash
     fin up
     ```
+4. Copy the local settings file to the web sites default directory:
+
+    ```bash
+    cp conf/settings.local.php web/sites/default/
+    ```
+5. Swap drush version as long https://github.com/docksal/docksal/issues/1783 is not solved:
+
+    ```bash
+    fin bash
+    echo -e "\n"'export PATH="${PROJECT_ROOT:-/var/www}/vendor/bin:$PATH"' >> $HOME/.profile;
+    source $HOME/.profile
+    ```
+6. Run `scripts/start.sh` in docksal CLI (see above)
+
 
 ### Configuration
 
+Copy the conf/settings.local.php into web sites default directory
 You can adjust the configuration of the Docker services by editing the `docksal.yml` file. For example, you can modify the database username and password, the PHP memory limit, and other settings.
+
 
 ### Usage
 
