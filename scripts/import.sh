@@ -4,7 +4,7 @@
 cd "$(dirname "$0")/.."
 
 # Install and enable required modules
-composer require drupal/migrate_tools drupal/migrate_plus drupal/migrate_source_csv
+composer require drupal/migrate_tools drupal/migrate_plus drupal/migrate_source_csv --update-no-dev
 
 drush en markaspot_default_content -y
 drush en migrate_tools migrate_plus migrate_source_csv -y

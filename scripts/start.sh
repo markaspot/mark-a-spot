@@ -73,7 +73,7 @@ if [ "$ENVIRONMENT" != "prod" ]; then
 
   printf "\e[36mOne-Time Login for User 1 ...\e[0m\n"
   printf "\e[36m...\e[0m\n"
-  drush uli
+  drush uli --uri=http://localhost
   printf "\e[36m \e[0m\n"
   printf "\e[36mInstallation completed...\e[0m\n"
 fi
