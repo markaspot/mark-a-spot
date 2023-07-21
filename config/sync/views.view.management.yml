@@ -463,6 +463,15 @@ display:
             date_format: short
             custom_date_format: ''
             timezone: ''
+            tooltip:
+              date_format: ''
+              custom_date_format: ''
+            time_diff:
+              enabled: false
+              future_format: '@interval hence'
+              past_format: '@interval ago'
+              granularity: 2
+              refresh: 60
           group_column: value
           group_columns: {  }
           group_rows: true
@@ -491,7 +500,7 @@ display:
           admin_label: ''
           entity_type: node
           plugin_id: search_api_field
-          label: 'Organisation'
+          label: Organisation
           exclude: false
           alter:
             alter_text: false
@@ -613,6 +622,15 @@ display:
             date_format: short
             custom_date_format: ''
             timezone: ''
+            tooltip:
+              date_format: ''
+              custom_date_format: ''
+            time_diff:
+              enabled: false
+              future_format: '@interval hence'
+              past_format: '@interval ago'
+              granularity: 2
+              refresh: 60
           group_column: value
           group_columns: {  }
           group_rows: true
@@ -865,8 +883,8 @@ display:
         options:
           submit_button: Apply
           reset_button: true
-          reset_button_label: 'Reset'
-          exposed_sorts_label: 'Sort'
+          reset_button_label: Reset
+          exposed_sorts_label: Sort
           expose_sort_order: true
           sort_asc_label: ASC
           sort_desc_label: DSC
@@ -1103,7 +1121,7 @@ display:
           exposed: true
           expose:
             operator_id: field_organisation_op
-            label: 'Organisation'
+            label: Organisation
             description: ''
             use_operator: false
             operator: field_organisation_op
@@ -1317,7 +1335,7 @@ display:
       path: admin/content/management
       menu:
         type: normal
-        title: Service Requests
+        title: 'Service Requests'
         description: ''
         weight: -89
         expanded: true

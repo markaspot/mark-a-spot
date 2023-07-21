@@ -22,7 +22,7 @@ display:
     display_plugin: default
     position: 0
     display_options:
-      title: 'Categories'
+      title: Categories
       fields:
         parent_target_id_1:
           id: parent_target_id_1

@@ -303,7 +303,7 @@ display:
     display_plugin: block
     position: 1
     display_options:
-      title: Status Statistics
+      title: 'Status Statistics'
       fields:
         field_status_icon:
           id: field_status_icon
@@ -678,7 +678,7 @@ display:
     display_plugin: block
     position: 1
     display_options:
-      title: Category Statistics
+      title: 'Category Statistics'
       fields:
         field_category_icon:
           id: field_category_icon
@@ -1018,7 +1018,7 @@ display:
     position: 1
     display_options:
       enabled: true
-      title: Category Statistics
+      title: 'Category Statistics'
       fields:
         name:
           id: name
@@ -1554,7 +1554,7 @@ display:
     display_plugin: rest_export
     position: 1
     display_options:
-      title: Status Statistics
+      title: 'Status Statistics'
       fields:
         nid:
           id: nid

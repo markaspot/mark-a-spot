@@ -5,4 +5,4 @@ items:
   view_mode: fulltext
   limit: 20
 channel:
-  description: "Service Request. "
+  description: 'Service Request. '

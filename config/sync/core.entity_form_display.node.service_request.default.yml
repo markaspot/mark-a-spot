@@ -97,7 +97,7 @@ content:
       center_lng: -73.93
       limit_countrycodes: de
       limit_viewbox: '-74.379155587496,41.179155587496,-73.480844412504,40.280844412504'
-      city: Mascity
+      city: 'New York'
       set_address_field: '1'
       tileServerUrl: 'https://stamen-tiles.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}.png'
       wmsLayer: ''
@@ -107,6 +107,7 @@ content:
       fullscreenControl: '1'
       streetNumberFormat: '1'
       autoLocate: 0
+      limit_country_code: US
     third_party_settings: {  }
   field_image:
     type: image_image

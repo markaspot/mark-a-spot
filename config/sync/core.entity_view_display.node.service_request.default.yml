@@ -87,6 +87,27 @@ third_party_settings:
                 third_party_settings: {  }
             weight: 1
             additional: {  }
+          acaebbb7-d99b-43d7-83d2-4c8182ce6f0e:
+            uuid: acaebbb7-d99b-43d7-83d2-4c8182ce6f0e
+            region: content
+            configuration:
+              id: 'field_block:node:service_request:field_request_image'
+              label_display: '0'
+              context_mapping:
+                entity: layout_builder.entity
+              formatter:
+                type: responsive_image
+                label: visually_hidden
+                settings:
+                  responsive_image_style: wide
+                  image_link: ''
+                  image_loading:
+                    attribute: eager
+                third_party_settings:
+                  field_formatter_class:
+                    class: ''
+            weight: 2
+            additional: {  }
         third_party_settings: {  }
       -
         layout_id: layout_onecol
@@ -258,6 +279,8 @@ content:
     settings:
       responsive_image_style: wide
       image_link: ''
+      image_loading:
+        attribute: eager
     third_party_settings:
       field_formatter_class:
         class: ''

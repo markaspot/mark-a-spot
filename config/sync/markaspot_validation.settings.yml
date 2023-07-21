@@ -13,3 +13,5 @@ treshold: '1'
 defaultLocation: 1
 multiple_reports: 1
 max_count: '2'
+location:
+  - 'New York'

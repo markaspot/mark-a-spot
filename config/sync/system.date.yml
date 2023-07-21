@@ -3,7 +3,7 @@ _core:
 langcode: en
 first_day: 1
 country:
-  default: DE
+  default: US
 timezone:
   default: Europe/Berlin
   user:

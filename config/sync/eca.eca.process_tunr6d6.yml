@@ -20,7 +20,8 @@ events:
     configuration:
       type: 'node service_request'
     successors:
-      - id: Gateway_02ldgot
+      -
+        id: Gateway_02ldgot
         condition: Flow_1bodg9x
 conditions:
   Flow_1bodg9x:
@@ -73,16 +74,20 @@ gateways:
   Gateway_02ldgot:
     type: 0
     successors:
-      - id: Gateway_0nyfe5b
+      -
+        id: Gateway_0nyfe5b
         condition: Flow_0ktblta
   Gateway_0nyfe5b:
     type: 0
     successors:
-      - id: Activity_1u8e4au
+      -
+        id: Activity_1u8e4au
         condition: Flow_0kbs1sz
-      - id: Activity_1rxwbas
+      -
+        id: Activity_1rxwbas
         condition: Flow_0bs2byv
-      - id: Activity_1w5ikso
+      -
+        id: Activity_1w5ikso
         condition: Flow_1joltme
 actions:
   Activity_1u8e4au:
@@ -101,9 +106,8 @@ actions:
         [site:url][node:url:path]
 
         Please note: If your matter is an urgent emergency or poses an immediate threat, please contact the police (110) or fire department (112) immediately. Your request will be processed by the City of Mascity during regular business hours.
-
       replace_tokens: ''
-    successors: {}
+    successors: {  }
   Activity_1rxwbas:
     plugin: action_send_email_action
     label: 'Send E-Mail'
@@ -126,7 +130,7 @@ actions:
         --
         This is an automatically generated email, and unfortunately, you cannot reply to it.
       replace_tokens: ''
-    successors: {}
+    successors: {  }
   Activity_1w5ikso:
     plugin: action_send_email_action
     label: 'Send E-Mail Update'
@@ -137,4 +141,4 @@ actions:
         Good day! Thank you for your contribution. Your request has been forwarded to the responsible department and is now being processed. You will receive a final notification by email after it has been completed.
         -- This is an automatically generated email, and unfortunately, you cannot reply to it.
       replace_tokens: ''
-    successors: {}
+    successors: {  }

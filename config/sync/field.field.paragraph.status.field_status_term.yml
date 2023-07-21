@@ -13,7 +13,7 @@ field_name: field_status_term
 entity_type: paragraph
 bundle: status
 label: Status
-description: 'Den Status ändern - erscheint öffentlich.'
+description: 'Change the public status of that service request.'
 required: false
 translatable: false
 default_value:

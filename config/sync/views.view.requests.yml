@@ -30,7 +30,7 @@ display:
     display_plugin: default
     position: 0
     display_options:
-      title: Service Requests
+      title: 'Service Requests'
       fields:
         search_api_id:
           id: search_api_id

@@ -13,11 +13,12 @@ id: paragraph.status.field_status_note
 field_name: field_status_note
 entity_type: paragraph
 bundle: status
-label: Statusvermerk
-description: 'für diesen Bearbeitungsschritt'
+label: 'Update Status'
+description: 'Please provide a brief log entry detailing the progress or changes made in this processing step.'
 required: false
 translatable: false
 default_value: {  }
 default_value_callback: ''
-settings: {  }
+settings:
+  allowed_formats: {  }
 field_type: text_long

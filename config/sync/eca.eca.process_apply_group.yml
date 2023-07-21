@@ -105,16 +105,15 @@ actions:
       message: |-
         Hello,
         a citizen request has been assigned to your organization:
-        
+
         Category: [node:title]
         Detailed Description: [node:body]
         Location of the request: [node:field_address]
-        
+
         To process the request, please click on the following link:
         [site:url]/[node:nid]/edit         
-        
+
         Not registered yet today? [site:url]/[node:nid]/user 
-        
+
         --
         This is an automatically generated email and cannot be replied to.
-successors: {  }
