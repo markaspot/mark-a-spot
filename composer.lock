@@ -6554,12 +6554,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/markaspot/markaspot.git",
-                "reference": "dcda772b6fed5b177394f7fca25e0343d6dfba5e"
+                "reference": "c4a64a06c7ddab4dd3a573e225c7ee0201c4461e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/markaspot/markaspot/zipball/dcda772b6fed5b177394f7fca25e0343d6dfba5e",
-                "reference": "dcda772b6fed5b177394f7fca25e0343d6dfba5e",
+                "url": "https://api.github.com/repos/markaspot/markaspot/zipball/c4a64a06c7ddab4dd3a573e225c7ee0201c4461e",
+                "reference": "c4a64a06c7ddab4dd3a573e225c7ee0201c4461e",
                 "shasum": ""
             },
             "require": {
@@ -6674,7 +6674,7 @@
                 "issues": "https://github.com/markaspot/markaspot/issues",
                 "source": "https://github.com/markaspot/markaspot/tree/10.6.x-dev"
             },
-            "time": "2023-07-18T17:13:16+00:00"
+            "time": "2023-07-21T03:05:29+00:00"
         },
         {
             "name": "markbaker/complex",
@@ -13649,16 +13649,16 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "1.10.25",
+            "version": "1.10.26",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "578f4e70d117f9a90699324c555922800ac38d8c"
+                "reference": "5d660cbb7e1b89253a47147ae44044f49832351f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/578f4e70d117f9a90699324c555922800ac38d8c",
-                "reference": "578f4e70d117f9a90699324c555922800ac38d8c",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/5d660cbb7e1b89253a47147ae44044f49832351f",
+                "reference": "5d660cbb7e1b89253a47147ae44044f49832351f",
                 "shasum": ""
             },
             "require": {
@@ -13707,7 +13707,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-07-06T12:11:37+00:00"
+            "time": "2023-07-19T12:44:37+00:00"
         },
         {
             "name": "phpstan/phpstan-deprecation-rules",
