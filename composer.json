@@ -118,9 +118,6 @@
         },
         "enable-patching": false,
         "patches": {
-            "drupal/core": {
-                "Method not allowed // AccessAwareRouter does not respect HTTP method": "https://www.drupal.org/files/issues/2022-02-01/2706241-67.patch"
-            },
             "drupal/shs": {
                 "Use core/internal.backbone lib\n": "https://www.drupal.org/files/issues/2023-04-28/3357151_change_backbone_lib_001.patch"
             }
