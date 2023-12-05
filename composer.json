@@ -19,9 +19,30 @@
             "url": "https://asset-packagist.org"
         },
         {
-            "type": "composer",
-            "url": "https://packages.drupal.org/8"
+            "type": "package",
+            "package": {
+                "name": "mapbox/mapbox-gl-js",
+                "type": "drupal-library",
+                "version": "3.0.0",
+                "dist": {
+                    "url": "https://github.com/markaspot/mark-a-spot/releases/download/10.6.0-alpha.1/mapbox-gl.zip",
+                    "type": "zip"
+                }
+            }
+        },
+        {
+            "type": "package",
+            "package": {
+                "name": "maplibre/maplibre-gl-js",
+                "type": "drupal-library",
+                "version": "3.6.2",
+                "dist": {
+                    "url": "https://github.com/markaspot/mark-a-spot/releases/download/10.6.0-alpha.1/maplibre-gl.zip",
+                    "type": "zip"
+                }
+            }
         }
+
     ],
     "require": {
         "composer/installers": "^1.2",
@@ -50,6 +71,8 @@
         "drupal/xls_serialization": "^1.2",
         "drush/drush": "11.5",
         "markaspot/markaspot": "dev-10.6.x-dev",
+        "maplibre/maplibre-gl-js": "3.6.2",
+        "mapbox/mapbox-gl-js": "3.0.0",
         "vlucas/phpdotenv": "^2.4",
         "webflo/drupal-finder": "^1.0.0",
         "webmozart/assert": "1.11.0",
