@@ -16,15 +16,17 @@ jobs:
     - name: Install PHP dependencies
       run: composer install --no-dev
 
+      # Zip the mapbox-gl and maplibre-gl directories
     - name: Zip mapbox-gl library
       run: |
         cd web/libraries/mapbox-gl
-        zip -r ../../../../mapbox-gl.zip . -x "*.git*"
+        zip -r ../../mapbox-gl.zip . -x "*.git*"
 
     - name: Zip maplibre-gl library
       run: |
         cd web/libraries/maplibre-gl
-        zip -r ../../../../maplibre-gl.zip . -x "*.git*"
+        zip -r ../../maplibre-gl.zip . -x "*.git*"
+
 
     - name: Setup Node.js
       uses: actions/setup-node@v2
