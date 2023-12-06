@@ -1,21 +1,22 @@
-map_type: '1'
+map_type: '0'
 mapbox: ''
-osm_custom_tile_url: 'https://stamen-tiles-{s}.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}.png'
-osm_custom_attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://creativecommons.org/licenses/by-sa/3.0">CC BY SA</a>.'
+osm_custom_tile_url: ''
+osm_custom_attribution: '© MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">© OpenStreetMap contributors</a>'
 map_background: '#ddd'
 timeline_date_format: 'ddd dd.mm.yy'
 timeline_period: P1D
 timeline_fps: '15'
 nid_selector: 'article '
 zoom_initial: '15'
-center_lat: 40.73
-center_lng: -73.93
+center_lat: '40.73'
+center_lng: '-73.93'
 request_list_path: /requests
 visualization_path: /node/80
 langcode: en
 wms_service: ''
 wms_layer: ''
 mapbox_token: ''
-mapbox_style: ''
+mapbox_style: 'https://api.maptiler.com/maps/dataviz/style.json?key=bNO6K7YHmiJ3kLeuhrOK'
 marker: "<div class=\"fa {mapIconSymbol}\" style=\"color: {mapIconColor}\"><svg class=\"icon\" width=\"50\" height=\"50\"\r\nxmlns=\"http://www.w3.org/2000/svg\" xml:space=\"preserve\" version=\"1.1\"><defs>\r\n<filter id=\"dropshadow\" height=\"130%\"><feDropShadow dx=\"-0.8\" dy=\"-0.8\" stdDeviation=\"2\"\r\n    flood-color=\"black\" flood-opacity=\"0.5\"/></filter></defs><g><path filter=\"url(#dropshadow)\"\r\n        fill=\"{mapIconFill}\" d=\"m25,2.55778c-7.27846,0 -15.7703,4.44805 -15.7703,15.7703c0,7.68272 12.13107,24.6661 15.7703,29.11415c3.23497,-4.44804 15.7703,-21.02687 15.7703,-29.11415c0,-11.32225 -8.49184,-15.7703 -15.7703,-15.7703z\"\r\n        id=\"path4133\"/></g></svg></div>"
 iconAnchor: '[25, 30]'
+maplibre: 1

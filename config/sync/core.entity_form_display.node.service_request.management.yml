@@ -216,21 +216,27 @@ content:
     region: content
     settings:
       zoom: '18'
-      center_lat: 40.73
-      center_lng: -73.93
+      center_lat: '40.73'
+      center_lng: '-73.93'
       limit_countrycodes: de
       limit_viewbox: '-74.379155587496,41.179155587496,-73.480844412504,40.280844412504'
       city: 'New York'
       set_address_field: '1'
-      tileServerUrl: 'https://stamen-tiles.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}.png'
+      tileServerUrl: ''
       wmsLayer: ''
-      customAttribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://www.openstreetmap.org/copyright">ODbL</a>.'
+      mapboxToken: ''
+      mapboxStyle: 'https://api.maptiler.com/maps/dataviz/style.json?key=8uaCajQ4MVBmAqzE578o'
+      maplibre: '1'
+      customAttribution: '© MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">© OpenStreetMap contributors</a>'
       serviceUrl: 'https://nominatim.openstreetmap.org/'
       LocationIQToken: ''
       fullscreenControl: '1'
       streetNumberFormat: '1'
+      addressFormat: '${address.house_number}, ${address.road}, ${address.hamlet}, ${address.village}, ${address.suburb}, ${address.town}, ${address.city}, ${address.county}, ${address.postcode}'
+      dragging: '1'
+      tab: '1'
       autoLocate: 0
-      limit_country_code: US
+      zoomControl: 0
     third_party_settings: {  }
   field_image:
     type: image_image
