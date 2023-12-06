@@ -31,7 +31,7 @@ services:
     # this line to test the production-ready pre-built container codebase.
     # volumes: ['.:/app/data:rw,delegated']
     volumes:
-      - app:/app/data
+      - .:/app/data
     depends_on:
       - db
     networks:
