@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "909a0c1ad412c03e1547f4dc731cf84d",
+    "content-hash": "65faf08a82c7fc3cdbd0e020ba18a2de",
     "packages": [
         {
             "name": "anthonymartin/geo-location",
@@ -167,16 +167,16 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.293.4",
+            "version": "3.293.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "bb62581cb3796dd1866ace52ed0a750bd22936a8"
+                "reference": "f2002e52b382b45231da3f9552033f769acfebd8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/bb62581cb3796dd1866ace52ed0a750bd22936a8",
-                "reference": "bb62581cb3796dd1866ace52ed0a750bd22936a8",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/f2002e52b382b45231da3f9552033f769acfebd8",
+                "reference": "f2002e52b382b45231da3f9552033f769acfebd8",
                 "shasum": ""
             },
             "require": {
@@ -256,9 +256,9 @@
             "support": {
                 "forum": "https://forums.aws.amazon.com/forum.jspa?forumID=80",
                 "issues": "https://github.com/aws/aws-sdk-php/issues",
-                "source": "https://github.com/aws/aws-sdk-php/tree/3.293.4"
+                "source": "https://github.com/aws/aws-sdk-php/tree/3.293.5"
             },
-            "time": "2023-12-05T19:07:19+00:00"
+            "time": "2023-12-06T19:09:15+00:00"
         },
         {
             "name": "caxy/php-htmldiff",
@@ -3837,17 +3837,17 @@
         },
         {
             "name": "drupal/group",
-            "version": "3.2.1",
+            "version": "3.2.2",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/group.git",
-                "reference": "3.2.1"
+                "reference": "3.2.2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/group-3.2.1.zip",
-                "reference": "3.2.1",
-                "shasum": "7774014794ad8cc39b1e22737e48cdbdd60513db"
+                "url": "https://ftp.drupal.org/files/projects/group-3.2.2.zip",
+                "reference": "3.2.2",
+                "shasum": "d44d51828ca6554c32aa2d27e3a898e1d38b9efa"
             },
             "require": {
                 "drupal/core": "^9.5 || ^10",
@@ -3857,8 +3857,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "3.2.1",
-                    "datestamp": "1697204379",
+                    "version": "3.2.2",
+                    "datestamp": "1701886939",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -6562,20 +6562,20 @@
             "time": "2023-06-21T14:59:35+00:00"
         },
         {
-            "name": "mapbox/mapbox-gl-js",
+            "name": "mapbox/mapbox-gl",
             "version": "3.0.0",
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/markaspot/mark-a-spot/releases/download/10.6.0-alpha.1/mapbox-gl.zip"
+                "url": "https://github.com/markaspot/mark-a-spot/releases/download/10.6.0-beta.2/mapbox-gl.zip"
             },
             "type": "drupal-library"
         },
         {
-            "name": "maplibre/maplibre-gl-js",
+            "name": "maplibre/maplibre-gl",
             "version": "3.6.2",
             "dist": {
                 "type": "zip",
-                "url": "https://github.com/markaspot/mark-a-spot/releases/download/10.6.0-alpha.1/maplibre-gl.zip"
+                "url": "https://github.com/markaspot/mark-a-spot/releases/download/10.6.0-beta.2/maplibre-gl.zip"
             },
             "type": "drupal-library"
         },
@@ -6585,12 +6585,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/markaspot/markaspot.git",
-                "reference": "5e050a3451d53a44dba28d3268c381b236e35363"
+                "reference": "6a1559a2fb19bce81288b7e7da865dc4cec0a671"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/markaspot/markaspot/zipball/5e050a3451d53a44dba28d3268c381b236e35363",
-                "reference": "5e050a3451d53a44dba28d3268c381b236e35363",
+                "url": "https://api.github.com/repos/markaspot/markaspot/zipball/6a1559a2fb19bce81288b7e7da865dc4cec0a671",
+                "reference": "6a1559a2fb19bce81288b7e7da865dc4cec0a671",
                 "shasum": ""
             },
             "require": {
@@ -6622,8 +6622,8 @@
                 "drupal/shs": "^2",
                 "drupal/token": "^1.9",
                 "drupal/views_infinite_scroll": "^2",
-                "mapbox/mapbox-gl-js": "3.0.0",
-                "maplibre/maplibre-gl-js": "3.6.2",
+                "mapbox/mapbox-gl": "3.0.0",
+                "maplibre/maplibre-gl": "3.6.2",
                 "npm-asset/axios": "^1",
                 "npm-asset/caman": "^4.1",
                 "npm-asset/chart.js": "^2.7",
@@ -6707,7 +6707,7 @@
                 "issues": "https://github.com/markaspot/markaspot/issues",
                 "source": "https://github.com/markaspot/markaspot/tree/10.6.x-dev"
             },
-            "time": "2023-12-06T13:30:29+00:00"
+            "time": "2023-12-07T07:00:19+00:00"
         },
         {
             "name": "markbaker/complex",

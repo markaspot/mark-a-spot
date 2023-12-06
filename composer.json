@@ -21,11 +21,11 @@
         {
             "type": "package",
             "package": {
-                "name": "mapbox/mapbox-gl-js",
+                "name": "mapbox/mapbox-gl",
                 "type": "drupal-library",
                 "version": "3.0.0",
                 "dist": {
-                    "url": "https://github.com/markaspot/mark-a-spot/releases/download/10.6.0-alpha.1/mapbox-gl.zip",
+                    "url": "https://github.com/markaspot/mark-a-spot/releases/download/10.6.0-beta.2/mapbox-gl.zip",
                     "type": "zip"
                 }
             }
@@ -33,11 +33,11 @@
         {
             "type": "package",
             "package": {
-                "name": "maplibre/maplibre-gl-js",
+                "name": "maplibre/maplibre-gl",
                 "type": "drupal-library",
                 "version": "3.6.2",
                 "dist": {
-                    "url": "https://github.com/markaspot/mark-a-spot/releases/download/10.6.0-alpha.1/maplibre-gl.zip",
+                    "url": "https://github.com/markaspot/mark-a-spot/releases/download/10.6.0-beta.2/maplibre-gl.zip",
                     "type": "zip"
                 }
             }
@@ -70,8 +70,8 @@
         "drupal/views_data_export": "^1.0",
         "drupal/xls_serialization": "^1.2",
         "drush/drush": "11.5",
-        "mapbox/mapbox-gl-js": "3.0.0",
-        "maplibre/maplibre-gl-js": "3.6.2",
+        "mapbox/mapbox-gl": "3.0.0",
+        "maplibre/maplibre-gl": "3.6.2",
         "markaspot/markaspot": "dev-10.6.x-dev",
         "vlucas/phpdotenv": "^2.4",
         "webflo/drupal-finder": "^1.0.0",
