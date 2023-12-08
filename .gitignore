@@ -19,6 +19,9 @@ web/sites/*/files
 
 # Ignore configuration files that may contain sensitive information.
 web/sites/*/settings.local.php
+web/sites/*/settings.prod.php
+web/sites/*/settings.php
+
 /.csslintrc
 /.editorconfig
 /.eslintignore

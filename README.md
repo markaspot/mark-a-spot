@@ -19,31 +19,21 @@ These instructions will guide you through getting a copy of the project up and r
     cd mark-a-spot
     ```
 
-2. Build and run the Docker containers:
+2. Run the Docker containers:
     ```bash
     docker-compose up -d
     ```
-3. Jump into the container:
+
+3. Run the `start.sh`script
+   If it gives you an error of permission denied make it executable with: `chmod a+x ./scripts/start.sh`)
     ```bash
-    docker exec -it markaspot /bin/sh
-    ```
-4. Run composer install
-    ```bash    
-    /app/data $ composer install
-    ```
-5. Copy settings.prod.php
-    ```bash    
-    /app/data $ cp conf/settings.prod.php web/sites/default/
-    ```       
-6. Run the start.sh script    
-    ```bash    
-    /app/data $ ./scripts/start.sh
+   docker exec -it markaspot ./scripts/start.sh -y
     ```
    The `start.sh` script has two options:
    - `-y` For automatic installation with predefined values (latitude: 40.73, longitude: -73.93, city: New York, locale: en_US)
    - `-t` To import translation file from the `/translations` directory and enable translations for terms
 
-After running these commands, you should be able to access the application at `http://localhost`.
+Once the script has executed, the application should be accessible at http://localhost. Please exercise caution when executing the script, as it will drop the database and initialize Mark-a-Spot from scratch. Additionally, familiarize yourself with the Drupal development process, including configuring changes, backing up databases, and other relevant procedures.
 
 ### Services
 
@@ -90,10 +80,10 @@ For local development, we recommend using [Docksal](https://docksal.io/), a Dock
     ```bash
     fin up
     ```
-4. Copy the local settings file to the web sites default directory:
+4. Copy the local settings file to the web sites default directory and change your settings.php
 
     ```bash
-    cp conf/settings.local.php web/sites/default/
+    cp web/sites/example.settings.local.php web/sites/default/settings.local.php
     ```
 5. Swap drush version as long https://github.com/docksal/docksal/issues/1783 is not solved:
 
@@ -107,9 +97,7 @@ For local development, we recommend using [Docksal](https://docksal.io/), a Dock
 
 ### Configuration
 
-Copy the conf/settings.local.php into web sites default directory
 You can adjust the configuration of the Docker services by editing the `docksal.yml` file. For example, you can modify the database username and password, the PHP memory limit, and other settings.
-
 
 ### Usage
 

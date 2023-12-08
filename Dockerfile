@@ -52,12 +52,5 @@ RUN chown -R www-data:www-data /app/data && \
     find /app/data/web/sites/default/files -type d -exec chmod 755 {} \; && \
     find /app/data/web/sites/default/files -type f -exec chmod 644 {} \;
 
-####
-## Copy settings for production
-####
-FROM build as production
-COPY conf/settings.prod.php web/sites/default/settings.php
-RUN  chown -R www-data:www-data web/sites/default/settings.php && chmod 664 web/sites/default/settings.php;
-
 # Switch to www-data user
 USER www-data

@@ -15,6 +15,44 @@ if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
   usage
 fi
 
+
+  composer install
+
+  # Define the path to the Drupal settings file
+  SETTINGS_FILE="/app/data/web/sites/default/settings.php"
+
+  cp /app/data/web/sites/default/default.settings.php $SETTINGS_FILE
+
+  # Custom database configuration
+  CUSTOM_DB_CONFIG="\\
+  \$databases['default']['default'] = [\\
+      'database' => getenv('DRUPAL_DATABASE_NAME'),\\
+      'username' => getenv('DRUPAL_DATABASE_USERNAME'),\\
+      'password' => getenv('DRUPAL_DATABASE_PASSWORD'),\\
+      'prefix' => '',\\
+      'host' => getenv('MARKASPOT_MARIADB_SERVICE_HOST'),\\
+      'port' => 3306,\\
+      'namespace' => 'Drupal\\\\\\\\Core\\\\\\\\Database\\\\\\\\Driver\\\\\\\\mysql',\\
+      'driver' => 'mysql',\\
+  ];"
+
+  # Add the custom database configuration after the $databases declaration
+  sed -i "/\$databases = \[\];/a $CUSTOM_DB_CONFIG" "$SETTINGS_FILE"
+
+  # Custom hash salt configuration
+  CUSTOM_HASH_SALT="\$settings['hash_salt'] = getenv('DRUPAL_HASH_SALT');"
+
+  # Replace the existing hash salt configuration with the custom one
+  sed -i "s/\$settings\['hash_salt'\] = '';$/$CUSTOM_HASH_SALT/" "$SETTINGS_FILE"
+
+  # Update the config_sync_directory setting
+  sed -i "s|# \$settings\['config_sync_directory'\] = '/directory/outside/webroot';|\$settings['config_sync_directory'] = '../config/sync';|" "$SETTINGS_FILE"
+
+
+  echo "Custom configuration added to $SETTINGS_FILE"
+
+
+
 if [ "$ENVIRONMENT" != "prod" ]; then
   printf "\e[32mNo Prod deployment. Installing Drupal with the Mark-a-Spot Distribution...\e[0m\n"
   printf "\e[36mDropping all tables in the database...\e[0m\n"
