@@ -38,13 +38,19 @@ echo "--------------------------------------------------------------------------
 
 
 for i in $(seq 1 50); do
-  RANDOM_1=$(awk -v min=-1 -v max=1 'BEGIN{srand(); print min+rand()*(max-min)}')
-  RANDOM_2=$(awk -v min=-1 -v max=1 'BEGIN{srand(); print min+rand()*(max-min)}')
+  # Generate a random angle in radians between 0 and 2*pi
+  RANDOM_ANGLE=$(awk -v seed="$RANDOM$((i * 10))" 'BEGIN {srand(seed); print rand() * 2 * 3.141592653589793;}')
 
+  # Generate a random radius within the circle
+  RANDOM_RADIUS=$(awk -v seed="$RANDOM$((i * 10))" -v max="$RADIUS_IN_DEGREES" 'BEGIN {srand(seed); print sqrt(rand()) * max;}')
 
-  LATITUDE=$(awk -v center_lat="$CENTER_LAT" -v radius="$RADIUS_IN_DEGREES" -v random_1="$RANDOM_1" 'BEGIN {print center_lat + (radius * random_1)}')
-  LONGITUDE=$(awk -v center_lng="$CENTER_LNG" -v radius="$RADIUS_IN_DEGREES" -v random_2="$RANDOM_2" 'BEGIN {print center_lng + (radius * random_2)}')
+  # Calculate the latitude and longitude offsets
+  LATITUDE_OFFSET=$(awk -v radius="$RANDOM_RADIUS" -v angle="$RANDOM_ANGLE" 'BEGIN {print radius * sin(angle);}')
+  LONGITUDE_OFFSET=$(awk -v radius="$RANDOM_RADIUS" -v angle="$RANDOM_ANGLE" 'BEGIN {print radius * cos(angle);}')
 
+  # Calculate the actual latitude and longitude
+  LATITUDE=$(awk -v center_lat="$CENTER_LAT" -v offset="$LATITUDE_OFFSET" 'BEGIN {print center_lat + offset;}')
+  LONGITUDE=$(awk -v center_lng="$CENTER_LNG" -v offset="$LONGITUDE_OFFSET" 'BEGIN {print center_lng + offset;}')
 
   RANDOM_SERVICE_CODE=$(printf "%s\n" "$SERVICES" | awk 'BEGIN {srand();}{a[NR]=$0}END{print a[int(rand()*NR)+1]}')
   EMAIL="test_$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c10)@example.com"

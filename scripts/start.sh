@@ -15,8 +15,12 @@ if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
   usage
 fi
 
+printf "\e[32mInstall all libraries with composer..\e[0m\n"
+composer install --no-dev
 
-  composer install
+
+if [ "$ENVIRONMENT" != "prod" ]; then
+  printf "\e[32mNo Prod deployment. Installing Drupal with the Mark-a-Spot Distribution...\e[0m\n"
 
   # Define the path to the Drupal settings file
   SETTINGS_FILE="/app/data/web/sites/default/settings.php"
@@ -49,12 +53,9 @@ fi
   sed -i "s|# \$settings\['config_sync_directory'\] = '/directory/outside/webroot';|\$settings['config_sync_directory'] = '../config/sync';|" "$SETTINGS_FILE"
 
 
-  echo "Custom configuration added to $SETTINGS_FILE"
+  printf "\e[32mCustom configuration added to $SETTINGS_FILE"
 
 
-
-if [ "$ENVIRONMENT" != "prod" ]; then
-  printf "\e[32mNo Prod deployment. Installing Drupal with the Mark-a-Spot Distribution...\e[0m\n"
   printf "\e[36mDropping all tables in the database...\e[0m\n"
   drush sql-drop -y
   printf "\e[36mExecuting the Markaspot:install command...\e[0m\n"
