@@ -8,6 +8,7 @@ WORKDIR '/app/data'
 # Install dependencies
 RUN apk add --no-cache \
     curl \
+    jq \
     freetype \
     freetype-dev \
     git \

@@ -60,34 +60,78 @@ if [ "$ENVIRONMENT" != "prod" ]; then
   drush sql-drop -y
   printf "\e[36mExecuting the Markaspot:install command...\e[0m\n"
 
+
+  # Function to query the Nominatim API for city information
+  get_city_info() {
+      city_name=$(printf "%s" "$1" | jq -sRr @uri)
+      country_name=$(printf "%s" "$2" | jq -sRr @uri)
+
+      # Exit the function if either city name or country name is empty
+      if [ -z "$city_name" ] || [ -z "$country_name" ]; then
+          return 1
+      fi
+
+      response=$(curl -s "https://nominatim.openstreetmap.org/search?city=$city_name&country=$country_name&format=json")
+
+      count=$(echo $response | jq length)
+      if [ "$count" -eq 0 ]; then
+          echo "No results found for $1 in $2."
+          return 1
+      elif [ "$count" -eq 1 ]; then
+          selected=$(echo $response | jq -r ".[0]")
+      else
+          echo "Multiple locations found. Please select one by entering the corresponding number:"
+          for i in $(seq 0 $(($count - 1))); do
+              echo "$(($i + 1)): $(echo $response | jq -r ".[$i].display_name")"
+          done
+          read -p "Choice: " choice
+          selected=$(echo $response | jq -r ".[$(($choice - 1))]")
+      fi
+
+      latitude=$(echo $selected | jq -r '.lat')
+      longitude=$(echo $selected | jq -r '.lon')
+      city=$(echo $selected | jq -r '.display_name')
+
+      echo "Selected Location: $city"
+      echo "Latitude: $latitude"
+      echo "Longitude: $longitude"
+  }
+
   translation=false
   automatic=false
 
   while getopts "yt" opt
   do
-    case $opt in
-      y) automatic=true ;;
-      t) translation=true ;;
-      *) echo "Invalid option: -$opt" >&2
-         usage ;;
-    esac
+      case $opt in
+        y) automatic=true ;;
+        t) translation=true ;;
+        *) echo "Invalid option: -$opt" >&2
+          usage ;;
+      esac
   done
-
   if [ "$automatic" = true ]; then
-    latitude="40.73"
-    longitude="-73.93"
-    city="New York"
-    locale="en_US"
+      latitude="40.73"
+      longitude="-73.93"
+      city="New York"
+      locale="en_US"
   else
-    echo "Please enter the latitude:"
-    read latitude
-    echo "Please enter the longitude:"
-    read longitude
-    echo "Please enter the city:"
-    read city
-    echo "Please enter the locale (format as 'language_country', e.g. 'en_US'):"
-    read locale
+      echo "Please enter the city name (or leave blank to enter latitude and longitude manually):"
+      read city_name
+      echo "Please enter the country name:"
+      read country_name
+
+      if ! get_city_info "$city_name" "$country_name"; then
+          echo "City not found or not entered. Please enter the latitude:"
+          read latitude
+          echo "Please enter the longitude:"
+          read longitude
+          echo "Please enter the city:"
+          read city
+          echo "Please enter the locale (format as 'language_country', e.g. 'en_US'):"
+          read locale
+      fi
   fi
+
 
   php -d memory_limit=-1 $(which drush) markaspot:install --lat="$latitude" --lng="$longitude" --city="$city" --locale="$locale" --skip-confirmation
 
