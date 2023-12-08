@@ -22,9 +22,23 @@ These instructions will guide you through getting a copy of the project up and r
 2. Build and run the Docker containers:
     ```bash
     docker-compose up -d
-    docker exec -it markaspot ./scripts/start.sh
     ```
-
+3. Jump into the container:
+    ```bash
+    docker exec -it markaspot /bin/sh
+    ```
+4. Run composer install
+    ```bash    
+    /app/data $ composer install
+    ```
+5. Copy settings.prod.php
+    ```bash    
+    /app/data $ cp conf/settings.prod.php web/sites/default/
+    ```       
+6. Run the start.sh script    
+    ```bash    
+    /app/data $ ./scripts/start.sh
+    ```
    The `start.sh` script has two options:
    - `-y` For automatic installation with predefined values (latitude: 40.73, longitude: -73.93, city: New York, locale: en_US)
    - `-t` To import translation file from the `/translations` directory and enable translations for terms
