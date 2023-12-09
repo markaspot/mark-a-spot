@@ -4,7 +4,7 @@
 cd "$(dirname "$0")/.."
 
 # Install and enable required modules
-composer require drupal/migrate_tools drupal/migrate_plus drupal/migrate_source_csv --update-no-dev
+composer require drupal/migrate_tools drupal/migrate_plus drupal/migrate_source_csv --update-no-dev --quiet
 
 drush en markaspot_default_content -y
 drush en migrate_tools migrate_plus migrate_source_csv -y
@@ -41,4 +41,4 @@ drush cim --source "$source_path" --partial -y
 
 # Disable and uninstall the modules
 drush pmu migrate_source_csv migrate_plus migrate_tools markaspot_default_content -y
-composer remove drupal/migrate_tools drupal/migrate_plus drupal/migrate_source_csv
+composer remove drupal/migrate_tools drupal/migrate_plus drupal/migrate_source_csv --quiet

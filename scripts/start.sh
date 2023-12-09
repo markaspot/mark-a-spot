@@ -16,7 +16,7 @@ if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
 fi
 
 printf "\e[32mInstall all libraries with composer..\e[0m\n"
-composer install --no-dev
+composer install --no-dev --quiet
 
 
 if [ "$ENVIRONMENT" != "prod" ]; then
@@ -119,6 +119,8 @@ if [ "$ENVIRONMENT" != "prod" ]; then
       read city_name
       echo "Please enter the country name:"
       read country_name
+      echo "Please enter the locale (format as 'language_country', e.g. 'en_US'):"
+      read locale
 
       if ! get_city_info "$city_name" "$country_name"; then
           echo "City not found or not entered. Please enter the latitude:"

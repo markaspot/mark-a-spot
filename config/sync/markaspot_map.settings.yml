@@ -7,7 +7,7 @@ timeline_date_format: 'ddd dd.mm.yy'
 timeline_period: P1D
 timeline_fps: '15'
 nid_selector: 'article '
-zoom_initial: '15'
+zoom_initial: '10'
 center_lat: '40.73'
 center_lng: '-73.93'
 request_list_path: /requests
