@@ -16,7 +16,7 @@ if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
 fi
 
 printf "\e[32mInstall all libraries with composer..\e[0m\n"
-composer install --no-dev --quiet
+composer install --no-dev
 
 
 if [ "$ENVIRONMENT" != "prod" ]; then
