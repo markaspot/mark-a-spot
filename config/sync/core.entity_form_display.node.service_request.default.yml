@@ -102,7 +102,7 @@ content:
       tileServerUrl: ''
       wmsLayer: ''
       mapboxToken: ''
-      mapboxStyle: 'https://api.maptiler.com/maps/dataviz/style.json?key=bNO6K7YHmiJ3kLeuhrOK'
+      mapboxStyle: 'https://api.maptiler.com/maps/basic-v2/style.json?key=bNO6K7YHmiJ3kLeuhrOK'
       maplibre: '1'
       customAttribution: '© MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">© OpenStreetMap contributors</a>'
       serviceUrl: 'https://nominatim.openstreetmap.org/'
