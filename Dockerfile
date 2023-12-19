@@ -26,6 +26,9 @@ RUN apk add --no-cache \
  && docker-php-ext-install -j$(nproc) gd \
  && apk del --no-cache .build-deps
 
+# Copy custom php.ini
+COPY conf/php.ini "$PHP_INI_DIR/php.ini"
+
 # Copy composer files to image
 COPY composer.json composer.lock ./
 
