@@ -25,7 +25,6 @@ RUN apk add --no-cache \
  && docker-php-ext-configure gd --with-freetype --with-jpeg \
  && docker-php-ext-install -j$(nproc) gd \
  && docker-php-ext-install exif \
-
  && apk del --no-cache .build-deps
 
 # Copy custom php.ini
