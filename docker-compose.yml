@@ -40,9 +40,9 @@ services:
     image: mariadb:10
     container_name: db
     environment:
-      MYSQL_USER: drupal
-      MYSQL_PASSWORD: drupal
-      MYSQL_DATABASE: drupal
+      MYSQL_USER: 'drupal'
+      MYSQL_PASSWORD: 'drupal'
+      MYSQL_DATABASE: 'drupal'
       MYSQL_ROOT_PASSWORD: ''
       MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
     #restart: on-failure
