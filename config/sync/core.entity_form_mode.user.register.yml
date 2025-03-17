@@ -8,5 +8,6 @@ _core:
   default_config_hash: null
 id: user.register
 label: Register
+description: null
 targetEntityType: user
 cache: true

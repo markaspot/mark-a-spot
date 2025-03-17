@@ -8,5 +8,6 @@ _core:
   default_config_hash: null
 id: shortcut.token
 label: Token
+description: null
 targetEntityType: shortcut
 cache: true

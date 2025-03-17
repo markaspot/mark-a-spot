@@ -6,5 +6,6 @@ dependencies:
     - media
 id: media.gallery
 label: Gallery
+description: null
 targetEntityType: media
 cache: true

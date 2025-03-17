@@ -8,5 +8,6 @@ _core:
   default_config_hash: null
 id: taxonomy_term.full
 label: 'Taxonomy term page'
+description: null
 targetEntityType: taxonomy_term
 cache: true

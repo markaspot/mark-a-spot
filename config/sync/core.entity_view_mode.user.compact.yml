@@ -8,5 +8,6 @@ _core:
   default_config_hash: null
 id: user.compact
 label: Compact
+description: null
 targetEntityType: user
 cache: true

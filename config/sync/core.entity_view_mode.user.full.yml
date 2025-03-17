@@ -8,5 +8,6 @@ _core:
   default_config_hash: null
 id: user.full
 label: 'User account'
+description: null
 targetEntityType: user
 cache: true

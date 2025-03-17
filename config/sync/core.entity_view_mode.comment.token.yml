@@ -8,5 +8,6 @@ _core:
   default_config_hash: null
 id: comment.token
 label: Token
+description: null
 targetEntityType: comment
 cache: true

@@ -8,5 +8,6 @@ _core:
   default_config_hash: null
 id: paragraph.preview
 label: Vorschau
+description: null
 targetEntityType: paragraph
 cache: true

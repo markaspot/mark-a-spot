@@ -8,5 +8,6 @@ _core:
   default_config_hash: null
 id: block_content.token
 label: Token
+description: null
 targetEntityType: block_content
 cache: true

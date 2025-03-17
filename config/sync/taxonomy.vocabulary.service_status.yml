@@ -11,3 +11,4 @@ name: Status
 vid: service_status
 description: 'Der aktuelle Status des Anliegen.'
 weight: 0
+new_revision: false

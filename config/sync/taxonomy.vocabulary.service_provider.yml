@@ -6,3 +6,4 @@ name: 'Service Provider'
 vid: service_provider
 description: 'Service Provider for external editing'
 weight: 0
+new_revision: false

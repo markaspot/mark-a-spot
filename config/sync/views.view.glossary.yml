@@ -248,7 +248,6 @@ display:
           default_argument_type: fixed
           default_argument_options:
             argument: a
-          default_argument_skip_url: false
           summary_options: {  }
           summary:
             format: default_summary
@@ -263,6 +262,7 @@ display:
           path_case: lower
           transform_dash: false
           break_phrase: false
+          default_argument_skip_url: false
       filters:
         langcode:
           id: langcode
@@ -415,7 +415,6 @@ display:
           default_argument_type: fixed
           default_argument_options:
             argument: a
-          default_argument_skip_url: false
           summary_options:
             items_per_page: 25
             inline: true
@@ -433,6 +432,7 @@ display:
           path_case: lower
           transform_dash: false
           break_phrase: false
+          default_argument_skip_url: false
       query:
         type: views_query
         options: {  }

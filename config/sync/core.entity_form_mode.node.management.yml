@@ -6,5 +6,6 @@ dependencies:
     - node
 id: node.management
 label: Management
+description: null
 targetEntityType: node
 cache: true

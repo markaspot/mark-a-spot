@@ -896,7 +896,7 @@ display:
             moderator: moderator
             editorial_board: editorial_board
       cache:
-        type: none
+        type: search_api_none
         options: {  }
       empty:
         result:

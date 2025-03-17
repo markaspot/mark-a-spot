@@ -8,5 +8,6 @@ _core:
   default_config_hash: null
 id: menu_link_content.token
 label: Token
+description: null
 targetEntityType: menu_link_content
 cache: true

@@ -8,5 +8,6 @@ _core:
   default_config_hash: null
 id: user.token
 label: Token
+description: null
 targetEntityType: user
 cache: true
