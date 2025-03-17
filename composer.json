@@ -17,75 +17,35 @@
         {
             "type": "composer",
             "url": "https://asset-packagist.org"
-        },
-        {
-            "type": "package",
-            "package": {
-                "name": "mapbox/mapbox-gl",
-                "type": "drupal-library",
-                "version": "3.0.0",
-                "dist": {
-                    "url": "https://github.com/markaspot/mark-a-spot/releases/download/10.6.0-beta.2/mapbox-gl.zip",
-                    "type": "zip"
-                }
-            }
-        },
-        {
-            "type": "package",
-            "package": {
-                "name": "maplibre/maplibre-gl",
-                "type": "drupal-library",
-                "version": "3.6.2",
-                "dist": {
-                    "url": "https://github.com/markaspot/mark-a-spot/releases/download/10.6.0-beta.2/maplibre-gl.zip",
-                    "type": "zip"
-                }
-            }
         }
-
     ],
     "require": {
-        "composer/installers": "^1.2",
+        "composer/installers": "^2",
         "cweagans/composer-patches": "^1.7.0",
         "drupal/backup_migrate": "^5",
-        "drupal/bpmn_io": "^1",
-        "drupal/core": "^10",
-        "drupal/core-composer-scaffold": "^10",
-        "drupal/core-recommended": "^10",
-        "drupal/csv_serialization": "^3",
+        "drupal/bpmn_io": "^2",
+        "drupal/core": "^11",
+        "drupal/core-composer-scaffold": "^11",
+        "drupal/core-recommended": "^11",
         "drupal/devel": "^5",
-        "drupal/eca": "^1",
-        "drupal/eu_cookie_compliance": "^1.9",
-        "drupal/gin": "^3",
+        "drupal/eca": "^2",
+        "drupal/gin": "^4",
+        "drupal/gin_login": "^2",
         "drupal/gin_toolbar": "^1",
         "drupal/group": "^3",
         "drupal/group_action": "^1.1",
-        "drupal/inline_entity_form": "1.x-dev@dev",
         "drupal/jquery_ui": "^1.6",
         "drupal/jquery_ui_draggable": "^1.2",
         "drupal/layout_library": "^1.0@beta",
         "drupal/mailsystem": "^4.4",
         "drupal/phpmailer_smtp": "^2.1",
         "drupal/s3fs": "^3.1",
-        "drupal/views_data_export": "^1.0",
-        "drupal/xls_serialization": "^1.2",
-        "drush/drush": "11.5",
-        "mapbox/mapbox-gl": "3.0.0",
-        "maplibre/maplibre-gl": "3.6.2",
-        "markaspot/markaspot": "dev-10.6.x-dev",
-        "vlucas/phpdotenv": "^2.4",
+        "drush/drush": "13",
+        "markaspot/markaspot": "dev-11.7.x-dev",
+        "vlucas/phpdotenv": "^5.5",
         "webflo/drupal-finder": "^1.0.0",
         "webmozart/assert": "1.11.0",
         "zaporylie/composer-drupal-optimizations": "^1.2.0"
-    },
-    "require-dev": {
-        "drupal/coder": "^8.3",
-        "mglaman/phpstan-drupal": "^1.1",
-        "palantirnet/drupal-rector": "^0.13.0",
-        "phpstan/extension-installer": "^1.1",
-        "phpstan/phpstan": "^1.8",
-        "phpstan/phpstan-deprecation-rules": "^1.0",
-        "squizlabs/php_codesniffer": "*"
     },
     "conflict": {
         "drupal/drupal": "*"
@@ -139,12 +99,7 @@
                 "type:drupal-drush"
             ]
         },
-        "enable-patching": false,
-        "patches": {
-            "drupal/shs": {
-                "Use core/internal.backbone lib\n": "https://www.drupal.org/files/issues/2023-04-28/3357151_change_backbone_lib_001.patch"
-            }
-        }
+        "enable-patching": false
     },
     "config": {
         "sort-packages": true,
@@ -155,8 +110,7 @@
             "oomphinc/composer-installers-extender": true,
             "zaporylie/composer-drupal-optimizations": true,
             "phpstan/extension-installer": true,
-            "dealerdirect/phpcodesniffer-composer-installer": true,
-            "simplesamlphp/composer-module-installer": false
+            "dealerdirect/phpcodesniffer-composer-installer": true
         }
     }
 }

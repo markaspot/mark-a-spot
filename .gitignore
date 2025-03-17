@@ -6,8 +6,6 @@ web/modules/contrib
 web/themes/contrib
 web/profiles/contrib
 web/libraries
-!web/libraries/mapbox-gl
-!web/libraries/maplibre-gl
 # Ignore Drupal's file directory
 web/sites/*/files
 
