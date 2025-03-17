@@ -1,6 +1,0 @@
-_core:
-  default_config_hash: null
-langcode: en
-send: true
-log: true
-verbose: false
