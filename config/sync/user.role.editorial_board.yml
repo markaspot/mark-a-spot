@@ -15,7 +15,6 @@ dependencies:
     - devel
     - field_permissions
     - file
-    - maillog
     - markaspot_open311
     - markaspot_validation
     - node
@@ -41,7 +40,6 @@ permissions:
   - 'access taxonomy overview'
   - 'access toolbar'
   - 'access user profiles'
-  - 'administer maillog'
   - 'administer nodes'
   - 'administer users'
   - 'bypass mas validation'
@@ -113,7 +111,6 @@ permissions:
   - 'view field_sp_attachment'
   - 'view field_status'
   - 'view field_status_note'
-  - 'view maillog'
   - 'view own field_address'
   - 'view own field_approved'
   - 'view own field_attachment'

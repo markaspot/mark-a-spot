@@ -2,4 +2,4 @@ _core:
   default_config_hash: null
 langcode: en
 admin: gin
-default: mas_custom
+default: gin

@@ -6,5 +6,5 @@ _core:
   default_config_hash: null
 id: mas_custom
 label: 'Mark-a-Spot Custom'
-revision: 0
+revision: false
 description: ''

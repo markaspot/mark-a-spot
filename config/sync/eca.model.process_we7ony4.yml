@@ -1,0 +1,59 @@
+uuid: 3179c2d8-d039-4afc-bc35-285957423eaa
+langcode: en
+status: true
+dependencies:
+  config:
+    - eca.eca.process_we7ony4
+id: process_we7ony4
+label: 'Redirect after Login'
+tags:
+  - untagged
+documentation: ''
+filename: ''
+modeldata: |
+  <?xml version="1.0" encoding="UTF-8"?>
+  <bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:qa="http://some-company/schema/bpmn/qa" id="sample-diagram" targetNamespace="http://bpmn.io/schema/bpmn" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd">
+    <bpmn2:process id="Process_we7ONY4" name="Redirect after Login" isExecutable="true">
+      <bpmn2:startEvent id="Event_00m3oye" name="User Login" camunda:modelerTemplate="org.drupal.event.user:login">
+        <bpmn2:extensionElements>
+          <camunda:properties>
+            <camunda:property name="pluginid" value="user:login" />
+          </camunda:properties>
+        </bpmn2:extensionElements>
+        <bpmn2:outgoing>Flow_0iu1ncj</bpmn2:outgoing>
+      </bpmn2:startEvent>
+      <bpmn2:task id="Activity_0wcatmo" name="Redirect to Management" camunda:modelerTemplate="org.drupal.action.action_goto_action">
+        <bpmn2:extensionElements>
+          <camunda:properties>
+            <camunda:property name="pluginid" value="action_goto_action" />
+          </camunda:properties>
+          <camunda:field name="url">
+            <camunda:string>/admin/content/management</camunda:string>
+          </camunda:field>
+          <camunda:field name="replace_tokens">
+            <camunda:string>no</camunda:string>
+          </camunda:field>
+        </bpmn2:extensionElements>
+        <bpmn2:incoming>Flow_0iu1ncj</bpmn2:incoming>
+      </bpmn2:task>
+      <bpmn2:sequenceFlow id="Flow_0iu1ncj" sourceRef="Event_00m3oye" targetRef="Activity_0wcatmo" />
+    </bpmn2:process>
+    <bpmndi:BPMNDiagram id="sid-6d570f33-89ed-4a29-9bda-ecac3fc60388">
+      <bpmndi:BPMNPlane id="sid-7fd98f21-be32-4caa-83f6-10276fa1ccf6" bpmnElement="Process_we7ONY4">
+        <bpmndi:BPMNShape id="Event_00m3oye_di" bpmnElement="Event_00m3oye">
+          <dc:Bounds x="62" y="282" width="36" height="36" />
+          <bpmndi:BPMNLabel>
+            <dc:Bounds x="53" y="325" width="54" height="14" />
+          </bpmndi:BPMNLabel>
+        </bpmndi:BPMNShape>
+        <bpmndi:BPMNShape id="Activity_0wcatmo_di" bpmnElement="Activity_0wcatmo">
+          <dc:Bounds x="250" y="260" width="100" height="80" />
+          <bpmndi:BPMNLabel />
+        </bpmndi:BPMNShape>
+        <bpmndi:BPMNEdge id="Flow_0iu1ncj_di" bpmnElement="Flow_0iu1ncj">
+          <di:waypoint x="98" y="300" />
+          <di:waypoint x="250" y="300" />
+        </bpmndi:BPMNEdge>
+      </bpmndi:BPMNPlane>
+    </bpmndi:BPMNDiagram>
+  </bpmn2:definitions>

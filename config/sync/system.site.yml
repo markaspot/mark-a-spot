@@ -6,7 +6,7 @@ slogan: 'Lorem Ipsum dolor site amet.'
 page:
   403: ''
   404: ''
-  front: /node/1
+  front: /user/login
 admin_compact_mode: false
 weight_select_max: 100
 default_langcode: en

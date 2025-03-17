@@ -1,0 +1,30 @@
+uuid: bee3d69c-6a0f-406d-b087-556d71f9144e
+langcode: en
+status: true
+dependencies:
+  module:
+    - eca_user
+id: process_we7ony4
+modeller: bpmn_io
+label: 'Redirect after Login'
+version: ''
+weight: 0
+events:
+  Event_00m3oye:
+    plugin: 'user:login'
+    label: 'User Login'
+    configuration: {  }
+    successors:
+      -
+        id: Activity_0wcatmo
+        condition: ''
+conditions: {  }
+gateways: {  }
+actions:
+  Activity_0wcatmo:
+    plugin: action_goto_action
+    label: 'Redirect to Management'
+    configuration:
+      replace_tokens: false
+      url: /admin/content/management
+    successors: {  }

@@ -5,7 +5,7 @@ dependencies:
   config:
     - eca.eca.process_hbfjs9y
 id: process_hbfjs9y
-label: noname
+label: 'Set Management Form Mode'
 tags:
   - ''
 documentation: ''
@@ -13,7 +13,7 @@ filename: ''
 modeldata: |
   <?xml version="1.0" encoding="UTF-8"?>
   <bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:qa="http://some-company/schema/bpmn/qa" id="sample-diagram" targetNamespace="http://bpmn.io/schema/bpmn" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd">
-    <bpmn2:process id="Process_hbfJS9y" isExecutable="true">
+    <bpmn2:process id="Process_hbfJS9y" name="Set Management Form Mode" isExecutable="true">
       <bpmn2:extensionElements />
       <bpmn2:startEvent id="Event_0n923i7" name="Prepare Form" camunda:modelerTemplate="org.drupal.event.content_entity:prepareform">
         <bpmn2:extensionElements>
@@ -27,7 +27,7 @@ modeldata: |
         <bpmn2:outgoing>Flow_16utpm6</bpmn2:outgoing>
         <bpmn2:outgoing>Flow_1hfex0v</bpmn2:outgoing>
       </bpmn2:startEvent>
-      <bpmn2:task id="Activity_1k65tc0" camunda:modelerTemplate="org.drupal.action.eca_content_set_form_display">
+      <bpmn2:task id="Activity_1k65tc0" name="Set Form mode" camunda:modelerTemplate="org.drupal.action.eca_content_set_form_display">
         <bpmn2:extensionElements>
           <camunda:properties>
             <camunda:property name="pluginid" value="eca_content_set_form_display" />
@@ -81,6 +81,7 @@ modeldata: |
         </bpmndi:BPMNShape>
         <bpmndi:BPMNShape id="Activity_1k65tc0_di" bpmnElement="Activity_1k65tc0">
           <dc:Bounds x="390" y="240" width="100" height="80" />
+          <bpmndi:BPMNLabel />
         </bpmndi:BPMNShape>
         <bpmndi:BPMNShape id="Gateway_1j8m4k3_di" bpmnElement="Gateway_1j8m4k3" isMarkerVisible="true">
           <dc:Bounds x="305" y="255" width="50" height="50" />

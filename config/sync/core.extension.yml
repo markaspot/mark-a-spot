@@ -1,6 +1,5 @@
 langcode: en
 module:
-  action: 0
   address: 0
   backup_migrate: 0
   basic_auth: 0
@@ -16,7 +15,6 @@ module:
   config_translation: 0
   contact: 0
   contextual: 0
-  csv_serialization: 0
   ctools: 0
   datetime: 0
   dblog: 0
@@ -55,6 +53,7 @@ module:
   geolocation: 0
   geolocation_google_maps: 0
   geolocation_nominatim: 0
+  gin_login: 0
   gin_toolbar: 0
   gnode: 0
   group: 0
@@ -64,15 +63,10 @@ module:
   image: 0
   image_effects: 0
   inline_entity_form: 0
-  jquery_ui: 0
-  jquery_ui_autocomplete: 0
-  jquery_ui_menu: 0
+  jsonapi: 0
   language: 0
-  layout_builder: 0
-  layout_discovery: 0
   link: 0
   locale: 0
-  maillog: 0
   mailsystem: 0
   markaspot_action_front: 0
   markaspot_action_stats: 0
@@ -82,17 +76,15 @@ module:
   markaspot_feedback: 0
   markaspot_map: 0
   markaspot_media: 0
+  markaspot_nuxt: 0
   markaspot_open311: 0
   markaspot_privacy: 0
   markaspot_request_id: 0
   markaspot_resubmission: 0
-  markaspot_static_json: 0
   markaspot_token: 0
-  markaspot_trend: 0
   markaspot_ui: 0
   markaspot_validation: 0
   media: 0
-  media_parent_entity_link: 0
   menu_ui: 0
   migrate: 0
   mysql: 0
@@ -120,11 +112,8 @@ module:
   toolbar: 0
   update: 0
   user: 0
-  variationcache: 0
-  views_data_export: 0
   views_infinite_scroll: 0
   views_ui: 0
-  xls_serialization: 0
   menu_link_content: 1
   pathauto: 1
   content_translation: 10
@@ -133,8 +122,5 @@ module:
   markaspot: 1000
 theme:
   claro: 0
-  olivero: 0
-  mas_olivero: 0
-  mas_custom: 0
   gin: 0
 profile: markaspot

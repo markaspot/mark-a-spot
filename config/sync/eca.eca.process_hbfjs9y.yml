@@ -10,9 +10,9 @@ dependencies:
     - eca_user
 id: process_hbfjs9y
 modeller: bpmn_io
-label: noname
+label: 'Set Management Form Mode'
 version: ''
-weight: null
+weight: 0
 events:
   Event_0n923i7:
     plugin: 'content_entity:prepareform'
@@ -47,7 +47,7 @@ gateways:
 actions:
   Activity_1k65tc0:
     plugin: eca_content_set_form_display
-    label: Activity_1k65tc0
+    label: 'Set Form mode'
     configuration:
       display_mode: management
     successors: {  }

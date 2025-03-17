@@ -11,3 +11,4 @@ name: Organisation
 vid: organisation
 description: 'Die Organisation, die für die Anliegen verantwortlich ist.'
 weight: 0
+new_revision: false
