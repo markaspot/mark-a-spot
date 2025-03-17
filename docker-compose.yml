@@ -73,8 +73,8 @@ services:
     image: markaspot/markaspot-ui-base
     container_name: ui
     environment:
-      - GEOREPORT_API_KEY=test_api_key
-      - API_BASE=http://web
+      - GEOREPORT_API_KEY=12841525e0ebd
+      - NUXT_API_BASE=http://web
       - BASE_PATH=/
     depends_on:
       - markaspot
