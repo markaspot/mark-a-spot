@@ -2,7 +2,7 @@
 
 ./vendor/bin/drush user-create "api_user" --password="my_password" && drush user-add-role "api_user" "api_user"
 UUID=$(./vendor/bin/drush user-information api_user --fields=uuid --format=list)
-UUID=$(./vendor/bin/drush sqlq "SELECT uuid FROM users WHERE uid = 2")
+UUID=$(./vendor/bin/drush sql:query "SELECT uuid FROM users WHERE uid = 2" --database=default)
 
 ./vendor/bin/drush config-set services_api_key_auth.api_key.test_mas user_uuid $UUID -y
 
