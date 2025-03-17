@@ -24,7 +24,6 @@ weight: -8
 is_admin: false
 permissions:
   - 'access content'
-  - 'access open311 advanced properties'
   - 'access open311 extension'
   - 'create field_approved'
   - 'create field_request_media'

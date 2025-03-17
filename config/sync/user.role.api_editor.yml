@@ -15,6 +15,7 @@ label: 'API Editor'
 weight: -3
 is_admin: null
 permissions:
+  - 'access open311 advanced properties'
   - 'create field_service_provider_notes'
   - 'restful get georeport_request_index_resource'
   - 'restful get georeport_request_resource'
