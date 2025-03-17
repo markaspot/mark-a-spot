@@ -1,61 +1,99 @@
-ARG BASE_IMAGE=php:8.2-rc-fpm-alpine
+ARG BASE_IMAGE=php:8.3-fpm-alpine
 
-# PHP Dependency install via Composer.
-# Build the Docker image for Drupal.
-FROM $BASE_IMAGE as build
-WORKDIR '/app/data'
+# =========================
+#  Builder stage
+# =========================
+FROM ${BASE_IMAGE} AS builder
+WORKDIR /app/data
 
-# Install dependencies
+RUN apk update && apk upgrade --no-cache
+
+# Install minimum required extensions and dependencies for Drupal (build-time)
 RUN apk add --no-cache \
-    curl \
-    jq \
-    freetype \
-    freetype-dev \
-    git \
-    libjpeg-turbo \
-    libjpeg-turbo-dev \
-    libpng \
-    libpng-dev \
-    mysql-client \
-    patch \
-    libzip-dev \
- && apk add --no-cache --virtual .build-deps \
-    $PHPIZE_DEPS \
- && docker-php-ext-install zip opcache mysqli pdo pdo_mysql \
- && docker-php-ext-configure gd --with-freetype --with-jpeg \
- && docker-php-ext-install -j$(nproc) gd \
- && docker-php-ext-install exif \
- && apk del --no-cache .build-deps
+        git \
+        curl \
+        mariadb-client \
+        libzip-dev \
+        freetype-dev \
+        libjpeg-turbo-dev \
+        libpng-dev \
+        oniguruma-dev \
+        libxml2-dev \
+        jq \
+        ${PHPIZE_DEPS} \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install -j"$(nproc)" \
+        gd \
+        zip \
+        opcache \
+        pdo \
+        pdo_mysql \
+        mbstring \
+        xml \
+    && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin/ --filename=composer \
+    && apk del --no-cache ${PHPIZE_DEPS}
 
-# Copy custom php.ini
-COPY conf/php.ini "$PHP_INI_DIR/php.ini"
+# Copy application files and install dependencies
+COPY . .
+RUN composer install --no-dev --optimize-autoloader \
+    && composer clear-cache
 
-# Copy composer files to image
-COPY composer.json composer.lock ./
+# Generate SBOM in builder
+RUN apk add --no-cache syft \
+    && syft . -o spdx-json=/sbom.json
 
-# Only copy custom modules in prod / mounted volume in dev
 
-COPY config ./config
-COPY web ./web
-COPY scripts ./scripts
-COPY drush ./drush
+# =========================
+#  Production stage
+# =========================
+FROM ${BASE_IMAGE}
+WORKDIR /app/data
 
-RUN curl -OL https://github.com/drush-ops/drush-launcher/releases/latest/download/drush.phar \
- && chmod +x drush.phar \
- && mv drush.phar /usr/local/bin/drush \
- && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin/ --filename=composer \
- && composer install \
-    --ignore-platform-reqs \
-    --no-interaction \
-    --no-dev \
-    --prefer-dist;
+RUN apk update && apk upgrade --no-cache \
+    && apk add --no-cache \
+         libzip-dev \
+         freetype-dev \
+         libjpeg-turbo-dev \
+         libpng-dev \
+         oniguruma-dev \
+         libxml2-dev \
+         git \
+         curl \
+         mariadb-client \
+         jq \
+         ${PHPIZE_DEPS} \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install -j"$(nproc)" \
+         gd \
+         zip \
+         opcache \
+         pdo \
+         pdo_mysql \
+         mbstring \
+         xml \
+    && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin/ --filename=composer \
+    && apk del --no-cache ${PHPIZE_DEPS}
 
-RUN mkdir -p /app/data/web/sites/default/files
+# Copy built application and settings from builder
+COPY --from=builder /app/data ./
 
-# Set the permissions
-RUN chown -R www-data:www-data /app/data && \
-    find /app/data/web/sites/default/files -type d -exec chmod 755 {} \; && \
-    find /app/data/web/sites/default/files -type f -exec chmod 644 {} \;
+# Add non-root user
+RUN adduser -D -u 1000 app \
+    && chown -R app:app .
 
-# Switch to www-data user
-USER www-data
+# Create Drush symlink for convenience
+RUN ln -sf /app/data/vendor/drush/drush/drush /usr/local/bin/drush
+
+USER app
+EXPOSE 9000
+
+HEALTHCHECK --interval=30s --timeout=3s \
+    CMD curl -f http://localhost/ || exit 1
+
+# Copy SBOM from builder
+LABEL org.opencontainers.image.source="https://github.com/markaspot/markaspot"
+LABEL org.opencontainers.image.authors="Mark-a-Spot"
+LABEL org.opencontainers.image.licenses="GPL-2.0-or-later"
+LABEL org.opencontainers.image.url="https://mark-a-spot.com"
+LABEL org.opencontainers.image.description="Mark-a-Spot application"
+LABEL org.opencontainers.image.sbom="sbom.json"
