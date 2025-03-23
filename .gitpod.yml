@@ -1,0 +1,41 @@
+# GitPod Konfiguration für Mark-a-Spot Stack
+image: gitpod/workspace-full
+
+# Installiert Docker und Docker Compose
+tasks:
+  - name: Docker Setup
+    init: |
+      sudo apt-get update
+      sudo apt-get install -y docker-compose
+      gp sync-done setup
+    command: |
+      echo "Docker und Docker Compose sind eingerichtet."
+  
+  - name: Start Mark-a-Spot
+    init: gp sync-await setup
+    command: |
+      docker-compose up -d
+      echo "Mark-a-Spot Stack wird gestartet..."
+      echo "Web UI wird verfügbar sein unter: $(gp url 80)"
+      echo "UI (Node.js) wird verfügbar sein unter: $(gp url 3000)"
+      echo "PHPMyAdmin wird verfügbar sein unter: $(gp url 8081)"
+
+# Port Konfiguration
+ports:
+  - port: 80
+    onOpen: open-browser
+    visibility: public
+  - port: 3000
+    onOpen: ignore
+    visibility: public
+  - port: 8081
+    onOpen: ignore
+    visibility: public
+  - port: 3306
+    onOpen: ignore
+    visibility: private
+
+# VS Code Erweiterungen
+vscode:
+  extensions:
+    - ms-azuretools.vscode-docker

@@ -75,6 +75,7 @@ services:
     environment:
       - GEOREPORT_API_KEY=12841525e0ebd
       - NUXT_API_BASE=http://web
+      - NUXT_GEOREPORT_API_BASE=https://localhost
       - BASE_PATH=/
     depends_on:
       - markaspot
