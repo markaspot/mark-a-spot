@@ -1,0 +1,33 @@
+{
+    "name": "Mark-a-Spot Docker Environment",
+    "dockerComposeFile": "../docker-compose.yml",
+    "service": "markaspot",
+    "workspaceFolder": "/app/data",
+    "forwardPorts": [80, 3000, 8081, 3306],
+    "portsAttributes": {
+      "80": {
+        "label": "Web",
+        "onAutoForward": "openPreview"
+      },
+      "3000": {
+        "label": "UI",
+        "onAutoForward": "notify"
+      },
+      "8081": {
+        "label": "PHPMyAdmin",
+        "onAutoForward": "notify"
+      },
+      "3306": {
+        "label": "MariaDB",
+        "onAutoForward": "silent"
+      }
+    },
+    "postCreateCommand": "echo 'Environment is ready!'",
+    "customizations": {
+      "vscode": {
+        "extensions": [
+          "ms-azuretools.vscode-docker"
+        ]
+      }
+    }
+  }
