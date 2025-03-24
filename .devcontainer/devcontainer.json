@@ -1,33 +1,47 @@
 {
-    "name": "Mark-a-Spot Docker Environment",
+    "name": "Mark-a-Spot Environment",
     "dockerComposeFile": "../docker-compose.yml",
     "service": "markaspot",
     "workspaceFolder": "/app/data",
-    "forwardPorts": [80, 3000, 8081, 3306],
-    "portsAttributes": {
-      "80": {
-        "label": "Web",
-        "onAutoForward": "openPreview"
-      },
-      "3000": {
-        "label": "UI",
-        "onAutoForward": "notify"
-      },
-      "8081": {
-        "label": "PHPMyAdmin",
-        "onAutoForward": "notify"
-      },
-      "3306": {
-        "label": "MariaDB",
-        "onAutoForward": "silent"
-      }
+    "remoteUser": "app",
+    "forwardPorts": [
+        80,
+        3000,
+        8081,
+        3306
+    ],
+    "settings": {
+        "terminal.integrated.defaultProfile.linux": "sh",
+        "terminal.integrated.profiles.linux": {
+            "sh": {
+                "path": "/bin/sh"
+            }
+        }
     },
-    "postCreateCommand": "echo 'Environment is ready!'",
+    "portsAttributes": {
+        "80": {
+            "label": "Web",
+            "onAutoForward": "openPreview"
+        },
+        "3000": {
+            "label": "UI",
+            "onAutoForward": "notify"
+        },
+        "3306": {
+            "label": "MariaDB",
+            "onAutoForward": "silent"
+        },
+        "8081": {
+            "label": "PHPMyAdmin",
+            "onAutoForward": "notify"
+        }
+    },
+    "initializeCommand": "echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin",
     "customizations": {
-      "vscode": {
-        "extensions": [
-          "ms-azuretools.vscode-docker"
-        ]
-      }
+        "vscode": {
+            "extensions": [
+                "ms-azuretools.vscode-docker"
+            ]
+        }
     }
-  }
+}
