@@ -167,16 +167,16 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.342.6",
+            "version": "3.342.11",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "2ad93ef447289da27892707efa683c1ae7ced85f"
+                "reference": "e0afed3d0e2c89362f6c9b6bf8f278b04a4858b6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/2ad93ef447289da27892707efa683c1ae7ced85f",
-                "reference": "2ad93ef447289da27892707efa683c1ae7ced85f",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/e0afed3d0e2c89362f6c9b6bf8f278b04a4858b6",
+                "reference": "e0afed3d0e2c89362f6c9b6bf8f278b04a4858b6",
                 "shasum": ""
             },
             "require": {
@@ -258,9 +258,9 @@
             "support": {
                 "forum": "https://github.com/aws/aws-sdk-php/discussions",
                 "issues": "https://github.com/aws/aws-sdk-php/issues",
-                "source": "https://github.com/aws/aws-sdk-php/tree/3.342.6"
+                "source": "https://github.com/aws/aws-sdk-php/tree/3.342.11"
             },
-            "time": "2025-03-14T18:01:18+00:00"
+            "time": "2025-03-21T18:11:10+00:00"
         },
         {
             "name": "caxy/php-htmldiff",
@@ -1337,29 +1337,29 @@
         },
         {
             "name": "doctrine/collections",
-            "version": "2.2.2",
+            "version": "2.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/collections.git",
-                "reference": "d8af7f248c74f195f7347424600fd9e17b57af59"
+                "reference": "2eb07e5953eed811ce1b309a7478a3b236f2273d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/collections/zipball/d8af7f248c74f195f7347424600fd9e17b57af59",
-                "reference": "d8af7f248c74f195f7347424600fd9e17b57af59",
+                "url": "https://api.github.com/repos/doctrine/collections/zipball/2eb07e5953eed811ce1b309a7478a3b236f2273d",
+                "reference": "2eb07e5953eed811ce1b309a7478a3b236f2273d",
                 "shasum": ""
             },
             "require": {
                 "doctrine/deprecations": "^1",
-                "php": "^8.1"
+                "php": "^8.1",
+                "symfony/polyfill-php84": "^1.30"
             },
             "require-dev": {
                 "doctrine/coding-standard": "^12",
                 "ext-json": "*",
                 "phpstan/phpstan": "^1.8",
                 "phpstan/phpstan-phpunit": "^1.0",
-                "phpunit/phpunit": "^10.5",
-                "vimeo/psalm": "^5.11"
+                "phpunit/phpunit": "^10.5"
             },
             "type": "library",
             "autoload": {
@@ -1403,7 +1403,7 @@
             ],
             "support": {
                 "issues": "https://github.com/doctrine/collections/issues",
-                "source": "https://github.com/doctrine/collections/tree/2.2.2"
+                "source": "https://github.com/doctrine/collections/tree/2.3.0"
             },
             "funding": [
                 {
@@ -1419,7 +1419,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-04-18T06:56:21+00:00"
+            "time": "2025-03-22T10:17:19+00:00"
         },
         {
             "name": "doctrine/common",
@@ -2182,16 +2182,16 @@
         },
         {
             "name": "drupal/core",
-            "version": "11.1.4",
+            "version": "11.1.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/drupal/core.git",
-                "reference": "7c460ab0102c0b104923d52474ced5cde1d2634a"
+                "reference": "d883560fc134296e3979f07280fe9bd8c7ecdaeb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/drupal/core/zipball/7c460ab0102c0b104923d52474ced5cde1d2634a",
-                "reference": "7c460ab0102c0b104923d52474ced5cde1d2634a",
+                "url": "https://api.github.com/repos/drupal/core/zipball/d883560fc134296e3979f07280fe9bd8c7ecdaeb",
+                "reference": "d883560fc134296e3979f07280fe9bd8c7ecdaeb",
                 "shasum": ""
             },
             "require": {
@@ -2344,13 +2344,13 @@
             ],
             "description": "Drupal is an open source content management platform powering millions of websites and applications.",
             "support": {
-                "source": "https://github.com/drupal/core/tree/11.1.4"
+                "source": "https://github.com/drupal/core/tree/11.1.5"
             },
-            "time": "2025-03-05T21:15:52+00:00"
+            "time": "2025-03-19T15:53:25+00:00"
         },
         {
             "name": "drupal/core-composer-scaffold",
-            "version": "11.1.4",
+            "version": "11.1.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/drupal/core-composer-scaffold.git",
@@ -2394,22 +2394,22 @@
                 "drupal"
             ],
             "support": {
-                "source": "https://github.com/drupal/core-composer-scaffold/tree/11.1.4"
+                "source": "https://github.com/drupal/core-composer-scaffold/tree/11.1.5"
             },
             "time": "2024-11-02T22:49:15+00:00"
         },
         {
             "name": "drupal/core-recommended",
-            "version": "11.1.4",
+            "version": "11.1.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/drupal/core-recommended.git",
-                "reference": "6486acacf9a41dde787e792ef41d0403335bcbe5"
+                "reference": "b776d6c250fa168ecd0ba480b4c915ac22d84e9e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/drupal/core-recommended/zipball/6486acacf9a41dde787e792ef41d0403335bcbe5",
-                "reference": "6486acacf9a41dde787e792ef41d0403335bcbe5",
+                "url": "https://api.github.com/repos/drupal/core-recommended/zipball/b776d6c250fa168ecd0ba480b4c915ac22d84e9e",
+                "reference": "b776d6c250fa168ecd0ba480b4c915ac22d84e9e",
                 "shasum": ""
             },
             "require": {
@@ -2418,7 +2418,7 @@
                 "doctrine/annotations": "~2.0.2",
                 "doctrine/deprecations": "~1.1.3",
                 "doctrine/lexer": "~2.1.1",
-                "drupal/core": "11.1.4",
+                "drupal/core": "11.1.5",
                 "egulias/email-validator": "~4.0.2",
                 "guzzlehttp/guzzle": "~7.9.2",
                 "guzzlehttp/promises": "~2.0.4",
@@ -2480,9 +2480,9 @@
             ],
             "description": "Core and its dependencies with known-compatible minor versions. Require this project INSTEAD OF drupal/core.",
             "support": {
-                "source": "https://github.com/drupal/core-recommended/tree/11.1.4"
+                "source": "https://github.com/drupal/core-recommended/tree/11.1.5"
             },
-            "time": "2025-03-05T21:15:52+00:00"
+            "time": "2025-03-19T15:53:25+00:00"
         },
         {
             "name": "drupal/ctools",
@@ -3460,20 +3460,20 @@
         },
         {
             "name": "drupal/geolocation",
-            "version": "4.0.0-beta1",
+            "version": "4.0.0-beta2",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/geolocation.git",
-                "reference": "4.0.0-beta1"
+                "reference": "4.0.0-beta2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/geolocation-4.0.0-beta1.zip",
-                "reference": "4.0.0-beta1",
-                "shasum": "9d1e1883bacd3ccaff5f0feb0c8156832e05e4ea"
+                "url": "https://ftp.drupal.org/files/projects/geolocation-4.0.0-beta2.zip",
+                "reference": "4.0.0-beta2",
+                "shasum": "487ac32499c23f3811bd2e6bf766b470b6266727"
             },
             "require": {
-                "drupal/core": "^10 || ^11"
+                "drupal/core": "^10 || ^11 || ^12"
             },
             "require-dev": {
                 "drupal/address": "*",
@@ -3491,8 +3491,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "4.0.0-beta1",
-                    "datestamp": "1741357318",
+                    "version": "4.0.0-beta2",
+                    "datestamp": "1742547273",
                     "security-coverage": {
                         "status": "not-covered",
                         "message": "Beta releases are not covered by Drupal security advisories."
@@ -5225,16 +5225,16 @@
         },
         {
             "name": "egulias/email-validator",
-            "version": "4.0.3",
+            "version": "4.0.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/egulias/EmailValidator.git",
-                "reference": "b115554301161fa21467629f1e1391c1936de517"
+                "reference": "d42c8731f0624ad6bdc8d3e5e9a4524f68801cfa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/egulias/EmailValidator/zipball/b115554301161fa21467629f1e1391c1936de517",
-                "reference": "b115554301161fa21467629f1e1391c1936de517",
+                "url": "https://api.github.com/repos/egulias/EmailValidator/zipball/d42c8731f0624ad6bdc8d3e5e9a4524f68801cfa",
+                "reference": "d42c8731f0624ad6bdc8d3e5e9a4524f68801cfa",
                 "shasum": ""
             },
             "require": {
@@ -5280,7 +5280,7 @@
             ],
             "support": {
                 "issues": "https://github.com/egulias/EmailValidator/issues",
-                "source": "https://github.com/egulias/EmailValidator/tree/4.0.3"
+                "source": "https://github.com/egulias/EmailValidator/tree/4.0.4"
             },
             "funding": [
                 {
@@ -5288,7 +5288,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-12-27T00:36:43+00:00"
+            "time": "2025-03-06T22:45:56+00:00"
         },
         {
             "name": "ezyang/htmlpurifier",
@@ -6251,12 +6251,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/markaspot/markaspot.git",
-                "reference": "ff27c2a0cf985ea832f81d035cd65e982c20187e"
+                "reference": "102f90f0eed582681f21f71c9551e30c1385d57d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/markaspot/markaspot/zipball/ff27c2a0cf985ea832f81d035cd65e982c20187e",
-                "reference": "ff27c2a0cf985ea832f81d035cd65e982c20187e",
+                "url": "https://api.github.com/repos/markaspot/markaspot/zipball/102f90f0eed582681f21f71c9551e30c1385d57d",
+                "reference": "102f90f0eed582681f21f71c9551e30c1385d57d",
                 "shasum": ""
             },
             "require": {
@@ -6352,7 +6352,7 @@
                 "issues": "https://github.com/markaspot/markaspot/issues",
                 "source": "https://github.com/markaspot/markaspot/tree/11.7.x-dev"
             },
-            "time": "2025-03-15T07:08:50+00:00"
+            "time": "2025-03-24T10:16:17+00:00"
         },
         {
             "name": "masterminds/html5",
@@ -10729,6 +10729,82 @@
                 }
             ],
             "time": "2024-09-09T11:45:10+00:00"
+        },
+        {
+            "name": "symfony/polyfill-php84",
+            "version": "v1.31.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/polyfill-php84.git",
+                "reference": "e5493eb51311ab0b1cc2243416613f06ed8f18bd"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/polyfill-php84/zipball/e5493eb51311ab0b1cc2243416613f06ed8f18bd",
+                "reference": "e5493eb51311ab0b1cc2243416613f06ed8f18bd",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.2"
+            },
+            "type": "library",
+            "extra": {
+                "thanks": {
+                    "url": "https://github.com/symfony/polyfill",
+                    "name": "symfony/polyfill"
+                }
+            },
+            "autoload": {
+                "files": [
+                    "bootstrap.php"
+                ],
+                "psr-4": {
+                    "Symfony\\Polyfill\\Php84\\": ""
+                },
+                "classmap": [
+                    "Resources/stubs"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nicolas Grekas",
+                    "email": "p@tchwork.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony polyfill backporting some PHP 8.4+ features to lower PHP versions",
+            "homepage": "https://symfony.com",
+            "keywords": [
+                "compatibility",
+                "polyfill",
+                "portable",
+                "shim"
+            ],
+            "support": {
+                "source": "https://github.com/symfony/polyfill-php84/tree/v1.31.0"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2024-09-09T12:04:04+00:00"
         },
         {
             "name": "symfony/process",
