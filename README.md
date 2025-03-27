@@ -66,6 +66,7 @@ The Docker Compose setup includes the following services:
 
 - `web`: The Nginx web server
 - `markaspot`: The Mark-a-Spot Drupal application
+- `ui`: The frontend (Nuxt), remember to delete application cache when reinstall
 - `db`: The MariaDB database
 - `phpmyadmin`: PHPMyAdmin for database management
 
@@ -83,7 +84,6 @@ PHPMyAdmin is available at `http://localhost:8080` for database management.
 
 For local development, we recommend using [DDEV](https://ddev.com), a Docker-based development environment.
 
-
 ### Configuration
 
 You can adjust the configuration of the Docker services by editing the `docksal.yml` file. For example, you can modify the database username and password, the PHP memory limit, and other settings.
@@ -93,4 +93,4 @@ You can adjust the configuration of the Docker services by editing the `docksal.
 Mark-a-Spot is freely available under the [GNU General Public License, version 2 or any later version](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html) license.
 
 
-[![Docker Image CI](https://github.com/markaspot/mark-a-spot/actions/workflows/docker-image.yml/badge.svg)](https://github.com/markaspot/mark-a-spot/actions/workflows/docker-image.yml)
+[![Docker Multi-Platform Build](https://github.com/markaspot/mark-a-spot/actions/workflows/docker-image.yml/badge.svg)](https://github.com/markaspot/mark-a-spot/actions/workflows/docker-image.yml)
