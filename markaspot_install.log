@@ -1,0 +1,10 @@
+ [notice] Installing Mark-a-Spot...
+ [success] Site installation completed successfully.
+ [notice]  You are about to:
+ * DROP all tables in your 'drupal' database.
+
+ // Do you want to continue?: yes.                                              
+
+
+ [notice] Updating Mark-a-Spot configurations...
+ [success] Mark-a-Spot installation and configuration completed successfully.

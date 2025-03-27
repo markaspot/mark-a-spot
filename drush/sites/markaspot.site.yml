@@ -1,8 +1,0 @@
-docker:
-  host: markaspot
-  root: /app/data/web
-  uri: http://localhost
-  paths:
-    drush-script: /app/data/vendor/bin/drush
-  command:
-    service: markaspot

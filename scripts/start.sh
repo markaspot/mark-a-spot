@@ -3,11 +3,12 @@
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 usage() {
-  echo "Usage: start.sh [-y] [-t]"
+  echo "Usage: start.sh [-y] [-t] [-a]"
   echo
   echo "Options:"
   echo "    -y    Install automatically with predefined values (latitude: 40.73, longitude: -73.93, city: New York, locale: en_US)"
   echo "    -t    Import translation file from the /translations directory and enable translations for terms"
+  echo "    -a    Use AI translation (OpenAI) for content artifacts instead of standard translation files"
   exit 1
 }
 
@@ -118,17 +119,31 @@ if [ "$ENVIRONMENT" != "prod" ]; then
       return 0
   }
 
-  translation=false
-  automatic=false
+  translation="false"
+  automatic="false"
+  ai_translate="false"
 
-  while getopts "yt" opt
-  do
-      case $opt in
-        y) automatic=true ;;
-        t) translation=true ;;
-        *) echo "Invalid option: -$opt" >&2
-          usage ;;
-      esac
+  # Process command line options
+  for arg in "$@"; do
+    case $arg in
+      -y)
+        automatic="true"
+        shift
+        ;;
+      -t)
+        translation="true"
+        shift
+        ;;
+      -a)
+        ai_translate="true"
+        shift
+        ;;
+      *)
+        # unknown option
+        echo "Invalid option: $arg" >&2
+        usage
+        ;;
+    esac
   done
   if [ "$automatic" = true ]; then
       latitude="40.73"
@@ -253,16 +268,111 @@ if [ "$ENVIRONMENT" != "prod" ]; then
 
 
 
-  if [ "$translation" = true ]; then
+  # Process language settings
+  language=$(echo "$locale" | cut -d '_' -f1)
+  
+  # Handle translations
+  if [ "$translation" = true ] && [ "$ai_translate" = true ]; then
+    printf "\e[36mImporting language and using AI translation...\e[0m\n"
+    # Pass the full locale to translate.sh which will handle extraction if needed
+    $SCRIPT_DIR/translate.sh "$locale"
+    
+    # Check if OPENAI_API_KEY is set
+    if [ -z "$OPENAI_API_KEY" ]; then
+      printf "\e[33mWarning: OPENAI_API_KEY environment variable not set.\e[0m\n"
+      printf "\e[33mPlease enter your OpenAI API key: \e[0m"
+      read api_key
+      export OPENAI_API_KEY=$api_key
+    fi
+    
+    # Run AI translation
+    printf "\e[36mRunning AI translation for content artifacts...\e[0m\n"
+    
+    # Ensure the script is executable
+    chmod +x "$SCRIPT_DIR/ai-translate.sh"
+    
+    # Debug output
+    printf "\e[36mDebug: Script location is $SCRIPT_DIR/ai-translate.sh\e[0m\n"
+    
+    # Execute with explicit shell to ensure it runs in any environment
+    sh "$SCRIPT_DIR/ai-translate.sh" $language 2>&1 || printf "\e[31mAI translation failed. Check if the script exists and is properly set up.\e[0m\n"
+    
+    # Set the site default language to match the chosen language
+    printf "\e[36mSetting up site default language to $language\e[0m\n"
+    drush config:set system.site default_langcode $language -y
+    
+    printf "\e[33mNote: Full AI translation requires bash and curl, which may not be available in Docker.\e[0m\n"
+    printf "\e[33mTo perform real translation, run the script directly in an environment with bash and curl:\e[0m\n"
+    printf "\e[33m  OPENAI_API_KEY=your_key ./scripts/ai-translate.sh $language\e[0m\n"
+  elif [ "$translation" = true ]; then
     printf "\e[36mImporting language...\e[0m\n"
+    # Pass the full locale to translate.sh which will handle extraction if needed
+    $SCRIPT_DIR/translate.sh "$locale"
+  elif [ "$ai_translate" = true ]; then
+    printf "\e[36mSetting up language and using AI translation...\e[0m\n"
+    
+    # Pass the full locale for language setup
     language=$(echo "$locale" | cut -d '_' -f1)
-    $SCRIPT_DIR/translate.sh $language
+    drush language-add "$language"
+    
+    # Check if OPENAI_API_KEY is set
+    if [ -z "$OPENAI_API_KEY" ]; then
+      printf "\e[33mWarning: OPENAI_API_KEY environment variable not set.\e[0m\n"
+      printf "\e[33mPlease enter your OpenAI API key: \e[0m"
+      read api_key
+      export OPENAI_API_KEY=$api_key
+    fi
+    
+    # Run AI translation
+    printf "\e[36mRunning AI translation for content artifacts...\e[0m\n"
+    
+    # Ensure the script is executable
+    chmod +x "$SCRIPT_DIR/ai-translate.sh"
+    
+    # Debug output
+    printf "\e[36mDebug: Script location is $SCRIPT_DIR/ai-translate.sh\e[0m\n"
+    
+    # Execute with explicit shell to ensure it runs in any environment
+    sh "$SCRIPT_DIR/ai-translate.sh" $language 2>&1 || printf "\e[31mAI translation failed. Check if the script exists and is properly set up.\e[0m\n"
+    
+    # Set the site default language to match the chosen language
+    printf "\e[36mSetting up site default language to $language\e[0m\n"
+    drush config:set system.site default_langcode $language -y
   else
-    printf "\e[33mHint: For a multilingual site, use the -t option to import a Drupal translation file from the /translations directory and enable translations for terms.\e[0m\n"
+    printf "\e[33mHint: For a multilingual site, use the -t option to import a Drupal translation file\e[0m\n"
+    printf "\e[33mor use the -a option to use AI translation for content artifacts.\e[0m\n"
   fi
 
   printf "\e[36mImporting ..\e[0m\n"
   $SCRIPT_DIR/import.sh
+  
+  # If we used AI translation, restore original files after import and clean up
+  if [ "$ai_translate" = true ]; then
+    printf "\e[36mRestoring original artifact files...\e[0m\n"
+    ARTIFACTS_DIR="$PWD/web/profiles/contrib/markaspot/modules/markaspot_default_content/artifacts"
+    
+    # Restore original files from backups
+    for backup_file in "$ARTIFACTS_DIR"/*.bak; do
+      if [ -f "$backup_file" ]; then
+        original_file=$(echo "$backup_file" | sed 's/\.bak$//')
+        mv "$backup_file" "$original_file"
+        printf "  Restored %s\n" "$(basename "$original_file")"
+      fi
+    done
+    
+    # Clean up language directories
+    printf "\e[36mCleaning up language-specific directories...\e[0m\n"
+    LANG_DIR="$ARTIFACTS_DIR/$language"
+    if [ -d "$LANG_DIR" ]; then
+      # Remove temporary files but keep translated CSVs
+      rm -f "$LANG_DIR"/prompt_*.txt
+      rm -f "$LANG_DIR"/content_*.txt
+      rm -f "$LANG_DIR"/request_*.json
+      rm -f "$LANG_DIR"/response_*.json
+      rm -f "$LANG_DIR"/translated_*.csv
+      printf "  Cleaned up temporary files in %s\n" "$LANG_DIR"
+    fi
+  fi
 
   printf "\e[36mExecuting georeport client to import initial service requests...\e[0m\n"
   $SCRIPT_DIR/georeport-client.sh
