@@ -37,6 +37,8 @@ RUN apk add --no-cache \
 COPY . .
 RUN composer install --no-dev --optimize-autoloader \
     && composer clear-cache
+# Remove dev depndencies for better scout rating
+RUN rm -rf rm -rf web/core/modules/package_manager/tests/*
 
 # Generate SBOM in builder
 RUN apk add --no-cache syft \
