@@ -8,7 +8,7 @@ features:
   favicon: true
   node_user_picture: true
 logo:
-  path: themes/custom/mas_custom/logo.svg
+  path: profiles/contrib/markaspot/modules/markaspot_ui/images/logo-small-invert.svg
   use_default: false
 third_party_settings:
   shortcut:
