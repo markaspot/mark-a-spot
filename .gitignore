@@ -35,3 +35,4 @@ web/sites/*/settings.php
 /robots.txt
 /update.php
 /web.config
+*.log

@@ -30,13 +30,20 @@ for MIGRATION_ID in $MIGRATIONS; do
   drush migrate-import "$MIGRATION_ID"
 done
 
-printf "\e[36mImporting the config for blocks...\e[0m\n"
+printf "\e[36mChecking for optional block configs...\e[0m\n"
 
 # Set the source path based on the document root variable
 source_path="$PWD/web/profiles/contrib/markaspot/modules/markaspot_default_content/config/_optional/"
 
-# Run the drush command with the dynamic source path
-drush cim --source "$source_path" --partial -y
+# Check if the directory exists before importing
+if [ -d "$source_path" ]; then
+  printf "\e[36mImporting the config for blocks...\e[0m\n"
+  # Run the drush command with the dynamic source path
+  drush cim --source "$source_path" --partial -y
+else
+  printf "\e[33mOptional config directory not found at: $source_path\e[0m\n"
+  printf "\e[33mSkipping optional config import...\e[0m\n"
+fi
 
 
 # Disable and uninstall the modules

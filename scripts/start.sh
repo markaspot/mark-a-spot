@@ -186,12 +186,6 @@ if [ "$ENVIRONMENT" != "prod" ]; then
       fi
   fi
 
-  # Debug output
-  echo "Final values:"
-  echo "Latitude: $latitude"
-  echo "Longitude: $longitude" 
-  echo "City: $city"
-  echo "Locale: $locale"
 
   # Progress indicator function
   show_progress() {
@@ -291,8 +285,6 @@ if [ "$ENVIRONMENT" != "prod" ]; then
     # Ensure the script is executable
     chmod +x "$SCRIPT_DIR/ai-translate.sh"
     
-    # Debug output
-    printf "\e[36mDebug: Script location is $SCRIPT_DIR/ai-translate.sh\e[0m\n"
     
     # Execute with explicit shell to ensure it runs in any environment
     sh "$SCRIPT_DIR/ai-translate.sh" $language 2>&1 || printf "\e[31mAI translation failed. Check if the script exists and is properly set up.\e[0m\n"
@@ -301,8 +293,8 @@ if [ "$ENVIRONMENT" != "prod" ]; then
     printf "\e[36mSetting up site default language to $language\e[0m\n"
     drush config:set system.site default_langcode $language -y
     
-    printf "\e[33mNote: Full AI translation requires bash and curl, which may not be available in Docker.\e[0m\n"
-    printf "\e[33mTo perform real translation, run the script directly in an environment with bash and curl:\e[0m\n"
+    printf "\e[33mNote: Translation is being performed in the container using the available shell.\e[0m\n"
+    printf "\e[33mFor more extensive translation capabilities, you can also run the script on your host system:\e[0m\n"
     printf "\e[33m  OPENAI_API_KEY=your_key ./scripts/ai-translate.sh $language\e[0m\n"
   elif [ "$translation" = true ]; then
     printf "\e[36mImporting language...\e[0m\n"
@@ -329,8 +321,6 @@ if [ "$ENVIRONMENT" != "prod" ]; then
     # Ensure the script is executable
     chmod +x "$SCRIPT_DIR/ai-translate.sh"
     
-    # Debug output
-    printf "\e[36mDebug: Script location is $SCRIPT_DIR/ai-translate.sh\e[0m\n"
     
     # Execute with explicit shell to ensure it runs in any environment
     sh "$SCRIPT_DIR/ai-translate.sh" $language 2>&1 || printf "\e[31mAI translation failed. Check if the script exists and is properly set up.\e[0m\n"
@@ -338,6 +328,10 @@ if [ "$ENVIRONMENT" != "prod" ]; then
     # Set the site default language to match the chosen language
     printf "\e[36mSetting up site default language to $language\e[0m\n"
     drush config:set system.site default_langcode $language -y
+    
+    printf "\e[33mNote: Translation is being performed in the container using the available shell.\e[0m\n"
+    printf "\e[33mFor more extensive translation capabilities, you can also run the script on your host system:\e[0m\n"
+    printf "\e[33m  OPENAI_API_KEY=your_key ./scripts/ai-translate.sh $language\e[0m\n"
   else
     printf "\e[33mHint: For a multilingual site, use the -t option to import a Drupal translation file\e[0m\n"
     printf "\e[33mor use the -a option to use AI translation for content artifacts.\e[0m\n"

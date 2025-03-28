@@ -21,7 +21,6 @@ RADIUS_IN_DEGREES=$(awk "BEGIN {print ($RADIUS / 111.32)}")
 
 # Retrieve the services list from the server
 services_json=$(curl -s -w '\n%{http_code}\n' http://$VIRTUAL_HOST/georeport/v2/services.json)
-# echo $services_json;
 # Check for errors in the response
 response_code=$(echo "$services_json" | tail -n 1)
 if [ "$response_code" != "200" ]; then
