@@ -93,7 +93,7 @@ HEALTHCHECK --interval=30s --timeout=3s \
     CMD curl -f http://localhost/ || exit 1
 
 # Copy SBOM from builder
-LABEL org.opencontainers.image.source="https://github.com/markaspot/markaspot"
+LABEL org.opencontainers.image.source="https://github.com/markaspot/mark-a-spot"
 LABEL org.opencontainers.image.authors="Mark-a-Spot"
 LABEL org.opencontainers.image.licenses="GPL-2.0-or-later"
 LABEL org.opencontainers.image.url="https://mark-a-spot.com"
