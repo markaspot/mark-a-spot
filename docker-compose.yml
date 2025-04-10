@@ -70,7 +70,7 @@ services:
     networks:
       - drupal
   ui:
-    image: markaspot/markaspot-ui-base:v1.0.1
+    image: markaspot/markaspot-ui-base:v1.1.0
     container_name: ui
     environment:
       - GEOREPORT_API_KEY=12841525e0ebd
