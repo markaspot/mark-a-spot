@@ -6250,12 +6250,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/markaspot/markaspot.git",
-                "reference": "c99e5722cf19cec300f5c6e951aec57a0746c50f"
+                "reference": "4d50cfde24caaa40e687017ca4d73ce26d1da2d5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/markaspot/markaspot/zipball/c99e5722cf19cec300f5c6e951aec57a0746c50f",
-                "reference": "c99e5722cf19cec300f5c6e951aec57a0746c50f",
+                "url": "https://api.github.com/repos/markaspot/markaspot/zipball/4d50cfde24caaa40e687017ca4d73ce26d1da2d5",
+                "reference": "4d50cfde24caaa40e687017ca4d73ce26d1da2d5",
                 "shasum": ""
             },
             "require": {
@@ -6351,7 +6351,7 @@
                 "issues": "https://github.com/markaspot/markaspot/issues",
                 "source": "https://github.com/markaspot/markaspot/tree/11.7.x-dev"
             },
-            "time": "2025-04-10T13:47:46+00:00"
+            "time": "2025-04-10T13:52:42+00:00"
         },
         {
             "name": "masterminds/html5",
