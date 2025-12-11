@@ -11,6 +11,10 @@
     ],
     "repositories": [
         {
+            "type": "vcs",
+            "url": "https://github.com/markaspot/markaspot"
+        },
+        {
             "type": "composer",
             "url": "https://packages.drupal.org/8"
         },
@@ -42,7 +46,7 @@
         "drupal/s3fs": "^3.1",
         "drush/drush": "13",
         "kevinquillen/recipe-generator": "^2.0",
-        "markaspot/markaspot": "dev-11.7.x-dev",
+        "markaspot/markaspot": "dev-11.8.x-dev",
         "vlucas/phpdotenv": "^5.5",
         "webflo/drupal-finder": "^1.0.0",
         "webmozart/assert": "1.11.0",

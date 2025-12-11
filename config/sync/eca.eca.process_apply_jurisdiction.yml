@@ -1,0 +1,50 @@
+uuid: a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d
+langcode: en
+status: true
+dependencies:
+  config:
+    - node.type.service_request
+  module:
+    - eca_content
+    - eca_user
+    - group_action
+id: process_apply_jurisdiction
+modeller: bpmn_io
+label: 'Apply Jurisdiction'
+version: ''
+weight: -10
+events:
+  Event_SR_Insert_Jur:
+    plugin: 'content_entity:insert'
+    label: 'Service Request Created'
+    configuration:
+      type: 'node service_request'
+    successors:
+      -
+        id: Activity_Set_User
+        condition: ''
+conditions: {  }
+gateways: {  }
+actions:
+  Activity_Set_User:
+    plugin: eca_switch_account
+    label: 'Set Current User'
+    configuration:
+      user_id: '1'
+    successors:
+      -
+        id: Activity_Apply_Jurisdiction
+        condition: ''
+  Activity_Apply_Jurisdiction:
+    plugin: group_add_content
+    label: 'Apply Jurisdiction'
+    configuration:
+      replace_tokens: false
+      values: {  }
+      operation: create
+      content_plugin: 'group_node:service_request'
+      group_id: '1'
+      entity_id: ''
+      add_method: skip_existing
+      object: ''
+    successors: {  }

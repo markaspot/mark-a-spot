@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "33ed56b83315aa54bef6758f18377d75",
+    "content-hash": "26049aa3ad3beabf20799bbc8aa2c3f9",
     "packages": [
         {
             "name": "anthonymartin/geo-location",
@@ -6659,16 +6659,16 @@
         },
         {
             "name": "markaspot/markaspot",
-            "version": "dev-11.7.x-dev",
+            "version": "dev-11.8.x-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/markaspot/markaspot.git",
-                "reference": "8c1dc7810a254a96a309dd8ff1d6c0b5418c440d"
+                "reference": "8777d57a558e048372533624a9c605726bf29a64"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/markaspot/markaspot/zipball/8c1dc7810a254a96a309dd8ff1d6c0b5418c440d",
-                "reference": "8c1dc7810a254a96a309dd8ff1d6c0b5418c440d",
+                "url": "https://api.github.com/repos/markaspot/markaspot/zipball/8777d57a558e048372533624a9c605726bf29a64",
+                "reference": "8777d57a558e048372533624a9c605726bf29a64",
                 "shasum": ""
             },
             "require": {
@@ -6687,6 +6687,7 @@
                 "drupal/gin": "^5",
                 "drupal/gin_login": "^2.1",
                 "drupal/gin_toolbar": "^3",
+                "drupal/group": "^3",
                 "drupal/iconify_field": "^1.2",
                 "drupal/image_effects": "^4",
                 "drupal/inline_entity_form": "^3",
@@ -6768,7 +6769,7 @@
                 "issues": "https://github.com/markaspot/markaspot/issues",
                 "source": "https://github.com/markaspot/markaspot/tree/11.7.x-dev"
             },
-            "time": "2025-11-26T14:37:56+00:00"
+            "time": "2025-12-06T12:00:11+00:00"
         },
         {
             "name": "masterminds/html5",

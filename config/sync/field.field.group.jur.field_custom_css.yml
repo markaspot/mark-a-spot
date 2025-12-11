@@ -1,0 +1,22 @@
+uuid: 1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.group.field_custom_css
+    - group.type.jur
+  module:
+    - text
+id: group.jur.field_custom_css
+field_name: field_custom_css
+entity_type: group
+bundle: jur
+label: 'Custom CSS'
+description: 'Custom CSS overrides for this jurisdiction. Will be injected as inline styles in the frontend.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  allowed_formats: {  }
+field_type: text_long

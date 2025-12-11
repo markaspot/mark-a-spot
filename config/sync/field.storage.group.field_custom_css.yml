@@ -1,0 +1,19 @@
+uuid: 9e8f7d6c-5b4a-3c2d-1e0f-9a8b7c6d5e4f
+langcode: en
+status: true
+dependencies:
+  module:
+    - group
+    - text
+id: group.field_custom_css
+field_name: field_custom_css
+entity_type: group
+type: text_long
+settings: {  }
+module: text
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

@@ -136,29 +136,11 @@ for i in $(seq 1 50); do
 done
 
 echo "------------------------------------------------------------------------------------------------------------------"
+printf "\e[32m✓ Created 50 test service requests\e[0m\n"
 
-printf "\n\e[32m╔════════════════════════════════════════════════════════════════════════╗\e[0m\n"
-printf "\e[32m║ Setup Complete!                                                        ║\e[0m\n"
-printf "\e[32m╠════════════════════════════════════════════════════════════════════════╣\e[0m\n"
-printf "\e[32m║\e[0m Users created:                                                         \e[32m║\e[0m\n"
-printf "\e[32m║\e[0m   • api_user (password: api_password) - API access                     \e[32m║\e[0m\n"
-printf "\e[32m║\e[0m   • moderation_1 (password: mod_password) - Moderator                   \e[32m║\e[0m\n"
-printf "\e[32m║\e[0m   • moderation_2 (password: mod_password) - Moderator                   \e[32m║\e[0m\n"
-printf "\e[32m║\e[0m                                                                        \e[32m║\e[0m\n"
-printf "\e[32m║\e[0m GeoReport API Key: %-50s \e[32m║\e[0m\n" "$API_KEY"
-printf "\e[32m║\e[0m                                                                        \e[32m║\e[0m\n"
-printf "\e[32m║\e[0m Test requests created: 50                                              \e[32m║\e[0m\n"
-printf "\e[32m╚════════════════════════════════════════════════════════════════════════╝\e[0m\n"
-
-# Auto-update DDEV docker-compose if it exists
+# Auto-update DDEV docker-compose if it exists (silently)
 DDEV_NODE_CONFIG=".ddev/docker-compose.node-dev.yaml"
 if [ -f "$DDEV_NODE_CONFIG" ] && [ -n "$API_KEY" ] && [ "$API_KEY" != "*" ]; then
-  printf "\n\e[36mUpdating DDEV node-dev configuration with API key...\e[0m\n"
-  sed -i.bak "s/GEOREPORT_API_KEY=.*/GEOREPORT_API_KEY=$API_KEY/" "$DDEV_NODE_CONFIG"
-  rm -f "${DDEV_NODE_CONFIG}.bak"
-  printf "\e[32m✓ Updated %s\e[0m\n" "$DDEV_NODE_CONFIG"
-  printf "\e[33m  Run 'ddev restart' to apply the API key to frontend.\e[0m\n\n"
-else
-  printf "\n\e[33mHint: Update GEOREPORT_API_KEY in .ddev/docker-compose.node-dev.yaml\e[0m\n"
-  printf "\e[33m      then run 'ddev restart' to apply to frontend.\e[0m\n\n"
+  sed -i.bak "s/GEOREPORT_API_KEY=.*/GEOREPORT_API_KEY=$API_KEY/" "$DDEV_NODE_CONFIG" 2>/dev/null || true
+  rm -f "${DDEV_NODE_CONFIG}.bak" 2>/dev/null || true
 fi

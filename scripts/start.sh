@@ -301,9 +301,12 @@ EOF
   
   # Wait for the installation to complete
   wait $install_pid
-  
-  # Check if the installation was successful
-  if [ $? -ne 0 ]; then
+  install_exit_code=$?
+
+  # Check if Drupal was actually installed (more reliable than exit code)
+  if drush status --field=bootstrap 2>/dev/null | grep -q "Successful"; then
+    echo -e "\e[32mDrupal bootstrap verified successfully.\e[0m"
+  elif [ $install_exit_code -ne 0 ]; then
     echo -e "\e[31mInstallation failed! Check markaspot_install.log for details.\e[0m"
     exit 1
   fi
@@ -354,34 +357,6 @@ EOF
     if (!in_array("view group_node:service_request entity", $perms)) {
       $perms[] = "view group_node:service_request entity";
       $config->set("permissions", $perms)->save();
-    }
-  ' 2>/dev/null || true
-
-  # Add admin user to groups with admin role
-  printf "\e[36mAdding admin user to groups...\e[0m\n"
-  drush php:eval '
-    $user = \Drupal\user\Entity\User::load(1);
-    if ($user) {
-      $group_storage = \Drupal::entityTypeManager()->getStorage("group");
-      $role_storage = \Drupal::entityTypeManager()->getStorage("group_role");
-      $groups = $group_storage->loadMultiple();
-      foreach ($groups as $group) {
-        $membership = $group->getMember($user);
-        if (!$membership) {
-          $group_type = $group->getGroupType()->id();
-          $admin_role_id = $group_type . "-admin";
-          // Check if admin role exists
-          $admin_role = $role_storage->load($admin_role_id);
-          if ($admin_role) {
-            $group->addMember($user, ["group_roles" => [$admin_role_id]]);
-            echo "Added admin to group: " . $group->label() . " (with admin role)\n";
-          } else {
-            // Add without specific role if admin role does not exist
-            $group->addMember($user);
-            echo "Added admin to group: " . $group->label() . " (no admin role found)\n";
-          }
-        }
-      }
     }
   ' 2>/dev/null || true
 
@@ -462,12 +437,23 @@ EOF
 
   printf "\e[36mImporting ..\e[0m\n"
   $SCRIPT_DIR/import.sh
-  
-  # If we used AI translation, restore original files after import and clean up
+
+  # If we used AI translation, create English translations from original CSVs
   if [ "$ai_translate" = true ]; then
-    printf "\e[36mRestoring original artifact files...\e[0m\n"
+    printf "\e[36mCreating English translations from original CSV files...\e[0m\n"
     ARTIFACTS_DIR="$PWD/web/profiles/contrib/markaspot/modules/markaspot_default_content/artifacts"
-    
+
+    # The .bak files contain the original English content
+    # The create-translations.php script can read .bak files directly
+    if [ -f "$SCRIPT_DIR/create-translations.php" ]; then
+      printf "\e[36mAdding English translations via Entity API...\e[0m\n"
+      drush php:script "$SCRIPT_DIR/create-translations.php" -- en 2>&1 || printf "\e[33mWarning: Could not create English translations\e[0m\n"
+    else
+      printf "\e[33mWarning: create-translations.php not found, skipping English translations\e[0m\n"
+    fi
+
+    printf "\e[36mRestoring original artifact files...\e[0m\n"
+
     # Restore original files from backups
     for backup_file in "$ARTIFACTS_DIR"/*.bak; do
       if [ -f "$backup_file" ]; then
@@ -476,7 +462,7 @@ EOF
         printf "  Restored %s\n" "$(basename "$original_file")"
       fi
     done
-    
+
     # Clean up language directories
     printf "\e[36mCleaning up language-specific directories...\e[0m\n"
     LANG_DIR="$ARTIFACTS_DIR/$language"
@@ -531,30 +517,97 @@ EOF
 
   $SCRIPT_DIR/georeport-client.sh
 
+  # Configure groups and memberships
+  printf "\e[36mConfiguring groups and user memberships...\e[0m\n"
+
+  # Update jurisdiction group label with city name
+  drush php:eval "
+    \$group = \Drupal::entityTypeManager()->getStorage('group')->load(1);
+    if (\$group && \$group->getGroupType()->id() === 'jur') {
+      \$group->set('label', '$city');
+      \$group->save();
+      echo 'Jurisdiction renamed to: $city' . PHP_EOL;
+    }
+  " 2>/dev/null || true
+
+  # Add admin to all groups (admin roles are auto-assigned via global_role config)
+  drush php:eval "
+    \$user = \Drupal\user\Entity\User::load(1);
+    \$groups = \Drupal::entityTypeManager()->getStorage('group')->loadMultiple();
+    foreach (\$groups as \$group) {
+      if (!\$group->getMember(\$user)) {
+        \$group->addMember(\$user);
+        echo 'Admin added to ' . \$group->label() . PHP_EOL;
+      }
+    }
+  " 2>/dev/null || true
+
+  # Add users to jurisdiction group and departments
+  drush php:eval "
+    \$group_storage = \Drupal::entityTypeManager()->getStorage('group');
+    \$user_storage = \Drupal::entityTypeManager()->getStorage('user');
+
+    \$jur = \$group_storage->load(1);
+    \$dept1 = \$group_storage->load(2);
+    \$dept2 = \$group_storage->load(3);
+
+    // Add api_user and moderators to jurisdiction
+    foreach (['api_user', 'moderation_1', 'moderation_2'] as \$name) {
+      \$users = \$user_storage->loadByProperties(['name' => \$name]);
+      \$user = reset(\$users);
+      if (\$user && \$jur && !\$jur->getMember(\$user)) {
+        \$jur->addMember(\$user);
+      }
+    }
+
+    // Add moderation_1 to Department 1
+    \$mod1 = \$user_storage->loadByProperties(['name' => 'moderation_1']);
+    \$mod1 = reset(\$mod1);
+    if (\$mod1 && \$dept1 && !\$dept1->getMember(\$mod1)) {
+      \$dept1->addMember(\$mod1);
+    }
+
+    // Add moderation_2 to Department 2
+    \$mod2 = \$user_storage->loadByProperties(['name' => 'moderation_2']);
+    \$mod2 = reset(\$mod2);
+    if (\$mod2 && \$dept2 && !\$dept2->getMember(\$mod2)) {
+      \$dept2->addMember(\$mod2);
+    }
+
+    echo 'Users assigned to groups' . PHP_EOL;
+  " 2>/dev/null || true
+
+  printf "\e[32mGroup configuration complete.\e[0m\n"
+
+  # Truncate city name if too long (max 60 chars to fit in box)
+  display_city=$(printf "%.60s" "$city")
+  if [ ${#city} -gt 60 ]; then
+    display_city="${display_city}..."
+  fi
+
   printf "\n\e[32m╔════════════════════════════════════════════════════════════════════════╗\e[0m\n"
-  printf "\e[32m║ Mark-a-Spot Installation Complete!                                     ║\e[0m\n"
+  printf "\e[32m║\e[0m %-72s \e[32m║\e[0m\n" "Mark-a-Spot Installation Complete!"
   printf "\e[32m╠════════════════════════════════════════════════════════════════════════╣\e[0m\n"
-  printf "\e[32m║\e[0m City: %-62s \e[32m║\e[0m\n" "$city"
-  printf "\e[32m║\e[0m Locale: %-60s \e[32m║\e[0m\n" "$locale"
-  printf "\e[32m║\e[0m                                                                        \e[32m║\e[0m\n"
-  printf "\e[32m║\e[0m GeoReport API Key: %-50s \e[32m║\e[0m\n" "$GEOREPORT_API_KEY"
-  printf "\e[32m║\e[0m                                                                        \e[32m║\e[0m\n"
-  printf "\e[32m║\e[0m Users created:                                                         \e[32m║\e[0m\n"
-  printf "\e[32m║\e[0m   • admin (uid 1)                                                      \e[32m║\e[0m\n"
-  printf "\e[32m║\e[0m   • api_user (api_password) - API access                               \e[32m║\e[0m\n"
-  printf "\e[32m║\e[0m   • moderation_1, moderation_2 (mod_password) - Moderators             \e[32m║\e[0m\n"
-  printf "\e[32m║\e[0m                                                                        \e[32m║\e[0m\n"
-  printf "\e[32m║\e[0m Service requests: 50 test entries created                              \e[32m║\e[0m\n"
+  printf "\e[32m║\e[0m %-72s \e[32m║\e[0m\n" "City: $display_city"
+  printf "\e[32m║\e[0m %-72s \e[32m║\e[0m\n" "Locale: $locale"
+  printf "\e[32m║\e[0m %-72s \e[32m║\e[0m\n" "API Key: $GEOREPORT_API_KEY"
+  printf "\e[32m╠════════════════════════════════════════════════════════════════════════╣\e[0m\n"
+  printf "\e[32m║\e[0m %-72s \e[32m║\e[0m\n" "Users: admin, api_user, moderation_1, moderation_2"
+  printf "\e[32m║\e[0m %-72s \e[32m║\e[0m\n" "Service Requests: 50 test entries"
   printf "\e[32m╚════════════════════════════════════════════════════════════════════════╝\e[0m\n"
 
-  printf "\n\e[36mOne-Time Login for Admin:\e[0m\n"
+  printf "\n\e[36mOne-Time Login:\e[0m\n"
   if [ -n "$DDEV_HOSTNAME" ]; then
     drush uli --uri="https://$DDEV_HOSTNAME"
   else
     drush uli --uri=http://localhost
   fi
 
-  printf "\n\e[33mNext steps for DDEV:\e[0m\n"
-  printf "  1. Run 'ddev restart' to apply the API key to frontend\n"
-  printf "  2. Access frontend at: https://\$DDEV_HOSTNAME:8040\n\n"
+  printf "\n\e[33mNext steps:\e[0m\n"
+  printf "  1. Run 'ddev restart' to apply API key to frontend\n"
+  if [ -n "$DDEV_HOSTNAME" ]; then
+    printf "  2. Access frontend at: https://%s:8040\n\n" "$DDEV_HOSTNAME"
+  else
+    printf "  2. Access frontend at: http://localhost:3000\n\n"
+  fi
 fi

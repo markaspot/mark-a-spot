@@ -1,0 +1,93 @@
+uuid: b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d6e
+langcode: en
+status: false
+dependencies:
+  config:
+    - eca.eca.process_apply_jurisdiction
+id: process_apply_jurisdiction
+label: 'Apply Jurisdiction'
+tags:
+  - untagged
+documentation: 'Adds all new service requests to the default jurisdiction group (ID 1).'
+filename: ''
+modeldata: |
+  <?xml version="1.0" encoding="UTF-8"?>
+  <bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="sample-diagram" targetNamespace="http://bpmn.io/schema/bpmn" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd">
+    <bpmn2:process id="Process_apply_jurisdiction" name="Apply Jurisdiction" isExecutable="true">
+      <bpmn2:startEvent id="Event_SR_Insert_Jur" name="Service Request Created" camunda:modelerTemplate="org.drupal.event.content_entity:insert">
+        <bpmn2:extensionElements>
+          <camunda:properties>
+            <camunda:property name="pluginid" value="content_entity:insert" />
+          </camunda:properties>
+          <camunda:field name="type">
+            <camunda:string>node service_request</camunda:string>
+          </camunda:field>
+        </bpmn2:extensionElements>
+        <bpmn2:outgoing>Flow_1</bpmn2:outgoing>
+      </bpmn2:startEvent>
+      <bpmn2:task id="Activity_Set_User" name="Set Current User" camunda:modelerTemplate="org.drupal.action.eca_switch_account">
+        <bpmn2:extensionElements>
+          <camunda:properties>
+            <camunda:property name="pluginid" value="eca_switch_account" />
+          </camunda:properties>
+          <camunda:field name="user_id">
+            <camunda:string>1</camunda:string>
+          </camunda:field>
+        </bpmn2:extensionElements>
+        <bpmn2:incoming>Flow_1</bpmn2:incoming>
+        <bpmn2:outgoing>Flow_2</bpmn2:outgoing>
+      </bpmn2:task>
+      <bpmn2:task id="Activity_Apply_Jurisdiction" name="Apply Jurisdiction" camunda:modelerTemplate="org.drupal.action.group_add_content">
+        <bpmn2:extensionElements>
+          <camunda:properties>
+            <camunda:property name="pluginid" value="group_add_content" />
+          </camunda:properties>
+          <camunda:field name="content_plugin">
+            <camunda:string>group_node:service_request</camunda:string>
+          </camunda:field>
+          <camunda:field name="group_id">
+            <camunda:string>1</camunda:string>
+          </camunda:field>
+          <camunda:field name="add_method">
+            <camunda:string>skip_existing</camunda:string>
+          </camunda:field>
+        </bpmn2:extensionElements>
+        <bpmn2:incoming>Flow_2</bpmn2:incoming>
+        <bpmn2:outgoing>Flow_3</bpmn2:outgoing>
+      </bpmn2:task>
+      <bpmn2:endEvent id="End_Event">
+        <bpmn2:incoming>Flow_3</bpmn2:incoming>
+      </bpmn2:endEvent>
+      <bpmn2:sequenceFlow id="Flow_1" sourceRef="Event_SR_Insert_Jur" targetRef="Activity_Set_User" />
+      <bpmn2:sequenceFlow id="Flow_2" sourceRef="Activity_Set_User" targetRef="Activity_Apply_Jurisdiction" />
+      <bpmn2:sequenceFlow id="Flow_3" sourceRef="Activity_Apply_Jurisdiction" targetRef="End_Event" />
+    </bpmn2:process>
+    <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+      <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_apply_jurisdiction">
+        <bpmndi:BPMNShape id="Event_SR_Insert_Jur_di" bpmnElement="Event_SR_Insert_Jur">
+          <dc:Bounds x="152" y="102" width="36" height="36" />
+        </bpmndi:BPMNShape>
+        <bpmndi:BPMNShape id="Activity_Set_User_di" bpmnElement="Activity_Set_User">
+          <dc:Bounds x="240" y="80" width="100" height="80" />
+        </bpmndi:BPMNShape>
+        <bpmndi:BPMNShape id="Activity_Apply_Jurisdiction_di" bpmnElement="Activity_Apply_Jurisdiction">
+          <dc:Bounds x="390" y="80" width="100" height="80" />
+        </bpmndi:BPMNShape>
+        <bpmndi:BPMNShape id="End_Event_di" bpmnElement="End_Event">
+          <dc:Bounds x="542" y="102" width="36" height="36" />
+        </bpmndi:BPMNShape>
+        <bpmndi:BPMNEdge id="Flow_1_di" bpmnElement="Flow_1">
+          <di:waypoint x="188" y="120" />
+          <di:waypoint x="240" y="120" />
+        </bpmndi:BPMNEdge>
+        <bpmndi:BPMNEdge id="Flow_2_di" bpmnElement="Flow_2">
+          <di:waypoint x="340" y="120" />
+          <di:waypoint x="390" y="120" />
+        </bpmndi:BPMNEdge>
+        <bpmndi:BPMNEdge id="Flow_3_di" bpmnElement="Flow_3">
+          <di:waypoint x="490" y="120" />
+          <di:waypoint x="542" y="120" />
+        </bpmndi:BPMNEdge>
+      </bpmndi:BPMNPlane>
+    </bpmndi:BPMNDiagram>
+  </bpmn2:definitions>

@@ -73,6 +73,7 @@ module:
   markaspot_action_front: 0
   markaspot_action_stats: 0
   markaspot_archive: 0
+  markaspot_bbox_cache: 0
   markaspot_blocks: 0
   markaspot_boilerplate: 0
   markaspot_icons: 0

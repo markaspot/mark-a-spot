@@ -1,0 +1,23 @@
+uuid: 31234bce-ed53-4d07-b188-b9c0dc95860c
+langcode: en
+status: true
+dependencies:
+  module:
+    - file
+    - group
+id: group.field_logo_dark
+field_name: field_logo_dark
+entity_type: group
+type: file
+settings:
+  target_type: file
+  display_field: false
+  display_default: false
+  uri_scheme: public
+module: file
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

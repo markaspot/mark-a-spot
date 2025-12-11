@@ -1,0 +1,20 @@
+uuid: 4b66e22d-3c3a-42f4-a177-3110f1ed843c
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.group.field_nuxt_config
+    - group.type.jur
+id: group.jur.field_nuxt_config
+field_name: field_nuxt_config
+entity_type: group
+bundle: jur
+label: 'Nuxt Configuration'
+description: 'JSON configuration for jurisdiction-specific Nuxt frontend settings (theme, features, map center, etc.)'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  allowed_formats: {  }
+field_type: text_long

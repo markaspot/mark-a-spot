@@ -1,0 +1,25 @@
+uuid: 430601a8-4fc8-42a0-9775-61a991ee4429
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.group.field_logo_dark
+    - group.type.jur
+id: group.jur.field_logo_dark
+field_name: field_logo_dark
+entity_type: group
+bundle: jur
+label: 'Logo (Dark Mode)'
+description: 'SVG logo displayed in dark mode. Will be delivered as Base64 via API.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: default
+  handler_settings: {  }
+  file_directory: jurisdiction/logos
+  file_extensions: 'svg png'
+  max_filesize: '500 KB'
+  description_field: false
+field_type: file

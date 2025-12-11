@@ -1,0 +1,19 @@
+uuid: 66f87830-0765-49b2-80b1-ca931aa66b7d
+langcode: en
+status: true
+dependencies:
+  module:
+    - group
+    - text
+id: group.field_nuxt_config
+field_name: field_nuxt_config
+entity_type: group
+type: text_long
+settings: {  }
+module: text
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

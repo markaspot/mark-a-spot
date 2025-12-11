@@ -1,0 +1,25 @@
+uuid: b97aebd8-5f66-4f61-8c2d-98ac57b0615a
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.group.field_logo_light
+    - group.type.jur
+id: group.jur.field_logo_light
+field_name: field_logo_light
+entity_type: group
+bundle: jur
+label: 'Logo (Light Mode)'
+description: 'SVG logo displayed in light mode. Will be delivered as Base64 via API.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: default
+  handler_settings: {  }
+  file_directory: jurisdiction/logos
+  file_extensions: 'svg png'
+  max_filesize: '500 KB'
+  description_field: false
+field_type: file

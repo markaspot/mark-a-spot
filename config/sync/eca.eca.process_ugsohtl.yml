@@ -74,7 +74,7 @@ actions:
     label: 'Send Mail (Welcome Closed)'
     configuration:
       recipient: '[node:field_e_mail:value]'
-      subject: "Your request [node:request_id] status update"
+      subject: 'Your request [node:request_id] status update'
       message: |-
         Hello!
 
@@ -118,7 +118,7 @@ actions:
     label: 'Send Mail (Welcome Open)'
     configuration:
       recipient: '[node:field_e_mail:value]'
-      subject: "Your request [node:request_id] status update"
+      subject: 'Your request [node:request_id] status update'
       message: |-
         Hello!
 
@@ -163,6 +163,6 @@ actions:
     configuration:
       replace_tokens: false
       recipient: '[node:field_e_mail:value]'
-      subject: "Your request [node:request_id] status update"
+      subject: 'Your request [node:request_id] status update'
       message: ''
     successors: {  }

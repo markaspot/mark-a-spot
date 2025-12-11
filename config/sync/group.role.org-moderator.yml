@@ -1,3 +1,4 @@
+uuid: fce659c5-8b69-47d2-a812-20ca50509620
 langcode: en
 status: true
 dependencies:
@@ -5,7 +6,7 @@ dependencies:
     - group.type.org
     - user.role.moderator
 id: org-moderator
-label: Moderator External
+label: 'Moderator External'
 weight: 1
 admin: false
 scope: outsider

@@ -275,27 +275,10 @@ done
 echo "Finished copying: $copied_count files copied, $skipped_count files skipped."
 
 
-# Modify the copied files to use the chosen language as a base language (not a translation)
-echo "Setting processed content as primary language content in $ARTIFACTS_DIR..."
-updated_lang_count=0
-for csv_file in "$ARTIFACTS_DIR"/*.csv; do
-  # Ensure it's a file and not a backup
-  case "$csv_file" in *.bak) continue ;; esac
-  if [ -f "$csv_file" ]; then
-    # Check if the file actually contains the target language code (it might be original English if fallback occurred)
-    # Also check if it contains 'langcode' column header
-    if grep -q "langcode" "$csv_file" && grep -q "\"$LANG_CODE\"" "$csv_file"; then
-      # Replace all instances of the target language code with "en"
-      sed -i.langbak "s/\"$LANG_CODE\"/\"en\"/g" "$csv_file"
-      echo "  Updated langcode in $(basename "$csv_file") from $LANG_CODE to en"
-      rm "${csv_file}.langbak" # Remove sed backup file
-      updated_lang_count=$((updated_lang_count + 1))
-    # else
-      # echo "  Skipping langcode update for $(basename "$csv_file") (no '$LANG_CODE' or no 'langcode' column found)"
-    fi
-  fi
-done
-echo "Finished langcode update: $updated_lang_count files updated."
+# Note: We keep the translated langcode ($LANG_CODE) in the CSVs
+# The migration will create content with the correct target language langcode
+# English translations are added later via create-translations.php
+echo "Translated CSVs ready with langcode: $LANG_CODE"
 
 
 # Clean up the language-specific temporary files (keep the final outputs)
