@@ -36,3 +36,4 @@ web/sites/*/settings.php
 /update.php
 /web.config
 *.log
+web/modules/custom/markaspot_vision/
