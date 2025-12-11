@@ -32,7 +32,6 @@ dependencies:
     - geolocation_nominatim
     - inline_entity_form
     - shs
-    - telephone
     - text
   enforced:
     module:
@@ -72,24 +71,9 @@ content:
       placeholder: ''
       size: 60
     third_party_settings: {  }
-  field_first_name:
-    type: string_textfield
-    weight: 5
-    region: content
-    settings:
-      size: 60
-      placeholder: ''
-    third_party_settings: {  }
-  field_gdpr:
-    type: boolean_checkbox
-    weight: 8
-    region: content
-    settings:
-      display_label: true
-    third_party_settings: {  }
   field_geolocation:
     type: geolocation_nominatim_widget
-    weight: 0
+    weight: 3
     region: content
     settings:
       zoom: '18'
@@ -114,7 +98,6 @@ content:
       tab: '1'
       autoLocate: 0
       zoomControl: 0
-      limit_country_code: US
     third_party_settings: {  }
   field_image:
     type: image_image
@@ -124,24 +107,9 @@ content:
       progress_indicator: throbber
       preview_image_style: thumbnail
     third_party_settings: {  }
-  field_last_name:
-    type: string_textfield
-    weight: 6
-    region: content
-    settings:
-      size: 60
-      placeholder: ''
-    third_party_settings: {  }
-  field_phone:
-    type: telephone_default
-    weight: 7
-    region: content
-    settings:
-      placeholder: '+49 2151 2345678'
-    third_party_settings: {  }
   field_request_media:
     type: inline_entity_form_simple
-    weight: 3
+    weight: 0
     region: content
     settings:
       form_mode: default
@@ -159,10 +127,14 @@ hidden:
   field_approved: true
   field_attachment: true
   field_feedback: true
+  field_first_name: true
+  field_gdpr: true
+  field_last_name: true
   field_notes: true
   field_notification: true
   field_object_id: true
   field_organisation: true
+  field_phone: true
   field_priority: true
   field_request_image: true
   field_service_provider: true
