@@ -318,6 +318,10 @@ EOF
   printf "\e[36mAdd Admin Role...\e[0m\n"
   drush user:role:add "administrator" --uid=1
 
+  # Import config from config/sync (group types, roles, etc.)
+  printf "\e[36mImporting configuration from config/sync...\e[0m\n"
+  drush config:import -y
+
   # Set coordinates in all config locations
   printf "\e[36mConfiguring map coordinates...\e[0m\n"
 

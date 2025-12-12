@@ -88,25 +88,28 @@ class MarkaspotCommands extends DrushCommands implements CustomEventAwareInterfa
     $command .= " --account-mail=$account_mail";
     $command .= " --existing-config";
     $command .= " --locale=" . $options['locale'];
-    
+
     if ($options['skip-confirmation']) {
       $command .= " -y";
     }
-    
+
     // Execute the site:install command using shell
     $this->logger()->notice(dt('Installing Mark-a-Spot...'));
     $process = $this->processManager()->shell($command);
     $process->setTimeout(0);
     $process->run();
-    
+
     if (!$process->isSuccessful()) {
       $this->logger()->error(dt('Site installation failed with exit code @code', ['@code' => $process->getExitCode()]));
       $this->logger()->error($process->getErrorOutput());
       return $process->getExitCode();
     }
-    
+
     $this->logger()->success(dt('Site installation completed successfully.'));
     $this->logger()->notice(dt($process->getOutput()));
+
+    // Clear cache before configuration updates
+    $this->processManager()->shell("drush cr")->run();
     
     // Now that Drupal is installed, we can update the configuration
     // We'll do this directly since we can bootstrap Drupal now
