@@ -5,6 +5,7 @@ dependencies:
   module:
     - markaspot_open311
     - serialization
+    - services_api_key_auth
     - user
 _core:
   default_config_hash: null
@@ -18,3 +19,4 @@ configuration:
       - json
     supported_auth:
       - cookie
+      - api_key_auth

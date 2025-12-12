@@ -243,12 +243,6 @@ resourceFields:
     publicName: field_priority
     enhancer:
       id: ''
-  field_reclamation_number:
-    disabled: false
-    fieldName: field_reclamation_number
-    publicName: field_reclamation_number
-    enhancer:
-      id: ''
   field_request_image:
     disabled: false
     fieldName: field_request_image
