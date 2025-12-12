@@ -1,9 +1,9 @@
 import {Map, MapOptions} from './map';
-import {createMap, setErrorWebGlContext, beforeMapTest} from '../util/test/util';
+import {createMap, beforeMapTest, sleep} from '../util/test/util';
 import {LngLat} from '../geo/lng_lat';
 import {Tile} from '../source/tile';
 import {OverscaledTileID} from '../source/tile_id';
-import {Event, ErrorEvent} from '../util/evented';
+import {Event as EventedEvent, ErrorEvent} from '../util/evented';
 import simulate from '../../test/unit/lib/simulate_interaction';
 import {fixedLngLat, fixedNum} from '../../test/unit/lib/fixed';
 import {GeoJSONSourceSpecification, LayerSpecification, SourceSpecification, StyleSpecification} from '@maplibre/maplibre-gl-style-spec';
@@ -21,6 +21,7 @@ import {StyleImageInterface} from '../style/style_image';
 import {Style} from '../style/style';
 import {MapSourceDataEvent} from './events';
 import {config} from '../util/config';
+import {MessageType} from '../util/actor_messages';
 
 function createStyleSource() {
     return {
@@ -248,7 +249,7 @@ describe('Map', () => {
         });
 
         test('fires *data and *dataloading events', () => {
-            createMap({}, (error, map) => {
+            createMap({}, (error, map: Map) => {
                 expect(error).toBeFalsy();
 
                 const events = [];
@@ -261,12 +262,12 @@ describe('Map', () => {
                 map.on('tiledata', recordEvent);
                 map.on('tiledataloading', recordEvent);
 
-                map.style.fire(new Event('data', {dataType: 'style'}));
-                map.style.fire(new Event('dataloading', {dataType: 'style'}));
-                map.style.fire(new Event('data', {dataType: 'source'}));
-                map.style.fire(new Event('dataloading', {dataType: 'source'}));
-                map.style.fire(new Event('data', {dataType: 'tile'}));
-                map.style.fire(new Event('dataloading', {dataType: 'tile'}));
+                map.style.fire(new EventedEvent('data', {dataType: 'style'}));
+                map.style.fire(new EventedEvent('dataloading', {dataType: 'style'}));
+                map.style.fire(new EventedEvent('data', {dataType: 'source'}));
+                map.style.fire(new EventedEvent('dataloading', {dataType: 'source'}));
+                map.style.fire(new EventedEvent('data', {dataType: 'tile'}));
+                map.style.fire(new EventedEvent('dataloading', {dataType: 'tile'}));
 
                 expect(events).toEqual([
                     'styledata',
@@ -288,7 +289,7 @@ describe('Map', () => {
 
         });
 
-        test('setStyle back to the first style should work', done => {
+        test('setStyle back to the first style should work', async () => {
             const redStyle = {version: 8 as const, sources: {}, layers: [
                 {id: 'background', type: 'background' as const, paint: {'background-color': 'red'}},
             ]};
@@ -296,13 +297,13 @@ describe('Map', () => {
                 {id: 'background', type: 'background' as const, paint: {'background-color': 'blue'}},
             ]};
             const map = createMap({style: redStyle});
+            const spy = jest.spyOn(console, 'warn').mockImplementation(() => {});
             map.setStyle(blueStyle);
-            map.once('style.load', () => {
-                map.setStyle(redStyle);
-                const serializedStyle =  map.style.serialize();
-                expect(serializedStyle.layers[0].paint['background-color']).toBe('red');
-                done();
-            });
+            await map.once('style.load');
+            map.setStyle(redStyle);
+            const serializedStyle =  map.style.serialize();
+            expect(serializedStyle.layers[0].paint['background-color']).toBe('red');
+            spy.mockRestore();
         });
 
         test('style transform overrides unmodified map transform', done => {
@@ -554,39 +555,42 @@ describe('Map', () => {
 
     describe('#is_Loaded', () => {
 
-        test('Map#isSourceLoaded', done => {
+        test('Map#isSourceLoaded', async () => {
             const style = createStyle();
             const map = createMap({style});
 
-            map.on('load', () => {
+            await map.once('load');
+            const promise = new Promise<void>((resolve) => {
                 map.on('data', (e) => {
                     if (e.dataType === 'source' && e.sourceDataType === 'idle') {
                         expect(map.isSourceLoaded('geojson')).toBe(true);
-                        done();
+                        resolve();
                     }
                 });
-                map.addSource('geojson', createStyleSource());
-                expect(map.isSourceLoaded('geojson')).toBe(false);
             });
+            map.addSource('geojson', createStyleSource());
+            expect(map.isSourceLoaded('geojson')).toBe(false);
+            await promise;
         });
 
-        test('Map#isSourceLoaded (equivalent to event.isSourceLoaded)', done => {
+        test('Map#isSourceLoaded (equivalent to event.isSourceLoaded)', async () => {
             const style = createStyle();
             const map = createMap({style});
 
-            map.on('load', () => {
-                map.on('data', (e) => {
+            await map.once('load');
+            const promise = new Promise<void>((resolve) => {
+                map.on('data', (e: MapSourceDataEvent) => {
                     if (e.dataType === 'source' && 'source' in e) {
-                        const sourceDataEvent = e as MapSourceDataEvent;
-                        expect(map.isSourceLoaded('geojson')).toBe(sourceDataEvent.isSourceLoaded);
-                        if (sourceDataEvent.sourceDataType === 'idle') {
-                            done();
+                        expect(map.isSourceLoaded('geojson')).toBe(e.isSourceLoaded);
+                        if (e.sourceDataType === 'idle') {
+                            resolve();
                         }
                     }
                 });
-                map.addSource('geojson', createStyleSource());
-                expect(map.isSourceLoaded('geojson')).toBe(false);
             });
+            map.addSource('geojson', createStyleSource());
+            expect(map.isSourceLoaded('geojson')).toBe(false);
+            await promise;
         });
 
         test('Map#isStyleLoaded', done => {
@@ -930,7 +934,7 @@ describe('Map', () => {
             observerCallback();
             observerCallback();
             expect(resizeSpy).toHaveBeenCalledTimes(1);
-            await new Promise((resolve) => { setTimeout(resolve, 100); });
+            await sleep(100);
             expect(resizeSpy).toHaveBeenCalledTimes(2);
         });
 
@@ -1074,6 +1078,63 @@ describe('Map', () => {
             expect(map.getRenderWorldCopies()).toBe(false);
         });
 
+    });
+
+    describe('renderWorldCopies', () => {
+        test('does not constrain horizontal panning when renderWorldCopies is set to true', () => {
+            const map = createMap({renderWorldCopies: true});
+            map.setCenter({lng: 180, lat: 0});
+            expect(map.getCenter().lng).toBe(180);
+        });
+
+        test('constrains horizontal panning when renderWorldCopies is set to false', () => {
+            const map = createMap({renderWorldCopies: false});
+            map.setCenter({lng: 180, lat: 0});
+            expect(map.getCenter().lng).toBeCloseTo(110, 0);
+        });
+
+        test('does not wrap the map when renderWorldCopies is set to false', () => {
+            const map = createMap({renderWorldCopies: false});
+            map.setCenter({lng: 200, lat: 0});
+            expect(map.getCenter().lng).toBeCloseTo(110, 0);
+        });
+
+        test('panTo is constrained to single globe when renderWorldCopies is set to false', () => {
+            const map = createMap({renderWorldCopies: false});
+            map.panTo({lng: 180, lat: 0}, {duration: 0});
+            expect(map.getCenter().lng).toBeCloseTo(110, 0);
+            map.panTo({lng: -3000, lat: 0}, {duration: 0});
+            expect(map.getCenter().lng).toBeCloseTo(-110, 0);
+        });
+
+        test('flyTo is constrained to single globe when renderWorldCopies is set to false', () => {
+            const map = createMap({renderWorldCopies: false});
+            map.flyTo({center: [1000, 0], zoom: 3, animate: false});
+            expect(map.getCenter().lng).toBeCloseTo(171, 0);
+            map.flyTo({center: [-1000, 0], zoom: 5, animate: false});
+            expect(map.getCenter().lng).toBeCloseTo(-178, 0);
+        });
+
+        test('lng is constrained to a single globe when zooming with {renderWorldCopies: false}', () => {
+            const map = createMap({renderWorldCopies: false, center: [180, 0], zoom: 2});
+            expect(map.getCenter().lng).toBeCloseTo(162, 0);
+            map.zoomTo(1, {animate: false});
+            expect(map.getCenter().lng).toBeCloseTo(145, 0);
+        });
+
+        test('lng is constrained by maxBounds when {renderWorldCopies: false}', () => {
+            const map = createMap({
+                renderWorldCopies: false,
+                maxBounds: [
+                    [70, 30],
+                    [80, 40]
+                ],
+                zoom: 8,
+                center: [75, 35]
+            });
+            map.setCenter({lng: 180, lat: 0});
+            expect(map.getCenter().lng).toBeCloseTo(80, 0);
+        });
     });
 
     test('#setMinZoom', () => {
@@ -1308,6 +1369,13 @@ describe('Map', () => {
         canvas.dispatchEvent(new window.Event('webglcontextlost'));
     });
 
+    test('#remove broadcasts removeMap to worker', () => {
+        const map = createMap();
+        const _broadcastSpyOn = jest.spyOn(map.style.dispatcher, 'broadcast');
+        map.remove();
+        expect(_broadcastSpyOn).toHaveBeenCalledWith(MessageType.removeMap, undefined);
+    });
+
     test('#redraw', async () => {
         const map = createMap();
 
@@ -1517,8 +1585,9 @@ describe('Map', () => {
 
             map.on('style.load', () => {
                 map.style.dispatcher.broadcast = function (key, value: any) {
-                    expect(key).toBe('updateLayers');
+                    expect(key).toBe(MessageType.updateLayers);
                     expect(value.layers.map((layer) => { return layer.id; })).toEqual(['symbol']);
+                    return Promise.resolve({} as any);
                 };
 
                 map.setLayoutProperty('symbol', 'text-transform', 'lowercase');
@@ -1747,6 +1816,31 @@ describe('Map', () => {
                 expect(map.getPaintProperty('background', 'background-color')).toBe('red');
                 done();
             });
+        });
+
+        test('#3373 paint property should be synchronized with an update', async () => {
+            const colors = ['red', 'blue'];
+            const map = createMap({
+                style: {
+                    'version': 8,
+                    'sources': {},
+                    'layers': [{
+                        'id': 'background',
+                        'type': 'background',
+                        'paint': {
+                            'background-color': colors[0]
+                        }
+                    }]
+                }
+            });
+
+            await map.once('style.load');
+            expect(map.getPaintProperty('background', 'background-color')).toBe(colors[0]);
+            expect(map.getStyle().layers.filter(l => l.id === 'background')[0].paint['background-color']).toBe(colors[0]);
+            // update property
+            map.setPaintProperty('background', 'background-color', colors[1]);
+            expect(map.getPaintProperty('background', 'background-color')).toBe(colors[1]);
+            expect(map.getStyle().layers.filter(l => l.id === 'background')[0].paint['background-color']).toBe(colors[1]);
         });
 
         test('throw before loaded', () => {
@@ -2205,9 +2299,11 @@ describe('Map', () => {
 
     describe('error event', () => {
         test('logs errors to console when it has NO listeners', () => {
+            // to avoid seeing error in the console in Jest
+            let stub = jest.spyOn(console, 'error').mockImplementation(() => {});
             const map = createMap();
-            const stub = jest.spyOn(console, 'error').mockImplementation(() => {});
             stub.mockReset();
+            stub = jest.spyOn(console, 'error').mockImplementation(() => {});
             const error = new Error('test');
             map.fire(new ErrorEvent(error));
             expect(stub).toHaveBeenCalledTimes(1);
@@ -2387,7 +2483,7 @@ describe('Map', () => {
 
     });
 
-    test('map fires `styleimagemissing` for missing icons', done => {
+    test('map fires `styleimagemissing` for missing icons', async () => {
         const map = createMap();
 
         const id = 'missing-image';
@@ -2402,14 +2498,12 @@ describe('Map', () => {
 
         expect(map.hasImage(id)).toBeFalsy();
 
-        map.style.imageManager.getImages([id], (alwaysNull, generatedImage) => {
-            expect(generatedImage[id].data.width).toEqual(sampleImage.width);
-            expect(generatedImage[id].data.height).toEqual(sampleImage.height);
-            expect(generatedImage[id].data.data).toEqual(sampleImage.data);
-            expect(called).toBe(id);
-            expect(map.hasImage(id)).toBeTruthy();
-            done();
-        });
+        const generatedImage = await map.style.imageManager.getImages([id]);
+        expect(generatedImage[id].data.width).toEqual(sampleImage.width);
+        expect(generatedImage[id].data.height).toEqual(sampleImage.height);
+        expect(generatedImage[id].data.data).toEqual(sampleImage.data);
+        expect(called).toBe(id);
+        expect(map.hasImage(id)).toBeTruthy();
     });
 
     test('map getImage matches addImage, uintArray', () => {
@@ -2607,7 +2701,7 @@ describe('Map', () => {
     test('fires sourcedataabort event on dataabort event', async () => {
         const map = createMap();
         const sourcePromise = map.once('sourcedataabort');
-        map.fire(new Event('dataabort'));
+        map.fire(new EventedEvent('dataabort'));
         await sourcePromise;
     });
 
@@ -2645,67 +2739,21 @@ describe('Map', () => {
         });
     });
 
-    describe('#setCooperativeGestures', () => {
-        test('returns self', () => {
-            const map = createMap();
-            expect(map.setCooperativeGestures(true)).toBe(map);
-        });
-
-        test('can be called more than once', () => {
-            const map = createMap();
-            map.setCooperativeGestures(true);
-            map.setCooperativeGestures(true);
-        });
-
-        test('calling set with no arguments turns cooperative gestures off', done => {
-            const map = createMap({cooperativeGestures: true});
-            map.on('load', () => {
-                map.setCooperativeGestures();
-                expect(map.getCooperativeGestures()).toBeFalsy();
-                done();
-            });
-        });
-    });
-
-    describe('#getCooperativeGestures', () => {
-        test('returns the cooperative gestures option', done => {
-            const map = createMap({cooperativeGestures: true});
-
-            map.on('load', () => {
-                expect(map.getCooperativeGestures()).toBe(true);
-                done();
-            });
-        });
-
-        test('returns falsy if cooperative gestures option is not specified', done => {
-            const map = createMap();
-
-            map.on('load', () => {
-                expect(map.getCooperativeGestures()).toBeFalsy();
-                done();
-            });
-        });
-
-        test('returns the cooperative gestures option with custom messages', done => {
-            const option = {
-                'windowsHelpText': 'Custom message',
-                'macHelpText': 'Custom message',
-                'mobileHelpText': 'Custom message',
-            };
-            const map = createMap({cooperativeGestures: option});
-
-            map.on('load', () => {
-                expect(map.getCooperativeGestures()).toEqual(option);
-                done();
-            });
-        });
-    });
-
     describe('cooperativeGestures option', () => {
         test('cooperativeGesture container element is hidden from a11y tree', () => {
             const map = createMap({cooperativeGestures: true});
-
             expect(map.getContainer().querySelector('.maplibregl-cooperative-gesture-screen').getAttribute('aria-hidden')).toBeTruthy();
+        });
+
+        test('cooperativeGesture container element is not available when cooperativeGestures not initialized', () => {
+            const map = createMap({cooperativeGestures: false});
+            expect(map.getContainer().querySelector('.maplibregl-cooperative-gesture-screen')).toBeFalsy();
+        });
+
+        test('cooperativeGesture container element is not available when cooperativeGestures disabled', () => {
+            const map = createMap({cooperativeGestures: true});
+            map.cooperativeGestures.disable();
+            expect(map.getContainer().querySelector('.maplibregl-cooperative-gesture-screen')).toBeFalsy();
         });
     });
 
@@ -2833,7 +2881,15 @@ describe('Map', () => {
 
     describe('webgl errors', () => {
         test('WebGL error while creating map', () => {
-            setErrorWebGlContext();
+            const original = HTMLCanvasElement.prototype.getContext;
+            HTMLCanvasElement.prototype.getContext = function (type: string) {
+                if (type === 'webgl2' || type === 'webgl') {
+                    const errorEvent = new Event('webglcontextcreationerror');
+                    (errorEvent as any).statusMessage = 'mocked webglcontextcreationerror message';
+                    (this as HTMLCanvasElement).dispatchEvent(errorEvent);
+                    return null;
+                }
+            };
             try {
                 createMap();
             } catch (e) {
@@ -2844,8 +2900,9 @@ describe('Map', () => {
 
                 // this is from test mock
                 expect(errorMessageObject.statusMessage).toBe('mocked webglcontextcreationerror message');
+            } finally {
+                HTMLCanvasElement.prototype.getContext = original;
             }
-
         });
         test('Hit WebGL max drawing buffer limit', () => {
             // Simulate a device with MAX_TEXTURE_SIZE=16834 and max rendering area of ~32Mpx
@@ -2868,6 +2925,8 @@ describe('Map', () => {
             const container = window.document.createElement('div');
             Object.defineProperty(container, 'clientWidth', {value: 2048});
             Object.defineProperty(container, 'clientHeight', {value: 2048});
+            jest.spyOn(WebGLRenderingContext.prototype, 'drawingBufferWidth', 'get').mockReturnValue(8192);
+            jest.spyOn(WebGLRenderingContext.prototype, 'drawingBufferHeight', 'get').mockReturnValue(8192);
             const map = createMap({container, maxCanvasSize: [8192, 8192], pixelRatio: 5});
             map.resize();
             expect(map.getCanvas().width).toBe(8192);
@@ -2878,6 +2937,8 @@ describe('Map', () => {
             const container = window.document.createElement('div');
             Object.defineProperty(container, 'clientWidth', {value: 1024});
             Object.defineProperty(container, 'clientHeight', {value: 2048});
+            jest.spyOn(WebGLRenderingContext.prototype, 'drawingBufferWidth', 'get').mockReturnValue(8192);
+            jest.spyOn(WebGLRenderingContext.prototype, 'drawingBufferHeight', 'get').mockReturnValue(4096);
             const map = createMap({container, maxCanvasSize: [8192, 4096], pixelRatio: 3});
             map.resize();
             expect(map.getCanvas().width).toBe(2048);
@@ -2888,6 +2949,8 @@ describe('Map', () => {
             const container = window.document.createElement('div');
             Object.defineProperty(container, 'clientWidth', {value: 12834});
             Object.defineProperty(container, 'clientHeight', {value: 9000});
+            jest.spyOn(WebGLRenderingContext.prototype, 'drawingBufferWidth', 'get').mockReturnValue(4096);
+            jest.spyOn(WebGLRenderingContext.prototype, 'drawingBufferHeight', 'get').mockReturnValue(8192);
             const map = createMap({container, maxCanvasSize: [4096, 8192], pixelRatio: 1});
             map.resize();
             expect(map.getCanvas().width).toBe(4096);
@@ -2898,6 +2961,8 @@ describe('Map', () => {
             const container = window.document.createElement('div');
             Object.defineProperty(container, 'clientWidth', {value: 2048});
             Object.defineProperty(container, 'clientHeight', {value: 2048});
+            jest.spyOn(WebGLRenderingContext.prototype, 'drawingBufferWidth', 'get').mockReturnValue(3072);
+            jest.spyOn(WebGLRenderingContext.prototype, 'drawingBufferHeight', 'get').mockReturnValue(3072);
             const map = createMap({container, maxCanvasSize: [3072, 3072], pixelRatio: 1.25});
             map.resize();
             expect(map.getCanvas().width).toBe(2560);

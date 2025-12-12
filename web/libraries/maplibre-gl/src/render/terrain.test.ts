@@ -1,9 +1,7 @@
 import Point from '@mapbox/point-geometry';
 import {Terrain} from './terrain';
-import gl from 'gl';
 import {Context} from '../gl/context';
 import {RGBAImage} from '../util/image';
-import {Texture} from './texture';
 import type {SourceCache} from '../source/source_cache';
 import {OverscaledTileID} from '../source/tile_id';
 import type {TerrainSpecification} from '@maplibre/maplibre-gl-style-spec';
@@ -14,13 +12,32 @@ import {mat4} from 'gl-matrix';
 import {LngLat} from '../geo/lng_lat';
 
 describe('Terrain', () => {
-    test('pointCoordiate should not return null', () => {
-        expect.assertions(1);
+    let gl: WebGLRenderingContext;
+
+    beforeEach(() => {
+        gl = document.createElement('canvas').getContext('webgl');
+        jest.spyOn(gl, 'checkFramebufferStatus').mockReturnValue(gl.FRAMEBUFFER_COMPLETE);
+        jest.spyOn(gl, 'readPixels').mockImplementation((_1, _2, _3, _4, _5, _6, rgba) => {
+            rgba[0] = 0;
+            rgba[1] = 0;
+            rgba[2] = 255;
+            rgba[3] = 255;
+        });
+    });
+
+    afterEach(() => {
+        jest.restoreAllMocks();
+    });
+
+    test('pointCoordinate should not return null', () => {
+        expect.assertions(2);
         const painter = {
-            context: new Context(gl(1, 1) as any),
+            context: new Context(gl),
             width: 1,
             height: 1,
-            transform: {center: {lng: 0}}
+            pixelRatio: 1,
+            transform: {center: {lng: 0}},
+            maybeDrawDepthAndCoords: jest.fn(),
         } as any as Painter;
         const sourceCache = {} as SourceCache;
         const getTileByID = (tileID) : Tile => {
@@ -39,70 +56,86 @@ describe('Terrain', () => {
         };
         const terrain = new Terrain(painter, sourceCache, {} as any as TerrainSpecification);
         terrain.sourceCache.getTileByID = getTileByID;
-        const context = painter.context as Context;
-        const pixels = new Uint8Array([0, 0, 255, 255]);
-        const image = new RGBAImage({width: 1, height: 1}, pixels);
-        const imageTexture = new Texture(context, image, context.gl.RGBA);
-        terrain.getFramebuffer('coords'); // allow init of frame buffers
-        terrain._fboCoordsTexture.texture = imageTexture.texture;
         terrain.coordsIndex.push('abcd');
 
         const coordinate = terrain.pointCoordinate(new Point(0, 0));
 
         expect(coordinate).not.toBeNull();
+        expect(painter.maybeDrawDepthAndCoords).toHaveBeenCalled();
+
     });
 
-    const setupMercatorOverflow = (centerLng: number) => {
+    const setupMercatorOverflow = (pixelRatio: number = 1) => {
         const WORLD_WIDTH = 4;
         const painter = {
-            context: new Context(gl(WORLD_WIDTH, 1) as any),
+            context: new Context(gl),
             width: WORLD_WIDTH,
             height: 1,
-            transform: {center: {lng: centerLng}}
+            maybeDrawDepthAndCoords: jest.fn(),
+            pixelRatio,
         } as any as Painter;
         const sourceCache = {} as SourceCache;
         const terrain = new Terrain(painter, sourceCache, {} as any as TerrainSpecification);
-        const mockTile = {tileID: {canonical: {x: 0, y: 0, z: 0}}};
-        terrain.sourceCache.getTileByID = () => mockTile as any as Tile;
+        const tileIdsToWraps = {a: -1, b: 0, c: 1, d: 2};
+        terrain.sourceCache.getTileByID = (id) => {
+            return {
+                tileID: {
+                    canonical: {x: 0, y: 0, z: 0},
+                    wrap: tileIdsToWraps[id]
+                }
+            } as any as Tile;
+        };
         terrain.getElevation = () => 0;
-        terrain.coordsIndex = ['abcd'];
-        terrain._coordsTextureSize = WORLD_WIDTH;
-        const pixels = new Uint8Array([2, 0, 0, 255, 3, 0, 0, 255, 0, 0, 0, 255, 1, 0, 0, 255]);
-        const image = new RGBAImage({width: WORLD_WIDTH, height: 1}, pixels);
-        const imageTexture = new Texture(painter.context, image, painter.context.gl.RGBA);
-        terrain.getFramebuffer('coords'); // allow init of frame buffers
-        terrain._fboCoordsTexture.texture = imageTexture.texture;
+        terrain.coordsIndex = Object.keys(tileIdsToWraps);
+        jest.spyOn(gl, 'readPixels').mockImplementation((x, _2, _3, _4, _5, _6, rgba) => {
+            rgba[0] = 0;
+            rgba[1] = 0;
+            rgba[2] = 0;
+            rgba[3] = 255 - x / pixelRatio;
+        });
         return terrain;
     };
 
     test(
-        `pointCoordiate should return negative mercator x
-        if center.lng is to the right of 180 meridian
-        and a given point is to the left of 180`,
+        `pointCoordinate should return negative mercator x
+        if the point is on the LEFT outside the central globe`,
         () => {
             expect.assertions(2);
-            const centerLng = -170;
-            const pointX = 1; // x in the left half of the 4-px world
-            const terrain = setupMercatorOverflow(centerLng);
+            const pointX = 0;
+            const terrain = setupMercatorOverflow();
             const coordinate = terrain.pointCoordinate(new Point(pointX, 0));
 
-            expect(coordinate.x).toBeLessThan(0);
-            expect(coordinate.x).toBeGreaterThan(-1);
+            expect(coordinate.x).toBe(-1);
+            expect(terrain.painter.maybeDrawDepthAndCoords).toHaveBeenCalled();
         });
 
     test(
-        `pointCoordiate should return mercator x greater than 1
-        if center.lng is to the left of 180 meridian
-        and a given point is to the right of 180`,
+        `pointCoordinate should return mercator x greater than 1
+        if the point is on the RIGHT outside the central globe`,
         () => {
             expect.assertions(2);
-            const centerLng = 170;
-            const pointX = 3; // x in the right half of the 4-px world
-            const terrain = setupMercatorOverflow(centerLng);
+            const pointX = 3;
+            const terrain = setupMercatorOverflow();
             const coordinate = terrain.pointCoordinate(new Point(pointX, 0));
 
-            expect(coordinate.x).toBeGreaterThan(1);
-            expect(coordinate.x).toBeLessThan(2);
+            expect(coordinate.x).toBe(2);
+            expect(terrain.painter.maybeDrawDepthAndCoords).toHaveBeenCalled();
+        });
+
+    test(
+        'pointCoordinate should respect painter.pixelRatio',
+        () => {
+            const terrain = setupMercatorOverflow(2);
+
+            let pointX = 0;
+            let coordinate = terrain.pointCoordinate(new Point(pointX, 0));
+            expect(coordinate.x).toBe(-1);
+            expect(terrain.painter.maybeDrawDepthAndCoords).toHaveBeenCalled();
+
+            pointX = 3;
+            coordinate = terrain.pointCoordinate(new Point(pointX, 0));
+            expect(coordinate.x).toBe(2);
+            expect(terrain.painter.maybeDrawDepthAndCoords).toHaveBeenCalled();
         });
 
     test('Calculate tile minimum and maximum elevation', () => {
@@ -115,7 +148,7 @@ describe('Terrain', () => {
             getUnpackVector: () => [6553.6, 25.6, 0.1, 10000.0],
         } as any as DEMData;
         const painter = {
-            context: new Context(gl(1, 1) as any),
+            context: new Context(gl),
             width: 1,
             height: 1,
             getTileTexture: () => null
@@ -143,7 +176,7 @@ describe('Terrain', () => {
     test('Return null elevation values when no tile', () => {
         const tileID = new OverscaledTileID(5, 0, 5, 17, 11);
         const painter = {
-            context: new Context(gl(1, 1) as any),
+            context: new Context(gl),
             width: 1,
             height: 1,
             getTileTexture: () => null
@@ -170,7 +203,7 @@ describe('Terrain', () => {
         const tile = new Tile(tileID, 256);
         tile.dem = null as any as DEMData;
         const painter = {
-            context: new Context(gl(1, 1) as any),
+            context: new Context(gl),
             width: 1,
             height: 1,
             getTileTexture: () => null

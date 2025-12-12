@@ -13,6 +13,8 @@ import {UnwrappedTileID, OverscaledTileID, CanonicalTileID} from '../source/tile
 import type {PaddingOptions} from './edge_insets';
 import {Terrain} from '../render/terrain';
 
+export const MAX_VALID_LATITUDE = 85.051129;
+
 /**
  * @internal
  * A single transform, generally used for a single tile to be
@@ -23,7 +25,6 @@ export class Transform {
     tileZoom: number;
     lngRange: [number, number];
     latRange: [number, number];
-    maxValidLatitude: number;
     scale: number;
     width: number;
     height: number;
@@ -40,6 +41,7 @@ export class Transform {
     pixelMatrixInverse: mat4;
     glCoordMatrix: mat4;
     labelPlaneMatrix: mat4;
+    minElevationForCurrentTile: number;
     _fov: number;
     _pitch: number;
     _zoom: number;
@@ -56,11 +58,9 @@ export class Transform {
     _constraining: boolean;
     _posMatrixCache: {[_: string]: mat4};
     _alignedPosMatrixCache: {[_: string]: mat4};
-    _minEleveationForCurrentTile: number;
 
     constructor(minZoom?: number, maxZoom?: number, minPitch?: number, maxPitch?: number, renderWorldCopies?: boolean) {
         this.tileSize = 512; // constant
-        this.maxValidLatitude = 85.051129; // constant
 
         this._renderWorldCopies = renderWorldCopies === undefined ? true : !!renderWorldCopies;
         this._minZoom = minZoom || 0;
@@ -83,7 +83,7 @@ export class Transform {
         this._edgeInsets = new EdgeInsets();
         this._posMatrixCache = {};
         this._alignedPosMatrixCache = {};
-        this._minEleveationForCurrentTile = 0;
+        this.minElevationForCurrentTile = 0;
     }
 
     clone(): Transform {
@@ -99,7 +99,7 @@ export class Transform {
         this.height = that.height;
         this._center = that._center;
         this._elevation = that._elevation;
-        this._minEleveationForCurrentTile = that._minEleveationForCurrentTile;
+        this.minElevationForCurrentTile = that.minElevationForCurrentTile;
         this.zoom = that.zoom;
         this.angle = that.angle;
         this._fov = that._fov;
@@ -218,6 +218,9 @@ export class Transform {
         this._calcMatrices();
     }
 
+    /**
+     * Elevation at current center point, meters above sea level
+     */
     get elevation(): number { return this._elevation; }
     set elevation(elevation: number) {
         if (elevation === this._elevation) return;
@@ -458,13 +461,23 @@ export class Transform {
     zoomScale(zoom: number) { return Math.pow(2, zoom); }
     scaleZoom(scale: number) { return Math.log(scale) / Math.LN2; }
 
+    /**
+     * Convert from LngLat to world coordinates (Mercator coordinates scaled by 512)
+     * @param lnglat - the lngLat
+     * @returns Point
+     */
     project(lnglat: LngLat) {
-        const lat = clamp(lnglat.lat, -this.maxValidLatitude, this.maxValidLatitude);
+        const lat = clamp(lnglat.lat, -MAX_VALID_LATITUDE, MAX_VALID_LATITUDE);
         return new Point(
             mercatorXfromLng(lnglat.lng) * this.worldSize,
             mercatorYfromLat(lat) * this.worldSize);
     }
 
+    /**
+     * Convert from world coordinates ([0, 512],[0, 512]) to LngLat ([-180, 180], [-90, 90])
+     * @param point - world coordinate
+     * @returns LngLat
+     */
     unproject(point: Point): LngLat {
         return new MercatorCoordinate(point.x / this.worldSize, point.y / this.worldSize).toLngLat();
     }
@@ -491,21 +504,25 @@ export class Transform {
      * @param terrain - the terrain
      */
     recalculateZoom(terrain: Terrain) {
+        const origElevation = this.elevation;
+        const origAltitude = Math.cos(this._pitch) * this.cameraToCenterDistance / this._pixelPerMeter;
+
         // find position the camera is looking on
         const center = this.pointLocation(this.centerPoint, terrain);
         const elevation = terrain.getElevationForLngLatZoom(center, this.tileZoom);
         const deltaElevation = this.elevation - elevation;
         if (!deltaElevation) return;
 
-        // calculate mercator distance between camera & target
-        const cameraPosition = this.getCameraPosition();
-        const camera = MercatorCoordinate.fromLngLat(cameraPosition.lngLat, cameraPosition.altitude);
-        const target = MercatorCoordinate.fromLngLat(center, elevation);
-        const dx = camera.x - target.x, dy = camera.y - target.y, dz = camera.z - target.z;
-        const distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
-
-        // from this distance we calculate the new zoomlevel
-        const zoom = this.scaleZoom(this.cameraToCenterDistance / distance / this.tileSize);
+        // The camera's altitude off the ground + the ground's elevation = a constant:
+        // this means the camera stays at the same total height.
+        const requiredAltitude = origAltitude + origElevation - elevation;
+        // Since altitude = Math.cos(this._pitch) * this.cameraToCenterDistance / pixelPerMeter:
+        const requiredPixelPerMeter = Math.cos(this._pitch) * this.cameraToCenterDistance / requiredAltitude;
+        // Since pixelPerMeter = mercatorZfromAltitude(1, center.lat) * worldSize:
+        const requiredWorldSize = requiredPixelPerMeter / mercatorZfromAltitude(1, center.lat);
+        // Since worldSize = this.tileSize * scale:
+        const requiredScale = requiredWorldSize / this.tileSize;
+        const zoom = this.scaleZoom(requiredScale);
 
         // update matrices
         this._elevation = elevation;
@@ -527,7 +544,7 @@ export class Transform {
     }
 
     /**
-     * Given a location, return the screen point that corresponds to it
+     * Given a LngLat location, return the screen point that corresponds to it
      * @param lnglat - location
      * @param terrain - optional terrain
      * @returns screen point
@@ -550,7 +567,7 @@ export class Transform {
 
     /**
      * Given a geographical lnglat, return an unrounded
-     * coordinate that represents it at this transform's zoom level.
+     * coordinate that represents it at low zoom level.
      * @param lnglat - the location
      * @returns The mercator coordinate
      */
@@ -560,7 +577,7 @@ export class Transform {
 
     /**
      * Given a Coordinate, return its geographical position.
-     * @param coord - mercator coordivates
+     * @param coord - mercator coordinates
      * @returns lng and lat
      */
     coordinateLocation(coord: MercatorCoordinate): LngLat {
@@ -588,8 +605,8 @@ export class Transform {
         // unproject two points to get a line and then find the point on that
         // line with z=0
 
-        const coord0 = [p.x, p.y, 0, 1] as any;
-        const coord1 = [p.x, p.y, 1, 1] as any;
+        const coord0 = [p.x, p.y, 0, 1] as vec4;
+        const coord1 = [p.x, p.y, 1, 1] as vec4;
 
         vec4.transformMat4(coord0, coord0, this.pixelMatrixInverse);
         vec4.transformMat4(coord1, coord1, this.pixelMatrixInverse);
@@ -618,7 +635,7 @@ export class Transform {
      * @returns screen point
      */
     coordinatePoint(coord: MercatorCoordinate, elevation: number = 0, pixelMatrix = this.pixelMatrix): Point {
-        const p = [coord.x * this.worldSize, coord.y * this.worldSize, elevation, 1] as any;
+        const p = [coord.x * this.worldSize, coord.y * this.worldSize, elevation, 1] as vec4;
         vec4.transformMat4(p, p, pixelMatrix);
         return new Point(p[0] / p[3], p[1] / p[3]);
     }
@@ -669,7 +686,7 @@ export class Transform {
             this._constrain();
         } else {
             this.lngRange = null;
-            this.latRange = [-this.maxValidLatitude, this.maxValidLatitude];
+            this.latRange = [-MAX_VALID_LATITUDE, MAX_VALID_LATITUDE];
         }
     }
 
@@ -701,84 +718,110 @@ export class Transform {
         return this.mercatorMatrix.slice() as any;
     }
 
-    _constrain() {
-        if (!this.center || !this.width || !this.height || this._constraining) return;
+    /**
+     * Get center lngLat and zoom to ensure that
+     * 1) everything beyond the bounds is excluded
+     * 2) a given lngLat is as near the center as possible
+     * Bounds are those set by maxBounds or North & South "Poles" and, if only 1 globe is displayed, antimeridian.
+     */
+    getConstrained(lngLat: LngLat, zoom: number): {center: LngLat; zoom: number} {
+        zoom = clamp(+zoom, this.minZoom, this.maxZoom);
+        const result = {
+            center: new LngLat(lngLat.lng, lngLat.lat),
+            zoom
+        };
 
-        this._constraining = true;
+        let lngRange = this.lngRange;
 
-        let minY = -90;
-        let maxY = 90;
-        let minX = -180;
-        let maxX = 180;
-        let sy, sx, x2, y2;
-        const size = this.size,
-            unmodified = this._unmodified;
+        if (!this._renderWorldCopies && lngRange === null) {
+            const almost180 = 180 - 1e-10;
+            lngRange = [-almost180, almost180];
+        }
+
+        const worldSize = this.tileSize * this.zoomScale(result.zoom); // A world size for the requested zoom level, not the current world size
+        let minY = 0;
+        let maxY = worldSize;
+        let minX = 0;
+        let maxX = worldSize;
+        let scaleY = 0;
+        let scaleX = 0;
+        const {x: screenWidth, y: screenHeight} = this.size;
 
         if (this.latRange) {
             const latRange = this.latRange;
-            minY = mercatorYfromLat(latRange[1]) * this.worldSize;
-            maxY = mercatorYfromLat(latRange[0]) * this.worldSize;
-            sy = maxY - minY < size.y ? size.y / (maxY - minY) : 0;
+            minY = mercatorYfromLat(latRange[1]) * worldSize;
+            maxY = mercatorYfromLat(latRange[0]) * worldSize;
+            const shouldZoomIn = maxY - minY < screenHeight;
+            if (shouldZoomIn) scaleY = screenHeight / (maxY - minY);
         }
 
-        if (this.lngRange) {
-            const lngRange = this.lngRange;
-
+        if (lngRange) {
             minX = wrap(
-                mercatorXfromLng(lngRange[0]) * this.worldSize,
+                mercatorXfromLng(lngRange[0]) * worldSize,
                 0,
-                this.worldSize
+                worldSize
             );
             maxX = wrap(
-                mercatorXfromLng(lngRange[1]) * this.worldSize,
+                mercatorXfromLng(lngRange[1]) * worldSize,
                 0,
-                this.worldSize
+                worldSize
             );
 
-            if (maxX < minX) maxX += this.worldSize;
+            if (maxX < minX) maxX += worldSize;
 
-            sx = maxX - minX < size.x ? size.x / (maxX - minX) : 0;
+            const shouldZoomIn = maxX - minX < screenWidth;
+            if (shouldZoomIn) scaleX = screenWidth / (maxX - minX);
         }
 
-        const point = this.point;
+        const {x: originalX, y: originalY} = this.project.call({worldSize}, lngLat);
+        let modifiedX, modifiedY;
 
-        // how much the map should scale to fit the screen into given latitude/longitude ranges
-        const s = Math.max(sx || 0, sy || 0);
+        const scale = Math.max(scaleX || 0, scaleY || 0);
 
-        if (s) {
-            this.center = this.unproject(new Point(
-                sx ? (maxX + minX) / 2 : point.x,
-                sy ? (maxY + minY) / 2 : point.y));
-            this.zoom += this.scaleZoom(s);
-            this._unmodified = unmodified;
-            this._constraining = false;
-            return;
+        if (scale) {
+            // zoom in to exclude all beyond the given lng/lat ranges
+            const newPoint = new Point(
+                scaleX ? (maxX + minX) / 2 : originalX,
+                scaleY ? (maxY + minY) / 2 : originalY);
+            result.center = this.unproject.call({worldSize}, newPoint).wrap();
+            result.zoom += this.scaleZoom(scale);
+            return result;
         }
 
         if (this.latRange) {
-            const y = point.y,
-                h2 = size.y / 2;
-
-            if (y - h2 < minY) y2 = minY + h2;
-            if (y + h2 > maxY) y2 = maxY - h2;
+            const h2 = screenHeight / 2;
+            if (originalY - h2 < minY) modifiedY = minY + h2;
+            if (originalY + h2 > maxY) modifiedY = maxY - h2;
         }
 
-        if (this.lngRange) {
+        if (lngRange) {
             const centerX = (minX + maxX) / 2;
-            const x = wrap(point.x, centerX - this.worldSize / 2, centerX + this.worldSize / 2);
-            const w2 = size.x / 2;
+            let wrappedX = originalX;
+            if (this._renderWorldCopies) {
+                wrappedX = wrap(originalX, centerX - worldSize / 2, centerX + worldSize / 2);
+            }
+            const w2 = screenWidth / 2;
 
-            if (x - w2 < minX) x2 = minX + w2;
-            if (x + w2 > maxX) x2 = maxX - w2;
+            if (wrappedX - w2 < minX) modifiedX = minX + w2;
+            if (wrappedX + w2 > maxX) modifiedX = maxX - w2;
         }
 
         // pan the map if the screen goes off the range
-        if (x2 !== undefined || y2 !== undefined) {
-            this.center = this.unproject(new Point(
-                x2 !== undefined ? x2 : point.x,
-                y2 !== undefined ? y2 : point.y)).wrap();
+        if (modifiedX !== undefined || modifiedY !== undefined) {
+            const newPoint = new Point(modifiedX ?? originalX, modifiedY ?? originalY);
+            result.center = this.unproject.call({worldSize}, newPoint).wrap();
         }
 
+        return result;
+    }
+
+    _constrain() {
+        if (!this.center || !this.width || !this.height || this._constraining) return;
+        this._constraining = true;
+        const unmodified = this._unmodified;
+        const {center, zoom} = this.getConstrained(this.center, this.zoom);
+        this.center = center;
+        this.zoom = zoom;
         this._unmodified = unmodified;
         this._constraining = false;
     }
@@ -806,7 +849,7 @@ export class Transform {
         // Calculate the camera to sea-level distance in pixel in respect of terrain
         const cameraToSeaLevelDistance = this.cameraToCenterDistance + this._elevation * this._pixelPerMeter / Math.cos(this._pitch);
         // In case of negative minimum elevation (e.g. the dead see, under the sea maps) use a lower plane for calculation
-        const minElevation = Math.min(this.elevation, this._minEleveationForCurrentTile);
+        const minElevation = Math.min(this.elevation, this.minElevationForCurrentTile);
         const cameraToLowestPointDistance = cameraToSeaLevelDistance - minElevation * this._pixelPerMeter / Math.cos(this._pitch);
         const lowestPlane = minElevation < 0 ? cameraToLowestPointDistance : cameraToSeaLevelDistance;
 
@@ -833,12 +876,12 @@ export class Transform {
         // - the more depth precision is available for features (good)
         // - clipping starts appearing sooner when the camera is close to 3d features (bad)
         //
-        // Smaller values worked well for mapbox-gl-js but deckgl was encountering precision issues
-        // when rendering it's layers using custom layers. This value was experimentally chosen and
+        // Other values work for mapbox-gl-js but deckgl was encountering precision issues
+        // when rendering custom layers. This value was experimentally chosen and
         // seems to solve z-fighting issues in deckgl while not clipping buildings too close to the camera.
         const nearZ = this.height / 50;
 
-        // matrix for conversion from location to GL coordinates (-1 .. 1)
+        // matrix for conversion from location to clip space(-1 .. 1)
         m = new Float64Array(16) as any;
         mat4.perspective(m, this._fov, this.width / this.height, nearZ, farZ);
 
@@ -853,21 +896,21 @@ export class Transform {
         mat4.translate(m, m, [-x, -y, 0]);
 
         // The mercatorMatrix can be used to transform points from mercator coordinates
-        // ([0, 0] nw, [1, 1] se) to GL coordinates.
+        // ([0, 0] nw, [1, 1] se) to clip space.
         this.mercatorMatrix = mat4.scale([] as any, m, [this.worldSize, this.worldSize, this.worldSize]);
 
         // scale vertically to meters per pixel (inverse of ground resolution):
         mat4.scale(m, m, [1, 1, this._pixelPerMeter]);
 
-        // matrix for conversion from location to screen coordinates in 2D
+        // matrix for conversion from world space to screen coordinates in 2D
         this.pixelMatrix = mat4.multiply(new Float64Array(16) as any, this.labelPlaneMatrix, m);
 
-        // matrix for conversion from location to GL coordinates (-1 .. 1)
+        // matrix for conversion from world space to clip space (-1 .. 1)
         mat4.translate(m, m, [0, 0, -this.elevation]); // elevate camera over terrain
         this.projMatrix = m;
         this.invProjMatrix = mat4.invert([] as any, m);
 
-        // matrix for conversion from location to screen coordinates in 2D
+        // matrix for conversion from world space to screen coordinates in 3D
         this.pixelMatrix3D = mat4.multiply(new Float64Array(16) as any, this.labelPlaneMatrix, m);
 
         // Make a second projection matrix that is aligned to a pixel grid for rendering raster tiles.
@@ -884,7 +927,7 @@ export class Transform {
         mat4.translate(alignedM, alignedM, [dx > 0.5 ? dx - 1 : dx, dy > 0.5 ? dy - 1 : dy, 0]);
         this.alignedProjMatrix = alignedM;
 
-        // inverse matrix for conversion from screen coordinaes to location
+        // inverse matrix for conversion from screen coordinates to location
         m = mat4.invert(new Float64Array(16) as any, this.pixelMatrix);
         if (!m) throw new Error('failed to invert matrix');
         this.pixelMatrixInverse = m;
@@ -954,5 +997,19 @@ export class Transform {
                 new Point(minX, minY)
             ];
         }
+    }
+    /**
+     * Return the distance to the camera in clip space from a LngLat.
+     * This can be compared to the value from the depth buffer (terrain.depthAtPoint)
+     * to determine whether a point is occluded.
+     * @param lngLat - the point
+     * @param elevation - the point's elevation
+     * @returns depth value in clip space (between 0 and 1)
+     */
+    lngLatToCameraDepth(lngLat: LngLat, elevation: number) {
+        const coord = this.locationCoordinate(lngLat);
+        const p = [coord.x * this.worldSize, coord.y * this.worldSize, elevation, 1] as vec4;
+        vec4.transformMat4(p, p, this.projMatrix);
+        return (p[2] / p[3]);
     }
 }

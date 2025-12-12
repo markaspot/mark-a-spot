@@ -446,6 +446,7 @@ a.maplibregl-ctrl-logo.maplibregl-compact {
         margin: 10px;
         position: relative;
         background-color: #fff;
+        color: #000;
         border-radius: 12px;
         box-sizing: content-box;
     }
@@ -711,6 +712,7 @@ a.maplibregl-ctrl-logo.maplibregl-compact {
     top: 0;
     left: 0;
     will-change: transform;
+    transition: opacity 0.2s;
 }
 
 .maplibregl-user-location-dot {

@@ -1,8 +1,8 @@
 import Point from '@mapbox/point-geometry';
 import UnitBezier from '@mapbox/unitbezier';
-import type {Callback} from '../types/callback';
 import {isOffscreenCanvasDistorted} from './offscreen_canvas_distorted';
 import type {Size} from './image';
+import type {WorkerGlobalScopeInterface} from './web_worker';
 
 /**
  * Given a value `t` that varies between 0 and 1, return
@@ -66,33 +66,6 @@ export function wrap(n: number, min: number, max: number): number {
 }
 
 /**
- * Call an asynchronous function on an array of arguments,
- * calling `callback` with the completed results of all calls.
- *
- * @param array - input to each call of the async function.
- * @param fn - an async function with signature (data, callback)
- * @param callback - a callback run after all async work is done.
- * called with an array, containing the results of each async call.
- */
-export function asyncAll<Item, Result>(
-    array: Array<Item>,
-    fn: (item: Item, fnCallback: Callback<Result>) => void,
-    callback: Callback<Array<Result>>
-) {
-    if (!array.length) { return callback(null, []); }
-    let remaining = array.length;
-    const results = new Array(array.length);
-    let error = null;
-    array.forEach((item, i) => {
-        fn(item, (err, result) => {
-            if (err) error = err;
-            results[i] = (result as any as Result); // https://github.com/facebook/flow/issues/2123
-            if (--remaining === 0) callback(error, results);
-        });
-    });
-}
-
-/**
  * Compute the difference between the keys in one object and the keys
  * in another object.
  *
@@ -120,7 +93,11 @@ export function keysDifference<S, T>(
  * @param dest - destination object
  * @param sources - sources from which properties are pulled
  */
-export function extend(dest: any, ...sources: Array<any>): any {
+export function extend<T extends {}, U>(dest: T, source: U): T & U;
+export function extend<T extends {}, U, V>(dest: T, source1: U, source2: V): T & U & V;
+export function extend<T extends {}, U, V, W>(dest: T, source1: U, source2: V, source3: W): T & U & V & W;
+export function extend(dest: object, ...sources: Array<any>): any;
+export function extend(dest: object, ...sources: Array<any>): any {
     for (const src of sources) {
         for (const k in src) {
             dest[k] = src[k];
@@ -128,6 +105,9 @@ export function extend(dest: any, ...sources: Array<any>): any {
     }
     return dest;
 }
+
+// See https://stackoverflow.com/questions/49401866/all-possible-keys-of-an-union-type
+type KeysOfUnion<T> = T extends T ? keyof T: never;
 
 /**
  * Given an object and a number of properties as strings, return version
@@ -143,8 +123,8 @@ export function extend(dest: any, ...sources: Array<any>): any {
  * let justName = pick(foo, ['name']); // justName = { name: 'Charlie' }
  * ```
  */
-export function pick(src: any, properties: Array<string>): any {
-    const result = {};
+export function pick<T extends object>(src: T, properties: Array<KeysOfUnion<T>>): Partial<T> {
+    const result: Partial<T> = {};
     for (let i = 0; i < properties.length; i++) {
         const k = properties[i];
         if (k in src) {
@@ -384,7 +364,7 @@ export function sphericalToCartesian([r, azimuthal, polar]: [number, number, num
  *
  * @returns `true` if the when run in the web-worker context.
  */
-export function isWorker(): boolean {
+export function isWorker(self: any): self is WorkerGlobalScopeInterface {
     // @ts-ignore
     return typeof WorkerGlobalScope !== 'undefined' && typeof self !== 'undefined' && self instanceof WorkerGlobalScope;
 }
@@ -481,16 +461,19 @@ export function isImageBitmap(image: any): image is ImageBitmap {
  * ArrayBuffers.
  *
  * @param data - Data to convert
- * @param callback - A callback executed after the conversion is finished. Invoked with error (if any) as the first argument and resulting image bitmap (when no error) as the second
+ * @returns - A  promise resolved when the conversion is finished
  */
-export function arrayBufferToImageBitmap(data: ArrayBuffer, callback: (err?: Error | null, image?: ImageBitmap | null) => void) {
+export const arrayBufferToImageBitmap = async (data: ArrayBuffer): Promise<ImageBitmap> => {
+    if (data.byteLength === 0) {
+        return createImageBitmap(new ImageData(1, 1));
+    }
     const blob: Blob = new Blob([new Uint8Array(data)], {type: 'image/png'});
-    createImageBitmap(blob).then((imgBitmap) => {
-        callback(null, imgBitmap);
-    }).catch((e) => {
-        callback(new Error(`Could not load image because of ${e.message}. Please make sure to use a supported image type such as PNG or JPEG. Note that SVGs are not supported.`));
-    });
-}
+    try {
+        return createImageBitmap(blob);
+    } catch (e) {
+        throw new Error(`Could not load image because of ${e.message}. Please make sure to use a supported image type such as PNG or JPEG. Note that SVGs are not supported.`);
+    }
+};
 
 const transparentPngUrl = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAC0lEQVQYV2NgAAIAAAUAAarVyFEAAAAASUVORK5CYII=';
 
@@ -502,23 +485,25 @@ const transparentPngUrl = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAA
  * ArrayBuffers.
  *
  * @param data - Data to convert
- * @param callback - A callback executed after the conversion is finished. Invoked with error (if any) as the first argument and resulting image element (when no error) as the second
+ * @returns - A promise resolved when the conversion is finished
  */
-export function arrayBufferToImage(data: ArrayBuffer, callback: (err?: Error | null, image?: HTMLImageElement | null) => void) {
-    const img: HTMLImageElement = new Image();
-    img.onload = () => {
-        callback(null, img);
-        URL.revokeObjectURL(img.src);
-        // prevent image dataURI memory leak in Safari;
-        // but don't free the image immediately because it might be uploaded in the next frame
-        // https://github.com/mapbox/mapbox-gl-js/issues/10226
-        img.onload = null;
-        window.requestAnimationFrame(() => { img.src = transparentPngUrl; });
-    };
-    img.onerror = () => callback(new Error('Could not load image. Please make sure to use a supported image type such as PNG or JPEG. Note that SVGs are not supported.'));
-    const blob: Blob = new Blob([new Uint8Array(data)], {type: 'image/png'});
-    img.src = data.byteLength ? URL.createObjectURL(blob) : transparentPngUrl;
-}
+export const arrayBufferToImage = (data: ArrayBuffer): Promise<HTMLImageElement> => {
+    return new Promise((resolve, reject) => {
+        const img: HTMLImageElement = new Image();
+        img.onload = () => {
+            resolve(img);
+            URL.revokeObjectURL(img.src);
+            // prevent image dataURI memory leak in Safari;
+            // but don't free the image immediately because it might be uploaded in the next frame
+            // https://github.com/mapbox/mapbox-gl-js/issues/10226
+            img.onload = null;
+            window.requestAnimationFrame(() => { img.src = transparentPngUrl; });
+        };
+        img.onerror = () => reject(new Error('Could not load image. Please make sure to use a supported image type such as PNG or JPEG. Note that SVGs are not supported.'));
+        const blob: Blob = new Blob([new Uint8Array(data)], {type: 'image/png'});
+        img.src = data.byteLength ? URL.createObjectURL(blob) : transparentPngUrl;
+    });
+};
 
 /**
  * Computes the webcodecs VideoFrame API options to select a rectangle out of
@@ -666,4 +651,41 @@ export async function getImageData(
         }
     }
     return readImageDataUsingOffscreenCanvas(image, x, y, width, height);
+}
+
+export interface Subscription {
+    unsubscribe(): void;
+}
+
+export interface Subscriber {
+    addEventListener: typeof window.addEventListener;
+    removeEventListener: typeof window.removeEventListener;
+}
+
+/**
+ * This method is used in order to register an event listener using a lambda function.
+ * The return value will allow unsubscribing from the event, without the need to store the method reference.
+ * @param target - The target
+ * @param message - The message
+ * @param listener - The listener
+ * @param options - The options
+ * @returns a subscription object that can be used to unsubscribe from the event
+ */
+export function subscribe(target: Subscriber, message: keyof WindowEventMap, listener: (...args: any) => void, options: boolean | AddEventListenerOptions): Subscription {
+    target.addEventListener(message, listener, options);
+    return {
+        unsubscribe: () => {
+            target.removeEventListener(message, listener, options);
+        }
+    };
+}
+
+/**
+ * This method converts degrees to radians.
+ * The return value is the radian value.
+ * @param degrees - The number of degrees
+ * @returns radians
+ */
+export function degreesToRadians(degrees: number): number {
+    return degrees * Math.PI / 180;
 }

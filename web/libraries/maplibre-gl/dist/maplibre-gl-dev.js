@@ -1,4 +1,7 @@
-/* MapLibre GL JS is licensed under the 3-Clause BSD License. Full text of license: https://github.com/maplibre/maplibre-gl-js/blob/v3.6.2/LICENSE.txt */
+/**
+ * MapLibre GL JS
+ * @license 3-Clause BSD. Full text of license: https://github.com/maplibre/maplibre-gl-js/blob/v4.1.3/LICENSE.txt
+ */
 (function (global, factory) {
 typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
 typeof define === 'function' && define.amd ? define(factory) :
@@ -7,28 +10,36 @@ typeof define === 'function' && define.amd ? define(factory) :
 
 /* eslint-disable */
 
-var shared, worker, maplibregl;
-// define gets called three times: one for each chunk. we rely on the order
-// they're imported to know which is which
-function define(_, chunk) {
-    if (!shared) {
-        shared = chunk;
-    } else if (!worker) {
-        worker = chunk;
-    } else {
-        var workerBundleString = 'var sharedChunk = {}; (' + shared + ')(sharedChunk); (' + worker + ')(sharedChunk);'
+var maplibregl = {};
+var modules = {};
+function define(moduleName, _dependencies, moduleFactory) {
+    modules[moduleName] = moduleFactory;
 
-        var sharedChunk = {};
-        shared(sharedChunk);
-        maplibregl = chunk(sharedChunk);
-        if (typeof window !== 'undefined') {
-            maplibregl.workerUrl = window.URL.createObjectURL(new Blob([workerBundleString], { type: 'text/javascript' }));
-        }
+    // to get the list of modules see generated dist/maplibre-gl-dev.js file (look for `define(` calls)
+    if (moduleName !== 'index') {
+        return;
     }
-}
+
+    // we assume that when an index module is initializing then other modules are loaded already
+    var workerBundleString = 'var sharedModule = {}; (' + modules.shared + ')(sharedModule); (' + modules.worker + ')(sharedModule);'
+
+    var sharedModule = {};
+    // the order of arguments of a module factory depends on rollup (it decides who is whose dependency)
+    // to check the correct order, see dist/maplibre-gl-dev.js file (look for `define(` calls)
+    // we assume that for our 3 chunks it will generate 3 modules and their order is predefined like the following
+    modules.shared(sharedModule);
+    modules.index(maplibregl, sharedModule);
+
+    if (typeof window !== 'undefined') {
+        maplibregl.setWorkerUrl(window.URL.createObjectURL(new Blob([workerBundleString], { type: 'text/javascript' })));
+    }
+
+    return maplibregl;
+};
 
 
-define(['exports'], (function (exports) { 'use strict';
+
+define('shared', ['exports'], (function (exports) { 'use strict';
 
 /******************************************************************************
 Copyright (c) Microsoft Corporation.
@@ -403,7 +414,7 @@ var tslib_es6 = {
 
 var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
-function getDefaultExportFromCjs (x) {
+function getDefaultExportFromCjs$1 (x) {
 	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
 }
 
@@ -753,13 +764,13 @@ Point$1.convert = function (a) {
     return a;
 };
 
-var Point$2 = /*@__PURE__*/getDefaultExportFromCjs(pointGeometry);
+var Point$2 = /*@__PURE__*/getDefaultExportFromCjs$1(pointGeometry);
 
 'use strict';
 
-var unitbezier = UnitBezier;
+var unitbezier$1 = UnitBezier$2;
 
-function UnitBezier(p1x, p1y, p2x, p2y) {
+function UnitBezier$2(p1x, p1y, p2x, p2y) {
     // Calculate the polynomial coefficients, implicit first and last control points are (0,0) and (1,1).
     this.cx = 3.0 * p1x;
     this.bx = 3.0 * (p2x - p1x) - this.cx;
@@ -775,7 +786,7 @@ function UnitBezier(p1x, p1y, p2x, p2y) {
     this.p2y = p2y;
 }
 
-UnitBezier.prototype = {
+UnitBezier$2.prototype = {
     sampleCurveX: function (t) {
         // `ax t^3 + bx t^2 + cx t' expanded using Horner's rule.
         return ((this.ax * t + this.bx) * t + this.cx) * t;
@@ -834,7 +845,7 @@ UnitBezier.prototype = {
     }
 };
 
-var UnitBezier$1 = /*@__PURE__*/getDefaultExportFromCjs(unitbezier);
+var UnitBezier$3 = /*@__PURE__*/getDefaultExportFromCjs$1(unitbezier$1);
 
 let supportsOffscreenCanvas;
 function offscreenCanvasSupported() {
@@ -905,7 +916,7 @@ function easeCubicInOut(t) {
  * @param p2y - control point 2 y coordinate
  */
 function bezier$1(p1x, p1y, p2x, p2y) {
-    const bezier = new UnitBezier$1(p1x, p1y, p2x, p2y);
+    const bezier = new UnitBezier$3(p1x, p1y, p2x, p2y);
     return function (t) {
         return bezier.solve(t);
     };
@@ -940,32 +951,6 @@ function wrap(n, min, max) {
     return (w === min) ? max : w;
 }
 /**
- * Call an asynchronous function on an array of arguments,
- * calling `callback` with the completed results of all calls.
- *
- * @param array - input to each call of the async function.
- * @param fn - an async function with signature (data, callback)
- * @param callback - a callback run after all async work is done.
- * called with an array, containing the results of each async call.
- */
-function asyncAll(array, fn, callback) {
-    if (!array.length) {
-        return callback(null, []);
-    }
-    let remaining = array.length;
-    const results = new Array(array.length);
-    let error = null;
-    array.forEach((item, i) => {
-        fn(item, (err, result) => {
-            if (err)
-                error = err;
-            results[i] = result; // https://github.com/facebook/flow/issues/2123
-            if (--remaining === 0)
-                callback(error, results);
-        });
-    });
-}
-/**
  * Compute the difference between the keys in one object and the keys
  * in another object.
  *
@@ -980,15 +965,6 @@ function keysDifference(obj, other) {
     }
     return difference;
 }
-/**
- * Given a destination object and optionally many source objects,
- * copy all properties from the source objects into the destination.
- * The last source object given overrides properties from previous
- * source objects.
- *
- * @param dest - destination object
- * @param sources - sources from which properties are pulled
- */
 function extend(dest, ...sources) {
     for (const src of sources) {
         for (const k in src) {
@@ -1231,7 +1207,7 @@ function sphericalToCartesian([r, azimuthal, polar]) {
  *
  * @returns `true` if the when run in the web-worker context.
  */
-function isWorker() {
+function isWorker(self) {
     // @ts-ignore
     return typeof WorkerGlobalScope !== 'undefined' && typeof self !== 'undefined' && self instanceof WorkerGlobalScope;
 }
@@ -1315,16 +1291,20 @@ function isImageBitmap(image) {
  * ArrayBuffers.
  *
  * @param data - Data to convert
- * @param callback - A callback executed after the conversion is finished. Invoked with error (if any) as the first argument and resulting image bitmap (when no error) as the second
+ * @returns - A  promise resolved when the conversion is finished
  */
-function arrayBufferToImageBitmap(data, callback) {
+const arrayBufferToImageBitmap = (data) => __awaiter(void 0, void 0, void 0, function* () {
+    if (data.byteLength === 0) {
+        return createImageBitmap(new ImageData(1, 1));
+    }
     const blob = new Blob([new Uint8Array(data)], { type: 'image/png' });
-    createImageBitmap(blob).then((imgBitmap) => {
-        callback(null, imgBitmap);
-    }).catch((e) => {
-        callback(new Error(`Could not load image because of ${e.message}. Please make sure to use a supported image type such as PNG or JPEG. Note that SVGs are not supported.`));
-    });
-}
+    try {
+        return createImageBitmap(blob);
+    }
+    catch (e) {
+        throw new Error(`Could not load image because of ${e.message}. Please make sure to use a supported image type such as PNG or JPEG. Note that SVGs are not supported.`);
+    }
+});
 const transparentPngUrl = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAC0lEQVQYV2NgAAIAAAUAAarVyFEAAAAASUVORK5CYII=';
 /**
  * Converts an ArrayBuffer to an HTMLImageElement.
@@ -1334,23 +1314,25 @@ const transparentPngUrl = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAA
  * ArrayBuffers.
  *
  * @param data - Data to convert
- * @param callback - A callback executed after the conversion is finished. Invoked with error (if any) as the first argument and resulting image element (when no error) as the second
+ * @returns - A promise resolved when the conversion is finished
  */
-function arrayBufferToImage(data, callback) {
-    const img = new Image();
-    img.onload = () => {
-        callback(null, img);
-        URL.revokeObjectURL(img.src);
-        // prevent image dataURI memory leak in Safari;
-        // but don't free the image immediately because it might be uploaded in the next frame
-        // https://github.com/mapbox/mapbox-gl-js/issues/10226
-        img.onload = null;
-        window.requestAnimationFrame(() => { img.src = transparentPngUrl; });
-    };
-    img.onerror = () => callback(new Error('Could not load image. Please make sure to use a supported image type such as PNG or JPEG. Note that SVGs are not supported.'));
-    const blob = new Blob([new Uint8Array(data)], { type: 'image/png' });
-    img.src = data.byteLength ? URL.createObjectURL(blob) : transparentPngUrl;
-}
+const arrayBufferToImage = (data) => {
+    return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => {
+            resolve(img);
+            URL.revokeObjectURL(img.src);
+            // prevent image dataURI memory leak in Safari;
+            // but don't free the image immediately because it might be uploaded in the next frame
+            // https://github.com/mapbox/mapbox-gl-js/issues/10226
+            img.onload = null;
+            window.requestAnimationFrame(() => { img.src = transparentPngUrl; });
+        };
+        img.onerror = () => reject(new Error('Could not load image. Please make sure to use a supported image type such as PNG or JPEG. Note that SVGs are not supported.'));
+        const blob = new Blob([new Uint8Array(data)], { type: 'image/png' });
+        img.src = data.byteLength ? URL.createObjectURL(blob) : transparentPngUrl;
+    });
+};
 /**
  * Computes the webcodecs VideoFrame API options to select a rectangle out of
  * an image and write it into the destination rectangle.
@@ -1488,56 +1470,52 @@ function getImageData(image, x, y, width, height) {
         return readImageDataUsingOffscreenCanvas(image, x, y, width, height);
     });
 }
+/**
+ * This method is used in order to register an event listener using a lambda function.
+ * The return value will allow unsubscribing from the event, without the need to store the method reference.
+ * @param target - The target
+ * @param message - The message
+ * @param listener - The listener
+ * @param options - The options
+ * @returns a subscription object that can be used to unsubscribe from the event
+ */
+function subscribe(target, message, listener, options) {
+    target.addEventListener(message, listener, options);
+    return {
+        unsubscribe: () => {
+            target.removeEventListener(message, listener, options);
+        }
+    };
+}
+/**
+ * This method converts degrees to radians.
+ * The return value is the radian value.
+ * @param degrees - The number of degrees
+ * @returns radians
+ */
+function degreesToRadians(degrees) {
+    return degrees * Math.PI / 180;
+}
 
-const now = typeof performance !== 'undefined' && performance && performance.now ?
-    performance.now.bind(performance) :
-    Date.now.bind(Date);
-let linkEl;
-let reducedMotionQuery;
-/** */
-const browser = {
-    /**
-     * Provides a function that outputs milliseconds: either performance.now()
-     * or a fallback to Date.now()
-     */
-    now,
-    frame(fn) {
-        const frame = requestAnimationFrame(fn);
-        return { cancel: () => cancelAnimationFrame(frame) };
-    },
-    getImageData(img, padding = 0) {
-        const context = this.getImageCanvasContext(img);
-        return context.getImageData(-padding, -padding, img.width + 2 * padding, img.height + 2 * padding);
-    },
-    getImageCanvasContext(img) {
-        const canvas = window.document.createElement('canvas');
-        const context = canvas.getContext('2d', { willReadFrequently: true });
-        if (!context) {
-            throw new Error('failed to create canvas 2d context');
-        }
-        canvas.width = img.width;
-        canvas.height = img.height;
-        context.drawImage(img, 0, 0, img.width, img.height);
-        return context;
-    },
-    resolveURL(path) {
-        if (!linkEl)
-            linkEl = document.createElement('a');
-        linkEl.href = path;
-        return linkEl.href;
-    },
-    hardwareConcurrency: typeof navigator !== 'undefined' && navigator.hardwareConcurrency || 4,
-    get prefersReducedMotion() {
-        // In case your test crashes when checking matchMedia, call setMatchMedia from 'src/util/test/util'
-        if (!matchMedia)
-            return false;
-        //Lazily initialize media query
-        if (reducedMotionQuery == null) {
-            reducedMotionQuery = matchMedia('(prefers-reduced-motion: reduce)');
-        }
-        return reducedMotionQuery.matches;
-    },
-};
+/**
+ * An error message to use when an operation is aborted
+ */
+const ABORT_ERROR = 'AbortError';
+/**
+ * Check if an error is an abort error
+ * @param error - An error object
+ * @returns - true if the error is an abort error
+ */
+function isAbortError(error) {
+    return error.message === ABORT_ERROR;
+}
+/**
+ * Use this when you need to create an abort error.
+ * @returns An error object with the message "AbortError"
+ */
+function createAbortError() {
+    return new Error(ABORT_ERROR);
+}
 
 const config = {
     MAX_PARALLEL_IMAGE_REQUESTS: 16,
@@ -1547,6 +1525,56 @@ const config = {
     WORKER_URL: ''
 };
 
+function getProtocol(url) {
+    return config.REGISTERED_PROTOCOLS[url.substring(0, url.indexOf('://'))];
+}
+/**
+ * Adds a custom load resource function that will be called when using a URL that starts with a custom url schema.
+ * This will happen in the main thread, and workers might call it if they don't know how to handle the protocol.
+ * The example below will be triggered for custom:// urls defined in the sources list in the style definitions.
+ * The function passed will receive the request parameters and should return with the resulting resource,
+ * for example a pbf vector tile, non-compressed, represented as ArrayBuffer.
+ *
+ * @param customProtocol - the protocol to hook, for example 'custom'
+ * @param loadFn - the function to use when trying to fetch a tile specified by the customProtocol
+ * @example
+ * ```ts
+ * // This will fetch a file using the fetch API (this is obviously a non interesting example...)
+ * addProtocol('custom', async (params, abortController) => {
+ *      const t = await fetch(`https://${params.url.split("://")[1]}`);
+ *      if (t.status == 200) {
+ *          const buffer = await t.arrayBuffer();
+ *          return {data: buffer}
+ *      } else {
+ *          throw new Error(`Tile fetch error: ${t.statusText}`);
+ *      }
+ *  });
+ * // the following is an example of a way to return an error when trying to load a tile
+ * addProtocol('custom2', async (params, abortController) => {
+ *      throw new Error('someErrorMessage'));
+ * });
+ * ```
+ */
+function addProtocol(customProtocol, loadFn) {
+    config.REGISTERED_PROTOCOLS[customProtocol] = loadFn;
+}
+/**
+ * Removes a previously added protocol in the main thread.
+ *
+ * @param customProtocol - the custom protocol to remove registration for
+ * @example
+ * ```ts
+ * removeProtocol('custom');
+ * ```
+ */
+function removeProtocol(customProtocol) {
+    delete config.REGISTERED_PROTOCOLS[customProtocol];
+}
+
+/**
+ * This is used to identify the global dispatcher id when sending a message from the worker without a target map id.
+ */
+const GLOBAL_DISPATCHER_ID = 'global-dispatcher';
 /**
  * An error thrown when a HTTP request results in an error response.
  */
@@ -1565,167 +1593,143 @@ class AJAXError extends Error {
         this.body = body;
     }
 }
-// Ensure that we're sending the correct referrer from blob URL worker bundles.
-// For files loaded from the local file system, `location.origin` will be set
-// to the string(!) "null" (Firefox), or "file://" (Chrome, Safari, Edge, IE),
-// and we will set an empty referrer. Otherwise, we're using the document's URL.
-/* global self */
-const getReferrer = isWorker() ?
-    () => self.worker && self.worker.referrer :
-    () => (window.location.protocol === 'blob:' ? window.parent : window).location.href;
-const getProtocolAction = url => config.REGISTERED_PROTOCOLS[url.substring(0, url.indexOf('://'))];
-// Determines whether a URL is a file:// URL. This is obviously the case if it begins
-// with file://. Relative URLs are also file:// URLs iff the original document was loaded
-// via a file:// URL.
+/**
+ * Ensure that we're sending the correct referrer from blob URL worker bundles.
+ * For files loaded from the local file system, `location.origin` will be set
+ * to the string(!) "null" (Firefox), or "file://" (Chrome, Safari, Edge),
+ * and we will set an empty referrer. Otherwise, we're using the document's URL.
+ */
+const getReferrer = () => isWorker(self) ?
+    self.worker && self.worker.referrer :
+    (window.location.protocol === 'blob:' ? window.parent : window).location.href;
+/**
+ * Determines whether a URL is a file:// URL. This is obviously the case if it begins
+ * with file://. Relative URLs are also file:// URLs iff the original document was loaded
+ * via a file:// URL.
+ * @param url - The URL to check
+ * @returns `true` if the URL is a file:// URL, `false` otherwise
+ */
 const isFileURL = url => /^file:/.test(url) || (/^file:/.test(getReferrer()) && !/^\w+:/.test(url));
-function makeFetchRequest(requestParameters, callback) {
-    const controller = new AbortController();
-    const request = new Request(requestParameters.url, {
-        method: requestParameters.method || 'GET',
-        body: requestParameters.body,
-        credentials: requestParameters.credentials,
-        headers: requestParameters.headers,
-        cache: requestParameters.cache,
-        referrer: getReferrer(),
-        signal: controller.signal
-    });
-    let complete = false;
-    let aborted = false;
-    if (requestParameters.type === 'json') {
-        request.headers.set('Accept', 'application/json');
-    }
-    const validateOrFetch = (err, cachedResponse, responseIsFresh) => {
-        if (aborted)
-            return;
-        if (err) {
-            // Do fetch in case of cache error.
-            // HTTP pages in Edge trigger a security error that can be ignored.
-            if (err.message !== 'SecurityError') {
-                warnOnce(err);
-            }
-        }
-        if (cachedResponse && responseIsFresh) {
-            return finishRequest(cachedResponse);
-        }
-        if (cachedResponse) {
-            // We can't do revalidation with 'If-None-Match' because then the
-            // request doesn't have simple cors headers.
-        }
-        fetch(request).then(response => {
-            if (response.ok) {
-                return finishRequest(response);
-            }
-            else {
-                return response.blob().then(body => callback(new AJAXError(response.status, response.statusText, requestParameters.url, body)));
-            }
-        }).catch(error => {
-            if (error.code === 20) {
-                // silence expected AbortError
-                return;
-            }
-            callback(new Error(error.message));
+function makeFetchRequest(requestParameters, abortController) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const request = new Request(requestParameters.url, {
+            method: requestParameters.method || 'GET',
+            body: requestParameters.body,
+            credentials: requestParameters.credentials,
+            headers: requestParameters.headers,
+            cache: requestParameters.cache,
+            referrer: getReferrer(),
+            signal: abortController.signal
         });
-    };
-    const finishRequest = (response) => {
-        ((requestParameters.type === 'arrayBuffer' || requestParameters.type === 'image') ? response.arrayBuffer() :
-            requestParameters.type === 'json' ? response.json() :
-                response.text()).then(result => {
-            if (aborted)
-                return;
-            complete = true;
-            callback(null, result, response.headers.get('Cache-Control'), response.headers.get('Expires'));
-        }).catch(err => {
-            if (!aborted)
-                callback(new Error(err.message));
-        });
-    };
-    validateOrFetch(null, null);
-    return { cancel: () => {
-            aborted = true;
-            if (!complete)
-                controller.abort();
-        } };
-}
-function makeXMLHttpRequest(requestParameters, callback) {
-    const xhr = new XMLHttpRequest();
-    xhr.open(requestParameters.method || 'GET', requestParameters.url, true);
-    if (requestParameters.type === 'arrayBuffer' || requestParameters.type === 'image') {
-        xhr.responseType = 'arraybuffer';
-    }
-    for (const k in requestParameters.headers) {
-        xhr.setRequestHeader(k, requestParameters.headers[k]);
-    }
-    if (requestParameters.type === 'json') {
-        xhr.responseType = 'text';
-        xhr.setRequestHeader('Accept', 'application/json');
-    }
-    xhr.withCredentials = requestParameters.credentials === 'include';
-    xhr.onerror = () => {
-        callback(new Error(xhr.statusText));
-    };
-    xhr.onload = () => {
-        if (((xhr.status >= 200 && xhr.status < 300) || xhr.status === 0) && xhr.response !== null) {
-            let data = xhr.response;
-            if (requestParameters.type === 'json') {
-                // We're manually parsing JSON here to get better error messages.
-                try {
-                    data = JSON.parse(xhr.response);
-                }
-                catch (err) {
-                    return callback(err);
-                }
-            }
-            callback(null, data, xhr.getResponseHeader('Cache-Control'), xhr.getResponseHeader('Expires'));
+        if (requestParameters.type === 'json') {
+            request.headers.set('Accept', 'application/json');
+        }
+        const response = yield fetch(request);
+        if (!response.ok) {
+            const body = yield response.blob();
+            throw new AJAXError(response.status, response.statusText, requestParameters.url, body);
+        }
+        let parsePromise;
+        if ((requestParameters.type === 'arrayBuffer' || requestParameters.type === 'image')) {
+            parsePromise = response.arrayBuffer();
+        }
+        else if (requestParameters.type === 'json') {
+            parsePromise = response.json();
         }
         else {
-            const body = new Blob([xhr.response], { type: xhr.getResponseHeader('Content-Type') });
-            callback(new AJAXError(xhr.status, xhr.statusText, requestParameters.url, body));
+            parsePromise = response.text();
         }
-    };
-    xhr.send(requestParameters.body);
-    return { cancel: () => xhr.abort() };
+        const result = yield parsePromise;
+        if (abortController.signal.aborted) {
+            throw createAbortError();
+        }
+        return { data: result, cacheControl: response.headers.get('Cache-Control'), expires: response.headers.get('Expires') };
+    });
 }
-const makeRequest = function (requestParameters, callback) {
-    // We're trying to use the Fetch API if possible. However, in some situations we can't use it:
-    // - IE11 doesn't support it at all. In this case, we dispatch the request to the main thread so
-    //   that we can get an accruate referrer header.
-    // - Safari exposes window.AbortController, but it doesn't work actually abort any requests in
-    //   some versions (see https://bugs.webkit.org/show_bug.cgi?id=174980#c2)
-    // - Requests for resources with the file:// URI scheme don't work with the Fetch API either. In
-    //   this case we unconditionally use XHR on the current thread since referrers don't matter.
-    if (/:\/\//.test(requestParameters.url) && !(/^https?:|^file:/.test(requestParameters.url))) {
-        if (isWorker() && self.worker && self.worker.actor) {
-            return self.worker.actor.send('getResource', requestParameters, callback);
+function makeXMLHttpRequest(requestParameters, abortController) {
+    return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open(requestParameters.method || 'GET', requestParameters.url, true);
+        if (requestParameters.type === 'arrayBuffer' || requestParameters.type === 'image') {
+            xhr.responseType = 'arraybuffer';
         }
-        if (!isWorker()) {
-            const action = getProtocolAction(requestParameters.url) || makeFetchRequest;
-            return action(requestParameters, callback);
+        for (const k in requestParameters.headers) {
+            xhr.setRequestHeader(k, requestParameters.headers[k]);
+        }
+        if (requestParameters.type === 'json') {
+            xhr.responseType = 'text';
+            xhr.setRequestHeader('Accept', 'application/json');
+        }
+        xhr.withCredentials = requestParameters.credentials === 'include';
+        xhr.onerror = () => {
+            reject(new Error(xhr.statusText));
+        };
+        xhr.onload = () => {
+            if (abortController.signal.aborted) {
+                return;
+            }
+            if (((xhr.status >= 200 && xhr.status < 300) || xhr.status === 0) && xhr.response !== null) {
+                let data = xhr.response;
+                if (requestParameters.type === 'json') {
+                    // We're manually parsing JSON here to get better error messages.
+                    try {
+                        data = JSON.parse(xhr.response);
+                    }
+                    catch (err) {
+                        reject(err);
+                        return;
+                    }
+                }
+                resolve({ data, cacheControl: xhr.getResponseHeader('Cache-Control'), expires: xhr.getResponseHeader('Expires') });
+            }
+            else {
+                const body = new Blob([xhr.response], { type: xhr.getResponseHeader('Content-Type') });
+                reject(new AJAXError(xhr.status, xhr.statusText, requestParameters.url, body));
+            }
+        };
+        abortController.signal.addEventListener('abort', () => {
+            xhr.abort();
+            reject(createAbortError());
+        });
+        xhr.send(requestParameters.body);
+    });
+}
+/**
+ * We're trying to use the Fetch API if possible. However, requests for resources with the file:// URI scheme don't work with the Fetch API.
+ * In this case we unconditionally use XHR on the current thread since referrers don't matter.
+ * This method can also use the registered method if `addProtocol` was called.
+ * @param requestParameters - The request parameters
+ * @param abortController - The abort controller allowing to cancel the request
+ * @returns a promise resolving to the response, including cache control and expiry data
+ */
+const makeRequest = function (requestParameters, abortController) {
+    if (/:\/\//.test(requestParameters.url) && !(/^https?:|^file:/.test(requestParameters.url))) {
+        const protocolLoadFn = getProtocol(requestParameters.url);
+        if (protocolLoadFn) {
+            return protocolLoadFn(requestParameters, abortController);
+        }
+        if (isWorker(self) && self.worker && self.worker.actor) {
+            return self.worker.actor.sendAsync({ type: "GR" /* MessageType.getResource */, data: requestParameters, targetMapId: GLOBAL_DISPATCHER_ID }, abortController);
         }
     }
     if (!isFileURL(requestParameters.url)) {
         if (fetch && Request && AbortController && Object.prototype.hasOwnProperty.call(Request.prototype, 'signal')) {
-            return makeFetchRequest(requestParameters, callback);
+            return makeFetchRequest(requestParameters, abortController);
         }
-        if (isWorker() && self.worker && self.worker.actor) {
-            const queueOnMainThread = true;
-            return self.worker.actor.send('getResource', requestParameters, callback, undefined, queueOnMainThread);
+        if (isWorker(self) && self.worker && self.worker.actor) {
+            return self.worker.actor.sendAsync({ type: "GR" /* MessageType.getResource */, data: requestParameters, mustQueue: true, targetMapId: GLOBAL_DISPATCHER_ID }, abortController);
         }
     }
-    return makeXMLHttpRequest(requestParameters, callback);
+    return makeXMLHttpRequest(requestParameters, abortController);
 };
-const getJSON = function (requestParameters, callback) {
-    return makeRequest(extend(requestParameters, { type: 'json' }), callback);
+const getJSON = (requestParameters, abortController) => {
+    return makeRequest(extend(requestParameters, { type: 'json' }), abortController);
 };
-const getArrayBuffer = function (requestParameters, callback) {
-    return makeRequest(extend(requestParameters, { type: 'arrayBuffer' }), callback);
-};
-const postData = function (requestParameters, callback) {
-    return makeRequest(extend(requestParameters, { method: 'POST' }), callback);
+const getArrayBuffer = (requestParameters, abortController) => {
+    return makeRequest(extend(requestParameters, { type: 'arrayBuffer' }), abortController);
 };
 function sameOrigin(inComingUrl) {
-    // URL class should be available everywhere
-    // https://developer.mozilla.org/en-US/docs/Web/API/URL
-    // In addtion, a relative URL "/foo" or "./foo" will throw exception in its ctor,
+    // A relative URL "/foo" or "./foo" will throw exception in URL's ctor,
     // try-catch is expansive so just use a heuristic check to avoid it
     // also check data URL
     if (!inComingUrl ||
@@ -1738,21 +1742,22 @@ function sameOrigin(inComingUrl) {
     const locationObj = window.location;
     return urlObj.protocol === locationObj.protocol && urlObj.host === locationObj.host;
 }
-const getVideo = function (urls, callback) {
+const getVideo = (urls) => {
     const video = window.document.createElement('video');
     video.muted = true;
-    video.onloadstart = function () {
-        callback(null, video);
-    };
-    for (let i = 0; i < urls.length; i++) {
-        const s = window.document.createElement('source');
-        if (!sameOrigin(urls[i])) {
-            video.crossOrigin = 'Anonymous';
+    return new Promise((resolve) => {
+        video.onloadstart = () => {
+            resolve(video);
+        };
+        for (const url of urls) {
+            const s = window.document.createElement('source');
+            if (!sameOrigin(url)) {
+                video.crossOrigin = 'Anonymous';
+            }
+            s.src = url;
+            video.appendChild(s);
         }
-        s.src = urls[i];
-        video.appendChild(s);
-    }
-    return { cancel: () => { } };
+    });
 };
 
 function _addEventListener(type, listener, listenerList) {
@@ -1926,6 +1931,9 @@ var $root = {
 	},
 	light: {
 		type: "light"
+	},
+	sky: {
+		type: "sky"
 	},
 	terrain: {
 		type: "terrain"
@@ -3559,6 +3567,60 @@ var light = {
 		transition: true
 	}
 };
+var sky = {
+	"sky-color": {
+		type: "color",
+		"property-type": "data-constant",
+		"default": "#88C6FC",
+		expression: {
+			interpolated: true,
+			parameters: [
+				"zoom"
+			]
+		},
+		transition: true
+	},
+	"fog-color": {
+		type: "color",
+		"property-type": "data-constant",
+		"default": "#ffffff",
+		expression: {
+			interpolated: true,
+			parameters: [
+				"zoom"
+			]
+		},
+		transition: true
+	},
+	"fog-blend": {
+		type: "number",
+		"property-type": "data-constant",
+		"default": 0.5,
+		minimum: 0,
+		maximum: 1,
+		expression: {
+			interpolated: true,
+			parameters: [
+				"zoom"
+			]
+		},
+		transition: true
+	},
+	"horizon-blend": {
+		type: "number",
+		"property-type": "data-constant",
+		"default": 0.8,
+		minimum: 0,
+		maximum: 1,
+		expression: {
+			interpolated: true,
+			parameters: [
+				"zoom"
+			]
+		},
+		transition: true
+	}
+};
 var terrain = {
 	source: {
 		type: "string",
@@ -4786,6 +4848,7 @@ var v8Spec = {
 	function_stop: function_stop,
 	expression: expression$1,
 	light: light,
+	sky: sky,
 	terrain: terrain,
 	paint: paint$9,
 	paint_fill: paint_fill,
@@ -5025,89 +5088,19 @@ function deepEqual(a, b) {
     return a === b;
 }
 
-const operations = {
-    /*
-     * { command: 'setStyle', args: [stylesheet] }
-     */
-    setStyle: 'setStyle',
-    /*
-     * { command: 'addLayer', args: [layer, 'beforeLayerId'] }
-     */
-    addLayer: 'addLayer',
-    /*
-     * { command: 'removeLayer', args: ['layerId'] }
-     */
-    removeLayer: 'removeLayer',
-    /*
-     * { command: 'setPaintProperty', args: ['layerId', 'prop', value] }
-     */
-    setPaintProperty: 'setPaintProperty',
-    /*
-     * { command: 'setLayoutProperty', args: ['layerId', 'prop', value] }
-     */
-    setLayoutProperty: 'setLayoutProperty',
-    /*
-     * { command: 'setFilter', args: ['layerId', filter] }
-     */
-    setFilter: 'setFilter',
-    /*
-     * { command: 'addSource', args: ['sourceId', source] }
-     */
-    addSource: 'addSource',
-    /*
-     * { command: 'removeSource', args: ['sourceId'] }
-     */
-    removeSource: 'removeSource',
-    /*
-     * { command: 'setGeoJSONSourceData', args: ['sourceId', data] }
-     */
-    setGeoJSONSourceData: 'setGeoJSONSourceData',
-    /*
-     * { command: 'setLayerZoomRange', args: ['layerId', 0, 22] }
-     */
-    setLayerZoomRange: 'setLayerZoomRange',
-    /*
-     * { command: 'setLayerProperty', args: ['layerId', 'prop', value] }
-     */
-    setLayerProperty: 'setLayerProperty',
-    /*
-     * { command: 'setCenter', args: [[lon, lat]] }
-     */
-    setCenter: 'setCenter',
-    /*
-     * { command: 'setZoom', args: [zoom] }
-     */
-    setZoom: 'setZoom',
-    /*
-     * { command: 'setBearing', args: [bearing] }
-     */
-    setBearing: 'setBearing',
-    /*
-     * { command: 'setPitch', args: [pitch] }
-     */
-    setPitch: 'setPitch',
-    /*
-     * { command: 'setSprite', args: ['spriteUrl'] }
-     */
-    setSprite: 'setSprite',
-    /*
-     * { command: 'setGlyphs', args: ['glyphsUrl'] }
-     */
-    setGlyphs: 'setGlyphs',
-    /*
-     * { command: 'setTransition', args: [transition] }
-     */
-    setTransition: 'setTransition',
-    /*
-     * { command: 'setLighting', args: [lightProperties] }
-     */
-    setLight: 'setLight'
-};
+/**
+ * The main reason for this method is to allow type check when adding a command to the array.
+ * @param commands - The commands array to add to
+ * @param command - The command to add
+ */
+function addCommand(commands, command) {
+    commands.push(command);
+}
 function addSource(sourceId, after, commands) {
-    commands.push({ command: operations.addSource, args: [sourceId, after[sourceId]] });
+    addCommand(commands, { command: 'addSource', args: [sourceId, after[sourceId]] });
 }
 function removeSource(sourceId, commands, sourcesRemoved) {
-    commands.push({ command: operations.removeSource, args: [sourceId] });
+    addCommand(commands, { command: 'removeSource', args: [sourceId] });
     sourcesRemoved[sourceId] = true;
 }
 function updateSource(sourceId, after, commands, sourcesRemoved) {
@@ -5153,7 +5146,7 @@ function diffSources(before, after, commands, sourcesRemoved) {
         }
         else if (!deepEqual(before[sourceId], after[sourceId])) {
             if (before[sourceId].type === 'geojson' && after[sourceId].type === 'geojson' && canUpdateGeoJSON(before, after, sourceId)) {
-                commands.push({ command: operations.setGeoJSONSourceData, args: [sourceId, after[sourceId].data] });
+                addCommand(commands, { command: 'setGeoJSONSourceData', args: [sourceId, after[sourceId].data] });
             }
             else {
                 // no update command, must remove then add
@@ -5165,15 +5158,14 @@ function diffSources(before, after, commands, sourcesRemoved) {
 function diffLayerPropertyChanges(before, after, commands, layerId, klass, command) {
     before = before || {};
     after = after || {};
-    let prop;
-    for (prop in before) {
+    for (const prop in before) {
         if (!Object.prototype.hasOwnProperty.call(before, prop))
             continue;
         if (!deepEqual(before[prop], after[prop])) {
             commands.push({ command, args: [layerId, prop, after[prop], klass] });
         }
     }
-    for (prop in after) {
+    for (const prop in after) {
         if (!Object.prototype.hasOwnProperty.call(after, prop) || Object.prototype.hasOwnProperty.call(before, prop))
             continue;
         if (!deepEqual(before[prop], after[prop])) {
@@ -5201,12 +5193,16 @@ function diffLayers(before, after, commands) {
     const tracker = beforeOrder.slice();
     // layers that have been added do not need to be diffed
     const clean = Object.create(null);
-    let i, d, layerId, beforeLayer, afterLayer, insertBeforeLayerId, prop;
+    let layerId;
+    let beforeLayer;
+    let afterLayer;
+    let insertBeforeLayerId;
+    let prop;
     // remove layers
-    for (i = 0, d = 0; i < beforeOrder.length; i++) {
+    for (let i = 0, d = 0; i < beforeOrder.length; i++) {
         layerId = beforeOrder[i];
         if (!Object.prototype.hasOwnProperty.call(afterIndex, layerId)) {
-            commands.push({ command: operations.removeLayer, args: [layerId] });
+            addCommand(commands, { command: 'removeLayer', args: [layerId] });
             tracker.splice(tracker.indexOf(layerId, d), 1);
         }
         else {
@@ -5215,14 +5211,14 @@ function diffLayers(before, after, commands) {
         }
     }
     // add/reorder layers
-    for (i = 0, d = 0; i < afterOrder.length; i++) {
+    for (let i = 0, d = 0; i < afterOrder.length; i++) {
         // work backwards as insert is before an existing layer
         layerId = afterOrder[afterOrder.length - 1 - i];
         if (tracker[tracker.length - 1 - i] === layerId)
             continue;
         if (Object.prototype.hasOwnProperty.call(beforeIndex, layerId)) {
             // remove the layer before we insert at the correct position
-            commands.push({ command: operations.removeLayer, args: [layerId] });
+            addCommand(commands, { command: 'removeLayer', args: [layerId] });
             tracker.splice(tracker.lastIndexOf(layerId, tracker.length - d), 1);
         }
         else {
@@ -5231,12 +5227,12 @@ function diffLayers(before, after, commands) {
         }
         // add layer at correct position
         insertBeforeLayerId = tracker[tracker.length - i];
-        commands.push({ command: operations.addLayer, args: [afterIndex[layerId], insertBeforeLayerId] });
+        addCommand(commands, { command: 'addLayer', args: [afterIndex[layerId], insertBeforeLayerId] });
         tracker.splice(tracker.length - i, 0, layerId);
         clean[layerId] = true;
     }
     // update layers
-    for (i = 0; i < afterOrder.length; i++) {
+    for (let i = 0; i < afterOrder.length; i++) {
         layerId = afterOrder[i];
         beforeLayer = beforeIndex[layerId];
         afterLayer = afterIndex[layerId];
@@ -5246,21 +5242,21 @@ function diffLayers(before, after, commands) {
         // If source, source-layer, or type have changes, then remove the layer
         // and add it back 'from scratch'.
         if (!deepEqual(beforeLayer.source, afterLayer.source) || !deepEqual(beforeLayer['source-layer'], afterLayer['source-layer']) || !deepEqual(beforeLayer.type, afterLayer.type)) {
-            commands.push({ command: operations.removeLayer, args: [layerId] });
+            addCommand(commands, { command: 'removeLayer', args: [layerId] });
             // we add the layer back at the same position it was already in, so
             // there's no need to update the `tracker`
             insertBeforeLayerId = tracker[tracker.lastIndexOf(layerId) + 1];
-            commands.push({ command: operations.addLayer, args: [afterLayer, insertBeforeLayerId] });
+            addCommand(commands, { command: 'addLayer', args: [afterLayer, insertBeforeLayerId] });
             continue;
         }
         // layout, paint, filter, minzoom, maxzoom
-        diffLayerPropertyChanges(beforeLayer.layout, afterLayer.layout, commands, layerId, null, operations.setLayoutProperty);
-        diffLayerPropertyChanges(beforeLayer.paint, afterLayer.paint, commands, layerId, null, operations.setPaintProperty);
+        diffLayerPropertyChanges(beforeLayer.layout, afterLayer.layout, commands, layerId, null, 'setLayoutProperty');
+        diffLayerPropertyChanges(beforeLayer.paint, afterLayer.paint, commands, layerId, null, 'setPaintProperty');
         if (!deepEqual(beforeLayer.filter, afterLayer.filter)) {
-            commands.push({ command: operations.setFilter, args: [layerId, afterLayer.filter] });
+            addCommand(commands, { command: 'setFilter', args: [layerId, afterLayer.filter] });
         }
         if (!deepEqual(beforeLayer.minzoom, afterLayer.minzoom) || !deepEqual(beforeLayer.maxzoom, afterLayer.maxzoom)) {
-            commands.push({ command: operations.setLayerZoomRange, args: [layerId, afterLayer.minzoom, afterLayer.maxzoom] });
+            addCommand(commands, { command: 'setLayerZoomRange', args: [layerId, afterLayer.minzoom, afterLayer.maxzoom] });
         }
         // handle all other layer props, including paint.*
         for (prop in beforeLayer) {
@@ -5270,10 +5266,10 @@ function diffLayers(before, after, commands) {
                 prop === 'metadata' || prop === 'minzoom' || prop === 'maxzoom')
                 continue;
             if (prop.indexOf('paint.') === 0) {
-                diffLayerPropertyChanges(beforeLayer[prop], afterLayer[prop], commands, layerId, prop.slice(6), operations.setPaintProperty);
+                diffLayerPropertyChanges(beforeLayer[prop], afterLayer[prop], commands, layerId, prop.slice(6), 'setPaintProperty');
             }
             else if (!deepEqual(beforeLayer[prop], afterLayer[prop])) {
-                commands.push({ command: operations.setLayerProperty, args: [layerId, prop, afterLayer[prop]] });
+                addCommand(commands, { command: 'setLayerProperty', args: [layerId, prop, afterLayer[prop]] });
             }
         }
         for (prop in afterLayer) {
@@ -5283,10 +5279,10 @@ function diffLayers(before, after, commands) {
                 prop === 'metadata' || prop === 'minzoom' || prop === 'maxzoom')
                 continue;
             if (prop.indexOf('paint.') === 0) {
-                diffLayerPropertyChanges(beforeLayer[prop], afterLayer[prop], commands, layerId, prop.slice(6), operations.setPaintProperty);
+                diffLayerPropertyChanges(beforeLayer[prop], afterLayer[prop], commands, layerId, prop.slice(6), 'setPaintProperty');
             }
             else if (!deepEqual(beforeLayer[prop], afterLayer[prop])) {
-                commands.push({ command: operations.setLayerProperty, args: [layerId, prop, afterLayer[prop]] });
+                addCommand(commands, { command: 'setLayerProperty', args: [layerId, prop, afterLayer[prop]] });
             }
         }
     }
@@ -5311,36 +5307,42 @@ function diffLayers(before, after, commands) {
  */
 function diffStyles(before, after) {
     if (!before)
-        return [{ command: operations.setStyle, args: [after] }];
+        return [{ command: 'setStyle', args: [after] }];
     let commands = [];
     try {
         // Handle changes to top-level properties
         if (!deepEqual(before.version, after.version)) {
-            return [{ command: operations.setStyle, args: [after] }];
+            return [{ command: 'setStyle', args: [after] }];
         }
         if (!deepEqual(before.center, after.center)) {
-            commands.push({ command: operations.setCenter, args: [after.center] });
+            commands.push({ command: 'setCenter', args: [after.center] });
         }
         if (!deepEqual(before.zoom, after.zoom)) {
-            commands.push({ command: operations.setZoom, args: [after.zoom] });
+            commands.push({ command: 'setZoom', args: [after.zoom] });
         }
         if (!deepEqual(before.bearing, after.bearing)) {
-            commands.push({ command: operations.setBearing, args: [after.bearing] });
+            commands.push({ command: 'setBearing', args: [after.bearing] });
         }
         if (!deepEqual(before.pitch, after.pitch)) {
-            commands.push({ command: operations.setPitch, args: [after.pitch] });
+            commands.push({ command: 'setPitch', args: [after.pitch] });
         }
         if (!deepEqual(before.sprite, after.sprite)) {
-            commands.push({ command: operations.setSprite, args: [after.sprite] });
+            commands.push({ command: 'setSprite', args: [after.sprite] });
         }
         if (!deepEqual(before.glyphs, after.glyphs)) {
-            commands.push({ command: operations.setGlyphs, args: [after.glyphs] });
+            commands.push({ command: 'setGlyphs', args: [after.glyphs] });
         }
         if (!deepEqual(before.transition, after.transition)) {
-            commands.push({ command: operations.setTransition, args: [after.transition] });
+            commands.push({ command: 'setTransition', args: [after.transition] });
         }
         if (!deepEqual(before.light, after.light)) {
-            commands.push({ command: operations.setLight, args: [after.light] });
+            commands.push({ command: 'setLight', args: [after.light] });
+        }
+        if (!deepEqual(before.terrain, after.terrain)) {
+            commands.push({ command: 'setTerrain', args: [after.terrain] });
+        }
+        if (!deepEqual(before.sky, after.sky)) {
+            commands.push({ command: 'setSky', args: [after.sky] });
         }
         // Handle changes to `sources`
         // If a source is to be removed, we also--before the removeSource
@@ -5357,8 +5359,8 @@ function diffStyles(before, after) {
         const beforeLayers = [];
         if (before.layers) {
             before.layers.forEach((layer) => {
-                if (sourcesRemoved[layer.source]) {
-                    commands.push({ command: operations.removeLayer, args: [layer.id] });
+                if ('source' in layer && sourcesRemoved[layer.source]) {
+                    commands.push({ command: 'removeLayer', args: [layer.id] });
                 }
                 else {
                     beforeLayers.push(layer);
@@ -5372,7 +5374,7 @@ function diffStyles(before, after) {
     catch (e) {
         // fall back to setStyle
         console.warn('Unable to compute style diff:', e);
-        commands = [{ command: operations.setStyle, args: [after] }];
+        commands = [{ command: 'setStyle', args: [after] }];
     }
     return commands;
 }
@@ -5602,7 +5604,7 @@ function labToRgb([l, a, b, alpha]) {
     x = Xn * lab2xyz(x);
     z = Zn * lab2xyz(z);
     return [
-        xyz2rgb(3.1338561 * x - 1.6168667 * y - 0.4906146 * z),
+        xyz2rgb(3.1338561 * x - 1.6168667 * y - 0.4906146 * z), // D50 -> sRGB
         xyz2rgb(-0.9787684 * x + 1.9161415 * y + 0.0334540 * z),
         xyz2rgb(0.0719453 * x - 0.2289914 * y + 1.4052427 * z),
         alpha,
@@ -7087,11 +7089,22 @@ class Within {
         if (isValue(args[1])) {
             const geojson = args[1];
             if (geojson.type === 'FeatureCollection') {
-                for (let i = 0; i < geojson.features.length; ++i) {
-                    const type = geojson.features[i].geometry.type;
-                    if (type === 'Polygon' || type === 'MultiPolygon') {
-                        return new Within(geojson, geojson.features[i].geometry);
+                const polygonsCoords = [];
+                for (const polygon of geojson.features) {
+                    const { type, coordinates } = polygon.geometry;
+                    if (type === 'Polygon') {
+                        polygonsCoords.push(coordinates);
                     }
+                    if (type === 'MultiPolygon') {
+                        polygonsCoords.push(...coordinates);
+                    }
+                }
+                if (polygonsCoords.length) {
+                    const multipolygonWrapper = {
+                        type: 'MultiPolygon',
+                        coordinates: polygonsCoords
+                    };
+                    return new Within(geojson, multipolygonWrapper);
                 }
             }
             else if (geojson.type === 'Feature') {
@@ -7454,6 +7467,89 @@ class Step {
         return this.outputs.every(out => out.outputDefined());
     }
 }
+
+function getDefaultExportFromCjs (x) {
+	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
+}
+
+var unitbezier = UnitBezier;
+
+function UnitBezier(p1x, p1y, p2x, p2y) {
+    // Calculate the polynomial coefficients, implicit first and last control points are (0,0) and (1,1).
+    this.cx = 3.0 * p1x;
+    this.bx = 3.0 * (p2x - p1x) - this.cx;
+    this.ax = 1.0 - this.cx - this.bx;
+
+    this.cy = 3.0 * p1y;
+    this.by = 3.0 * (p2y - p1y) - this.cy;
+    this.ay = 1.0 - this.cy - this.by;
+
+    this.p1x = p1x;
+    this.p1y = p1y;
+    this.p2x = p2x;
+    this.p2y = p2y;
+}
+
+UnitBezier.prototype = {
+    sampleCurveX: function (t) {
+        // `ax t^3 + bx t^2 + cx t' expanded using Horner's rule.
+        return ((this.ax * t + this.bx) * t + this.cx) * t;
+    },
+
+    sampleCurveY: function (t) {
+        return ((this.ay * t + this.by) * t + this.cy) * t;
+    },
+
+    sampleCurveDerivativeX: function (t) {
+        return (3.0 * this.ax * t + 2.0 * this.bx) * t + this.cx;
+    },
+
+    solveCurveX: function (x, epsilon) {
+        if (epsilon === undefined) epsilon = 1e-6;
+
+        if (x < 0.0) return 0.0;
+        if (x > 1.0) return 1.0;
+
+        var t = x;
+
+        // First try a few iterations of Newton's method - normally very fast.
+        for (var i = 0; i < 8; i++) {
+            var x2 = this.sampleCurveX(t) - x;
+            if (Math.abs(x2) < epsilon) return t;
+
+            var d2 = this.sampleCurveDerivativeX(t);
+            if (Math.abs(d2) < 1e-6) break;
+
+            t = t - x2 / d2;
+        }
+
+        // Fall back to the bisection method for reliability.
+        var t0 = 0.0;
+        var t1 = 1.0;
+        t = x;
+
+        for (i = 0; i < 20; i++) {
+            x2 = this.sampleCurveX(t);
+            if (Math.abs(x2 - x) < epsilon) break;
+
+            if (x > x2) {
+                t0 = t;
+            } else {
+                t1 = t;
+            }
+
+            t = (t1 - t0) * 0.5 + t0;
+        }
+
+        return t;
+    },
+
+    solve: function (x, epsilon) {
+        return this.sampleCurveY(this.solveCurveX(x, epsilon));
+    }
+};
+
+var UnitBezier$1 = /*@__PURE__*/getDefaultExportFromCjs(unitbezier);
 
 /**
  * Checks whether the specified color space is one of the supported interpolation color spaces.
@@ -8553,7 +8649,7 @@ class Length {
     }
 }
 
-const expressions = {
+const expressions$1 = {
     // special forms
     '==': Equals,
     '!=': NotEquals,
@@ -8623,7 +8719,7 @@ function binarySearch(v, a, i, j) {
 function varargs(type) {
     return { type };
 }
-CompoundExpression.register(expressions, {
+CompoundExpression.register(expressions$1, {
     'error': [
         ErrorType,
         [StringType],
@@ -9100,7 +9196,7 @@ function getType(val) {
     }
 }
 
-function isFunction(value) {
+function isFunction$1(value) {
     return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 function identityFunction(x) {
@@ -9394,7 +9490,7 @@ class StyleExpression {
 }
 function isExpression(expression) {
     return Array.isArray(expression) && expression.length > 0 &&
-        typeof expression[0] === 'string' && expression[0] in expressions;
+        typeof expression[0] === 'string' && expression[0] in expressions$1;
 }
 /**
  * Parse and typecheck the given style spec JSON expression.  If
@@ -9406,7 +9502,7 @@ function isExpression(expression) {
  * @private
  */
 function createExpression(expression, propertySpec) {
-    const parser = new ParsingContext(expressions, isExpressionConstant, [], propertySpec ? getExpectedType(propertySpec) : undefined);
+    const parser = new ParsingContext(expressions$1, isExpressionConstant, [], propertySpec ? getExpectedType(propertySpec) : undefined);
     // For string-valued properties, coerce to string at the top level rather than asserting.
     const parsed = parser.parse(expression, undefined, undefined, undefined, propertySpec && propertySpec.type === 'string' ? { typeAnnotation: 'coerce' } : undefined);
     if (!parsed) {
@@ -9506,7 +9602,7 @@ class StylePropertyFunction {
     }
 }
 function normalizePropertyExpression(value, specification) {
-    if (isFunction(value)) {
+    if (isFunction$1(value)) {
         return new StylePropertyFunction(value, specification);
     }
     else if (isExpression(value)) {
@@ -9590,7 +9686,7 @@ function getExpectedType(spec) {
     return types[spec.type];
 }
 function getDefaultValue(spec) {
-    if (spec.type === 'color' && isFunction(spec.default)) {
+    if (spec.type === 'color' && isFunction$1(spec.default)) {
         // Special case for heatmap-color: it uses the 'default:' to define a
         // default color ramp, but createExpression expects a simple value to fall
         // back to in case of runtime errors
@@ -9907,14 +10003,14 @@ function convertComparisonOp(property, value, op, expectedTypes) {
     if (op === '==' && property !== '$id' && value === null) {
         return [
             'all',
-            ['has', property],
+            ['has', property], // missing property != null for legacy filters
             ['==', get, null]
         ];
     }
     else if (op === '!=' && property !== '$id' && value === null) {
         return [
             'any',
-            ['!', ['has', property]],
+            ['!', ['has', property]], // missing property != null for legacy filters
             ['!=', get, null]
         ];
     }
@@ -10266,28 +10362,28 @@ function eachProperty(style, options, callback) {
     });
 }
 
-function stringify(obj) {
+function stringify$1(obj) {
     const type = typeof obj;
     if (type === 'number' || type === 'boolean' || type === 'string' || obj === undefined || obj === null)
         return JSON.stringify(obj);
     if (Array.isArray(obj)) {
         let str = '[';
         for (const val of obj) {
-            str += `${stringify(val)},`;
+            str += `${stringify$1(val)},`;
         }
         return `${str}]`;
     }
     const keys = Object.keys(obj).sort();
     let str = '{';
     for (let i = 0; i < keys.length; i++) {
-        str += `${JSON.stringify(keys[i])}:${stringify(obj[keys[i]])},`;
+        str += `${JSON.stringify(keys[i])}:${stringify$1(obj[keys[i]])},`;
     }
     return `${str}}`;
 }
 function getKey(layer) {
     let key = '';
     for (const k of refProperties) {
-        key += `/${stringify(layer[k])}`;
+        key += `/${stringify$1(layer[k])}`;
     }
     return key;
 }
@@ -10889,7 +10985,7 @@ function validateProperty(options, propertyType) {
         if (propertyKey === 'text-field' && style && !style.glyphs) {
             errors.push(new ValidationError(key, value, 'use of "text-field" requires a style "glyphs" property'));
         }
-        if (propertyKey === 'text-font' && isFunction(deepUnbundle(value)) && unbundle(value.type) === 'identity') {
+        if (propertyKey === 'text-font' && isFunction$1(deepUnbundle(value)) && unbundle(value.type) === 'identity') {
             errors.push(new ValidationError(key, value, '"text-font" does not support identity functions'));
         }
     }
@@ -11249,6 +11345,36 @@ function validateLight$1(options) {
     return errors;
 }
 
+function validateSky(options) {
+    const sky = options.value;
+    const styleSpec = options.styleSpec;
+    const skySpec = styleSpec.sky;
+    const style = options.style;
+    const rootType = getType(sky);
+    if (sky === undefined) {
+        return [];
+    }
+    else if (rootType !== 'object') {
+        return [new ValidationError('sky', sky, `object expected, ${rootType} found`)];
+    }
+    let errors = [];
+    for (const key in sky) {
+        if (skySpec[key]) {
+            errors = errors.concat(validate({
+                key,
+                value: sky[key],
+                valueSpec: skySpec[key],
+                style,
+                styleSpec
+            }));
+        }
+        else {
+            errors = errors.concat([new ValidationError(key, sky[key], `unknown property "${key}"`)]);
+        }
+    }
+    return errors;
+}
+
 function validateTerrain$1(options) {
     const terrain = options.value;
     const styleSpec = options.styleSpec;
@@ -11415,6 +11541,7 @@ const VALIDATORS = {
     'object': validateObject,
     'source': validateSource$1,
     'light': validateLight$1,
+    'sky': validateSky,
     'terrain': validateTerrain$1,
     'string': validateString,
     'formatted': validateFormatted,
@@ -11423,21 +11550,28 @@ const VALIDATORS = {
     'variableAnchorOffsetCollection': validateVariableAnchorOffsetCollection,
     'sprite': validateSprite,
 };
-// Main recursive validation function. Tracks:
-//
-// - key: string representing location of validation in style tree. Used only
-//   for more informative error reporting.
-// - value: current value from style being evaluated. May be anything from a
-//   high level object that needs to be descended into deeper or a simple
-//   scalar value.
-// - valueSpec: current spec being evaluated. Tracks value.
-// - styleSpec: current full spec being evaluated.
+/**
+ * Main recursive validation function used internally.
+ * You should use `validateStyleMin` in the browser or `validateStyle` in node env.
+ * @param options - the options object
+ * @param options.key - string representing location of validation in style tree. Used only
+ * for more informative error reporting.
+ * @param options.value - current value from style being evaluated. May be anything from a
+ * high level object that needs to be descended into deeper or a simple
+ * scalar value.
+ * @param options.valueSpec - current spec being evaluated. Tracks value.
+ * @param options.styleSpec - current full spec being evaluated.
+ * @param options.validateSpec - the validate function itself
+ * @param options.style - the style object
+ * @param options.objectElementValidators - optional object of functions that will be called
+ * @returns an array of errors, or an empty array if no errors are found.
+ */
 function validate(options) {
     const value = options.value;
     const valueSpec = options.valueSpec;
     const styleSpec = options.styleSpec;
     options.validateSpec = validate;
-    if (valueSpec.expression && isFunction(unbundle(value))) {
+    if (valueSpec.expression && isFunction$1(unbundle(value))) {
         return validateFunction(options);
     }
     else if (valueSpec.expression && isExpression(deepUnbundle(value))) {
@@ -11470,19 +11604,16 @@ function validateGlyphsUrl(options) {
 }
 
 /**
- * Validate a MapLibre style against the style specification. This entrypoint,
- * `maplibre-gl-style-spec/lib/validate_style.min`, is designed to produce as
- * small a browserify bundle as possible by omitting unnecessary functionality
- * and legacy style specifications.
+ * Validate a MapLibre style against the style specification.
+ * Use this when running in the browser.
  *
- * @private
- * @param {Object} style The style to be validated.
- * @param {Object} [styleSpec] The style specification to validate against.
- *     If omitted, the latest style spec is used.
- * @returns {Array<ValidationError>}
+ * @param style - The style to be validated.
+ * @param styleSpec - The style specification to validate against.
+ * If omitted, the latest style spec is used.
+ * @returns an array of errors, or an empty array if no errors are found.
  * @example
- *   var validate = require('maplibre-gl-style-spec/lib/validate_style.min');
- *   var errors = validate(style);
+ *   const validate = require('@maplibre/maplibre-gl-style-spec/').validateStyleMin;
+ *   const errors = validate(style);
  */
 function validateStyleMin(style, styleSpec = v8Spec) {
     let errors = [];
@@ -11515,6 +11646,7 @@ validateStyleMin.source = wrapCleanErrors(injectValidateSpec(validateSource$1));
 validateStyleMin.sprite = wrapCleanErrors(injectValidateSpec(validateSprite));
 validateStyleMin.glyphs = wrapCleanErrors(injectValidateSpec(validateGlyphsUrl));
 validateStyleMin.light = wrapCleanErrors(injectValidateSpec(validateLight$1));
+validateStyleMin.sky = wrapCleanErrors(injectValidateSpec(validateSky));
 validateStyleMin.terrain = wrapCleanErrors(injectValidateSpec(validateTerrain$1));
 validateStyleMin.layer = wrapCleanErrors(injectValidateSpec(validateLayer));
 validateStyleMin.filter = wrapCleanErrors(injectValidateSpec(validateFilter$1));
@@ -11539,6 +11671,393 @@ function wrapCleanErrors(inner) {
     };
 }
 
+// Note: This regex matches even invalid JSON strings, but since we’re
+// working on the output of `JSON.stringify` we know that only valid strings
+// are present (unless the user supplied a weird `options.indent` but in
+// that case we don’t care since the output would be invalid anyway).
+const stringOrChar = /("(?:[^\\"]|\\.)*")|[:,]/g;
+
+function stringify(passedObj, options = {}) {
+  const indent = JSON.stringify(
+    [1],
+    undefined,
+    options.indent === undefined ? 2 : options.indent
+  ).slice(2, -3);
+
+  const maxLength =
+    indent === ""
+      ? Infinity
+      : options.maxLength === undefined
+      ? 80
+      : options.maxLength;
+
+  let { replacer } = options;
+
+  return (function _stringify(obj, currentIndent, reserved) {
+    if (obj && typeof obj.toJSON === "function") {
+      obj = obj.toJSON();
+    }
+
+    const string = JSON.stringify(obj, replacer);
+
+    if (string === undefined) {
+      return string;
+    }
+
+    const length = maxLength - currentIndent.length - reserved;
+
+    if (string.length <= length) {
+      const prettified = string.replace(
+        stringOrChar,
+        (match, stringLiteral) => {
+          return stringLiteral || `${match} `;
+        }
+      );
+      if (prettified.length <= length) {
+        return prettified;
+      }
+    }
+
+    if (replacer != null) {
+      obj = JSON.parse(string);
+      replacer = undefined;
+    }
+
+    if (typeof obj === "object" && obj !== null) {
+      const nextIndent = currentIndent + indent;
+      const items = [];
+      let index = 0;
+      let start;
+      let end;
+
+      if (Array.isArray(obj)) {
+        start = "[";
+        end = "]";
+        const { length } = obj;
+        for (; index < length; index++) {
+          items.push(
+            _stringify(obj[index], nextIndent, index === length - 1 ? 0 : 1) ||
+              "null"
+          );
+        }
+      } else {
+        start = "{";
+        end = "}";
+        const keys = Object.keys(obj);
+        const { length } = keys;
+        for (; index < length; index++) {
+          const key = keys[index];
+          const keyPart = `${JSON.stringify(key)}: `;
+          const value = _stringify(
+            obj[key],
+            nextIndent,
+            keyPart.length + (index === length - 1 ? 0 : 1)
+          );
+          if (value !== undefined) {
+            items.push(keyPart + value);
+          }
+        }
+      }
+
+      if (items.length > 0) {
+        return [start, indent + items.join(`,\n${nextIndent}`), end].join(
+          `\n${currentIndent}`
+        );
+      }
+    }
+
+    return string;
+  })(passedObj, "", 0);
+}
+
+function sortKeysBy(obj, reference) {
+    const result = {};
+    for (const key in reference) {
+        if (obj[key] !== undefined) {
+            result[key] = obj[key];
+        }
+    }
+    for (const key in obj) {
+        if (result[key] === undefined) {
+            result[key] = obj[key];
+        }
+    }
+    return result;
+}
+/**
+ * Format a MapLibre Style.  Returns a stringified style with its keys
+ * sorted in the same order as the reference style.
+ *
+ * The optional `space` argument is passed to
+ * [`JSON.stringify`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify)
+ * to generate formatted output.
+ *
+ * If `space` is unspecified, a default of `2` spaces will be used.
+ *
+ * @private
+ * @param {Object} style a MapLibre Style
+ * @param {number} [space] space argument to pass to `JSON.stringify`
+ * @returns {string} stringified formatted JSON
+ * @example
+ * var fs = require('fs');
+ * var format = require('maplibre-gl-style-spec').format;
+ * var style = fs.readFileSync('./source.json', 'utf8');
+ * fs.writeFileSync('./dest.json', format(style));
+ * fs.writeFileSync('./dest.min.json', format(style, 0));
+ */
+function format(style, space = 2) {
+    style = sortKeysBy(style, v8Spec.$root);
+    if (style.layers) {
+        style.layers = style.layers.map((layer) => sortKeysBy(layer, v8Spec.layer));
+    }
+    return stringify(style, { indent: space });
+}
+
+function eachLayout(layer, callback) {
+    for (const k in layer) {
+        if (k.indexOf('layout') === 0) {
+            callback(layer[k], k);
+        }
+    }
+}
+function eachPaint(layer, callback) {
+    for (const k in layer) {
+        if (k.indexOf('paint') === 0) {
+            callback(layer[k], k);
+        }
+    }
+}
+function resolveConstant(style, value) {
+    if (typeof value === 'string' && value[0] === '@') {
+        return resolveConstant(style, style.constants[value]);
+    }
+    else {
+        return value;
+    }
+}
+function isFunction(value) {
+    return Array.isArray(value.stops);
+}
+function renameProperty(obj, from, to) {
+    obj[to] = obj[from];
+    delete obj[from];
+}
+function migrateV8(style) {
+    style.version = 8;
+    // Rename properties, reverse coordinates in source and layers
+    eachSource(style, (source) => {
+        if (source.type === 'video' && source['url'] !== undefined) {
+            renameProperty(source, 'url', 'urls');
+        }
+        if (source.type === 'video') {
+            source.coordinates.forEach((coord) => {
+                return coord.reverse();
+            });
+        }
+    });
+    eachLayer(style, (layer) => {
+        eachLayout(layer, (layout) => {
+            if (layout['symbol-min-distance'] !== undefined) {
+                renameProperty(layout, 'symbol-min-distance', 'symbol-spacing');
+            }
+        });
+        eachPaint(layer, (paint) => {
+            if (paint['background-image'] !== undefined) {
+                renameProperty(paint, 'background-image', 'background-pattern');
+            }
+            if (paint['line-image'] !== undefined) {
+                renameProperty(paint, 'line-image', 'line-pattern');
+            }
+            if (paint['fill-image'] !== undefined) {
+                renameProperty(paint, 'fill-image', 'fill-pattern');
+            }
+        });
+    });
+    // Inline Constants
+    eachProperty(style, { paint: true, layout: true }, (property) => {
+        const value = resolveConstant(style, property.value);
+        if (isFunction(value)) {
+            value.stops.forEach((stop) => {
+                stop[1] = resolveConstant(style, stop[1]);
+            });
+        }
+        property.set(value);
+    });
+    delete style['constants'];
+    eachLayer(style, (layer) => {
+        // get rid of text-max-size, icon-max-size
+        // turn text-size, icon-size into layout properties
+        // https://github.com/mapbox/mapbox-gl-style-spec/issues/255
+        eachLayout(layer, (layout) => {
+            delete layout['text-max-size'];
+            delete layout['icon-max-size'];
+        });
+        eachPaint(layer, (paint) => {
+            if (paint['text-size']) {
+                if (!layer.layout)
+                    layer.layout = {};
+                layer.layout['text-size'] = paint['text-size'];
+                delete paint['text-size'];
+            }
+            if (paint['icon-size']) {
+                if (!layer.layout)
+                    layer.layout = {};
+                layer.layout['icon-size'] = paint['icon-size'];
+                delete paint['icon-size'];
+            }
+        });
+    });
+    function migrateFontStack(font) {
+        function splitAndTrim(string) {
+            return string.split(',').map((s) => {
+                return s.trim();
+            });
+        }
+        if (Array.isArray(font)) {
+            // Assume it's a previously migrated font-array.
+            return font;
+        }
+        else if (typeof font === 'string') {
+            return splitAndTrim(font);
+        }
+        else if (typeof font === 'object') {
+            font.stops.forEach((stop) => {
+                stop[1] = splitAndTrim(stop[1]);
+            });
+            return font;
+        }
+        else {
+            throw new Error('unexpected font value');
+        }
+    }
+    eachLayer(style, (layer) => {
+        eachLayout(layer, (layout) => {
+            if (layout['text-font']) {
+                layout['text-font'] = migrateFontStack(layout['text-font']);
+            }
+        });
+    });
+    // Reverse order of symbol layers. This is an imperfect migration.
+    //
+    // The order of a symbol layer in the layers list affects two things:
+    // - how it is drawn relative to other layers (like oneway arrows below bridges)
+    // - the placement priority compared to other layers
+    //
+    // It's impossible to reverse the placement priority without breaking the draw order
+    // in some cases. This migration only reverses the order of symbol layers that
+    // are above all other types of layers.
+    //
+    // Symbol layers that are at the top of the map preserve their priority.
+    // Symbol layers that are below another type (line, fill) of layer preserve their draw order.
+    let firstSymbolLayer = 0;
+    for (let i = style.layers.length - 1; i >= 0; i--) {
+        const layer = style.layers[i];
+        if (layer.type !== 'symbol') {
+            firstSymbolLayer = i + 1;
+            break;
+        }
+    }
+    const symbolLayers = style.layers.splice(firstSymbolLayer);
+    symbolLayers.reverse();
+    style.layers = style.layers.concat(symbolLayers);
+    return style;
+}
+
+/**
+ * Migrate the given style object in place to use expressions. Specifically,
+ * this will convert (a) "stop" functions, and (b) legacy filters to their
+ * expression equivalents.
+ * @param style The style object to migrate.
+ * @returns The migrated style object.
+ */
+function expressions(style) {
+    const converted = [];
+    eachLayer(style, (layer) => {
+        if (layer.filter) {
+            layer.filter = convertFilter(layer.filter);
+        }
+    });
+    eachProperty(style, { paint: true, layout: true }, ({ path, value, reference, set }) => {
+        if (isExpression(value))
+            return;
+        if (typeof value === 'object' && !Array.isArray(value)) {
+            set(convertFunction(value, reference));
+            converted.push(path.join('.'));
+        }
+        else if (reference.tokens && typeof value === 'string') {
+            set(convertTokenString(value));
+        }
+    });
+    return style;
+}
+
+/**
+ * Migrate color style values to supported format.
+ *
+ * @param colorToMigrate Color value to migrate, could be a string or an expression.
+ * @returns Color style value in supported format.
+ */
+function migrateColors(colorToMigrate) {
+    return JSON.parse(migrateHslColors(JSON.stringify(colorToMigrate)));
+}
+/**
+ * Created to migrate from colors supported by the former CSS color parsing
+ * library `csscolorparser` but not compliant with the CSS Color specification,
+ * like `hsl(900, 0.15, 90%)`.
+ *
+ * @param colorToMigrate Serialized color style value.
+ * @returns A serialized color style value in which all non-standard hsl color values
+ * have been converted to a format that complies with the CSS Color specification.
+ *
+ * @example
+ * migrateHslColors('"hsl(900, 0.15, 90%)"'); // returns '"hsl(900, 15%, 90%)"'
+ * migrateHslColors('"hsla(900, .15, .9)"'); // returns '"hsl(900, 15%, 90%)"'
+ * migrateHslColors('"hsl(900, 15%, 90%)"'); // returns '"hsl(900, 15%, 90%)"' - no changes
+ */
+function migrateHslColors(colorToMigrate) {
+    return colorToMigrate.replace(/"hsla?\((.+?)\)"/gi, (match, hslArgs) => {
+        const argsMatch = hslArgs.match(/^(.+?)\s*,\s*(.+?)\s*,\s*(.+?)(?:\s*,\s*(.+))?$/i);
+        if (argsMatch) {
+            let [h, s, l, a] = argsMatch.slice(1);
+            [s, l] = [s, l].map(v => v.endsWith('%') ? v : `${parseFloat(v) * 100}%`);
+            return `"hsl${typeof a === 'string' ? 'a' : ''}(${[h, s, l, a].filter(Boolean).join(',')})"`;
+        }
+        return match;
+    });
+}
+
+/**
+ * Migrate a Mapbox/MapLibre GL Style to the latest version.
+ *
+ * @param style - a MapLibre Style
+ * @returns a migrated style
+ * @example
+ * const fs = require('fs');
+ * csont migrate = require('@maplibre/maplibre-gl-style-spec').migrate;
+ * const style = fs.readFileSync('./style.json', 'utf8');
+ * fs.writeFileSync('./style.json', JSON.stringify(migrate(style)));
+ */
+function migrate(style) {
+    let migrated = false;
+    if (style.version === 7) {
+        style = migrateV8(style);
+        migrated = true;
+    }
+    if (style.version === 8) {
+        migrated = !!expressions(style);
+        migrated = true;
+    }
+    eachProperty(style, { paint: true, layout: true }, ({ value, reference, set }) => {
+        if (reference.type === 'color') {
+            set(migrateColors(value));
+        }
+    });
+    if (!migrated) {
+        throw new Error(`Cannot migrate from ${style.version}`);
+    }
+    return style;
+}
+
 const v8 = v8Spec;
 const expression = {
     StyleExpression,
@@ -11555,7 +12074,7 @@ const expression = {
 const styleFunction = {
     convertFunction,
     createFunction,
-    isFunction
+    isFunction: isFunction$1
 };
 const visit = { eachLayer, eachProperty, eachSource };
 
@@ -11780,10 +12299,10 @@ register('StyleExpression', StyleExpression, { omit: ['_evaluator'] });
 register('ZoomDependentExpression', ZoomDependentExpression);
 register('ZoomConstantExpression', ZoomConstantExpression);
 register('CompoundExpression', CompoundExpression, { omit: ['_evaluate'] });
-for (const name in expressions) {
-    if (expressions[name]._classRegistryKey)
+for (const name in expressions$1) {
+    if (expressions$1[name]._classRegistryKey)
         continue;
-    register(`Expression_${name}`, expressions[name]);
+    register(`Expression_${name}`, expressions$1[name]);
 }
 function isArrayBuffer(value) {
     return value && typeof ArrayBuffer !== 'undefined' &&
@@ -11812,7 +12331,8 @@ function serialize(input, transferables) {
         input instanceof String ||
         input instanceof Date ||
         input instanceof RegExp ||
-        input instanceof Blob) {
+        input instanceof Blob ||
+        input instanceof Error) {
         return input;
     }
     if (isArrayBuffer(input)) {
@@ -11851,7 +12371,7 @@ function serialize(input, transferables) {
         const klass = input.constructor;
         const name = klass._classRegistryKey;
         if (!name) {
-            throw new Error('can\'t serialize object of unregistered class');
+            throw new Error(`can't serialize object of unregistered class ${klass.name}`);
         }
         if (!registry[name])
             throw new Error(`${name} is not registered.`);
@@ -11906,6 +12426,7 @@ function deserialize(input) {
         input instanceof Date ||
         input instanceof RegExp ||
         input instanceof Blob ||
+        input instanceof Error ||
         isArrayBuffer(input) ||
         isImageBitmap(input) ||
         ArrayBuffer.isView(input) ||
@@ -12640,113 +13161,42 @@ function isStringInSupportedScript(chars, canRenderRTL) {
     return true;
 }
 
-const status = {
-    unavailable: 'unavailable',
-    deferred: 'deferred',
-    loading: 'loading',
-    loaded: 'loaded',
-    error: 'error'
-};
-let _completionCallback = null;
-//Variables defining the current state of the plugin
-let pluginStatus = status.unavailable;
-let pluginURL = null;
-const triggerPluginCompletionEvent = function (error) {
-    // NetworkError's are not correctly reflected by the plugin status which prevents reloading plugin
-    if (error && typeof error === 'string' && error.indexOf('NetworkError') > -1) {
-        pluginStatus = status.error;
+class RTLWorkerPlugin {
+    constructor() {
+        this.applyArabicShaping = null;
+        this.processBidirectionalText = null;
+        this.processStyledBidirectionalText = null;
+        this.pluginStatus = 'unavailable';
+        this.pluginURL = null;
     }
-    if (_completionCallback) {
-        _completionCallback(error);
-    }
-};
-function sendPluginStateToWorker() {
-    evented.fire(new Event('pluginStateChange', { pluginStatus, pluginURL }));
-}
-const evented = new Evented();
-const getRTLTextPluginStatus = function () {
-    return pluginStatus;
-};
-const registerForPluginStateChange = function (callback) {
-    // Do an initial sync of the state
-    callback({ pluginStatus, pluginURL });
-    // Listen for all future state changes
-    evented.on('pluginStateChange', callback);
-    return callback;
-};
-const clearRTLTextPlugin = function () {
-    pluginStatus = status.unavailable;
-    pluginURL = null;
-    _completionCallback = null;
-};
-const setRTLTextPlugin = function (url, callback, deferred = false) {
-    if (pluginStatus === status.deferred || pluginStatus === status.loading || pluginStatus === status.loaded) {
-        throw new Error('setRTLTextPlugin cannot be called multiple times.');
-    }
-    pluginURL = browser.resolveURL(url);
-    pluginStatus = status.deferred;
-    _completionCallback = callback;
-    sendPluginStateToWorker();
-    //Start downloading the plugin immediately if not intending to lazy-load
-    if (!deferred) {
-        downloadRTLTextPlugin();
-    }
-};
-const downloadRTLTextPlugin = function () {
-    if (pluginStatus !== status.deferred || !pluginURL) {
-        throw new Error('rtl-text-plugin cannot be downloaded unless a pluginURL is specified');
-    }
-    pluginStatus = status.loading;
-    sendPluginStateToWorker();
-    if (pluginURL) {
-        getArrayBuffer({ url: pluginURL }, (error) => {
-            if (error) {
-                triggerPluginCompletionEvent(error);
-            }
-            else {
-                pluginStatus = status.loaded;
-                sendPluginStateToWorker();
-            }
-        });
-    }
-};
-const plugin = {
-    applyArabicShaping: null,
-    processBidirectionalText: null,
-    processStyledBidirectionalText: null,
-    isLoaded() {
-        return pluginStatus === status.loaded || // Main Thread: loaded if the completion callback returned successfully
-            plugin.applyArabicShaping != null; // Web-worker: loaded if the plugin functions have been compiled
-    },
-    isLoading() {
-        return pluginStatus === status.loading;
-    },
     setState(state) {
-        if (!isWorker())
-            throw new Error('Cannot set the state of the rtl-text-plugin when not in the web-worker context');
-        pluginStatus = state.pluginStatus;
-        pluginURL = state.pluginURL;
-    },
+        this.pluginStatus = state.pluginStatus;
+        this.pluginURL = state.pluginURL;
+    }
+    getState() {
+        return {
+            pluginStatus: this.pluginStatus,
+            pluginURL: this.pluginURL
+        };
+    }
+    setMethods(rtlTextPlugin) {
+        this.applyArabicShaping = rtlTextPlugin.applyArabicShaping;
+        this.processBidirectionalText = rtlTextPlugin.processBidirectionalText;
+        this.processStyledBidirectionalText = rtlTextPlugin.processStyledBidirectionalText;
+    }
     isParsed() {
-        if (!isWorker())
-            throw new Error('rtl-text-plugin is only parsed on the worker-threads');
-        return plugin.applyArabicShaping != null &&
-            plugin.processBidirectionalText != null &&
-            plugin.processStyledBidirectionalText != null;
-    },
+        return this.applyArabicShaping != null &&
+            this.processBidirectionalText != null &&
+            this.processStyledBidirectionalText != null;
+    }
     getPluginURL() {
-        if (!isWorker())
-            throw new Error('rtl-text-plugin url can only be queried from the worker threads');
-        return pluginURL;
+        return this.pluginURL;
     }
-};
-const lazyLoadRTLTextPlugin = function () {
-    if (!plugin.isLoading() &&
-        !plugin.isLoaded() &&
-        getRTLTextPluginStatus() === 'deferred') {
-        downloadRTLTextPlugin();
+    getRTLTextPluginStatus() {
+        return this.pluginStatus;
     }
-};
+}
+const rtlWorkerPlugin = new RTLWorkerPlugin();
 
 /**
  * @internal
@@ -12770,7 +13220,7 @@ class EvaluationParameters {
         }
     }
     isSupportedScript(str) {
-        return isStringInSupportedScript(str, plugin.isLoaded());
+        return isStringInSupportedScript(str, rtlWorkerPlugin.getRTLTextPluginStatus() === 'loaded');
     }
     crossFadingFactor() {
         if (this.fadeDuration === 0) {
@@ -14682,7 +15132,7 @@ var murmurhash3_gc = murmurhash3_gc$2.exports;
 } (murmurhash3_gc$2));
 
 var murmurhash3_gcExports = murmurhash3_gc$2.exports;
-var murmurhash3_gc$1 = /*@__PURE__*/getDefaultExportFromCjs(murmurhash3_gcExports);
+var murmurhash3_gc$1 = /*@__PURE__*/getDefaultExportFromCjs$1(murmurhash3_gcExports);
 
 var murmurhash2_gc$2 = {exports: {}};
 
@@ -14745,7 +15195,7 @@ var murmurhash2_gc = murmurhash2_gc$2.exports;
 } (murmurhash2_gc$2));
 
 var murmurhash2_gcExports = murmurhash2_gc$2.exports;
-var murmurhash2_gc$1 = /*@__PURE__*/getDefaultExportFromCjs(murmurhash2_gcExports);
+var murmurhash2_gc$1 = /*@__PURE__*/getDefaultExportFromCjs$1(murmurhash2_gcExports);
 
 var murmurhashJs = murmurhashJs$1.exports;
 
@@ -14757,7 +15207,7 @@ var murmur3_1 = murmurhashJs$1.exports.murmur3 = murmur3;
 var murmur2_1 = murmurhashJs$1.exports.murmur2 = murmur2;
 
 var murmurhashJsExports = murmurhashJs$1.exports;
-var murmur3$1 = /*@__PURE__*/getDefaultExportFromCjs(murmurhashJsExports);
+var murmur3$1 = /*@__PURE__*/getDefaultExportFromCjs$1(murmurhashJsExports);
 
 // A transferable data structure that maps feature ids to their indices and buffer offsets
 class FeaturePositionMap {
@@ -23715,7 +24165,6 @@ function copyImage(srcImg, dstImg, srcPt, dstPt, size, channels) {
     return dstImg;
 }
 /**
- * @internal
  * An image with alpha color value
  */
 class AlphaImage {
@@ -24562,7 +25011,7 @@ earcut.flatten = function (data) {
 };
 
 var earcutExports = earcut$2.exports;
-var earcut$1 = /*@__PURE__*/getDefaultExportFromCjs(earcutExports);
+var earcut$1 = /*@__PURE__*/getDefaultExportFromCjs$1(earcutExports);
 
 function quickselect(arr, k, left, right, compare) {
     quickselectStep(arr, k, left || 0, right || (arr.length - 1), compare || defaultCompare$1);
@@ -25128,7 +25577,7 @@ function signedArea(ring) {
     return sum;
 }
 
-var vectortilefeature$1 = /*@__PURE__*/getDefaultExportFromCjs(vectortilefeature);
+var vectortilefeature$1 = /*@__PURE__*/getDefaultExportFromCjs$1(vectortilefeature);
 
 'use strict';
 
@@ -25192,7 +25641,7 @@ VectorTileLayer$2.prototype.feature = function(i) {
     return new VectorTileFeature$1(this._pbf, end, this.extent, this._keys, this._values);
 };
 
-var vectortilelayer$1 = /*@__PURE__*/getDefaultExportFromCjs(vectortilelayer);
+var vectortilelayer$1 = /*@__PURE__*/getDefaultExportFromCjs$1(vectortilelayer);
 
 'use strict';
 
@@ -25211,7 +25660,7 @@ function readTile(tag, layers, pbf) {
     }
 }
 
-var vectortile$1 = /*@__PURE__*/getDefaultExportFromCjs(vectortile);
+var vectortile$1 = /*@__PURE__*/getDefaultExportFromCjs$1(vectortile);
 
 var VectorTile = vectorTile.VectorTile = vectortile;
 var VectorTileFeature = vectorTile.VectorTileFeature = vectortilefeature;
@@ -26263,8 +26712,8 @@ function transformTextInternal(text, layer, feature) {
     else if (transform === 'lowercase') {
         text = text.toLocaleLowerCase();
     }
-    if (plugin.applyArabicShaping) {
-        text = plugin.applyArabicShaping(text);
+    if (rtlWorkerPlugin.applyArabicShaping) {
+        text = rtlWorkerPlugin.applyArabicShaping(text);
     }
     return text;
 }
@@ -27177,7 +27626,7 @@ function writeUtf8(buf, str, pos) {
     return pos;
 }
 
-var Protobuf = /*@__PURE__*/getDefaultExportFromCjs(pbf);
+var Protobuf = /*@__PURE__*/getDefaultExportFromCjs$1(pbf);
 
 const border$1 = 3;
 function readFontstacks(tag, glyphs, pbf) {
@@ -27347,7 +27796,6 @@ class ImagePosition {
     }
 }
 /**
- * @internal
  * A class holding all the images
  */
 class ImageAtlas {
@@ -27565,7 +28013,7 @@ function shapeText(text, glyphMap, glyphPositions, imagePositions, defaultFontSt
         logicalInput.verticalizePunctuation();
     }
     let lines;
-    const { processBidirectionalText, processStyledBidirectionalText } = plugin;
+    const { processBidirectionalText, processStyledBidirectionalText } = rtlWorkerPlugin;
     if (processBidirectionalText && logicalInput.sections.length === 1) {
         // Bidi doesn't have to be style-aware
         lines = [];
@@ -27616,27 +28064,27 @@ function shapeText(text, glyphMap, glyphPositions, imagePositions, defaultFontSt
 // using computed properties due to https://github.com/facebook/flow/issues/380
 /* eslint no-useless-computed-key: 0 */
 const whitespace = {
-    [0x09]: true,
-    [0x0a]: true,
-    [0x0b]: true,
-    [0x0c]: true,
-    [0x0d]: true,
+    [0x09]: true, // tab
+    [0x0a]: true, // newline
+    [0x0b]: true, // vertical tab
+    [0x0c]: true, // form feed
+    [0x0d]: true, // carriage return
     [0x20]: true, // space
 };
 const breakable = {
-    [0x0a]: true,
-    [0x20]: true,
-    [0x26]: true,
-    [0x28]: true,
-    [0x29]: true,
-    [0x2b]: true,
-    [0x2d]: true,
-    [0x2f]: true,
-    [0xad]: true,
-    [0xb7]: true,
-    [0x200b]: true,
-    [0x2010]: true,
-    [0x2013]: true,
+    [0x0a]: true, // newline
+    [0x20]: true, // space
+    [0x26]: true, // ampersand
+    [0x28]: true, // left parenthesis
+    [0x29]: true, // right parenthesis
+    [0x2b]: true, // plus sign
+    [0x2d]: true, // hyphen-minus
+    [0x2f]: true, // solidus
+    [0xad]: true, // soft hyphen
+    [0xb7]: true, // middle dot
+    [0x200b]: true, // zero-width space
+    [0x2010]: true, // hyphen
+    [0x2013]: true, // en dash
     [0x2027]: true // interpunct
     // Many other characters may be reasonable breakpoints
     // Consider "neutral orientation" characters at scriptDetection.charHasNeutralVerticalOrientation
@@ -28198,7 +28646,7 @@ register('CollisionBuffers', CollisionBuffers);
  *      `this.textCollisionBox`: Debug SymbolBuffers for text collision boxes
  *    The results are sent to the foreground for rendering
  *
- * 4. performSymbolPlacement(bucket, collisionIndex) is run on the foreground,
+ * 4. placement.ts is run on the foreground,
  *    and uses the CollisionIndex along with current camera settings to determine
  *    which symbols can actually show on the map. Collided symbols are hidden
  *    using a dynamic "OpacityVertexArray".
@@ -28298,12 +28746,11 @@ class SymbolBucket {
                 // conversion here.
                 const resolvedTokens = layer.getValueAndResolveTokens('text-field', evaluationFeature, canonical, availableImages);
                 const formattedText = Formatted.factory(resolvedTokens);
-                if (containsRTLText(formattedText)) {
-                    this.hasRTLText = true;
-                }
-                if (!this.hasRTLText || // non-rtl text so can proceed safely
-                    getRTLTextPluginStatus() === 'unavailable' || // We don't intend to lazy-load the rtl text plugin, so proceed with incorrect shaping
-                    this.hasRTLText && plugin.isParsed() // Use the rtlText plugin to shape text
+                // on this instance: if hasRTLText is already true, all future calls to containsRTLText can be skipped.
+                const bucketHasRTLText = this.hasRTLText = (this.hasRTLText || containsRTLText(formattedText));
+                if (!bucketHasRTLText || // non-rtl text so can proceed safely
+                    rtlWorkerPlugin.getRTLTextPluginStatus() === 'unavailable' || // We don't intend to lazy-load the rtl text plugin, so proceed with incorrect shaping
+                    bucketHasRTLText && rtlWorkerPlugin.isParsed() // Use the rtlText plugin to shape text
                 ) {
                     text = transformText(formattedText, layer, evaluationFeature);
                 }
@@ -29046,38 +29493,39 @@ function createStyleLayer(layer) {
 }
 
 /**
- * Invokes the wrapped function in a non-blocking way when trigger() is called. Invocation requests
- * are ignored until the function was actually invoked.
+ * Invokes the wrapped function in a non-blocking way when trigger() is called.
+ * Invocation requests are ignored until the function was actually invoked.
  */
 class ThrottledInvoker {
-    constructor(callback) {
-        this._callback = callback;
+    constructor(methodToThrottle) {
+        this._methodToThrottle = methodToThrottle;
         this._triggered = false;
         if (typeof MessageChannel !== 'undefined') {
             this._channel = new MessageChannel();
             this._channel.port2.onmessage = () => {
                 this._triggered = false;
-                this._callback();
+                this._methodToThrottle();
             };
         }
     }
     trigger() {
-        if (!this._triggered) {
-            this._triggered = true;
-            if (this._channel) {
-                this._channel.port1.postMessage(true);
-            }
-            else {
-                setTimeout(() => {
-                    this._triggered = false;
-                    this._callback();
-                }, 0);
-            }
+        if (this._triggered) {
+            return;
+        }
+        this._triggered = true;
+        if (this._channel) {
+            this._channel.port1.postMessage(true);
+        }
+        else {
+            setTimeout(() => {
+                this._triggered = false;
+                this._methodToThrottle();
+            }, 0);
         }
     }
     remove() {
         delete this._channel;
-        this._callback = () => { };
+        this._methodToThrottle = () => { };
     }
 }
 
@@ -29090,180 +29538,167 @@ class ThrottledInvoker {
 class Actor {
     /**
      * @param target - The target
-     * @param parent - The parent
      * @param mapId - A unique identifier for the Map instance using this Actor.
      */
-    constructor(target, parent, mapId) {
-        this.receive = (message) => {
-            const data = message.data;
-            const id = data.id;
-            if (!id) {
-                return;
-            }
-            if (data.targetMapId && this.mapId !== data.targetMapId) {
-                return;
-            }
-            if (data.type === '<cancel>') {
-                // Remove the original request from the queue. This is only possible if it
-                // hasn't been kicked off yet. The id will remain in the queue, but because
-                // there is no associated task, it will be dropped once it's time to execute it.
-                delete this.tasks[id];
-                const cancel = this.cancelCallbacks[id];
-                delete this.cancelCallbacks[id];
-                if (cancel) {
-                    cancel();
-                }
-            }
-            else {
-                if (isWorker() || data.mustQueue) {
-                    // In workers, store the tasks that we need to process before actually processing them. This
-                    // is necessary because we want to keep receiving messages, and in particular,
-                    // <cancel> messages. Some tasks may take a while in the worker thread, so before
-                    // executing the next task in our queue, postMessage preempts this and <cancel>
-                    // messages can be processed. We're using a MessageChannel object to get throttle the
-                    // process() flow to one at a time.
-                    this.tasks[id] = data;
-                    this.taskQueue.push(id);
-                    this.invoker.trigger();
-                }
-                else {
-                    // In the main thread, process messages immediately so that other work does not slip in
-                    // between getting partial data back from workers.
-                    this.processTask(id, data);
-                }
-            }
-        };
-        this.process = () => {
-            if (!this.taskQueue.length) {
-                return;
-            }
-            const id = this.taskQueue.shift();
-            const task = this.tasks[id];
-            delete this.tasks[id];
-            // Schedule another process call if we know there's more to process _before_ invoking the
-            // current task. This is necessary so that processing continues even if the current task
-            // doesn't execute successfully.
-            if (this.taskQueue.length) {
-                this.invoker.trigger();
-            }
-            if (!task) {
-                // If the task ID doesn't have associated task data anymore, it was canceled.
-                return;
-            }
-            this.processTask(id, task);
-        };
+    constructor(target, mapId) {
         this.target = target;
-        this.parent = parent;
         this.mapId = mapId;
-        this.callbacks = {};
+        this.resolveRejects = {};
         this.tasks = {};
         this.taskQueue = [];
-        this.cancelCallbacks = {};
-        this.invoker = new ThrottledInvoker(this.process);
-        this.target.addEventListener('message', this.receive, false);
-        this.globalScope = isWorker() ? target : window;
+        this.abortControllers = {};
+        this.messageHandlers = {};
+        this.invoker = new ThrottledInvoker(() => this.process());
+        this.subscription = subscribe(this.target, 'message', (message) => this.receive(message), false);
+        this.globalScope = isWorker(self) ? target : window;
+    }
+    registerMessageHandler(type, handler) {
+        this.messageHandlers[type] = handler;
     }
     /**
      * Sends a message from a main-thread map to a Worker or from a Worker back to
      * a main-thread map instance.
-     *
-     * @param type - The name of the target method to invoke or '[source-type].[source-name].name' for a method on a WorkerSource.
-     * @param targetMapId - A particular mapId to which to send this message.
+     * @param message - the message to send
+     * @param abortController - an optional AbortController to abort the request
+     * @returns a promise that will be resolved with the response data
      */
-    send(type, data, callback, targetMapId, mustQueue = false) {
-        // We're using a string ID instead of numbers because they are being used as object keys
-        // anyway, and thus stringified implicitly. We use random IDs because an actor may receive
-        // message from multiple other actors which could run in different execution context. A
-        // linearly increasing ID could produce collisions.
-        const id = Math.round((Math.random() * 1e18)).toString(36).substring(0, 10);
-        if (callback) {
-            this.callbacks[id] = callback;
-        }
-        const buffers = [];
-        const message = {
-            id,
-            type,
-            hasCallback: !!callback,
-            targetMapId,
-            mustQueue,
-            sourceMapId: this.mapId,
-            data: serialize(data, buffers)
-        };
-        this.target.postMessage(message, { transfer: buffers });
-        return {
-            cancel: () => {
-                if (callback) {
-                    // Set the callback to null so that it never fires after the request is aborted.
-                    delete this.callbacks[id];
-                }
-                const cancelMessage = {
-                    id,
-                    type: '<cancel>',
-                    targetMapId,
-                    sourceMapId: this.mapId
-                };
-                this.target.postMessage(cancelMessage);
+    sendAsync(message, abortController) {
+        return new Promise((resolve, reject) => {
+            // We're using a string ID instead of numbers because they are being used as object keys
+            // anyway, and thus stringified implicitly. We use random IDs because an actor may receive
+            // message from multiple other actors which could run in different execution context. A
+            // linearly increasing ID could produce collisions.
+            const id = Math.round((Math.random() * 1e18)).toString(36).substring(0, 10);
+            this.resolveRejects[id] = {
+                resolve,
+                reject
+            };
+            if (abortController) {
+                abortController.signal.addEventListener('abort', () => {
+                    delete this.resolveRejects[id];
+                    const cancelMessage = {
+                        id,
+                        type: '<cancel>',
+                        origin: location.origin,
+                        targetMapId: message.targetMapId,
+                        sourceMapId: this.mapId
+                    };
+                    this.target.postMessage(cancelMessage);
+                    // In case of abort the current behavior is to keep the promise pending.
+                }, { once: true });
             }
-        };
+            const buffers = [];
+            const messageToPost = Object.assign(Object.assign({}, message), { id, sourceMapId: this.mapId, origin: location.origin, data: serialize(message.data, buffers) });
+            this.target.postMessage(messageToPost, { transfer: buffers });
+        });
+    }
+    receive(message) {
+        const data = message.data;
+        const id = data.id;
+        if (data.origin !== 'file://' && location.origin !== 'file://' && data.origin !== location.origin) {
+            return;
+        }
+        if (data.targetMapId && this.mapId !== data.targetMapId) {
+            return;
+        }
+        if (data.type === '<cancel>') {
+            // Remove the original request from the queue. This is only possible if it
+            // hasn't been kicked off yet. The id will remain in the queue, but because
+            // there is no associated task, it will be dropped once it's time to execute it.
+            delete this.tasks[id];
+            const abortController = this.abortControllers[id];
+            delete this.abortControllers[id];
+            if (abortController) {
+                abortController.abort();
+            }
+            return;
+        }
+        if (isWorker(self) || data.mustQueue) {
+            // In workers, store the tasks that we need to process before actually processing them. This
+            // is necessary because we want to keep receiving messages, and in particular,
+            // <cancel> messages. Some tasks may take a while in the worker thread, so before
+            // executing the next task in our queue, postMessage preempts this and <cancel>
+            // messages can be processed. We're using a MessageChannel object to get throttle the
+            // process() flow to one at a time.
+            this.tasks[id] = data;
+            this.taskQueue.push(id);
+            this.invoker.trigger();
+            return;
+        }
+        // In the main thread, process messages immediately so that other work does not slip in
+        // between getting partial data back from workers.
+        this.processTask(id, data);
+    }
+    process() {
+        if (this.taskQueue.length === 0) {
+            return;
+        }
+        const id = this.taskQueue.shift();
+        const task = this.tasks[id];
+        delete this.tasks[id];
+        // Schedule another process call if we know there's more to process _before_ invoking the
+        // current task. This is necessary so that processing continues even if the current task
+        // doesn't execute successfully.
+        if (this.taskQueue.length > 0) {
+            this.invoker.trigger();
+        }
+        if (!task) {
+            // If the task ID doesn't have associated task data anymore, it was canceled.
+            return;
+        }
+        this.processTask(id, task);
     }
     processTask(id, task) {
-        if (task.type === '<response>') {
-            // The done() function in the counterpart has been called, and we are now
-            // firing the callback in the originating actor, if there is one.
-            const callback = this.callbacks[id];
-            delete this.callbacks[id];
-            if (callback) {
-                // If we get a response, but don't have a callback, the request was canceled.
+        return __awaiter(this, void 0, void 0, function* () {
+            if (task.type === '<response>') {
+                // The `completeTask` function in the counterpart actor has been called, and we are now
+                // resolving or rejecting the promise in the originating actor, if there is one.
+                const resolveReject = this.resolveRejects[id];
+                delete this.resolveRejects[id];
+                if (!resolveReject) {
+                    // If we get a response, but don't have a resolve or reject, the request was canceled.
+                    return;
+                }
                 if (task.error) {
-                    callback(deserialize(task.error));
+                    resolveReject.reject(deserialize(task.error));
                 }
                 else {
-                    callback(null, deserialize(task.data));
+                    resolveReject.resolve(deserialize(task.data));
                 }
+                return;
             }
-        }
-        else {
-            let completed = false;
-            const buffers = [];
-            const done = task.hasCallback ? (err, data) => {
-                completed = true;
-                delete this.cancelCallbacks[id];
-                const responseMessage = {
-                    id,
-                    type: '<response>',
-                    sourceMapId: this.mapId,
-                    error: err ? serialize(err) : null,
-                    data: serialize(data, buffers)
-                };
-                this.target.postMessage(responseMessage, { transfer: buffers });
-            } : (_) => {
-                completed = true;
-            };
-            let callback = null;
+            if (!this.messageHandlers[task.type]) {
+                this.completeTask(id, new Error(`Could not find a registered handler for ${task.type}, map ID: ${this.mapId}, available handlers: ${Object.keys(this.messageHandlers).join(', ')}`));
+                return;
+            }
             const params = deserialize(task.data);
-            if (this.parent[task.type]) {
-                // task.type == 'loadTile', 'removeTile', etc.
-                callback = this.parent[task.type](task.sourceMapId, params, done);
+            const abortController = new AbortController();
+            this.abortControllers[id] = abortController;
+            try {
+                const data = yield this.messageHandlers[task.type](task.sourceMapId, params, abortController);
+                this.completeTask(id, null, data);
             }
-            else if ('getWorkerSource' in this.parent) {
-                // task.type == sourcetype.method
-                const keys = task.type.split('.');
-                const scope = this.parent.getWorkerSource(task.sourceMapId, keys[0], params.source);
-                callback = scope[keys[1]](params, done);
+            catch (err) {
+                this.completeTask(id, err);
             }
-            else {
-                // No function was found.
-                done(new Error(`Could not find function ${task.type}`));
-            }
-            if (!completed && callback && callback.cancel) {
-                // Allows canceling the task as long as it hasn't been completed yet.
-                this.cancelCallbacks[id] = callback.cancel;
-            }
-        }
+        });
+    }
+    completeTask(id, err, data) {
+        const buffers = [];
+        delete this.abortControllers[id];
+        const responseMessage = {
+            id,
+            type: '<response>',
+            sourceMapId: this.mapId,
+            origin: location.origin,
+            error: err ? serialize(err) : null,
+            data: serialize(data, buffers)
+        };
+        this.target.postMessage(responseMessage, { transfer: buffers });
     }
     remove() {
         this.invoker.remove();
-        this.target.removeEventListener('message', this.receive, false);
+        this.subscription.unsubscribe();
     }
 }
 
@@ -29288,7 +29723,7 @@ const earthRadius = 6371008.8;
  *
  * @example
  * ```ts
- * let ll = new maplibregl.LngLat(-123.9749, 40.7736);
+ * let ll = new LngLat(-123.9749, 40.7736);
  * ll.lng; // = -123.9749
  * ```
  * @see [Get coordinates of the mouse pointer](https://maplibre.org/maplibre-gl-js/docs/examples/mouse-position/)
@@ -29316,7 +29751,7 @@ class LngLat {
      * @returns The wrapped `LngLat` object.
      * @example
      * ```ts
-     * let ll = new maplibregl.LngLat(286.0251, 40.7736);
+     * let ll = new LngLat(286.0251, 40.7736);
      * let wrapped = ll.wrap();
      * wrapped.lng; // = -73.9749
      * ```
@@ -29330,7 +29765,7 @@ class LngLat {
      * @returns The coordinates represented as an array of longitude and latitude.
      * @example
      * ```ts
-     * let ll = new maplibregl.LngLat(-73.9749, 40.7736);
+     * let ll = new LngLat(-73.9749, 40.7736);
      * ll.toArray(); // = [-73.9749, 40.7736]
      * ```
      */
@@ -29343,7 +29778,7 @@ class LngLat {
      * @returns The coordinates represented as a string of the format `'LngLat(lng, lat)'`.
      * @example
      * ```ts
-     * let ll = new maplibregl.LngLat(-73.9749, 40.7736);
+     * let ll = new LngLat(-73.9749, 40.7736);
      * ll.toString(); // = "LngLat(-73.9749, 40.7736)"
      * ```
      */
@@ -29358,8 +29793,8 @@ class LngLat {
      * @returns Distance in meters between the two coordinates.
      * @example
      * ```ts
-     * let new_york = new maplibregl.LngLat(-74.0060, 40.7128);
-     * let los_angeles = new maplibregl.LngLat(-118.2437, 34.0522);
+     * let new_york = new LngLat(-74.0060, 40.7128);
+     * let los_angeles = new LngLat(-118.2437, 34.0522);
      * new_york.distanceTo(los_angeles); // = 3935751.690893987, "true distance" using a non-spherical approximation is ~3966km
      * ```
      */
@@ -29382,7 +29817,7 @@ class LngLat {
      * @example
      * ```ts
      * let arr = [-73.9749, 40.7736];
-     * let ll = maplibregl.LngLat.convert(arr);
+     * let ll = LngLat.convert(arr);
      * ll;   // = LngLat {lng: -73.9749, lat: 40.7736}
      * ```
      */
@@ -29447,6 +29882,7 @@ function mercatorScale(lat) {
  * A `MercatorCoordinate` object represents a projected three dimensional position.
  *
  * `MercatorCoordinate` uses the web mercator projection ([EPSG:3857](https://epsg.io/3857)) with slightly different units:
+ *
  * - the size of 1 unit is the width of the projected world instead of the "mercator meter"
  * - the origin of the coordinate space is at the north-west corner instead of the middle
  *
@@ -29461,7 +29897,7 @@ function mercatorScale(lat) {
  *
  * @example
  * ```ts
- * let nullIsland = new maplibregl.MercatorCoordinate(0.5, 0.5, 0);
+ * let nullIsland = new MercatorCoordinate(0.5, 0.5, 0);
  * ```
  * @see [Add a custom style layer](https://maplibre.org/maplibre-gl-js/docs/examples/custom-style-layer/)
  */
@@ -29484,7 +29920,7 @@ class MercatorCoordinate {
      * @returns The projected mercator coordinate.
      * @example
      * ```ts
-     * let coord = maplibregl.MercatorCoordinate.fromLngLat({ lng: 0, lat: 0}, 0);
+     * let coord = MercatorCoordinate.fromLngLat({ lng: 0, lat: 0}, 0);
      * coord; // MercatorCoordinate(0.5, 0.5, 0)
      * ```
      */
@@ -29498,7 +29934,7 @@ class MercatorCoordinate {
      * @returns The `LngLat` object.
      * @example
      * ```ts
-     * let coord = new maplibregl.MercatorCoordinate(0.5, 0.5, 0);
+     * let coord = new MercatorCoordinate(0.5, 0.5, 0);
      * let lngLat = coord.toLngLat(); // LngLat(0, 0)
      * ```
      */
@@ -29511,7 +29947,7 @@ class MercatorCoordinate {
      * @returns The altitude in meters.
      * @example
      * ```ts
-     * let coord = new maplibregl.MercatorCoordinate(0, 0, 0.02);
+     * let coord = new MercatorCoordinate(0, 0, 0.02);
      * coord.toAltitude(); // 6914.281956295339
      * ```
      */
@@ -29785,9 +30221,29 @@ function getQuadkey(z, x, y) {
 register('CanonicalTileID', CanonicalTileID);
 register('OverscaledTileID', OverscaledTileID, { omit: ['posMatrix'] });
 
+/**
+ * DEMData is a data structure for decoding, backfilling, and storing elevation data for processing in the hillshade shaders
+ * data can be populated either from a pngraw image tile or from serliazed data sent back from a worker. When data is initially
+ * loaded from a image tile, we decode the pixel values using the appropriate decoding formula, but we store the
+ * elevation data as an Int32 value. we add 65536 (2^16) to eliminate negative values and enable the use of
+ * integer overflow when creating the texture used in the hillshadePrepare step.
+ *
+ * DEMData also handles the backfilling of data from a tile's neighboring tiles. This is necessary because we use a pixel's 8
+ * surrounding pixel values to compute the slope at that pixel, and we cannot accurately calculate the slope at pixels on a
+ * tile's edge without backfilling from neighboring tiles.
+ */
 class DEMData {
-    // RGBAImage data has uniform 1px padding on all sides: square tile edge size defines stride
+    /**
+     * Constructs a `DEMData` object
+     * @param uid - the tile's unique id
+     * @param data - RGBAImage data has uniform 1px padding on all sides: square tile edge size defines stride
     // and dim is calculated as stride - 2.
+     * @param encoding - the encoding type of the data
+     * @param redFactor - the red channel factor used to unpack the data, used for `custom` encoding only
+     * @param greenFactor - the green channel factor used to unpack the data, used for `custom` encoding only
+     * @param blueFactor - the blue channel factor used to unpack the data, used for `custom` encoding only
+     * @param baseShift - the base shift used to unpack the data, used for `custom` encoding only
+     */
     constructor(uid, data, encoding, redFactor = 1.0, greenFactor = 1.0, blueFactor = 1.0, baseShift = 0.0) {
         this.uid = uid;
         if (data.height !== data.width)
@@ -29961,7 +30417,6 @@ class GeoJSONFeature {
 }
 
 /**
- * @internal
  * An in memory index class to allow fast interaction with features
  */
 class FeatureIndex {
@@ -31881,6 +32336,7 @@ exports.Evented = Evented;
 exports.FeatureIndex = FeatureIndex;
 exports.FillBucket = FillBucket;
 exports.FillExtrusionBucket = FillExtrusionBucket;
+exports.GLOBAL_DISPATCHER_ID = GLOBAL_DISPATCHER_ID;
 exports.GeoJSONFeature = GeoJSONFeature;
 exports.ImageAtlas = ImageAtlas;
 exports.ImagePosition = ImagePosition;
@@ -31918,11 +32374,10 @@ exports.ZoomHistory = ZoomHistory;
 exports.__awaiter = __awaiter;
 exports.add = add$4;
 exports.addDynamicAttributes = addDynamicAttributes;
+exports.addProtocol = addProtocol;
 exports.arrayBufferToImage = arrayBufferToImage;
 exports.arrayBufferToImageBitmap = arrayBufferToImageBitmap;
-exports.asyncAll = asyncAll;
 exports.bezier = bezier$1;
-exports.browser = browser;
 exports.clamp = clamp$1;
 exports.clipLine = clipLine;
 exports.clone = clone$5;
@@ -31934,6 +32389,7 @@ exports.copy = copy$5;
 exports.create = create$5;
 exports.create$1 = create$6;
 exports.create$2 = create$8;
+exports.createAbortError = createAbortError;
 exports.createExpression = createExpression;
 exports.createFilter = createFilter;
 exports.createLayout = createLayout;
@@ -31941,6 +32397,7 @@ exports.createStyleLayer = createStyleLayer;
 exports.cross = cross$2;
 exports.deepEqual = deepEqual$1;
 exports.defaultEasing = defaultEasing;
+exports.degreesToRadians = degreesToRadians;
 exports.derefLayers = derefLayers;
 exports.diffStyles = diffStyles;
 exports.dot = dot$5;
@@ -31951,7 +32408,7 @@ exports.emptyStyle = emptyStyle;
 exports.equals = equals$6;
 exports.evaluateSizeForFeature = evaluateSizeForFeature;
 exports.evaluateSizeForZoom = evaluateSizeForZoom;
-exports.evented = evented;
+exports.exactEquals = exactEquals$5;
 exports.extend = extend;
 exports.filterObject = filterObject;
 exports.findLineIntersection = findLineIntersection;
@@ -31960,25 +32417,23 @@ exports.fromScaling = fromScaling;
 exports.getAnchorAlignment = getAnchorAlignment;
 exports.getAnchorJustification = getAnchorJustification;
 exports.getArrayBuffer = getArrayBuffer;
-exports.getDefaultExportFromCjs = getDefaultExportFromCjs;
+exports.getDefaultExportFromCjs = getDefaultExportFromCjs$1;
 exports.getImageData = getImageData;
 exports.getJSON = getJSON;
 exports.getOverlapMode = getOverlapMode;
-exports.getProtocolAction = getProtocolAction;
-exports.getRTLTextPluginStatus = getRTLTextPluginStatus;
+exports.getProtocol = getProtocol;
 exports.getReferrer = getReferrer;
 exports.getVideo = getVideo;
 exports.groupByLayout = groupByLayout;
 exports.identity = identity$2;
 exports.interpolate = interpolate;
 exports.invert = invert$2;
+exports.isAbortError = isAbortError;
 exports.isImageBitmap = isImageBitmap;
 exports.isOffscreenCanvasDistorted = isOffscreenCanvasDistorted;
 exports.isSafari = isSafari;
 exports.isWorker = isWorker;
 exports.keysDifference = keysDifference;
-exports.lazyLoadRTLTextPlugin = lazyLoadRTLTextPlugin;
-exports.lngFromMercatorX = lngFromMercatorX;
 exports.makeRequest = makeRequest;
 exports.mapObject = mapObject;
 exports.mercatorXfromLng = mercatorXfromLng;
@@ -31990,7 +32445,6 @@ exports.multiply = multiply$5;
 exports.nextPowerOfTwo = nextPowerOfTwo;
 exports.normalize = normalize$4;
 exports.offscreenCanvasSupported = offscreenCanvasSupported;
-exports.operations = operations;
 exports.ortho = ortho;
 exports.parseCacheControl = parseCacheControl;
 exports.parseGlyphPbf = parseGlyphPbf;
@@ -31998,21 +32452,20 @@ exports.pbf = pbf;
 exports.performSymbolLayout = performSymbolLayout;
 exports.perspective = perspective;
 exports.pick = pick;
-exports.plugin = plugin;
 exports.pointGeometry = pointGeometry;
 exports.polygonIntersectsPolygon = polygonIntersectsPolygon;
 exports.potpack = potpack;
 exports.readImageUsingVideoFrame = readImageUsingVideoFrame;
 exports.register = register;
-exports.registerForPluginStateChange = registerForPluginStateChange;
+exports.removeProtocol = removeProtocol;
 exports.renderColorRamp = renderColorRamp;
 exports.rotate = rotate$4;
 exports.rotateX = rotateX$3;
 exports.rotateZ = rotateZ$3;
+exports.rtlWorkerPlugin = rtlWorkerPlugin;
 exports.sameOrigin = sameOrigin;
 exports.scale = scale$5;
 exports.scale$1 = scale$4;
-exports.setRTLTextPlugin = setRTLTextPlugin;
 exports.sphericalToCartesian = sphericalToCartesian;
 exports.sqrLen = sqrLen;
 exports.sub = sub$2;
@@ -32021,7 +32474,6 @@ exports.transformMat3 = transformMat3$1;
 exports.transformMat4 = transformMat4$1;
 exports.transformMat4$1 = transformMat4;
 exports.translate = translate$1;
-exports.triggerPluginCompletionEvent = triggerPluginCompletionEvent;
 exports.unicodeBlockLookup = unicodeBlockLookup;
 exports.uniqueId = uniqueId;
 exports.v8Spec = v8Spec;
@@ -32034,7 +32486,7 @@ exports.wrap = wrap;
 
 }));
 
-define(['./shared'], (function (performance) { 'use strict';
+define('worker', ['./shared'], (function (performance) { 'use strict';
 
 class StyleLayerIndex {
     constructor(layerConfigs) {
@@ -32138,166 +32590,129 @@ class WorkerTile {
         this.returnDependencies = !!params.returnDependencies;
         this.promoteId = params.promoteId;
         this.inFlightDependencies = [];
-        this.dependencySentinel = -1;
     }
-    parse(data, layerIndex, availableImages, actor, callback) {
-        this.status = 'parsing';
-        this.data = data;
-        this.collisionBoxArray = new performance.CollisionBoxArray();
-        const sourceLayerCoder = new performance.DictionaryCoder(Object.keys(data.layers).sort());
-        const featureIndex = new performance.FeatureIndex(this.tileID, this.promoteId);
-        featureIndex.bucketLayerIDs = [];
-        const buckets = {};
-        const options = {
-            featureIndex,
-            iconDependencies: {},
-            patternDependencies: {},
-            glyphDependencies: {},
-            availableImages
-        };
-        const layerFamilies = layerIndex.familiesBySource[this.source];
-        for (const sourceLayerId in layerFamilies) {
-            const sourceLayer = data.layers[sourceLayerId];
-            if (!sourceLayer) {
-                continue;
-            }
-            if (sourceLayer.version === 1) {
-                performance.warnOnce(`Vector tile source "${this.source}" layer "${sourceLayerId}" ` +
-                    'does not use vector tile spec v2 and therefore may have some rendering errors.');
-            }
-            const sourceLayerIndex = sourceLayerCoder.encode(sourceLayerId);
-            const features = [];
-            for (let index = 0; index < sourceLayer.length; index++) {
-                const feature = sourceLayer.feature(index);
-                const id = featureIndex.getId(feature, sourceLayerId);
-                features.push({ feature, id, index, sourceLayerIndex });
-            }
-            for (const family of layerFamilies[sourceLayerId]) {
-                const layer = family[0];
-                if (layer.source !== this.source) {
-                    performance.warnOnce(`layer.source = ${layer.source} does not equal this.source = ${this.source}`);
-                }
-                if (layer.minzoom && this.zoom < Math.floor(layer.minzoom))
+    parse(data, layerIndex, availableImages, actor) {
+        return performance.__awaiter(this, void 0, void 0, function* () {
+            this.status = 'parsing';
+            this.data = data;
+            this.collisionBoxArray = new performance.CollisionBoxArray();
+            const sourceLayerCoder = new performance.DictionaryCoder(Object.keys(data.layers).sort());
+            const featureIndex = new performance.FeatureIndex(this.tileID, this.promoteId);
+            featureIndex.bucketLayerIDs = [];
+            const buckets = {};
+            const options = {
+                featureIndex,
+                iconDependencies: {},
+                patternDependencies: {},
+                glyphDependencies: {},
+                availableImages
+            };
+            const layerFamilies = layerIndex.familiesBySource[this.source];
+            for (const sourceLayerId in layerFamilies) {
+                const sourceLayer = data.layers[sourceLayerId];
+                if (!sourceLayer) {
                     continue;
-                if (layer.maxzoom && this.zoom >= layer.maxzoom)
-                    continue;
-                if (layer.visibility === 'none')
-                    continue;
-                recalculateLayers(family, this.zoom, availableImages);
-                const bucket = buckets[layer.id] = layer.createBucket({
-                    index: featureIndex.bucketLayerIDs.length,
-                    layers: family,
-                    zoom: this.zoom,
-                    pixelRatio: this.pixelRatio,
-                    overscaling: this.overscaling,
-                    collisionBoxArray: this.collisionBoxArray,
-                    sourceLayerIndex,
-                    sourceID: this.source
-                });
-                bucket.populate(features, options, this.tileID.canonical);
-                featureIndex.bucketLayerIDs.push(family.map((l) => l.id));
-            }
-        }
-        let error;
-        let glyphMap;
-        let iconMap;
-        let patternMap;
-        const stacks = performance.mapObject(options.glyphDependencies, (glyphs) => Object.keys(glyphs).map(Number));
-        this.inFlightDependencies.forEach((request) => request === null || request === void 0 ? void 0 : request.cancel());
-        this.inFlightDependencies = [];
-        // cancelling seems to be not sufficient, we seems to still manage to get a callback hit, so use a sentinel to drop stale results
-        const dependencySentinel = ++this.dependencySentinel;
-        if (Object.keys(stacks).length) {
-            this.inFlightDependencies.push(actor.send('getGlyphs', { uid: this.uid, stacks, source: this.source, tileID: this.tileID, type: 'glyphs' }, (err, result) => {
-                if (dependencySentinel !== this.dependencySentinel) {
-                    return;
                 }
-                if (!error) {
-                    error = err;
-                    glyphMap = result;
-                    maybePrepare.call(this);
+                if (sourceLayer.version === 1) {
+                    performance.warnOnce(`Vector tile source "${this.source}" layer "${sourceLayerId}" ` +
+                        'does not use vector tile spec v2 and therefore may have some rendering errors.');
                 }
-            }));
-        }
-        else {
-            glyphMap = {};
-        }
-        const icons = Object.keys(options.iconDependencies);
-        if (icons.length) {
-            this.inFlightDependencies.push(actor.send('getImages', { icons, source: this.source, tileID: this.tileID, type: 'icons' }, (err, result) => {
-                if (dependencySentinel !== this.dependencySentinel) {
-                    return;
+                const sourceLayerIndex = sourceLayerCoder.encode(sourceLayerId);
+                const features = [];
+                for (let index = 0; index < sourceLayer.length; index++) {
+                    const feature = sourceLayer.feature(index);
+                    const id = featureIndex.getId(feature, sourceLayerId);
+                    features.push({ feature, id, index, sourceLayerIndex });
                 }
-                if (!error) {
-                    error = err;
-                    iconMap = result;
-                    maybePrepare.call(this);
-                }
-            }));
-        }
-        else {
-            iconMap = {};
-        }
-        const patterns = Object.keys(options.patternDependencies);
-        if (patterns.length) {
-            this.inFlightDependencies.push(actor.send('getImages', { icons: patterns, source: this.source, tileID: this.tileID, type: 'patterns' }, (err, result) => {
-                if (dependencySentinel !== this.dependencySentinel) {
-                    return;
-                }
-                if (!error) {
-                    error = err;
-                    patternMap = result;
-                    maybePrepare.call(this);
-                }
-            }));
-        }
-        else {
-            patternMap = {};
-        }
-        maybePrepare.call(this);
-        function maybePrepare() {
-            if (error) {
-                return callback(error);
-            }
-            else if (glyphMap && iconMap && patternMap) {
-                const glyphAtlas = new GlyphAtlas(glyphMap);
-                const imageAtlas = new performance.ImageAtlas(iconMap, patternMap);
-                for (const key in buckets) {
-                    const bucket = buckets[key];
-                    if (bucket instanceof performance.SymbolBucket) {
-                        recalculateLayers(bucket.layers, this.zoom, availableImages);
-                        performance.performSymbolLayout({
-                            bucket,
-                            glyphMap,
-                            glyphPositions: glyphAtlas.positions,
-                            imageMap: iconMap,
-                            imagePositions: imageAtlas.iconPositions,
-                            showCollisionBoxes: this.showCollisionBoxes,
-                            canonical: this.tileID.canonical
-                        });
+                for (const family of layerFamilies[sourceLayerId]) {
+                    const layer = family[0];
+                    if (layer.source !== this.source) {
+                        performance.warnOnce(`layer.source = ${layer.source} does not equal this.source = ${this.source}`);
                     }
-                    else if (bucket.hasPattern &&
-                        (bucket instanceof performance.LineBucket ||
-                            bucket instanceof performance.FillBucket ||
-                            bucket instanceof performance.FillExtrusionBucket)) {
-                        recalculateLayers(bucket.layers, this.zoom, availableImages);
-                        bucket.addFeatures(options, this.tileID.canonical, imageAtlas.patternPositions);
-                    }
+                    if (layer.minzoom && this.zoom < Math.floor(layer.minzoom))
+                        continue;
+                    if (layer.maxzoom && this.zoom >= layer.maxzoom)
+                        continue;
+                    if (layer.visibility === 'none')
+                        continue;
+                    recalculateLayers(family, this.zoom, availableImages);
+                    const bucket = buckets[layer.id] = layer.createBucket({
+                        index: featureIndex.bucketLayerIDs.length,
+                        layers: family,
+                        zoom: this.zoom,
+                        pixelRatio: this.pixelRatio,
+                        overscaling: this.overscaling,
+                        collisionBoxArray: this.collisionBoxArray,
+                        sourceLayerIndex,
+                        sourceID: this.source
+                    });
+                    bucket.populate(features, options, this.tileID.canonical);
+                    featureIndex.bucketLayerIDs.push(family.map((l) => l.id));
                 }
-                this.status = 'done';
-                callback(null, {
-                    buckets: Object.values(buckets).filter(b => !b.isEmpty()),
-                    featureIndex,
-                    collisionBoxArray: this.collisionBoxArray,
-                    glyphAtlasImage: glyphAtlas.image,
-                    imageAtlas,
-                    // Only used for benchmarking:
-                    glyphMap: this.returnDependencies ? glyphMap : null,
-                    iconMap: this.returnDependencies ? iconMap : null,
-                    glyphPositions: this.returnDependencies ? glyphAtlas.positions : null
-                });
             }
-        }
+            // options.glyphDependencies looks like: {"SomeFontName":{"10":true,"32":true}}
+            // this line makes an object like: {"SomeFontName":[10,32]}
+            const stacks = performance.mapObject(options.glyphDependencies, (glyphs) => Object.keys(glyphs).map(Number));
+            this.inFlightDependencies.forEach((request) => request === null || request === void 0 ? void 0 : request.abort());
+            this.inFlightDependencies = [];
+            let getGlyphsPromise = Promise.resolve({});
+            if (Object.keys(stacks).length) {
+                const abortController = new AbortController();
+                this.inFlightDependencies.push(abortController);
+                getGlyphsPromise = actor.sendAsync({ type: "GG" /* MessageType.getGlyphs */, data: { stacks, source: this.source, tileID: this.tileID, type: 'glyphs' } }, abortController);
+            }
+            const icons = Object.keys(options.iconDependencies);
+            let getIconsPromise = Promise.resolve({});
+            if (icons.length) {
+                const abortController = new AbortController();
+                this.inFlightDependencies.push(abortController);
+                getIconsPromise = actor.sendAsync({ type: "GI" /* MessageType.getImages */, data: { icons, source: this.source, tileID: this.tileID, type: 'icons' } }, abortController);
+            }
+            const patterns = Object.keys(options.patternDependencies);
+            let getPatternsPromise = Promise.resolve({});
+            if (patterns.length) {
+                const abortController = new AbortController();
+                this.inFlightDependencies.push(abortController);
+                getPatternsPromise = actor.sendAsync({ type: "GI" /* MessageType.getImages */, data: { icons: patterns, source: this.source, tileID: this.tileID, type: 'patterns' } }, abortController);
+            }
+            const [glyphMap, iconMap, patternMap] = yield Promise.all([getGlyphsPromise, getIconsPromise, getPatternsPromise]);
+            const glyphAtlas = new GlyphAtlas(glyphMap);
+            const imageAtlas = new performance.ImageAtlas(iconMap, patternMap);
+            for (const key in buckets) {
+                const bucket = buckets[key];
+                if (bucket instanceof performance.SymbolBucket) {
+                    recalculateLayers(bucket.layers, this.zoom, availableImages);
+                    performance.performSymbolLayout({
+                        bucket,
+                        glyphMap,
+                        glyphPositions: glyphAtlas.positions,
+                        imageMap: iconMap,
+                        imagePositions: imageAtlas.iconPositions,
+                        showCollisionBoxes: this.showCollisionBoxes,
+                        canonical: this.tileID.canonical
+                    });
+                }
+                else if (bucket.hasPattern &&
+                    (bucket instanceof performance.LineBucket ||
+                        bucket instanceof performance.FillBucket ||
+                        bucket instanceof performance.FillExtrusionBucket)) {
+                    recalculateLayers(bucket.layers, this.zoom, availableImages);
+                    bucket.addFeatures(options, this.tileID.canonical, imageAtlas.patternPositions);
+                }
+            }
+            this.status = 'done';
+            return {
+                buckets: Object.values(buckets).filter(b => !b.isEmpty()),
+                featureIndex,
+                collisionBoxArray: this.collisionBoxArray,
+                glyphAtlasImage: glyphAtlas.image,
+                imageAtlas,
+                // Only used for benchmarking:
+                glyphMap: this.returnDependencies ? glyphMap : null,
+                iconMap: this.returnDependencies ? iconMap : null,
+                glyphPositions: this.returnDependencies ? glyphAtlas.positions : null
+            };
+        });
     }
 }
 function recalculateLayers(layers, zoom, availableImages) {
@@ -32309,48 +32724,10 @@ function recalculateLayers(layers, zoom, availableImages) {
 }
 
 /**
- * Loads a vector tile
- */
-function loadVectorTile(params, callback) {
-    const request = performance.getArrayBuffer(params.request, (err, data, cacheControl, expires) => {
-        if (err) {
-            callback(err);
-        }
-        else if (data) {
-            try {
-                const vectorTile = new performance.vectorTile.VectorTile(new performance.Protobuf(data));
-                callback(null, {
-                    vectorTile,
-                    rawData: data,
-                    cacheControl,
-                    expires
-                });
-            }
-            catch (ex) {
-                const bytes = new Uint8Array(data);
-                const isGzipped = bytes[0] === 0x1f && bytes[1] === 0x8b;
-                let errorMessage = `Unable to parse the tile at ${params.request.url}, `;
-                if (isGzipped) {
-                    errorMessage += 'please make sure the data is not gzipped and that you have configured the relevant header in the server';
-                }
-                else {
-                    errorMessage += `got error: ${ex.messge}`;
-                }
-                callback(new Error(errorMessage));
-            }
-        }
-    });
-    return () => {
-        request.cancel();
-        callback();
-    };
-}
-/**
  * The {@link WorkerSource} implementation that supports {@link VectorTileSource}.
  * This class is designed to be easily reused to support custom source types
  * for data formats that can be parsed/converted into an in-memory VectorTile
- * representation.  To do so, create it with
- * `new VectorTileWorkerSource(actor, styleLayers, customLoadVectorDataFunction)`.
+ * representation. To do so, override its `loadVectorTile` method.
  */
 class VectorTileWorkerSource {
     /**
@@ -32359,125 +32736,153 @@ class VectorTileWorkerSource {
      * {@link VectorTileWorkerSource#loadTile}. The default implementation simply
      * loads the pbf at `params.url`.
      */
-    constructor(actor, layerIndex, availableImages, loadVectorData) {
+    constructor(actor, layerIndex, availableImages) {
         this.actor = actor;
         this.layerIndex = layerIndex;
         this.availableImages = availableImages;
-        this.loadVectorData = loadVectorData || loadVectorTile;
         this.fetching = {};
         this.loading = {};
         this.loaded = {};
+    }
+    /**
+     * Loads a vector tile
+     */
+    loadVectorTile(params, abortController) {
+        return performance.__awaiter(this, void 0, void 0, function* () {
+            const response = yield performance.getArrayBuffer(params.request, abortController);
+            try {
+                const vectorTile = new performance.vectorTile.VectorTile(new performance.Protobuf(response.data));
+                return {
+                    vectorTile,
+                    rawData: response.data,
+                    cacheControl: response.cacheControl,
+                    expires: response.expires
+                };
+            }
+            catch (ex) {
+                const bytes = new Uint8Array(response.data);
+                const isGzipped = bytes[0] === 0x1f && bytes[1] === 0x8b;
+                let errorMessage = `Unable to parse the tile at ${params.request.url}, `;
+                if (isGzipped) {
+                    errorMessage += 'please make sure the data is not gzipped and that you have configured the relevant header in the server';
+                }
+                else {
+                    errorMessage += `got error: ${ex.messge}`;
+                }
+                throw new Error(errorMessage);
+            }
+        });
     }
     /**
      * Implements {@link WorkerSource#loadTile}. Delegates to
      * {@link VectorTileWorkerSource#loadVectorData} (which by default expects
      * a `params.url` property) for fetching and producing a VectorTile object.
      */
-    loadTile(params, callback) {
-        const uid = params.uid;
-        if (!this.loading)
-            this.loading = {};
-        const perf = (params && params.request && params.request.collectResourceTiming) ?
-            new performance.RequestPerformance(params.request) : false;
-        const workerTile = this.loading[uid] = new WorkerTile(params);
-        workerTile.abort = this.loadVectorData(params, (err, response) => {
-            delete this.loading[uid];
-            if (err || !response) {
+    loadTile(params) {
+        return performance.__awaiter(this, void 0, void 0, function* () {
+            const tileUid = params.uid;
+            const perf = (params && params.request && params.request.collectResourceTiming) ?
+                new performance.RequestPerformance(params.request) : false;
+            const workerTile = new WorkerTile(params);
+            this.loading[tileUid] = workerTile;
+            const abortController = new AbortController();
+            workerTile.abort = abortController;
+            try {
+                const response = yield this.loadVectorTile(params, abortController);
+                delete this.loading[tileUid];
+                if (!response) {
+                    return null;
+                }
+                const rawTileData = response.rawData;
+                const cacheControl = {};
+                if (response.expires)
+                    cacheControl.expires = response.expires;
+                if (response.cacheControl)
+                    cacheControl.cacheControl = response.cacheControl;
+                const resourceTiming = {};
+                if (perf) {
+                    const resourceTimingData = perf.finish();
+                    // it's necessary to eval the result of getEntriesByName() here via parse/stringify
+                    // late evaluation in the main thread causes TypeError: illegal invocation
+                    if (resourceTimingData)
+                        resourceTiming.resourceTiming = JSON.parse(JSON.stringify(resourceTimingData));
+                }
+                workerTile.vectorTile = response.vectorTile;
+                const parsePromise = workerTile.parse(response.vectorTile, this.layerIndex, this.availableImages, this.actor);
+                this.loaded[tileUid] = workerTile;
+                // keep the original fetching state so that reload tile can pick it up if the original parse is cancelled by reloads' parse
+                this.fetching[tileUid] = { rawTileData, cacheControl, resourceTiming };
+                try {
+                    const result = yield parsePromise;
+                    // Transferring a copy of rawTileData because the worker needs to retain its copy.
+                    return performance.extend({ rawTileData: rawTileData.slice(0) }, result, cacheControl, resourceTiming);
+                }
+                finally {
+                    delete this.fetching[tileUid];
+                }
+            }
+            catch (err) {
+                delete this.loading[tileUid];
                 workerTile.status = 'done';
-                this.loaded[uid] = workerTile;
-                return callback(err);
+                this.loaded[tileUid] = workerTile;
+                throw err;
             }
-            const rawTileData = response.rawData;
-            const cacheControl = {};
-            if (response.expires)
-                cacheControl.expires = response.expires;
-            if (response.cacheControl)
-                cacheControl.cacheControl = response.cacheControl;
-            const resourceTiming = {};
-            if (perf) {
-                const resourceTimingData = perf.finish();
-                // it's necessary to eval the result of getEntriesByName() here via parse/stringify
-                // late evaluation in the main thread causes TypeError: illegal invocation
-                if (resourceTimingData)
-                    resourceTiming.resourceTiming = JSON.parse(JSON.stringify(resourceTimingData));
-            }
-            workerTile.vectorTile = response.vectorTile;
-            workerTile.parse(response.vectorTile, this.layerIndex, this.availableImages, this.actor, (err, result) => {
-                delete this.fetching[uid];
-                if (err || !result)
-                    return callback(err);
-                // Transferring a copy of rawTileData because the worker needs to retain its copy.
-                callback(null, performance.extend({ rawTileData: rawTileData.slice(0) }, result, cacheControl, resourceTiming));
-            });
-            this.loaded = this.loaded || {};
-            this.loaded[uid] = workerTile;
-            // keep the original fetching state so that reload tile can pick it up if the original parse is cancelled by reloads' parse
-            this.fetching[uid] = { rawTileData, cacheControl, resourceTiming };
         });
     }
     /**
      * Implements {@link WorkerSource#reloadTile}.
      */
-    reloadTile(params, callback) {
-        const loaded = this.loaded;
-        const uid = params.uid;
-        if (loaded && loaded[uid]) {
-            const workerTile = loaded[uid];
+    reloadTile(params) {
+        return performance.__awaiter(this, void 0, void 0, function* () {
+            const uid = params.uid;
+            if (!this.loaded || !this.loaded[uid]) {
+                throw new Error('Should not be trying to reload a tile that was never loaded or has been removed');
+            }
+            const workerTile = this.loaded[uid];
             workerTile.showCollisionBoxes = params.showCollisionBoxes;
             if (workerTile.status === 'parsing') {
-                workerTile.parse(workerTile.vectorTile, this.layerIndex, this.availableImages, this.actor, (err, result) => {
-                    if (err || !result)
-                        return callback(err, result);
-                    // if we have cancelled the original parse, make sure to pass the rawTileData from the original fetch
-                    let parseResult;
-                    if (this.fetching[uid]) {
-                        const { rawTileData, cacheControl, resourceTiming } = this.fetching[uid];
-                        delete this.fetching[uid];
-                        parseResult = performance.extend({ rawTileData: rawTileData.slice(0) }, result, cacheControl, resourceTiming);
-                    }
-                    else {
-                        parseResult = result;
-                    }
-                    callback(null, parseResult);
-                });
-            }
-            else if (workerTile.status === 'done') {
-                // if there was no vector tile data on the initial load, don't try and re-parse tile
-                if (workerTile.vectorTile) {
-                    workerTile.parse(workerTile.vectorTile, this.layerIndex, this.availableImages, this.actor, callback);
+                const result = yield workerTile.parse(workerTile.vectorTile, this.layerIndex, this.availableImages, this.actor);
+                // if we have cancelled the original parse, make sure to pass the rawTileData from the original fetch
+                let parseResult;
+                if (this.fetching[uid]) {
+                    const { rawTileData, cacheControl, resourceTiming } = this.fetching[uid];
+                    delete this.fetching[uid];
+                    parseResult = performance.extend({ rawTileData: rawTileData.slice(0) }, result, cacheControl, resourceTiming);
                 }
                 else {
-                    callback();
+                    parseResult = result;
                 }
+                return parseResult;
             }
-        }
+            // if there was no vector tile data on the initial load, don't try and re-parse tile
+            if (workerTile.status === 'done' && workerTile.vectorTile) {
+                // this seems like a missing case where cache control is lost? see #3309
+                return workerTile.parse(workerTile.vectorTile, this.layerIndex, this.availableImages, this.actor);
+            }
+        });
     }
     /**
      * Implements {@link WorkerSource#abortTile}.
-     *
-     * @param params - The tile parameters
-     * @param callback - The callback
      */
-    abortTile(params, callback) {
-        const loading = this.loading, uid = params.uid;
-        if (loading && loading[uid] && loading[uid].abort) {
-            loading[uid].abort();
-            delete loading[uid];
-        }
-        callback();
+    abortTile(params) {
+        return performance.__awaiter(this, void 0, void 0, function* () {
+            const loading = this.loading;
+            const uid = params.uid;
+            if (loading && loading[uid] && loading[uid].abort) {
+                loading[uid].abort.abort();
+                delete loading[uid];
+            }
+        });
     }
     /**
      * Implements {@link WorkerSource#removeTile}.
-     *
-     * @param params - The tile parameters
-     * @param callback - The callback
      */
-    removeTile(params, callback) {
-        const loaded = this.loaded, uid = params.uid;
-        if (loaded && loaded[uid]) {
-            delete loaded[uid];
-        }
-        callback();
+    removeTile(params) {
+        return performance.__awaiter(this, void 0, void 0, function* () {
+            if (this.loaded && this.loaded[params.uid]) {
+                delete this.loaded[params.uid];
+            }
+        });
     }
 }
 
@@ -32485,7 +32890,7 @@ class RasterDEMTileWorkerSource {
     constructor() {
         this.loaded = {};
     }
-    loadTile(params, callback) {
+    loadTile(params) {
         return performance.__awaiter(this, void 0, void 0, function* () {
             const { uid, encoding, rawImageData, redFactor, greenFactor, blueFactor, baseShift } = params;
             const width = rawImageData.width + 2;
@@ -32496,7 +32901,7 @@ class RasterDEMTileWorkerSource {
             const dem = new performance.DEMData(uid, imagePixels, encoding, redFactor, greenFactor, blueFactor, baseShift);
             this.loaded = this.loaded || {};
             this.loaded[uid] = dem;
-            callback(null, dem);
+            return dem;
         });
     }
     removeTile(params) {
@@ -34283,87 +34688,33 @@ function applySourceDiff(updateable, diff, promoteId) {
  * For a full example, see [mapbox-gl-topojson](https://github.com/developmentseed/mapbox-gl-topojson).
  */
 class GeoJSONWorkerSource extends VectorTileWorkerSource {
-    /**
-     * @param loadGeoJSON - Optional method for custom loading/parsing of
-     * GeoJSON based on parameters passed from the main-thread Source.
-     * See {@link GeoJSONWorkerSource#loadGeoJSON}.
-     */
-    constructor(actor, layerIndex, availableImages, loadGeoJSON) {
-        super(actor, layerIndex, availableImages);
+    constructor() {
+        super(...arguments);
         this._dataUpdateable = new Map();
-        /**
-         * Fetch and parse GeoJSON according to the given params.  Calls `callback`
-         * with `(err, data)`, where `data` is a parsed GeoJSON object.
-         *
-         * GeoJSON is loaded and parsed from `params.url` if it exists, or else
-         * expected as a literal (string or object) `params.data`.
-         *
-         * @param params - the parameters
-         * @param callback - the callback for completion or error
-         * @returns A Cancelable object.
-         */
-        this.loadGeoJSON = (params, callback) => {
-            const { promoteId } = params;
-            // Because of same origin issues, urls must either include an explicit
-            // origin or absolute path.
-            // ie: /foo/bar.json or http://example.com/bar.json
-            // but not ../foo/bar.json
-            if (params.request) {
-                return performance.getJSON(params.request, (error, data, cacheControl, expires) => {
-                    this._dataUpdateable = isUpdateableGeoJSON(data, promoteId) ? toUpdateable(data, promoteId) : undefined;
-                    callback(error, data, cacheControl, expires);
-                });
-            }
-            else if (typeof params.data === 'string') {
-                try {
-                    const parsed = JSON.parse(params.data);
-                    this._dataUpdateable = isUpdateableGeoJSON(parsed, promoteId) ? toUpdateable(parsed, promoteId) : undefined;
-                    callback(null, parsed);
-                }
-                catch (e) {
-                    callback(new Error(`Input data given to '${params.source}' is not a valid GeoJSON object.`));
-                }
-            }
-            else if (params.dataDiff) {
-                if (this._dataUpdateable) {
-                    applySourceDiff(this._dataUpdateable, params.dataDiff, promoteId);
-                    callback(null, { type: 'FeatureCollection', features: Array.from(this._dataUpdateable.values()) });
-                }
-                else {
-                    callback(new Error(`Cannot update existing geojson data in ${params.source}`));
-                }
-            }
-            else {
-                callback(new Error(`Input data given to '${params.source}' is not a valid GeoJSON object.`));
-            }
-            return { cancel: () => { } };
-        };
-        this.loadVectorData = this.loadGeoJSONTile;
-        if (loadGeoJSON) {
-            this.loadGeoJSON = loadGeoJSON;
-        }
     }
-    loadGeoJSONTile(params, callback) {
-        const canonical = params.tileID.canonical;
-        if (!this._geoJSONIndex) {
-            return callback(null, null); // we couldn't load the file
-        }
-        const geoJSONTile = this._geoJSONIndex.getTile(canonical.z, canonical.x, canonical.y);
-        if (!geoJSONTile) {
-            return callback(null, null); // nothing in the given tile
-        }
-        const geojsonWrapper = new GeoJSONWrapper$2(geoJSONTile.features);
-        // Encode the geojson-vt tile into binary vector tile form.  This
-        // is a convenience that allows `FeatureIndex` to operate the same way
-        // across `VectorTileSource` and `GeoJSONSource` data.
-        let pbf = vtpbf(geojsonWrapper);
-        if (pbf.byteOffset !== 0 || pbf.byteLength !== pbf.buffer.byteLength) {
-            // Compatibility with node Buffer (https://github.com/mapbox/pbf/issues/35)
-            pbf = new Uint8Array(pbf);
-        }
-        callback(null, {
-            vectorTile: geojsonWrapper,
-            rawData: pbf.buffer
+    loadVectorTile(params, _abortController) {
+        return performance.__awaiter(this, void 0, void 0, function* () {
+            const canonical = params.tileID.canonical;
+            if (!this._geoJSONIndex) {
+                throw new Error('Unable to parse the data into a cluster or geojson');
+            }
+            const geoJSONTile = this._geoJSONIndex.getTile(canonical.z, canonical.x, canonical.y);
+            if (!geoJSONTile) {
+                return null;
+            }
+            const geojsonWrapper = new GeoJSONWrapper$2(geoJSONTile.features);
+            // Encode the geojson-vt tile into binary vector tile form.  This
+            // is a convenience that allows `FeatureIndex` to operate the same way
+            // across `VectorTileSource` and `GeoJSONSource` data.
+            let pbf = vtpbf(geojsonWrapper);
+            if (pbf.byteOffset !== 0 || pbf.byteLength !== pbf.buffer.byteLength) {
+                // Compatibility with node Buffer (https://github.com/mapbox/pbf/issues/35)
+                pbf = new Uint8Array(pbf);
+            }
+            return {
+                vectorTile: geojsonWrapper,
+                rawData: pbf.buffer
+            };
         });
     }
     /**
@@ -34372,51 +34723,37 @@ class GeoJSONWorkerSource extends VectorTileWorkerSource {
      * can correctly serve up tiles.
      *
      * Defers to {@link GeoJSONWorkerSource#loadGeoJSON} for the fetching/parsing,
-     * expecting `callback(error, data)` to be called with either an error or a
-     * parsed GeoJSON object.
      *
      * When a `loadData` request comes in while a previous one is being processed,
      * the previous one is aborted.
      *
      * @param params - the parameters
-     * @param callback - the callback for completion or error
+     * @returns a promise that resolves when the data is loaded and parsed into a GeoJSON object
      */
-    loadData(params, callback) {
-        var _a;
-        (_a = this._pendingRequest) === null || _a === void 0 ? void 0 : _a.cancel();
-        if (this._pendingCallback) {
-            // Tell the foreground the previous call has been abandoned
-            this._pendingCallback(null, { abandoned: true });
-        }
-        const perf = (params && params.request && params.request.collectResourceTiming) ?
-            new performance.RequestPerformance(params.request) : false;
-        this._pendingCallback = callback;
-        this._pendingRequest = this.loadGeoJSON(params, (err, data) => {
-            delete this._pendingCallback;
-            delete this._pendingRequest;
-            if (err || !data) {
-                return callback(err);
-            }
-            else if (typeof data !== 'object') {
-                return callback(new Error(`Input data given to '${params.source}' is not a valid GeoJSON object.`));
-            }
-            else {
+    loadData(params) {
+        return performance.__awaiter(this, void 0, void 0, function* () {
+            var _a;
+            (_a = this._pendingRequest) === null || _a === void 0 ? void 0 : _a.abort();
+            const perf = (params && params.request && params.request.collectResourceTiming) ?
+                new performance.RequestPerformance(params.request) : false;
+            this._pendingRequest = new AbortController();
+            try {
+                let data = yield this.loadGeoJSON(params, this._pendingRequest);
+                delete this._pendingRequest;
+                if (typeof data !== 'object') {
+                    throw new Error(`Input data given to '${params.source}' is not a valid GeoJSON object.`);
+                }
                 rewind$2(data, true);
-                try {
-                    if (params.filter) {
-                        const compiled = performance.createExpression(params.filter, { type: 'boolean', 'property-type': 'data-driven', overridable: false, transition: false });
-                        if (compiled.result === 'error')
-                            throw new Error(compiled.value.map(err => `${err.key}: ${err.message}`).join(', '));
-                        const features = data.features.filter(feature => compiled.value.evaluate({ zoom: 0 }, feature));
-                        data = { type: 'FeatureCollection', features };
-                    }
-                    this._geoJSONIndex = params.cluster ?
-                        new Supercluster(getSuperclusterOptions(params)).load(data.features) :
-                        geojsonvt(data, params.geojsonVtOptions);
+                if (params.filter) {
+                    const compiled = performance.createExpression(params.filter, { type: 'boolean', 'property-type': 'data-driven', overridable: false, transition: false });
+                    if (compiled.result === 'error')
+                        throw new Error(compiled.value.map(err => `${err.key}: ${err.message}`).join(', '));
+                    const features = data.features.filter(feature => compiled.value.evaluate({ zoom: 0 }, feature));
+                    data = { type: 'FeatureCollection', features };
                 }
-                catch (err) {
-                    return callback(err);
-                }
+                this._geoJSONIndex = params.cluster ?
+                    new Supercluster(getSuperclusterOptions(params)).load(data.features) :
+                    geojsonvt(data, params.geojsonVtOptions);
                 this.loaded = {};
                 const result = {};
                 if (perf) {
@@ -34428,7 +34765,14 @@ class GeoJSONWorkerSource extends VectorTileWorkerSource {
                         result.resourceTiming[params.source] = JSON.parse(JSON.stringify(resourceTimingData));
                     }
                 }
-                callback(null, result);
+                return result;
+            }
+            catch (err) {
+                delete this._pendingRequest;
+                if (performance.isAbortError(err)) {
+                    return { abandoned: true };
+                }
+                throw err;
             }
         });
     }
@@ -34439,47 +34783,70 @@ class GeoJSONWorkerSource extends VectorTileWorkerSource {
     * Otherwise, such as after a setData() call, we load the tile fresh.
     *
     * @param params - the parameters
-    * @param callback - the callback for completion or error
+    * @returns A promise that resolves when the tile is reloaded
     */
-    reloadTile(params, callback) {
+    reloadTile(params) {
         const loaded = this.loaded, uid = params.uid;
         if (loaded && loaded[uid]) {
-            return super.reloadTile(params, callback);
+            return super.reloadTile(params);
         }
         else {
-            return this.loadTile(params, callback);
+            return this.loadTile(params);
         }
     }
-    removeSource(params, callback) {
-        if (this._pendingCallback) {
-            // Don't leak callbacks
-            this._pendingCallback(null, { abandoned: true });
-        }
-        callback();
+    /**
+     * Fetch and parse GeoJSON according to the given params.
+     *
+     * GeoJSON is loaded and parsed from `params.url` if it exists, or else
+     * expected as a literal (string or object) `params.data`.
+     *
+     * @param params - the parameters
+     * @param abortController - the abort controller that allows aborting this operation
+     * @returns a promise that resolves when the data is loaded
+     */
+    loadGeoJSON(params, abortController) {
+        return performance.__awaiter(this, void 0, void 0, function* () {
+            const { promoteId } = params;
+            if (params.request) {
+                const response = yield performance.getJSON(params.request, abortController);
+                this._dataUpdateable = isUpdateableGeoJSON(response.data, promoteId) ? toUpdateable(response.data, promoteId) : undefined;
+                return response.data;
+            }
+            if (typeof params.data === 'string') {
+                try {
+                    const parsed = JSON.parse(params.data);
+                    this._dataUpdateable = isUpdateableGeoJSON(parsed, promoteId) ? toUpdateable(parsed, promoteId) : undefined;
+                    return parsed;
+                }
+                catch (e) {
+                    throw new Error(`Input data given to '${params.source}' is not a valid GeoJSON object.`);
+                }
+            }
+            if (!params.dataDiff) {
+                throw new Error(`Input data given to '${params.source}' is not a valid GeoJSON object.`);
+            }
+            if (!this._dataUpdateable) {
+                throw new Error(`Cannot update existing geojson data in ${params.source}`);
+            }
+            applySourceDiff(this._dataUpdateable, params.dataDiff, promoteId);
+            return { type: 'FeatureCollection', features: Array.from(this._dataUpdateable.values()) };
+        });
     }
-    getClusterExpansionZoom(params, callback) {
-        try {
-            callback(null, this._geoJSONIndex.getClusterExpansionZoom(params.clusterId));
-        }
-        catch (e) {
-            callback(e);
-        }
+    removeSource(_params) {
+        return performance.__awaiter(this, void 0, void 0, function* () {
+            if (this._pendingRequest) {
+                this._pendingRequest.abort();
+            }
+        });
     }
-    getClusterChildren(params, callback) {
-        try {
-            callback(null, this._geoJSONIndex.getChildren(params.clusterId));
-        }
-        catch (e) {
-            callback(e);
-        }
+    getClusterExpansionZoom(params) {
+        return this._geoJSONIndex.getClusterExpansionZoom(params.clusterId);
     }
-    getClusterLeaves(params, callback) {
-        try {
-            callback(null, this._geoJSONIndex.getLeaves(params.clusterId, params.limit, params.offset));
-        }
-        catch (e) {
-            callback(e);
-        }
+    getClusterChildren(params) {
+        return this._geoJSONIndex.getChildren(params.clusterId);
+    }
+    getClusterLeaves(params) {
+        return this._geoJSONIndex.getLeaves(params.clusterId, params.limit, params.offset);
     }
 }
 function getSuperclusterOptions({ superclusterOptions, clusterProperties }) {
@@ -34521,159 +34888,200 @@ function getSuperclusterOptions({ superclusterOptions, clusterProperties }) {
 class Worker {
     constructor(self) {
         this.self = self;
-        this.actor = new performance.Actor(self, this);
+        this.actor = new performance.Actor(self);
         this.layerIndexes = {};
         this.availableImages = {};
-        this.workerSourceTypes = {
-            vector: VectorTileWorkerSource,
-            geojson: GeoJSONWorkerSource
-        };
-        // [mapId][sourceType][sourceName] => worker source instance
         this.workerSources = {};
         this.demWorkerSources = {};
+        this.externalWorkerSourceTypes = {};
         this.self.registerWorkerSource = (name, WorkerSource) => {
-            if (this.workerSourceTypes[name]) {
+            if (this.externalWorkerSourceTypes[name]) {
                 throw new Error(`Worker source with name "${name}" already registered.`);
             }
-            this.workerSourceTypes[name] = WorkerSource;
+            this.externalWorkerSourceTypes[name] = WorkerSource;
         };
+        this.self.addProtocol = performance.addProtocol;
+        this.self.removeProtocol = performance.removeProtocol;
         // This is invoked by the RTL text plugin when the download via the `importScripts` call has finished, and the code has been parsed.
         this.self.registerRTLTextPlugin = (rtlTextPlugin) => {
-            if (performance.plugin.isParsed()) {
+            if (performance.rtlWorkerPlugin.isParsed()) {
                 throw new Error('RTL text plugin already registered.');
             }
-            performance.plugin['applyArabicShaping'] = rtlTextPlugin.applyArabicShaping;
-            performance.plugin['processBidirectionalText'] = rtlTextPlugin.processBidirectionalText;
-            performance.plugin['processStyledBidirectionalText'] = rtlTextPlugin.processStyledBidirectionalText;
+            performance.rtlWorkerPlugin.setMethods(rtlTextPlugin);
         };
-    }
-    setReferrer(mapID, referrer) {
-        this.referrer = referrer;
-    }
-    setImages(mapId, images, callback) {
-        this.availableImages[mapId] = images;
-        for (const workerSource in this.workerSources[mapId]) {
-            const ws = this.workerSources[mapId][workerSource];
-            for (const source in ws) {
-                ws[source].availableImages = images;
+        this.actor.registerMessageHandler("LDT" /* MessageType.loadDEMTile */, (mapId, params) => {
+            return this._getDEMWorkerSource(mapId, params.source).loadTile(params);
+        });
+        this.actor.registerMessageHandler("RDT" /* MessageType.removeDEMTile */, (mapId, params) => performance.__awaiter(this, void 0, void 0, function* () {
+            this._getDEMWorkerSource(mapId, params.source).removeTile(params);
+        }));
+        this.actor.registerMessageHandler("GCEZ" /* MessageType.getClusterExpansionZoom */, (mapId, params) => performance.__awaiter(this, void 0, void 0, function* () {
+            return this._getWorkerSource(mapId, params.type, params.source).getClusterExpansionZoom(params);
+        }));
+        this.actor.registerMessageHandler("GCC" /* MessageType.getClusterChildren */, (mapId, params) => performance.__awaiter(this, void 0, void 0, function* () {
+            return this._getWorkerSource(mapId, params.type, params.source).getClusterChildren(params);
+        }));
+        this.actor.registerMessageHandler("GCL" /* MessageType.getClusterLeaves */, (mapId, params) => performance.__awaiter(this, void 0, void 0, function* () {
+            return this._getWorkerSource(mapId, params.type, params.source).getClusterLeaves(params);
+        }));
+        this.actor.registerMessageHandler("LD" /* MessageType.loadData */, (mapId, params) => {
+            return this._getWorkerSource(mapId, params.type, params.source).loadData(params);
+        });
+        this.actor.registerMessageHandler("LT" /* MessageType.loadTile */, (mapId, params) => {
+            return this._getWorkerSource(mapId, params.type, params.source).loadTile(params);
+        });
+        this.actor.registerMessageHandler("RT" /* MessageType.reloadTile */, (mapId, params) => {
+            return this._getWorkerSource(mapId, params.type, params.source).reloadTile(params);
+        });
+        this.actor.registerMessageHandler("AT" /* MessageType.abortTile */, (mapId, params) => {
+            return this._getWorkerSource(mapId, params.type, params.source).abortTile(params);
+        });
+        this.actor.registerMessageHandler("RMT" /* MessageType.removeTile */, (mapId, params) => {
+            return this._getWorkerSource(mapId, params.type, params.source).removeTile(params);
+        });
+        this.actor.registerMessageHandler("RS" /* MessageType.removeSource */, (mapId, params) => performance.__awaiter(this, void 0, void 0, function* () {
+            if (!this.workerSources[mapId] ||
+                !this.workerSources[mapId][params.type] ||
+                !this.workerSources[mapId][params.type][params.source]) {
+                return;
             }
-        }
-        callback();
-    }
-    setLayers(mapId, layers, callback) {
-        this.getLayerIndex(mapId).replace(layers);
-        callback();
-    }
-    updateLayers(mapId, params, callback) {
-        this.getLayerIndex(mapId).update(params.layers, params.removedIds);
-        callback();
-    }
-    loadTile(mapId, params, callback) {
-        this.getWorkerSource(mapId, params.type, params.source).loadTile(params, callback);
-    }
-    loadDEMTile(mapId, params, callback) {
-        this.getDEMWorkerSource(mapId, params.source).loadTile(params, callback);
-    }
-    reloadTile(mapId, params, callback) {
-        this.getWorkerSource(mapId, params.type, params.source).reloadTile(params, callback);
-    }
-    abortTile(mapId, params, callback) {
-        this.getWorkerSource(mapId, params.type, params.source).abortTile(params, callback);
-    }
-    removeTile(mapId, params, callback) {
-        this.getWorkerSource(mapId, params.type, params.source).removeTile(params, callback);
-    }
-    removeDEMTile(mapId, params) {
-        this.getDEMWorkerSource(mapId, params.source).removeTile(params);
-    }
-    removeSource(mapId, params, callback) {
-        if (!this.workerSources[mapId] ||
-            !this.workerSources[mapId][params.type] ||
-            !this.workerSources[mapId][params.type][params.source]) {
-            return;
-        }
-        const worker = this.workerSources[mapId][params.type][params.source];
-        delete this.workerSources[mapId][params.type][params.source];
-        if (worker.removeSource !== undefined) {
-            worker.removeSource(params, callback);
-        }
-        else {
-            callback();
-        }
-    }
-    /**
-     * Load a {@link WorkerSource} script at params.url.  The script is run
-     * (using importScripts) with `registerWorkerSource` in scope, which is a
-     * function taking `(name, workerSourceObject)`.
-     */
-    loadWorkerSource(map, params, callback) {
-        try {
-            this.self.importScripts(params.url);
-            callback();
-        }
-        catch (e) {
-            callback(e.toString());
-        }
-    }
-    syncRTLPluginState(map, state, callback) {
-        try {
-            performance.plugin.setState(state);
-            const pluginURL = performance.plugin.getPluginURL();
-            if (performance.plugin.isLoaded() &&
-                !performance.plugin.isParsed() &&
-                pluginURL != null // Not possible when `isLoaded` is true, but keeps flow happy
-            ) {
-                this.self.importScripts(pluginURL);
-                const complete = performance.plugin.isParsed();
-                const error = complete ? undefined : new Error(`RTL Text Plugin failed to import scripts from ${pluginURL}`);
-                callback(error, complete);
+            const worker = this.workerSources[mapId][params.type][params.source];
+            delete this.workerSources[mapId][params.type][params.source];
+            if (worker.removeSource !== undefined) {
+                worker.removeSource(params);
             }
-        }
-        catch (e) {
-            callback(e.toString());
-        }
+        }));
+        this.actor.registerMessageHandler("RM" /* MessageType.removeMap */, (mapId) => performance.__awaiter(this, void 0, void 0, function* () {
+            delete this.layerIndexes[mapId];
+            delete this.availableImages[mapId];
+            delete this.workerSources[mapId];
+            delete this.demWorkerSources[mapId];
+        }));
+        this.actor.registerMessageHandler("SR" /* MessageType.setReferrer */, (_mapId, params) => performance.__awaiter(this, void 0, void 0, function* () {
+            this.referrer = params;
+        }));
+        this.actor.registerMessageHandler("SRPS" /* MessageType.syncRTLPluginState */, (mapId, params) => {
+            return this._syncRTLPluginState(mapId, params);
+        });
+        this.actor.registerMessageHandler("IS" /* MessageType.importScript */, (_mapId, params) => performance.__awaiter(this, void 0, void 0, function* () {
+            this.self.importScripts(params);
+        }));
+        this.actor.registerMessageHandler("SI" /* MessageType.setImages */, (mapId, params) => {
+            return this._setImages(mapId, params);
+        });
+        this.actor.registerMessageHandler("UL" /* MessageType.updateLayers */, (mapId, params) => performance.__awaiter(this, void 0, void 0, function* () {
+            this._getLayerIndex(mapId).update(params.layers, params.removedIds);
+        }));
+        this.actor.registerMessageHandler("SL" /* MessageType.setLayers */, (mapId, params) => performance.__awaiter(this, void 0, void 0, function* () {
+            this._getLayerIndex(mapId).replace(params);
+        }));
     }
-    getAvailableImages(mapId) {
+    _setImages(mapId, images) {
+        return performance.__awaiter(this, void 0, void 0, function* () {
+            this.availableImages[mapId] = images;
+            for (const workerSource in this.workerSources[mapId]) {
+                const ws = this.workerSources[mapId][workerSource];
+                for (const source in ws) {
+                    ws[source].availableImages = images;
+                }
+            }
+        });
+    }
+    _syncRTLPluginState(mapId, incomingState) {
+        return performance.__awaiter(this, void 0, void 0, function* () {
+            // Parsed plugin cannot be changed, so just return its current state.
+            if (performance.rtlWorkerPlugin.isParsed()) {
+                return performance.rtlWorkerPlugin.getState();
+            }
+            if (incomingState.pluginStatus !== 'loading') {
+                // simply sync and done
+                performance.rtlWorkerPlugin.setState(incomingState);
+                return incomingState;
+            }
+            const urlToLoad = incomingState.pluginURL;
+            this.self.importScripts(urlToLoad);
+            const complete = performance.rtlWorkerPlugin.isParsed();
+            if (complete) {
+                const loadedState = {
+                    pluginStatus: 'loaded',
+                    pluginURL: urlToLoad
+                };
+                performance.rtlWorkerPlugin.setState(loadedState);
+                return loadedState;
+            }
+            // error case
+            performance.rtlWorkerPlugin.setState({
+                pluginStatus: 'error',
+                pluginURL: ''
+            });
+            throw new Error(`RTL Text Plugin failed to import scripts from ${urlToLoad}`);
+        });
+    }
+    _getAvailableImages(mapId) {
         let availableImages = this.availableImages[mapId];
         if (!availableImages) {
             availableImages = [];
         }
         return availableImages;
     }
-    getLayerIndex(mapId) {
+    _getLayerIndex(mapId) {
         let layerIndexes = this.layerIndexes[mapId];
         if (!layerIndexes) {
             layerIndexes = this.layerIndexes[mapId] = new StyleLayerIndex();
         }
         return layerIndexes;
     }
-    getWorkerSource(mapId, sourceType, sourceName) {
+    /**
+     * This is basically a lazy initialization of a worker per mapId and sourceType and sourceName
+     * @param mapId - the mapId
+     * @param sourceType - the source type - 'vector' for example
+     * @param sourceName - the source name - 'osm' for example
+     * @returns a new instance or a cached one
+     */
+    _getWorkerSource(mapId, sourceType, sourceName) {
         if (!this.workerSources[mapId])
             this.workerSources[mapId] = {};
         if (!this.workerSources[mapId][sourceType])
             this.workerSources[mapId][sourceType] = {};
         if (!this.workerSources[mapId][sourceType][sourceName]) {
             // use a wrapped actor so that we can attach a target mapId param
-            // to any messages invoked by the WorkerSource
+            // to any messages invoked by the WorkerSource, this is very important when there are multiple maps
             const actor = {
-                send: (type, data, callback) => {
-                    this.actor.send(type, data, callback, mapId);
+                sendAsync: (message, abortController) => {
+                    message.targetMapId = mapId;
+                    return this.actor.sendAsync(message, abortController);
                 }
             };
-            this.workerSources[mapId][sourceType][sourceName] = new this.workerSourceTypes[sourceType](actor, this.getLayerIndex(mapId), this.getAvailableImages(mapId));
+            switch (sourceType) {
+                case 'vector':
+                    this.workerSources[mapId][sourceType][sourceName] = new VectorTileWorkerSource(actor, this._getLayerIndex(mapId), this._getAvailableImages(mapId));
+                    break;
+                case 'geojson':
+                    this.workerSources[mapId][sourceType][sourceName] = new GeoJSONWorkerSource(actor, this._getLayerIndex(mapId), this._getAvailableImages(mapId));
+                    break;
+                default:
+                    this.workerSources[mapId][sourceType][sourceName] = new (this.externalWorkerSourceTypes[sourceType])(actor, this._getLayerIndex(mapId), this._getAvailableImages(mapId));
+                    break;
+            }
         }
         return this.workerSources[mapId][sourceType][sourceName];
     }
-    getDEMWorkerSource(mapId, source) {
+    /**
+     * This is basically a lazy initialization of a worker per mapId and source
+     * @param mapId - the mapId
+     * @param sourceType - the source type - 'raster-dem' for example
+     * @returns a new instance or a cached one
+     */
+    _getDEMWorkerSource(mapId, sourceType) {
         if (!this.demWorkerSources[mapId])
             this.demWorkerSources[mapId] = {};
-        if (!this.demWorkerSources[mapId][source]) {
-            this.demWorkerSources[mapId][source] = new RasterDEMTileWorkerSource();
+        if (!this.demWorkerSources[mapId][sourceType]) {
+            this.demWorkerSources[mapId][sourceType] = new RasterDEMTileWorkerSource();
         }
-        return this.demWorkerSources[mapId][source];
+        return this.demWorkerSources[mapId][sourceType];
     }
 }
-if (performance.isWorker()) {
+if (performance.isWorker(self)) {
     self.worker = new Worker(self);
 }
 
@@ -34681,15 +35089,19 @@ return Worker;
 
 }));
 
-define(['./shared'], (function (performance) { 'use strict';
+define('index', ['exports', './shared'], (function (exports, performance$1) { 'use strict';
 
 var name = "maplibre-gl";
 var description = "BSD licensed community fork of mapbox-gl, a WebGL interactive maps library";
-var version$2 = "3.6.2";
+var version$2 = "4.1.3";
 var main = "dist/maplibre-gl.js";
 var style = "dist/maplibre-gl.css";
 var license = "BSD-3-Clause";
+var homepage = "https://maplibre.org/";
 var funding = "https://github.com/maplibre/maplibre-gl-js?sponsor=1";
+var bugs = {
+	url: "https://github.com/maplibre/maplibre-gl-js/issues/"
+};
 var repository = {
 	type: "git",
 	url: "git://github.com/maplibre/maplibre-gl-js.git"
@@ -34704,8 +35116,9 @@ var dependencies = {
 	"@mapbox/unitbezier": "^0.0.1",
 	"@mapbox/vector-tile": "^1.3.1",
 	"@mapbox/whoots-js": "^3.1.0",
-	"@maplibre/maplibre-gl-style-spec": "^19.3.3",
-	"@types/geojson": "^7946.0.13",
+	"@maplibre/maplibre-gl-style-spec": "^20.1.1",
+	"@types/geojson": "^7946.0.14",
+	"@types/geojson-vt": "3.2.5",
 	"@types/mapbox__point-geometry": "^0.1.4",
 	"@types/mapbox__vector-tile": "^1.3.4",
 	"@types/pbf": "^3.0.5",
@@ -34727,93 +35140,93 @@ var devDependencies = {
 	"@mapbox/mapbox-gl-rtl-text": "^0.2.3",
 	"@mapbox/mvt-fixtures": "^3.10.0",
 	"@rollup/plugin-commonjs": "^25.0.7",
-	"@rollup/plugin-json": "^6.0.1",
+	"@rollup/plugin-json": "^6.1.0",
 	"@rollup/plugin-node-resolve": "^15.2.3",
 	"@rollup/plugin-replace": "^5.0.5",
 	"@rollup/plugin-strip": "^3.0.4",
 	"@rollup/plugin-terser": "^0.4.4",
-	"@rollup/plugin-typescript": "^11.1.5",
+	"@rollup/plugin-typescript": "^11.1.6",
 	"@types/benchmark": "^2.1.5",
 	"@types/cssnano": "^5.0.0",
 	"@types/d3": "^7.4.3",
-	"@types/diff": "^5.0.8",
+	"@types/diff": "^5.0.9",
 	"@types/earcut": "^2.1.4",
-	"@types/eslint": "^8.44.7",
-	"@types/geojson-vt": "3.2.4",
+	"@types/eslint": "^8.56.7",
 	"@types/gl": "^6.0.5",
 	"@types/glob": "^8.1.0",
-	"@types/jest": "^29.5.8",
-	"@types/jsdom": "^21.1.5",
+	"@types/jest": "^29.5.12",
+	"@types/jsdom": "^21.1.6",
 	"@types/minimist": "^1.2.5",
 	"@types/murmurhash-js": "^1.0.6",
 	"@types/nise": "^1.4.4",
-	"@types/node": "^20.9.2",
+	"@types/node": "^20.12.7",
 	"@types/offscreencanvas": "^2019.7.3",
 	"@types/pixelmatch": "^5.2.6",
 	"@types/pngjs": "^6.0.4",
-	"@types/react": "^18.2.37",
-	"@types/react-dom": "^18.2.15",
+	"@types/react": "^18.2.79",
+	"@types/react-dom": "^18.2.25",
 	"@types/request": "^2.48.12",
-	"@types/shuffle-seed": "^1.1.2",
+	"@types/shuffle-seed": "^1.1.3",
 	"@types/window-or-global": "^1.0.6",
-	"@typescript-eslint/eslint-plugin": "^6.11.0",
-	"@typescript-eslint/parser": "^6.11.0",
-	address: "^2.0.1",
+	"@typescript-eslint/eslint-plugin": "^7.7.0",
+	"@typescript-eslint/parser": "^7.7.0",
+	address: "^2.0.2",
 	benchmark: "^2.1.4",
 	canvas: "^2.11.2",
-	cssnano: "^6.0.1",
-	d3: "^7.8.5",
+	cssnano: "^6.1.2",
+	d3: "^7.9.0",
 	"d3-queue": "^3.0.7",
-	"devtools-protocol": "^0.0.1226504",
-	diff: "^5.1.0",
-	"dts-bundle-generator": "^8.1.2",
-	eslint: "^8.54.0",
+	"devtools-protocol": "^0.0.1286932",
+	diff: "^5.2.0",
+	"dts-bundle-generator": "^9.4.0",
+	eslint: "^8.57.0",
 	"eslint-config-mourner": "^3.0.0",
-	"eslint-plugin-html": "^7.1.0",
-	"eslint-plugin-import": "^2.29.0",
-	"eslint-plugin-jest": "^27.6.0",
-	"eslint-plugin-react": "^7.33.2",
+	"eslint-plugin-html": "^8.1.0",
+	"eslint-plugin-import": "^2.29.1",
+	"eslint-plugin-jest": "^28.2.0",
+	"eslint-plugin-react": "^7.34.1",
 	"eslint-plugin-tsdoc": "0.2.17",
 	expect: "^29.7.0",
-	gl: "^6.0.2",
-	glob: "^10.3.10",
+	glob: "^10.3.12",
 	"is-builtin-module": "^3.2.1",
 	jest: "^29.7.0",
-	"jest-canvas-mock": "^2.5.2",
 	"jest-environment-jsdom": "^29.7.0",
-	jsdom: "^22.1.0",
+	"jest-monocart-coverage": "^1.1.0",
+	"jest-webgl-canvas-mock": "^2.5.3",
+	jsdom: "^24.0.0",
 	"json-stringify-pretty-compact": "^4.0.0",
 	minimist: "^1.2.8",
 	"mock-geolocation": "^1.0.11",
-	nise: "^5.1.5",
+	"monocart-coverage-reports": "^2.7.9",
+	nise: "^5.1.9",
 	"npm-font-open-sans": "^1.1.0",
 	"npm-run-all": "^4.1.5",
-	"pdf-merger-js": "^4.3.0",
+	"pdf-merger-js": "^5.1.1",
 	pixelmatch: "^5.3.0",
 	pngjs: "^7.0.0",
-	postcss: "^8.4.31",
-	"postcss-cli": "^10.1.0",
+	postcss: "^8.4.38",
+	"postcss-cli": "^11.0.0",
 	"postcss-inline-svg": "^6.0.0",
 	"pretty-bytes": "^6.1.1",
-	puppeteer: "^21.5.2",
+	puppeteer: "^22.6.5",
 	react: "^18.2.0",
 	"react-dom": "^18.2.0",
-	rollup: "^4.5.0",
+	rollup: "^4.14.3",
 	"rollup-plugin-sourcemaps": "^0.6.3",
 	rw: "^1.3.3",
-	semver: "^7.5.4",
+	semver: "^7.6.0",
 	"shuffle-seed": "^1.1.6",
 	"source-map-explorer": "^2.5.3",
 	st: "^3.0.0",
-	stylelint: "^15.11.0",
-	"stylelint-config-standard": "^34.0.0",
-	"ts-jest": "^29.1.1",
-	"ts-node": "^10.9.1",
+	stylelint: "^16.3.1",
+	"stylelint-config-standard": "^36.0.0",
+	"ts-jest": "^29.1.2",
+	"ts-node": "^10.9.2",
 	tslib: "^2.6.2",
-	typedoc: "^0.25.3",
+	typedoc: "^0.25.13",
 	"typedoc-plugin-markdown": "^3.17.1",
-	"typedoc-plugin-missing-exports": "^2.1.0",
-	typescript: "^5.2.2"
+	"typedoc-plugin-missing-exports": "^2.2.0",
+	typescript: "^5.4.5"
 };
 var overrides = {
 	"postcss-inline-svg": {
@@ -34824,14 +35237,14 @@ var overrides = {
 	}
 };
 var scripts = {
-	"generate-dist-package": "npm run tsnode build/generate-dist-package.js",
-	"generate-shaders": "npm run tsnode build/generate-shaders.ts",
-	"generate-struct-arrays": "npm run tsnode build/generate-struct-arrays.ts",
-	"generate-style-code": "npm run tsnode build/generate-style-code.ts",
-	"generate-typings": "npm run tsnode build/generate-typings.ts",
-	"generate-docs": "typedoc && npm run tsnode build/generate-docs.ts",
-	"generate-images": "npm run tsnode build/generate-doc-images.ts",
-	"build-dist": "run-p --print-label generate-typings build-dev build-prod build-csp build-csp-dev build-css",
+	"generate-dist-package": "node --no-warnings --loader ts-node/esm build/generate-dist-package.js",
+	"generate-shaders": "node --no-warnings --loader ts-node/esm build/generate-shaders.ts",
+	"generate-struct-arrays": "node --no-warnings --loader ts-node/esm build/generate-struct-arrays.ts",
+	"generate-style-code": "node --no-warnings --loader ts-node/esm build/generate-style-code.ts",
+	"generate-typings": "dts-bundle-generator --export-referenced-types --umd-module-name=maplibregl -o ./dist/maplibre-gl.d.ts ./src/index.ts",
+	"generate-docs": "typedoc && node --no-warnings --loader ts-node/esm build/generate-docs.ts",
+	"generate-images": "node --no-warnings --loader ts-node/esm build/generate-doc-images.ts",
+	"build-dist": "npm run build-css && npm run generate-typings && npm run build-dev && npm run build-csp-dev && npm run build-prod && npm run build-csp",
 	"build-dev": "rollup --configPlugin @rollup/plugin-typescript -c --environment BUILD:dev",
 	"watch-dev": "rollup --configPlugin @rollup/plugin-typescript -c --environment BUILD:dev --watch",
 	"build-prod": "rollup --configPlugin @rollup/plugin-typescript -c --environment BUILD:production",
@@ -34849,15 +35262,17 @@ var scripts = {
 	"lint-css": "stylelint src/css/maplibre-gl.css",
 	test: "run-p lint lint-css test-render jest",
 	jest: "jest",
-	"jest-ci": "jest --reporters=github-actions --reporters=summary",
-	"test-build": "jest --selectProjects=build",
-	"test-integration": "jest --selectProjects=integration",
-	"test-render": "npm run tsnode test/integration/render/run_render_tests.ts",
-	"test-unit": "jest --selectProjects=unit",
+	"test-build": "jest --selectProjects=build --reporters=default",
+	"test-build-ci": "jest --selectProjects=build",
+	"test-integration": "jest --selectProjects=integration --reporters=default",
+	"test-integration-ci": "jest --selectProjects=integration",
+	"test-render": "node --no-warnings --loader ts-node/esm test/integration/render/run_render_tests.ts",
+	"test-unit": "jest --selectProjects=unit --reporters=default",
+	"test-unit-ci": "jest --coverage --selectProjects unit",
 	"test-watch-roots": "jest --watch",
-	codegen: "run-p generate-dist-package generate-style-code generate-struct-arrays generate-shaders",
-	benchmark: "npm run tsnode test/bench/run-benchmarks.ts",
-	"gl-stats": "npm run tsnode test/bench/gl-stats.ts",
+	codegen: "run-p --print-label generate-dist-package generate-style-code generate-struct-arrays generate-shaders && npm run generate-typings",
+	benchmark: "node --no-warnings --loader ts-node/esm test/bench/run-benchmarks.ts",
+	"gl-stats": "node --no-warnings --loader ts-node/esm test/bench/gl-stats.ts",
 	prepare: "npm run codegen",
 	typecheck: "tsc --noEmit && tsc --project tsconfig.dist.json",
 	tsnode: "node --experimental-loader=ts-node/esm --no-warnings"
@@ -34878,7 +35293,9 @@ var packageJSON = {
 	main: main,
 	style: style,
 	license: license,
+	homepage: homepage,
 	funding: funding,
+	bugs: bugs,
 	repository: repository,
 	types: types,
 	type: type,
@@ -34888,6 +35305,61 @@ var packageJSON = {
 	scripts: scripts,
 	files: files,
 	engines: engines
+};
+
+const now = typeof performance !== 'undefined' && performance && performance.now ?
+    performance.now.bind(performance) :
+    Date.now.bind(Date);
+let linkEl;
+let reducedMotionQuery;
+/** */
+const browser = {
+    /**
+     * Provides a function that outputs milliseconds: either performance.now()
+     * or a fallback to Date.now()
+     */
+    now,
+    frameAsync(abortController) {
+        return new Promise((resolve, reject) => {
+            const frame = requestAnimationFrame(resolve);
+            abortController.signal.addEventListener('abort', () => {
+                cancelAnimationFrame(frame);
+                reject(performance$1.createAbortError());
+            });
+        });
+    },
+    getImageData(img, padding = 0) {
+        const context = this.getImageCanvasContext(img);
+        return context.getImageData(-padding, -padding, img.width + 2 * padding, img.height + 2 * padding);
+    },
+    getImageCanvasContext(img) {
+        const canvas = window.document.createElement('canvas');
+        const context = canvas.getContext('2d', { willReadFrequently: true });
+        if (!context) {
+            throw new Error('failed to create canvas 2d context');
+        }
+        canvas.width = img.width;
+        canvas.height = img.height;
+        context.drawImage(img, 0, 0, img.width, img.height);
+        return context;
+    },
+    resolveURL(path) {
+        if (!linkEl)
+            linkEl = document.createElement('a');
+        linkEl.href = path;
+        return linkEl.href;
+    },
+    hardwareConcurrency: typeof navigator !== 'undefined' && navigator.hardwareConcurrency || 4,
+    get prefersReducedMotion() {
+        // In case your test crashes when checking matchMedia, call setMatchMedia from 'src/util/test/util'
+        if (!matchMedia)
+            return false;
+        //Lazily initialize media query
+        if (reducedMotionQuery == null) {
+            reducedMotionQuery = matchMedia('(prefers-reduced-motion: reduce)');
+        }
+        return reducedMotionQuery.matches;
+    },
 };
 
 class DOM {
@@ -34955,15 +35427,30 @@ class DOM {
             window.removeEventListener('click', DOM.suppressClickInternal, true);
         }, 0);
     }
+    static getScale(element) {
+        const rect = element.getBoundingClientRect();
+        return {
+            x: (rect.width / element.offsetWidth) || 1,
+            y: (rect.height / element.offsetHeight) || 1,
+            boundingClientRect: rect,
+        };
+    }
+    static getPoint(el, scale, e) {
+        const rect = scale.boundingClientRect;
+        return new performance$1.Point(
+        // rect.left/top values are in page scale (like clientX/Y),
+        // whereas clientLeft/Top (border width) values are the original values (before CSS scale applies).
+        ((e.clientX - rect.left) / scale.x) - el.clientLeft, ((e.clientY - rect.top) / scale.y) - el.clientTop);
+    }
     static mousePos(el, e) {
-        const rect = el.getBoundingClientRect();
-        return new performance.Point(e.clientX - rect.left - el.clientLeft, e.clientY - rect.top - el.clientTop);
+        const scale = DOM.getScale(el);
+        return DOM.getPoint(el, scale, e);
     }
     static touchPos(el, touches) {
-        const rect = el.getBoundingClientRect();
         const points = [];
+        const scale = DOM.getScale(el);
         for (let i = 0; i < touches.length; i++) {
-            points.push(new performance.Point(touches[i].clientX - rect.left - el.clientLeft, touches[i].clientY - rect.top - el.clientTop));
+            points.push(DOM.getPoint(el, scale, touches[i]));
         }
         return points;
     }
@@ -35095,67 +35582,57 @@ var ImageRequest;
      * @returns `true` if any callback is causing the queue to be throttled.
      */
     const isThrottled = () => {
-        const allControlKeys = Object.keys(throttleControlCallbacks);
-        let throttleingRequested = false;
-        if (allControlKeys.length > 0) {
-            for (const key of allControlKeys) {
-                throttleingRequested = throttleControlCallbacks[key]();
-                if (throttleingRequested) {
-                    break;
-                }
+        for (const key of Object.keys(throttleControlCallbacks)) {
+            if (throttleControlCallbacks[key]()) {
+                return true;
             }
         }
-        return throttleingRequested;
+        return false;
     };
     /**
      * Request to load an image.
      * @param requestParameters - Request parameters.
-     * @param callback - Callback to issue when the request completes.
+     * @param abortController - allows to abort the request.
      * @param supportImageRefresh - `true`, if the image request need to support refresh based on cache headers.
-     * @returns Cancelable request.
+     * @returns - A promise resolved when the image is loaded.
      */
-    ImageRequest.getImage = (requestParameters, callback, supportImageRefresh = true) => {
-        if (webpSupported.supported) {
-            if (!requestParameters.headers) {
-                requestParameters.headers = {};
-            }
-            requestParameters.headers.accept = 'image/webp,*/*';
-        }
-        const request = {
-            requestParameters,
-            supportImageRefresh,
-            callback,
-            cancelled: false,
-            completed: false,
-            cancel: () => {
-                if (!request.completed && !request.cancelled) {
-                    request.cancelled = true;
-                    // Only reduce currentParallelImageRequests, if the image request was issued.
-                    if (request.innerRequest) {
-                        request.innerRequest.cancel();
-                        currentParallelImageRequests--;
-                    }
-                    // in the case of cancelling, it WILL move on
-                    processQueue();
+    ImageRequest.getImage = (requestParameters, abortController, supportImageRefresh = true) => {
+        return new Promise((resolve, reject) => {
+            if (webpSupported.supported) {
+                if (!requestParameters.headers) {
+                    requestParameters.headers = {};
                 }
+                requestParameters.headers.accept = 'image/webp,*/*';
             }
-        };
-        imageRequestQueue.push(request);
-        processQueue();
-        return request;
+            performance$1.extend(requestParameters, { type: 'image' });
+            const request = {
+                abortController,
+                requestParameters,
+                supportImageRefresh,
+                state: 'queued',
+                onError: (error) => {
+                    reject(error);
+                },
+                onSuccess: (response) => {
+                    resolve(response);
+                }
+            };
+            imageRequestQueue.push(request);
+            processQueue();
+        });
     };
-    const arrayBufferToCanvasImageSource = (data, callback) => {
+    const arrayBufferToCanvasImageSource = (data) => {
         const imageBitmapSupported = typeof createImageBitmap === 'function';
         if (imageBitmapSupported) {
-            performance.arrayBufferToImageBitmap(data, callback);
+            return performance$1.arrayBufferToImageBitmap(data);
         }
         else {
-            performance.arrayBufferToImage(data, callback);
+            return performance$1.arrayBufferToImage(data);
         }
     };
-    const doImageRequest = (itemInQueue) => {
-        const { requestParameters, supportImageRefresh, callback } = itemInQueue;
-        performance.extend(requestParameters, { type: 'image' });
+    const doImageRequest = (itemInQueue) => performance$1.__awaiter(this, void 0, void 0, function* () {
+        itemInQueue.state = 'running';
+        const { requestParameters, supportImageRefresh, onError, onSuccess, abortController } = itemInQueue;
         // - If refreshExpiredTiles is false, then we can use HTMLImageElement to download raster images.
         // - Fetch/XHR (via MakeRequest API) will be used to download images for following scenarios:
         //      1. Style image sprite will had a issue with HTMLImageElement as described
@@ -35166,108 +35643,88 @@ var ImageRequest;
         //      let makeRequest handle it.
         // - HtmlImageElement request automatically adds accept header for all the browser supported images
         const canUseHTMLImageElement = supportImageRefresh === false &&
-            !performance.isWorker() &&
-            !performance.getProtocolAction(requestParameters.url) &&
+            !performance$1.isWorker(self) &&
+            !performance$1.getProtocol(requestParameters.url) &&
             (!requestParameters.headers ||
                 Object.keys(requestParameters.headers).reduce((acc, item) => acc && item === 'accept', true));
-        const action = canUseHTMLImageElement ? getImageUsingHtmlImage : performance.makeRequest;
-        return action(requestParameters, (err, data, cacheControl, expires) => {
-            onImageResponse(itemInQueue, callback, err, data, cacheControl, expires);
-        });
-    };
-    const onImageResponse = (itemInQueue, callback, err, data, cacheControl, expires) => {
-        if (err) {
-            callback(err);
+        currentParallelImageRequests++;
+        const getImagePromise = canUseHTMLImageElement ?
+            getImageUsingHtmlImage(requestParameters, abortController) :
+            performance$1.makeRequest(requestParameters, abortController);
+        try {
+            const response = yield getImagePromise;
+            delete itemInQueue.abortController;
+            itemInQueue.state = 'completed';
+            if (response.data instanceof HTMLImageElement || performance$1.isImageBitmap(response.data)) {
+                // User using addProtocol can directly return HTMLImageElement/ImageBitmap type
+                // If HtmlImageElement is used to get image then response type will be HTMLImageElement
+                onSuccess(response);
+            }
+            else if (response.data) {
+                const img = yield arrayBufferToCanvasImageSource(response.data);
+                onSuccess({ data: img, cacheControl: response.cacheControl, expires: response.expires });
+            }
         }
-        else if (data instanceof HTMLImageElement || performance.isImageBitmap(data)) {
-            // User using addProtocol can directly return HTMLImageElement/ImageBitmap type
-            // If HtmlImageElement is used to get image then response type will be HTMLImageElement
-            callback(null, data);
+        catch (err) {
+            delete itemInQueue.abortController;
+            onError(err);
         }
-        else if (data) {
-            const decoratedCallback = (imgErr, imgResult) => {
-                if (imgErr != null) {
-                    callback(imgErr);
-                }
-                else if (imgResult != null) {
-                    callback(null, imgResult, { cacheControl, expires });
-                }
-            };
-            arrayBufferToCanvasImageSource(data, decoratedCallback);
-        }
-        if (!itemInQueue.cancelled) {
-            itemInQueue.completed = true;
+        finally {
             currentParallelImageRequests--;
             processQueue();
         }
-    };
+    });
     /**
      * Process some number of items in the image request queue.
      */
     const processQueue = () => {
         const maxImageRequests = isThrottled() ?
-            performance.config.MAX_PARALLEL_IMAGE_REQUESTS_PER_FRAME :
-            performance.config.MAX_PARALLEL_IMAGE_REQUESTS;
+            performance$1.config.MAX_PARALLEL_IMAGE_REQUESTS_PER_FRAME :
+            performance$1.config.MAX_PARALLEL_IMAGE_REQUESTS;
         // limit concurrent image loads to help with raster sources performance on big screens
         for (let numImageRequests = currentParallelImageRequests; numImageRequests < maxImageRequests && imageRequestQueue.length > 0; numImageRequests++) {
             const topItemInQueue = imageRequestQueue.shift();
-            if (topItemInQueue.cancelled) {
+            if (topItemInQueue.abortController.signal.aborted) {
                 numImageRequests--;
                 continue;
             }
-            const innerRequest = doImageRequest(topItemInQueue);
-            currentParallelImageRequests++;
-            topItemInQueue.innerRequest = innerRequest;
+            doImageRequest(topItemInQueue);
         }
     };
-    const getImageUsingHtmlImage = (requestParameters, callback) => {
-        const image = new Image();
-        const url = requestParameters.url;
-        let requestCancelled = false;
-        const credentials = requestParameters.credentials;
-        if (credentials && credentials === 'include') {
-            image.crossOrigin = 'use-credentials';
-        }
-        else if ((credentials && credentials === 'same-origin') || !performance.sameOrigin(url)) {
-            image.crossOrigin = 'anonymous';
-        }
-        image.fetchPriority = 'high';
-        image.onload = () => {
-            callback(null, image);
-            image.onerror = image.onload = null;
-        };
-        image.onerror = () => {
-            if (!requestCancelled) {
-                callback(new Error('Could not load image. Please make sure to use a supported image type such as PNG or JPEG. Note that SVGs are not supported.'));
+    const getImageUsingHtmlImage = (requestParameters, abortController) => {
+        return new Promise((resolve, reject) => {
+            const image = new Image();
+            const url = requestParameters.url;
+            const credentials = requestParameters.credentials;
+            if (credentials && credentials === 'include') {
+                image.crossOrigin = 'use-credentials';
             }
-            image.onerror = image.onload = null;
-        };
-        image.src = url;
-        return {
-            cancel: () => {
-                requestCancelled = true;
+            else if ((credentials && credentials === 'same-origin') || !performance$1.sameOrigin(url)) {
+                image.crossOrigin = 'anonymous';
+            }
+            abortController.signal.addEventListener('abort', () => {
                 // Set src to '' to actually cancel the request
                 image.src = '';
-            }
-        };
+                reject(performance$1.createAbortError());
+            });
+            image.fetchPriority = 'high';
+            image.onload = () => {
+                image.onerror = image.onload = null;
+                resolve({ data: image });
+            };
+            image.onerror = () => {
+                image.onerror = image.onload = null;
+                if (abortController.signal.aborted) {
+                    return;
+                }
+                reject(new Error('Could not load image. Please make sure to use a supported image type such as PNG or JPEG. Note that SVGs are not supported.'));
+            };
+            image.src = url;
+        });
     };
 })(ImageRequest || (ImageRequest = {}));
 ImageRequest.resetRequestQueue();
 
-/**
- * A type of MapLibre resource.
- */
-var ResourceType;
-(function (ResourceType) {
-    ResourceType["Glyphs"] = "Glyphs";
-    ResourceType["Image"] = "Image";
-    ResourceType["Source"] = "Source";
-    ResourceType["SpriteImage"] = "SpriteImage";
-    ResourceType["SpriteJSON"] = "SpriteJSON";
-    ResourceType["Style"] = "Style";
-    ResourceType["Tile"] = "Tile";
-    ResourceType["Unknown"] = "Unknown";
-})(ResourceType || (ResourceType = {}));
 class RequestManager {
     constructor(transformRequestFn) {
         this._transformRequestFn = transformRequestFn;
@@ -35330,65 +35787,41 @@ function coerceSpriteToArray(sprite) {
     return resultArray;
 }
 
-function loadSprite(originalSprite, requestManager, pixelRatio, callback) {
-    const spriteArray = coerceSpriteToArray(originalSprite);
-    const spriteArrayLength = spriteArray.length;
-    const format = pixelRatio > 1 ? '@2x' : '';
-    const combinedRequestsMap = {};
-    const jsonsMap = {};
-    const imagesMap = {};
-    for (const { id, url } of spriteArray) {
-        const jsonRequestParameters = requestManager.transformRequest(requestManager.normalizeSpriteURL(url, format, '.json'), ResourceType.SpriteJSON);
-        const jsonRequestKey = `${id}_${jsonRequestParameters.url}`; // use id_url as requestMap key to make sure it is unique
-        combinedRequestsMap[jsonRequestKey] = performance.getJSON(jsonRequestParameters, (err, data) => {
-            delete combinedRequestsMap[jsonRequestKey];
-            jsonsMap[id] = data;
-            doOnceCompleted(callback, jsonsMap, imagesMap, err, spriteArrayLength);
-        });
-        const imageRequestParameters = requestManager.transformRequest(requestManager.normalizeSpriteURL(url, format, '.png'), ResourceType.SpriteImage);
-        const imageRequestKey = `${id}_${imageRequestParameters.url}`; // use id_url as requestMap key to make sure it is unique
-        combinedRequestsMap[imageRequestKey] = ImageRequest.getImage(imageRequestParameters, (err, img) => {
-            delete combinedRequestsMap[imageRequestKey];
-            imagesMap[id] = img;
-            doOnceCompleted(callback, jsonsMap, imagesMap, err, spriteArrayLength);
-        });
-    }
-    return {
-        cancel() {
-            for (const requst of Object.values(combinedRequestsMap)) {
-                requst.cancel();
-            }
+function loadSprite(originalSprite, requestManager, pixelRatio, abortController) {
+    return performance$1.__awaiter(this, void 0, void 0, function* () {
+        const spriteArray = coerceSpriteToArray(originalSprite);
+        const format = pixelRatio > 1 ? '@2x' : '';
+        const jsonsMap = {};
+        const imagesMap = {};
+        for (const { id, url } of spriteArray) {
+            const jsonRequestParameters = requestManager.transformRequest(requestManager.normalizeSpriteURL(url, format, '.json'), "SpriteJSON" /* ResourceType.SpriteJSON */);
+            jsonsMap[id] = performance$1.getJSON(jsonRequestParameters, abortController);
+            const imageRequestParameters = requestManager.transformRequest(requestManager.normalizeSpriteURL(url, format, '.png'), "SpriteImage" /* ResourceType.SpriteImage */);
+            imagesMap[id] = ImageRequest.getImage(imageRequestParameters, abortController);
         }
-    };
+        yield Promise.all([...Object.values(jsonsMap), ...Object.values(imagesMap)]);
+        return doOnceCompleted(jsonsMap, imagesMap);
+    });
 }
 /**
- * @param callbackFunc - the callback function (both erro and success)
  * @param jsonsMap - JSON data map
  * @param imagesMap - image data map
- * @param err - error object
- * @param expectedResultCounter - number of expected JSON or Image results when everything is finished, respectively.
  */
-function doOnceCompleted(callbackFunc, jsonsMap, imagesMap, err, expectedResultCounter) {
-    if (err) {
-        callbackFunc(err);
-        return;
-    }
-    if (expectedResultCounter !== Object.values(jsonsMap).length || expectedResultCounter !== Object.values(imagesMap).length) {
-        // not done yet, nothing to do
-        return;
-    }
-    const result = {};
-    for (const spriteName in jsonsMap) {
-        result[spriteName] = {};
-        const context = performance.browser.getImageCanvasContext(imagesMap[spriteName]);
-        const json = jsonsMap[spriteName];
-        for (const id in json) {
-            const { width, height, x, y, sdf, pixelRatio, stretchX, stretchY, content } = json[id];
-            const spriteData = { width, height, x, y, context };
-            result[spriteName][id] = { data: null, pixelRatio, sdf, stretchX, stretchY, content, spriteData };
+function doOnceCompleted(jsonsMap, imagesMap) {
+    return performance$1.__awaiter(this, void 0, void 0, function* () {
+        const result = {};
+        for (const spriteName in jsonsMap) {
+            result[spriteName] = {};
+            const context = browser.getImageCanvasContext((yield imagesMap[spriteName]).data);
+            const json = (yield jsonsMap[spriteName]).data;
+            for (const id in json) {
+                const { width, height, x, y, sdf, pixelRatio, stretchX, stretchY, content } = json[id];
+                const spriteData = { width, height, x, y, context };
+                result[spriteName][id] = { data: null, pixelRatio, sdf, stretchX, stretchY, content, spriteData };
+            }
         }
-    }
-    callbackFunc(null, result);
+        return result;
+    });
 }
 
 /**
@@ -35414,7 +35847,7 @@ class Texture {
         context.pixelStoreUnpackPremultiplyAlpha.set(this.format === gl.RGBA && (!options || options.premultiply !== false));
         if (resize) {
             this.size = [width, height];
-            if (image instanceof HTMLImageElement || image instanceof HTMLCanvasElement || image instanceof HTMLVideoElement || image instanceof ImageData || performance.isImageBitmap(image)) {
+            if (image instanceof HTMLImageElement || image instanceof HTMLCanvasElement || image instanceof HTMLVideoElement || image instanceof ImageData || performance$1.isImageBitmap(image)) {
                 gl.texImage2D(gl.TEXTURE_2D, 0, this.format, this.format, gl.UNSIGNED_BYTE, image);
             }
             else {
@@ -35423,7 +35856,7 @@ class Texture {
         }
         else {
             const { x, y } = position || { x: 0, y: 0 };
-            if (image instanceof HTMLImageElement || image instanceof HTMLCanvasElement || image instanceof HTMLVideoElement || image instanceof ImageData || performance.isImageBitmap(image)) {
+            if (image instanceof HTMLImageElement || image instanceof HTMLCanvasElement || image instanceof HTMLVideoElement || image instanceof ImageData || performance$1.isImageBitmap(image)) {
                 gl.texSubImage2D(gl.TEXTURE_2D, 0, x, y, gl.RGBA, gl.UNSIGNED_BYTE, image);
             }
             else {
@@ -35475,23 +35908,25 @@ function renderStyleImage(image) {
 }
 
 /* eslint-disable key-spacing */
-// When copied into the atlas texture, image data is padded by one pixel on each side. Icon
-// images are padded with fully transparent pixels, while pattern images are padded with a
-// copy of the image data wrapped from the opposite side. In both cases, this ensures the
-// correct behavior of GL_LINEAR texture sampling mode.
+/**
+ * When copied into the atlas texture, image data is padded by one pixel on each side. Icon
+ * images are padded with fully transparent pixels, while pattern images are padded with a
+ * copy of the image data wrapped from the opposite side. In both cases, this ensures the
+ * correct behavior of GL_LINEAR texture sampling mode.
+ */
 const padding = 1;
-/*
-    ImageManager does three things:
-
-        1. Tracks requests for icon images from tile workers and sends responses when the requests are fulfilled.
-        2. Builds a texture atlas for pattern images.
-        3. Rerenders renderable images once per frame
-
-    These are disparate responsibilities and should eventually be handled by different classes. When we implement
-    data-driven support for `*-pattern`, we'll likely use per-bucket pattern atlases, and that would be a good time
-    to refactor this.
+/**
+ * ImageManager does three things:
+ *
+ * 1. Tracks requests for icon images from tile workers and sends responses when the requests are fulfilled.
+ * 2. Builds a texture atlas for pattern images.
+ * 3. Rerenders renderable images once per frame
+ *
+ * These are disparate responsibilities and should eventually be handled by different classes. When we implement
+ * data-driven support for `*-pattern`, we'll likely use per-bucket pattern atlases, and that would be a good time
+ * to refactor this.
 */
-class ImageManager extends performance.Evented {
+class ImageManager extends performance$1.Evented {
     constructor() {
         super();
         this.images = {};
@@ -35500,7 +35935,7 @@ class ImageManager extends performance.Evented {
         this.loaded = false;
         this.requestors = [];
         this.patterns = {};
-        this.atlasImage = new performance.RGBAImage({ width: 1, height: 1 });
+        this.atlasImage = new performance$1.RGBAImage({ width: 1, height: 1 });
         this.dirty = true;
     }
     isLoaded() {
@@ -35512,8 +35947,8 @@ class ImageManager extends performance.Evented {
         }
         this.loaded = loaded;
         if (loaded) {
-            for (const { ids, callback } of this.requestors) {
-                this._notify(ids, callback);
+            for (const { ids, promiseResolve } of this.requestors) {
+                promiseResolve(this._getImagesForIds(ids));
             }
             this.requestors = [];
         }
@@ -35523,7 +35958,7 @@ class ImageManager extends performance.Evented {
         // Extract sprite image data on demand
         if (image && !image.data && image.spriteData) {
             const spriteData = image.spriteData;
-            image.data = new performance.RGBAImage({
+            image.data = new performance$1.RGBAImage({
                 width: spriteData.width,
                 height: spriteData.height
             }, spriteData.context.getImageData(spriteData.x, spriteData.y, spriteData.width, spriteData.height).data);
@@ -35542,15 +35977,15 @@ class ImageManager extends performance.Evented {
         let valid = true;
         const data = image.data || image.spriteData;
         if (!this._validateStretch(image.stretchX, data && data.width)) {
-            this.fire(new performance.ErrorEvent(new Error(`Image "${id}" has invalid "stretchX" value`)));
+            this.fire(new performance$1.ErrorEvent(new Error(`Image "${id}" has invalid "stretchX" value`)));
             valid = false;
         }
         if (!this._validateStretch(image.stretchY, data && data.height)) {
-            this.fire(new performance.ErrorEvent(new Error(`Image "${id}" has invalid "stretchY" value`)));
+            this.fire(new performance$1.ErrorEvent(new Error(`Image "${id}" has invalid "stretchY" value`)));
             valid = false;
         }
         if (!this._validateContent(image.content, image)) {
-            this.fire(new performance.ErrorEvent(new Error(`Image "${id}" has invalid "content" value`)));
+            this.fire(new performance$1.ErrorEvent(new Error(`Image "${id}" has invalid "content" value`)));
             valid = false;
         }
         return valid;
@@ -35608,32 +36043,34 @@ class ImageManager extends performance.Evented {
     listImages() {
         return Object.keys(this.images);
     }
-    getImages(ids, callback) {
-        // If the sprite has been loaded, or if all the icon dependencies are already present
-        // (i.e. if they've been added via runtime styling), then notify the requestor immediately.
-        // Otherwise, delay notification until the sprite is loaded. At that point, if any of the
-        // dependencies are still unavailable, we'll just assume they are permanently missing.
-        let hasAllDependencies = true;
-        if (!this.isLoaded()) {
-            for (const id of ids) {
-                if (!this.images[id]) {
-                    hasAllDependencies = false;
+    getImages(ids) {
+        return new Promise((resolve, _reject) => {
+            // If the sprite has been loaded, or if all the icon dependencies are already present
+            // (i.e. if they've been added via runtime styling), then notify the requestor immediately.
+            // Otherwise, delay notification until the sprite is loaded. At that point, if any of the
+            // dependencies are still unavailable, we'll just assume they are permanently missing.
+            let hasAllDependencies = true;
+            if (!this.isLoaded()) {
+                for (const id of ids) {
+                    if (!this.images[id]) {
+                        hasAllDependencies = false;
+                    }
                 }
             }
-        }
-        if (this.isLoaded() || hasAllDependencies) {
-            this._notify(ids, callback);
-        }
-        else {
-            this.requestors.push({ ids, callback });
-        }
+            if (this.isLoaded() || hasAllDependencies) {
+                resolve(this._getImagesForIds(ids));
+            }
+            else {
+                this.requestors.push({ ids, promiseResolve: resolve });
+            }
+        });
     }
-    _notify(ids, callback) {
+    _getImagesForIds(ids) {
         const response = {};
         for (const id of ids) {
             let image = this.getImage(id);
             if (!image) {
-                this.fire(new performance.Event('styleimagemissing', { id }));
+                this.fire(new performance$1.Event('styleimagemissing', { id }));
                 //Try to acquire image again in case styleimagemissing has populated it
                 image = this.getImage(id);
             }
@@ -35651,10 +36088,10 @@ class ImageManager extends performance.Evented {
                 };
             }
             else {
-                performance.warnOnce(`Image "${id}" could not be loaded. Please make sure you have added the image with map.addImage() or a "sprite" property in your style. You can provide missing images by listening for the "styleimagemissing" map event.`);
+                performance$1.warnOnce(`Image "${id}" could not be loaded. Please make sure you have added the image with map.addImage() or a "sprite" property in your style. You can provide missing images by listening for the "styleimagemissing" map event.`);
             }
         }
-        callback(null, response);
+        return response;
     }
     // Pattern stuff
     getPixelSize() {
@@ -35674,7 +36111,7 @@ class ImageManager extends performance.Evented {
             const w = image.data.width + padding * 2;
             const h = image.data.height + padding * 2;
             const bin = { w, h, x: 0, y: 0 };
-            const position = new performance.ImagePosition(bin, image);
+            const position = new performance$1.ImagePosition(bin, image);
             this.patterns[id] = { bin, position };
         }
         else {
@@ -35699,7 +36136,7 @@ class ImageManager extends performance.Evented {
         for (const id in this.patterns) {
             bins.push(this.patterns[id].bin);
         }
-        const { w, h } = performance.potpack(bins);
+        const { w, h } = performance$1.potpack(bins);
         const dst = this.atlasImage;
         dst.resize({ width: w || 1, height: h || 1 });
         for (const id in this.patterns) {
@@ -35709,12 +36146,12 @@ class ImageManager extends performance.Evented {
             const src = this.getImage(id).data;
             const w = src.width;
             const h = src.height;
-            performance.RGBAImage.copy(src, dst, { x: 0, y: 0 }, { x, y }, { width: w, height: h });
+            performance$1.RGBAImage.copy(src, dst, { x: 0, y: 0 }, { x, y }, { width: w, height: h });
             // Add 1 pixel wrapped padding on each side of the image.
-            performance.RGBAImage.copy(src, dst, { x: 0, y: h - 1 }, { x, y: y - 1 }, { width: w, height: 1 }); // T
-            performance.RGBAImage.copy(src, dst, { x: 0, y: 0 }, { x, y: y + h }, { width: w, height: 1 }); // B
-            performance.RGBAImage.copy(src, dst, { x: w - 1, y: 0 }, { x: x - 1, y }, { width: 1, height: h }); // L
-            performance.RGBAImage.copy(src, dst, { x: 0, y: 0 }, { x: x + w, y }, { width: 1, height: h }); // R
+            performance$1.RGBAImage.copy(src, dst, { x: 0, y: h - 1 }, { x, y: y - 1 }, { width: w, height: 1 }); // T
+            performance$1.RGBAImage.copy(src, dst, { x: 0, y: 0 }, { x, y: y + h }, { width: w, height: 1 }); // B
+            performance$1.RGBAImage.copy(src, dst, { x: w - 1, y: 0 }, { x: x - 1, y }, { width: 1, height: h }); // L
+            performance$1.RGBAImage.copy(src, dst, { x: 0, y: 0 }, { x: x + w, y }, { width: 1, height: h }); // R
         }
         this.dirty = true;
     }
@@ -35729,7 +36166,7 @@ class ImageManager extends performance.Evented {
             this.callbackDispatchedThisFrame[id] = true;
             const image = this.getImage(id);
             if (!image)
-                performance.warnOnce(`Image with ID: "${id}" was not found`);
+                performance$1.warnOnce(`Image with ID: "${id}" was not found`);
             const updated = renderStyleImage(image);
             if (updated) {
                 this.updateImage(id, image);
@@ -35738,21 +36175,20 @@ class ImageManager extends performance.Evented {
     }
 }
 
-function loadGlyphRange(fontstack, range, urlTemplate, requestManager, callback) {
-    const begin = range * 256;
-    const end = begin + 255;
-    const request = requestManager.transformRequest(urlTemplate.replace('{fontstack}', fontstack).replace('{range}', `${begin}-${end}`), ResourceType.Glyphs);
-    performance.getArrayBuffer(request, (err, data) => {
-        if (err) {
-            callback(err);
+function loadGlyphRange(fontstack, range, urlTemplate, requestManager) {
+    return performance$1.__awaiter(this, void 0, void 0, function* () {
+        const begin = range * 256;
+        const end = begin + 255;
+        const request = requestManager.transformRequest(urlTemplate.replace('{fontstack}', fontstack).replace('{range}', `${begin}-${end}`), "Glyphs" /* ResourceType.Glyphs */);
+        const response = yield performance$1.getArrayBuffer(request, new AbortController());
+        if (!response || !response.data) {
+            throw new Error(`Could not load glyph range. range: ${range}, ${begin}-${end}`);
         }
-        else if (data) {
-            const glyphs = {};
-            for (const glyph of performance.parseGlyphPbf(data)) {
-                glyphs[glyph.id] = glyph;
-            }
-            callback(null, glyphs);
+        const glyphs = {};
+        for (const glyph of performance$1.parseGlyphPbf(response.data)) {
+            glyphs[glyph.id] = glyph;
         }
+        return glyphs;
     });
 }
 
@@ -35908,14 +36344,32 @@ class GlyphManager {
     setURL(url) {
         this.url = url;
     }
-    getGlyphs(glyphs, callback) {
-        const all = [];
-        for (const stack in glyphs) {
-            for (const id of glyphs[stack]) {
-                all.push({ stack, id });
+    getGlyphs(glyphs) {
+        return performance$1.__awaiter(this, void 0, void 0, function* () {
+            const glyphsPromises = [];
+            for (const stack in glyphs) {
+                for (const id of glyphs[stack]) {
+                    glyphsPromises.push(this._getAndCacheGlyphsPromise(stack, id));
+                }
             }
-        }
-        performance.asyncAll(all, ({ stack, id }, callback) => {
+            const updatedGlyphs = yield Promise.all(glyphsPromises);
+            const result = {};
+            for (const { stack, id, glyph } of updatedGlyphs) {
+                if (!result[stack]) {
+                    result[stack] = {};
+                }
+                // Clone the glyph so that our own copy of its ArrayBuffer doesn't get transferred.
+                result[stack][id] = glyph && {
+                    id: glyph.id,
+                    bitmap: glyph.bitmap.clone(),
+                    metrics: glyph.metrics
+                };
+            }
+            return result;
+        });
+    }
+    _getAndCacheGlyphsPromise(stack, id) {
+        return performance$1.__awaiter(this, void 0, void 0, function* () {
             let entry = this.entries[stack];
             if (!entry) {
                 entry = this.entries[stack] = {
@@ -35926,79 +36380,44 @@ class GlyphManager {
             }
             let glyph = entry.glyphs[id];
             if (glyph !== undefined) {
-                callback(null, { stack, id, glyph });
-                return;
+                return { stack, id, glyph };
             }
             glyph = this._tinySDF(entry, stack, id);
             if (glyph) {
                 entry.glyphs[id] = glyph;
-                callback(null, { stack, id, glyph });
-                return;
+                return { stack, id, glyph };
             }
             const range = Math.floor(id / 256);
             if (range * 256 > 65535) {
-                callback(new Error('glyphs > 65535 not supported'));
-                return;
+                throw new Error('glyphs > 65535 not supported');
             }
             if (entry.ranges[range]) {
-                callback(null, { stack, id, glyph });
-                return;
+                return { stack, id, glyph };
             }
             if (!this.url) {
-                callback(new Error('glyphsUrl is not set'));
-                return;
+                throw new Error('glyphsUrl is not set');
             }
-            let requests = entry.requests[range];
-            if (!requests) {
-                requests = entry.requests[range] = [];
-                GlyphManager.loadGlyphRange(stack, range, this.url, this.requestManager, (err, response) => {
-                    if (response) {
-                        for (const id in response) {
-                            if (!this._doesCharSupportLocalGlyph(+id)) {
-                                entry.glyphs[+id] = response[+id];
-                            }
-                        }
-                        entry.ranges[range] = true;
-                    }
-                    for (const cb of requests) {
-                        cb(err, response);
-                    }
-                    delete entry.requests[range];
-                });
+            if (!entry.requests[range]) {
+                const promise = GlyphManager.loadGlyphRange(stack, range, this.url, this.requestManager);
+                entry.requests[range] = promise;
             }
-            requests.push((err, result) => {
-                if (err) {
-                    callback(err);
+            const response = yield entry.requests[range];
+            for (const id in response) {
+                if (!this._doesCharSupportLocalGlyph(+id)) {
+                    entry.glyphs[+id] = response[+id];
                 }
-                else if (result) {
-                    callback(null, { stack, id, glyph: result[id] || null });
-                }
-            });
-        }, (err, glyphs) => {
-            if (err) {
-                callback(err);
             }
-            else if (glyphs) {
-                const result = {};
-                for (const { stack, id, glyph } of glyphs) {
-                    // Clone the glyph so that our own copy of its ArrayBuffer doesn't get transferred.
-                    (result[stack] || (result[stack] = {}))[id] = glyph && {
-                        id: glyph.id,
-                        bitmap: glyph.bitmap.clone(),
-                        metrics: glyph.metrics
-                    };
-                }
-                callback(null, result);
-            }
+            entry.ranges[range] = true;
+            return { stack, id, glyph: response[id] || null };
         });
     }
     _doesCharSupportLocalGlyph(id) {
         /* eslint-disable new-cap */
         return !!this.localIdeographFontFamily &&
-            (performance.unicodeBlockLookup['CJK Unified Ideographs'](id) ||
-                performance.unicodeBlockLookup['Hangul Syllables'](id) ||
-                performance.unicodeBlockLookup['Hiragana'](id) ||
-                performance.unicodeBlockLookup['Katakana'](id));
+            (performance$1.unicodeBlockLookup['CJK Unified Ideographs'](id) ||
+                performance$1.unicodeBlockLookup['Hangul Syllables'](id) ||
+                performance$1.unicodeBlockLookup['Hiragana'](id) ||
+                performance$1.unicodeBlockLookup['Katakana'](id));
         /* eslint-enable new-cap */
     }
     _tinySDF(entry, stack, id) {
@@ -36051,7 +36470,7 @@ class GlyphManager {
         const leftAdjustment = 0.5;
         return {
             id,
-            bitmap: new performance.AlphaImage({ width: char.width || 30 * textureScale, height: char.height || 30 * textureScale }, char.data),
+            bitmap: new performance$1.AlphaImage({ width: char.width || 30 * textureScale, height: char.height || 30 * textureScale }, char.data),
             metrics: {
                 width: char.glyphWidth / textureScale || 24,
                 height: char.glyphHeight / textureScale || 24,
@@ -36069,16 +36488,16 @@ GlyphManager.TinySDF = TinySDF;
 
 class LightPositionProperty {
     constructor() {
-        this.specification = performance.v8Spec.light.position;
+        this.specification = performance$1.v8Spec.light.position;
     }
     possiblyEvaluate(value, parameters) {
-        return performance.sphericalToCartesian(value.expression.evaluate(parameters));
+        return performance$1.sphericalToCartesian(value.expression.evaluate(parameters));
     }
     interpolate(a, b, t) {
         return {
-            x: performance.interpolate.number(a.x, b.x, t),
-            y: performance.interpolate.number(a.y, b.y, t),
-            z: performance.interpolate.number(a.z, b.z, t),
+            x: performance$1.interpolate.number(a.x, b.x, t),
+            y: performance$1.interpolate.number(a.y, b.y, t),
+            z: performance$1.interpolate.number(a.z, b.z, t),
         };
     }
 }
@@ -36087,16 +36506,16 @@ let lightProperties;
 /*
  * Represents the light used to light extruded features.
  */
-class Light extends performance.Evented {
+class Light extends performance$1.Evented {
     constructor(lightOptions) {
         super();
-        lightProperties = lightProperties || new performance.Properties({
-            'anchor': new performance.DataConstantProperty(performance.v8Spec.light.anchor),
+        lightProperties = lightProperties || new performance$1.Properties({
+            'anchor': new performance$1.DataConstantProperty(performance$1.v8Spec.light.anchor),
             'position': new LightPositionProperty(),
-            'color': new performance.DataConstantProperty(performance.v8Spec.light.color),
-            'intensity': new performance.DataConstantProperty(performance.v8Spec.light.intensity),
+            'color': new performance$1.DataConstantProperty(performance$1.v8Spec.light.color),
+            'intensity': new performance$1.DataConstantProperty(performance$1.v8Spec.light.intensity),
         });
-        this._transitionable = new performance.Transitionable(lightProperties);
+        this._transitionable = new performance$1.Transitionable(lightProperties);
         this.setLight(lightOptions);
         this._transitioning = this._transitionable.untransitioned();
     }
@@ -36104,7 +36523,7 @@ class Light extends performance.Evented {
         return this._transitionable.serialize();
     }
     setLight(light, options = {}) {
-        if (this._validate(performance.validateLight, light, options)) {
+        if (this._validate(performance$1.validateLight, light, options)) {
             return;
         }
         for (const name in light) {
@@ -36130,12 +36549,12 @@ class Light extends performance.Evented {
         if (options && options.validate === false) {
             return false;
         }
-        return performance.emitValidationErrors(this, validate.call(performance.validateStyle, performance.extend({
+        return performance$1.emitValidationErrors(this, validate.call(performance$1.validateStyle, {
             value,
             // Workaround for https://github.com/mapbox/mapbox-gl-js/issues/2407
             style: { glyphs: true, sprite: true },
-            styleSpec: performance.v8Spec
-        })));
+            styleSpec: performance$1.v8Spec
+        }));
     }
 }
 
@@ -36256,7 +36675,7 @@ class LineAtlas {
         const n = round ? 7 : 0;
         const height = 2 * n + 1;
         if (this.nextRow + height > this.height) {
-            performance.warnOnce('LineAtlas out of space');
+            performance$1.warnOnce('LineAtlas out of space');
             return null;
         }
         let length = 0;
@@ -36303,12 +36722,118 @@ class LineAtlas {
     }
 }
 
+function workerFactory() {
+    return new Worker(performance$1.config.WORKER_URL);
+}
+
+const PRELOAD_POOL_ID = 'maplibre_preloaded_worker_pool';
+/**
+ * Constructs a worker pool.
+ */
+class WorkerPool {
+    constructor() {
+        this.active = {};
+    }
+    acquire(mapId) {
+        if (!this.workers) {
+            // Lazily look up the value of getWorkerCount so that
+            // client code has had a chance to set it.
+            this.workers = [];
+            while (this.workers.length < WorkerPool.workerCount) {
+                this.workers.push(workerFactory());
+            }
+        }
+        this.active[mapId] = true;
+        return this.workers.slice();
+    }
+    release(mapId) {
+        delete this.active[mapId];
+        if (this.numActive() === 0) {
+            this.workers.forEach((w) => {
+                w.terminate();
+            });
+            this.workers = null;
+        }
+    }
+    isPreloaded() {
+        return !!this.active[PRELOAD_POOL_ID];
+    }
+    numActive() {
+        return Object.keys(this.active).length;
+    }
+}
+// Based on results from A/B testing: https://github.com/maplibre/maplibre-gl-js/pull/2354
+const availableLogicalProcessors = Math.floor(browser.hardwareConcurrency / 2);
+WorkerPool.workerCount = performance$1.isSafari(globalThis) ? Math.max(Math.min(availableLogicalProcessors, 3), 1) : 1;
+
+let globalWorkerPool;
+/**
+ * Creates (if necessary) and returns the single, global WorkerPool instance
+ * to be shared across each Map
+ */
+function getGlobalWorkerPool() {
+    if (!globalWorkerPool) {
+        globalWorkerPool = new WorkerPool();
+    }
+    return globalWorkerPool;
+}
+/**
+ * Initializes resources like WebWorkers that can be shared across maps to lower load
+ * times in some situations. `setWorkerUrl()` and `setWorkerCount()`, if being
+ * used, must be set before `prewarm()` is called to have an effect.
+ *
+ * By default, the lifecycle of these resources is managed automatically, and they are
+ * lazily initialized when a Map is first created. By invoking `prewarm()`, these
+ * resources will be created ahead of time, and will not be cleared when the last Map
+ * is removed from the page. This allows them to be re-used by new Map instances that
+ * are created later. They can be manually cleared by calling
+ * `clearPrewarmedResources()`. This is only necessary if your web page remains
+ * active but stops using maps altogether.
+ *
+ * This is primarily useful when using GL-JS maps in a single page app, wherein a user
+ * would navigate between various views that can cause Map instances to constantly be
+ * created and destroyed.
+ *
+ * @example
+ * ```ts
+ * prewarm()
+ * ```
+ */
+function prewarm() {
+    const workerPool = getGlobalWorkerPool();
+    workerPool.acquire(PRELOAD_POOL_ID);
+}
+/**
+ * Clears up resources that have previously been created by `prewarm()`.
+ * Note that this is typically not necessary. You should only call this function
+ * if you expect the user of your app to not return to a Map view at any point
+ * in your application.
+ *
+ * @example
+ * ```ts
+ * clearPrewarmedResources()
+ * ```
+ */
+function clearPrewarmedResources() {
+    const pool = globalWorkerPool;
+    if (pool) {
+        // Remove the pool only if all maps that referenced the preloaded global worker pool have been removed.
+        if (pool.isPreloaded() && pool.numActive() === 1) {
+            pool.release(PRELOAD_POOL_ID);
+            globalWorkerPool = null;
+        }
+        else {
+            console.warn('Could not clear WebWorkers since there are active Map instances that still reference it. The pre-warmed WebWorker pool can only be cleared when all map instances have been removed with map.remove()');
+        }
+    }
+}
+
 /**
  * Responsible for sending messages from a {@link Source} to an associated
  * {@link WorkerSource}.
  */
 class Dispatcher {
-    constructor(workerPool, parent, mapId) {
+    constructor(workerPool, mapId) {
         this.workerPool = workerPool;
         this.actors = [];
         this.currentActor = 0;
@@ -36316,7 +36841,7 @@ class Dispatcher {
         const workers = this.workerPool.acquire(mapId);
         for (let i = 0; i < workers.length; i++) {
             const worker = workers[i];
-            const actor = new performance.Actor(worker, parent, mapId);
+            const actor = new performance$1.Actor(worker, mapId);
             actor.name = `Worker ${i}`;
             this.actors.push(actor);
         }
@@ -36326,11 +36851,12 @@ class Dispatcher {
     /**
      * Broadcast a message to all Workers.
      */
-    broadcast(type, data, cb) {
-        cb = cb || function () { };
-        performance.asyncAll(this.actors, (actor, done) => {
-            actor.send(type, data, done);
-        }, cb);
+    broadcast(type, data) {
+        const promises = [];
+        for (const actor of this.actors) {
+            promises.push(actor.sendAsync({ type, data }));
+        }
+        return Promise.all(promises);
     }
     /**
      * Acquires an actor to dispatch messages to. The actors are distributed in round-robin fashion.
@@ -36346,1786 +36872,31 @@ class Dispatcher {
         if (mapRemoved)
             this.workerPool.release(this.id);
     }
-}
-
-function loadTileJson(options, requestManager, callback) {
-    const loaded = function (err, tileJSON) {
-        if (err) {
-            return callback(err);
+    registerMessageHandler(type, handler) {
+        for (const actor of this.actors) {
+            actor.registerMessageHandler(type, handler);
         }
-        else if (tileJSON) {
-            const result = performance.pick(
-            // explicit source options take precedence over TileJSON
-            performance.extend(tileJSON, options), ['tiles', 'minzoom', 'maxzoom', 'attribution', 'bounds', 'scheme', 'tileSize', 'encoding']);
-            if (tileJSON.vector_layers) {
-                result.vectorLayers = tileJSON.vector_layers;
-                result.vectorLayerIds = result.vectorLayers.map((layer) => { return layer.id; });
-            }
-            callback(null, result);
-        }
-    };
-    if (options.url) {
-        return performance.getJSON(requestManager.transformRequest(options.url, ResourceType.Source), loaded);
-    }
-    else {
-        return performance.browser.frame(() => loaded(null, options));
     }
 }
-
-/**
- * A `LngLatBounds` object represents a geographical bounding box,
- * defined by its southwest and northeast points in longitude and latitude.
- *
- * If no arguments are provided to the constructor, a `null` bounding box is created.
- *
- * Note that any Mapbox GL method that accepts a `LngLatBounds` object as an argument or option
- * can also accept an `Array` of two {@link LngLatLike} constructs and will perform an implicit conversion.
- * This flexible type is documented as {@link LngLatBoundsLike}.
- *
- * @group Geography and Geometry
- *
- * @example
- * ```ts
- * let sw = new maplibregl.LngLat(-73.9876, 40.7661);
- * let ne = new maplibregl.LngLat(-73.9397, 40.8002);
- * let llb = new maplibregl.LngLatBounds(sw, ne);
- * ```
- */
-class LngLatBounds {
-    /**
-     * @param sw - The southwest corner of the bounding box.
-     * OR array of 4 numbers in the order of  west, south, east, north
-     * OR array of 2 LngLatLike: [sw,ne]
-     * @param ne - The northeast corner of the bounding box.
-     * @example
-     * ```ts
-     * let sw = new maplibregl.LngLat(-73.9876, 40.7661);
-     * let ne = new maplibregl.LngLat(-73.9397, 40.8002);
-     * let llb = new maplibregl.LngLatBounds(sw, ne);
-     * ```
-     * OR
-     * ```ts
-     * let llb = new maplibregl.LngLatBounds([-73.9876, 40.7661, -73.9397, 40.8002]);
-     * ```
-     * OR
-     * ```ts
-     * let llb = new maplibregl.LngLatBounds([sw, ne]);
-     * ```
-     */
-    constructor(sw, ne) {
-        if (!sw) {
-            // noop
-        }
-        else if (ne) {
-            this.setSouthWest(sw).setNorthEast(ne);
-        }
-        else if (Array.isArray(sw)) {
-            if (sw.length === 4) {
-                // 4 element array: west, south, east, north
-                this.setSouthWest([sw[0], sw[1]]).setNorthEast([sw[2], sw[3]]);
-            }
-            else {
-                this.setSouthWest(sw[0]).setNorthEast(sw[1]);
-            }
-        }
-    }
-    /**
-     * Set the northeast corner of the bounding box
-     *
-     * @param ne - a {@link LngLatLike} object describing the northeast corner of the bounding box.
-     * @returns `this`
-     */
-    setNorthEast(ne) {
-        this._ne = ne instanceof performance.LngLat ? new performance.LngLat(ne.lng, ne.lat) : performance.LngLat.convert(ne);
-        return this;
-    }
-    /**
-     * Set the southwest corner of the bounding box
-     *
-     * @param sw - a {@link LngLatLike} object describing the southwest corner of the bounding box.
-     * @returns `this`
-     */
-    setSouthWest(sw) {
-        this._sw = sw instanceof performance.LngLat ? new performance.LngLat(sw.lng, sw.lat) : performance.LngLat.convert(sw);
-        return this;
-    }
-    /**
-     * Extend the bounds to include a given LngLatLike or LngLatBoundsLike.
-     *
-     * @param obj - object to extend to
-     * @returns `this`
-     */
-    extend(obj) {
-        const sw = this._sw, ne = this._ne;
-        let sw2, ne2;
-        if (obj instanceof performance.LngLat) {
-            sw2 = obj;
-            ne2 = obj;
-        }
-        else if (obj instanceof LngLatBounds) {
-            sw2 = obj._sw;
-            ne2 = obj._ne;
-            if (!sw2 || !ne2)
-                return this;
-        }
-        else {
-            if (Array.isArray(obj)) {
-                if (obj.length === 4 || obj.every(Array.isArray)) {
-                    const lngLatBoundsObj = obj;
-                    return this.extend(LngLatBounds.convert(lngLatBoundsObj));
-                }
-                else {
-                    const lngLatObj = obj;
-                    return this.extend(performance.LngLat.convert(lngLatObj));
-                }
-            }
-            else if (obj && ('lng' in obj || 'lon' in obj) && 'lat' in obj) {
-                return this.extend(performance.LngLat.convert(obj));
-            }
-            return this;
-        }
-        if (!sw && !ne) {
-            this._sw = new performance.LngLat(sw2.lng, sw2.lat);
-            this._ne = new performance.LngLat(ne2.lng, ne2.lat);
-        }
-        else {
-            sw.lng = Math.min(sw2.lng, sw.lng);
-            sw.lat = Math.min(sw2.lat, sw.lat);
-            ne.lng = Math.max(ne2.lng, ne.lng);
-            ne.lat = Math.max(ne2.lat, ne.lat);
-        }
-        return this;
-    }
-    /**
-     * Returns the geographical coordinate equidistant from the bounding box's corners.
-     *
-     * @returns The bounding box's center.
-     * @example
-     * ```ts
-     * let llb = new maplibregl.LngLatBounds([-73.9876, 40.7661], [-73.9397, 40.8002]);
-     * llb.getCenter(); // = LngLat {lng: -73.96365, lat: 40.78315}
-     * ```
-     */
-    getCenter() {
-        return new performance.LngLat((this._sw.lng + this._ne.lng) / 2, (this._sw.lat + this._ne.lat) / 2);
-    }
-    /**
-     * Returns the southwest corner of the bounding box.
-     *
-     * @returns The southwest corner of the bounding box.
-     */
-    getSouthWest() { return this._sw; }
-    /**
-     * Returns the northeast corner of the bounding box.
-     *
-     * @returns The northeast corner of the bounding box.
-     */
-    getNorthEast() { return this._ne; }
-    /**
-     * Returns the northwest corner of the bounding box.
-     *
-     * @returns The northwest corner of the bounding box.
-     */
-    getNorthWest() { return new performance.LngLat(this.getWest(), this.getNorth()); }
-    /**
-     * Returns the southeast corner of the bounding box.
-     *
-     * @returns The southeast corner of the bounding box.
-     */
-    getSouthEast() { return new performance.LngLat(this.getEast(), this.getSouth()); }
-    /**
-     * Returns the west edge of the bounding box.
-     *
-     * @returns The west edge of the bounding box.
-     */
-    getWest() { return this._sw.lng; }
-    /**
-     * Returns the south edge of the bounding box.
-     *
-     * @returns The south edge of the bounding box.
-     */
-    getSouth() { return this._sw.lat; }
-    /**
-     * Returns the east edge of the bounding box.
-     *
-     * @returns The east edge of the bounding box.
-     */
-    getEast() { return this._ne.lng; }
-    /**
-     * Returns the north edge of the bounding box.
-     *
-     * @returns The north edge of the bounding box.
-     */
-    getNorth() { return this._ne.lat; }
-    /**
-     * Returns the bounding box represented as an array.
-     *
-     * @returns The bounding box represented as an array, consisting of the
-     * southwest and northeast coordinates of the bounding represented as arrays of numbers.
-     * @example
-     * ```ts
-     * let llb = new maplibregl.LngLatBounds([-73.9876, 40.7661], [-73.9397, 40.8002]);
-     * llb.toArray(); // = [[-73.9876, 40.7661], [-73.9397, 40.8002]]
-     * ```
-     */
-    toArray() {
-        return [this._sw.toArray(), this._ne.toArray()];
-    }
-    /**
-     * Return the bounding box represented as a string.
-     *
-     * @returns The bounding box represents as a string of the format
-     * `'LngLatBounds(LngLat(lng, lat), LngLat(lng, lat))'`.
-     * @example
-     * ```ts
-     * let llb = new maplibregl.LngLatBounds([-73.9876, 40.7661], [-73.9397, 40.8002]);
-     * llb.toString(); // = "LngLatBounds(LngLat(-73.9876, 40.7661), LngLat(-73.9397, 40.8002))"
-     * ```
-     */
-    toString() {
-        return `LngLatBounds(${this._sw.toString()}, ${this._ne.toString()})`;
-    }
-    /**
-     * Check if the bounding box is an empty/`null`-type box.
-     *
-     * @returns True if bounds have been defined, otherwise false.
-     */
-    isEmpty() {
-        return !(this._sw && this._ne);
-    }
-    /**
-     * Check if the point is within the bounding box.
-     *
-     * @param lnglat - geographic point to check against.
-     * @returns `true` if the point is within the bounding box.
-     * @example
-     * ```ts
-     * let llb = new maplibregl.LngLatBounds(
-     *   new maplibregl.LngLat(-73.9876, 40.7661),
-     *   new maplibregl.LngLat(-73.9397, 40.8002)
-     * );
-     *
-     * let ll = new maplibregl.LngLat(-73.9567, 40.7789);
-     *
-     * console.log(llb.contains(ll)); // = true
-     * ```
-     */
-    contains(lnglat) {
-        const { lng, lat } = performance.LngLat.convert(lnglat);
-        const containsLatitude = this._sw.lat <= lat && lat <= this._ne.lat;
-        let containsLongitude = this._sw.lng <= lng && lng <= this._ne.lng;
-        if (this._sw.lng > this._ne.lng) { // wrapped coordinates
-            containsLongitude = this._sw.lng >= lng && lng >= this._ne.lng;
-        }
-        return containsLatitude && containsLongitude;
-    }
-    /**
-     * Converts an array to a `LngLatBounds` object.
-     *
-     * If a `LngLatBounds` object is passed in, the function returns it unchanged.
-     *
-     * Internally, the function calls `LngLat#convert` to convert arrays to `LngLat` values.
-     *
-     * @param input - An array of two coordinates to convert, or a `LngLatBounds` object to return.
-     * @returns A new `LngLatBounds` object, if a conversion occurred, or the original `LngLatBounds` object.
-     * @example
-     * ```ts
-     * let arr = [[-73.9876, 40.7661], [-73.9397, 40.8002]];
-     * let llb = maplibregl.LngLatBounds.convert(arr); // = LngLatBounds {_sw: LngLat {lng: -73.9876, lat: 40.7661}, _ne: LngLat {lng: -73.9397, lat: 40.8002}}
-     * ```
-     */
-    static convert(input) {
-        if (input instanceof LngLatBounds)
-            return input;
-        if (!input)
-            return input;
-        return new LngLatBounds(input);
-    }
-    /**
-     * Returns a `LngLatBounds` from the coordinates extended by a given `radius`. The returned `LngLatBounds` completely contains the `radius`.
-     *
-     * @param center - center coordinates of the new bounds.
-     * @param radius - Distance in meters from the coordinates to extend the bounds.
-     * @returns A new `LngLatBounds` object representing the coordinates extended by the `radius`.
-     * @example
-     * ```ts
-     * let center = new maplibregl.LngLat(-73.9749, 40.7736);
-     * maplibregl.LngLatBounds.fromLngLat(100).toArray(); // = [[-73.97501862141328, 40.77351016847229], [-73.97478137858673, 40.77368983152771]]
-     * ```
-     */
-    static fromLngLat(center, radius = 0) {
-        const earthCircumferenceInMetersAtEquator = 40075017;
-        const latAccuracy = 360 * radius / earthCircumferenceInMetersAtEquator, lngAccuracy = latAccuracy / Math.cos((Math.PI / 180) * center.lat);
-        return new LngLatBounds(new performance.LngLat(center.lng - lngAccuracy, center.lat - latAccuracy), new performance.LngLat(center.lng + lngAccuracy, center.lat + latAccuracy));
-    }
-}
-
-class TileBounds {
-    constructor(bounds, minzoom, maxzoom) {
-        this.bounds = LngLatBounds.convert(this.validateBounds(bounds));
-        this.minzoom = minzoom || 0;
-        this.maxzoom = maxzoom || 24;
-    }
-    validateBounds(bounds) {
-        // make sure the bounds property contains valid longitude and latitudes
-        if (!Array.isArray(bounds) || bounds.length !== 4)
-            return [-180, -90, 180, 90];
-        return [Math.max(-180, bounds[0]), Math.max(-90, bounds[1]), Math.min(180, bounds[2]), Math.min(90, bounds[3])];
-    }
-    contains(tileID) {
-        const worldSize = Math.pow(2, tileID.z);
-        const level = {
-            minX: Math.floor(performance.mercatorXfromLng(this.bounds.getWest()) * worldSize),
-            minY: Math.floor(performance.mercatorYfromLat(this.bounds.getNorth()) * worldSize),
-            maxX: Math.ceil(performance.mercatorXfromLng(this.bounds.getEast()) * worldSize),
-            maxY: Math.ceil(performance.mercatorYfromLat(this.bounds.getSouth()) * worldSize)
-        };
-        const hit = tileID.x >= level.minX && tileID.x < level.maxX && tileID.y >= level.minY && tileID.y < level.maxY;
-        return hit;
-    }
-}
-
-/**
- * A source containing vector tiles in [Mapbox Vector Tile format](https://docs.mapbox.com/vector-tiles/reference/).
- * (See the [Style Specification](https://maplibre.org/maplibre-style-spec/) for detailed documentation of options.)
- *
- * @group Sources
- *
- * @example
- * ```ts
- * map.addSource('some id', {
- *     type: 'vector',
- *     url: 'https://demotiles.maplibre.org/tiles/tiles.json'
- * });
- * ```
- *
- * @example
- * ```ts
- * map.addSource('some id', {
- *     type: 'vector',
- *     tiles: ['https://d25uarhxywzl1j.cloudfront.net/v0.1/{z}/{x}/{y}.mvt'],
- *     minzoom: 6,
- *     maxzoom: 14
- * });
- * ```
- *
- * @example
- * ```ts
- * map.getSource('some id').setUrl("https://demotiles.maplibre.org/tiles/tiles.json");
- * ```
- *
- * @example
- * ```ts
- * map.getSource('some id').setTiles(['https://d25uarhxywzl1j.cloudfront.net/v0.1/{z}/{x}/{y}.mvt']);
- * ```
- * @see [Add a vector tile source](https://maplibre.org/maplibre-gl-js/docs/examples/vector-source/)
- */
-class VectorTileSource extends performance.Evented {
-    constructor(id, options, dispatcher, eventedParent) {
-        super();
-        this.load = () => {
-            this._loaded = false;
-            this.fire(new performance.Event('dataloading', { dataType: 'source' }));
-            this._tileJSONRequest = loadTileJson(this._options, this.map._requestManager, (err, tileJSON) => {
-                this._tileJSONRequest = null;
-                this._loaded = true;
-                this.map.style.sourceCaches[this.id].clearTiles();
-                if (err) {
-                    this.fire(new performance.ErrorEvent(err));
-                }
-                else if (tileJSON) {
-                    performance.extend(this, tileJSON);
-                    if (tileJSON.bounds)
-                        this.tileBounds = new TileBounds(tileJSON.bounds, this.minzoom, this.maxzoom);
-                    // `content` is included here to prevent a race condition where `Style#_updateSources` is called
-                    // before the TileJSON arrives. this makes sure the tiles needed are loaded once TileJSON arrives
-                    // ref: https://github.com/mapbox/mapbox-gl-js/pull/4347#discussion_r104418088
-                    this.fire(new performance.Event('data', { dataType: 'source', sourceDataType: 'metadata' }));
-                    this.fire(new performance.Event('data', { dataType: 'source', sourceDataType: 'content' }));
-                }
-            });
-        };
-        this.serialize = () => {
-            return performance.extend({}, this._options);
-        };
-        this.id = id;
-        this.dispatcher = dispatcher;
-        this.type = 'vector';
-        this.minzoom = 0;
-        this.maxzoom = 22;
-        this.scheme = 'xyz';
-        this.tileSize = 512;
-        this.reparseOverscaled = true;
-        this.isTileClipped = true;
-        this._loaded = false;
-        performance.extend(this, performance.pick(options, ['url', 'scheme', 'tileSize', 'promoteId']));
-        this._options = performance.extend({ type: 'vector' }, options);
-        this._collectResourceTiming = options.collectResourceTiming;
-        if (this.tileSize !== 512) {
-            throw new Error('vector tile sources must have a tileSize of 512');
-        }
-        this.setEventedParent(eventedParent);
-    }
-    loaded() {
-        return this._loaded;
-    }
-    hasTile(tileID) {
-        return !this.tileBounds || this.tileBounds.contains(tileID.canonical);
-    }
-    onAdd(map) {
-        this.map = map;
-        this.load();
-    }
-    setSourceProperty(callback) {
-        if (this._tileJSONRequest) {
-            this._tileJSONRequest.cancel();
-        }
-        callback();
-        this.load();
-    }
-    /**
-     * Sets the source `tiles` property and re-renders the map.
-     *
-     * @param tiles - An array of one or more tile source URLs, as in the TileJSON spec.
-     * @returns `this`
-     */
-    setTiles(tiles) {
-        this.setSourceProperty(() => {
-            this._options.tiles = tiles;
-        });
-        return this;
-    }
-    /**
-     * Sets the source `url` property and re-renders the map.
-     *
-     * @param url - A URL to a TileJSON resource. Supported protocols are `http:` and `https:`.
-     * @returns `this`
-     */
-    setUrl(url) {
-        this.setSourceProperty(() => {
-            this.url = url;
-            this._options.url = url;
-        });
-        return this;
-    }
-    onRemove() {
-        if (this._tileJSONRequest) {
-            this._tileJSONRequest.cancel();
-            this._tileJSONRequest = null;
-        }
-    }
-    loadTile(tile, callback) {
-        const url = tile.tileID.canonical.url(this.tiles, this.map.getPixelRatio(), this.scheme);
-        const params = {
-            request: this.map._requestManager.transformRequest(url, ResourceType.Tile),
-            uid: tile.uid,
-            tileID: tile.tileID,
-            zoom: tile.tileID.overscaledZ,
-            tileSize: this.tileSize * tile.tileID.overscaleFactor(),
-            type: this.type,
-            source: this.id,
-            pixelRatio: this.map.getPixelRatio(),
-            showCollisionBoxes: this.map.showCollisionBoxes,
-            promoteId: this.promoteId
-        };
-        params.request.collectResourceTiming = this._collectResourceTiming;
-        if (!tile.actor || tile.state === 'expired') {
-            tile.actor = this.dispatcher.getActor();
-            tile.request = tile.actor.send('loadTile', params, done.bind(this));
-        }
-        else if (tile.state === 'loading') {
-            // schedule tile reloading after it has been loaded
-            tile.reloadCallback = callback;
-        }
-        else {
-            tile.request = tile.actor.send('reloadTile', params, done.bind(this));
-        }
-        function done(err, data) {
-            delete tile.request;
-            if (tile.aborted)
-                return callback(null);
-            if (err && err.status !== 404) {
-                return callback(err);
-            }
-            if (data && data.resourceTiming)
-                tile.resourceTiming = data.resourceTiming;
-            if (this.map._refreshExpiredTiles && data)
-                tile.setExpiryData(data);
-            tile.loadVectorData(data, this.map.painter);
-            callback(null);
-            if (tile.reloadCallback) {
-                this.loadTile(tile, tile.reloadCallback);
-                tile.reloadCallback = null;
-            }
-        }
-    }
-    abortTile(tile) {
-        if (tile.request) {
-            tile.request.cancel();
-            delete tile.request;
-        }
-        if (tile.actor) {
-            tile.actor.send('abortTile', { uid: tile.uid, type: this.type, source: this.id }, undefined);
-        }
-    }
-    unloadTile(tile) {
-        tile.unloadVectorData();
-        if (tile.actor) {
-            tile.actor.send('removeTile', { uid: tile.uid, type: this.type, source: this.id }, undefined);
-        }
-    }
-    hasTransition() {
-        return false;
-    }
-}
-
-/**
- * A source containing raster tiles (See the [Style Specification](https://maplibre.org/maplibre-style-spec/) for detailed documentation of options.)
- *
- * @group Sources
- *
- * @example
- * ```ts
- * map.addSource('raster-source', {
- *     'type': 'raster',
- *     'tiles': ['https://tiles.stadiamaps.com/tiles/stamen_watercolor/{z}/{x}/{y}.jpg'],
- *     'tileSize': 256,
- * });
- * ```
- *
- * @example
- * ```ts
- * map.addSource('wms-test-source', {
- *      'type': 'raster',
- * // use the tiles option to specify a WMS tile source URL
- *      'tiles': [
- *          'https://img.nj.gov/imagerywms/Natural2015?bbox={bbox-epsg-3857}&format=image/png&service=WMS&version=1.1.1&request=GetMap&srs=EPSG:3857&transparent=true&width=256&height=256&layers=Natural2015'
- *      ],
- *      'tileSize': 256
- * });
- * ```
- * @see [Add a raster tile source](https://maplibre.org/maplibre-gl-js/docs/examples/map-tiles/)
- * @see [Add a WMS source](https://maplibre.org/maplibre-gl-js/docs/examples/wms/)
- * @see [Display a satellite map](https://maplibre.org/maplibre-gl-js/docs/examples/satellite-map/)
- */
-class RasterTileSource extends performance.Evented {
-    constructor(id, options, dispatcher, eventedParent) {
-        super();
-        this.id = id;
-        this.dispatcher = dispatcher;
-        this.setEventedParent(eventedParent);
-        this.type = 'raster';
-        this.minzoom = 0;
-        this.maxzoom = 22;
-        this.roundZoom = true;
-        this.scheme = 'xyz';
-        this.tileSize = 512;
-        this._loaded = false;
-        this._options = performance.extend({ type: 'raster' }, options);
-        performance.extend(this, performance.pick(options, ['url', 'scheme', 'tileSize']));
-    }
-    load() {
-        this._loaded = false;
-        this.fire(new performance.Event('dataloading', { dataType: 'source' }));
-        this._tileJSONRequest = loadTileJson(this._options, this.map._requestManager, (err, tileJSON) => {
-            this._tileJSONRequest = null;
-            this._loaded = true;
-            if (err) {
-                this.fire(new performance.ErrorEvent(err));
-            }
-            else if (tileJSON) {
-                performance.extend(this, tileJSON);
-                if (tileJSON.bounds)
-                    this.tileBounds = new TileBounds(tileJSON.bounds, this.minzoom, this.maxzoom);
-                // `content` is included here to prevent a race condition where `Style#_updateSources` is called
-                // before the TileJSON arrives. this makes sure the tiles needed are loaded once TileJSON arrives
-                // ref: https://github.com/mapbox/mapbox-gl-js/pull/4347#discussion_r104418088
-                this.fire(new performance.Event('data', { dataType: 'source', sourceDataType: 'metadata' }));
-                this.fire(new performance.Event('data', { dataType: 'source', sourceDataType: 'content' }));
-            }
+let globalDispatcher;
+function getGlobalDispatcher() {
+    if (!globalDispatcher) {
+        globalDispatcher = new Dispatcher(getGlobalWorkerPool(), performance$1.GLOBAL_DISPATCHER_ID);
+        globalDispatcher.registerMessageHandler("GR" /* MessageType.getResource */, (_mapId, params, abortController) => {
+            return performance$1.makeRequest(params, abortController);
         });
     }
-    loaded() {
-        return this._loaded;
-    }
-    onAdd(map) {
-        this.map = map;
-        this.load();
-    }
-    onRemove() {
-        if (this._tileJSONRequest) {
-            this._tileJSONRequest.cancel();
-            this._tileJSONRequest = null;
-        }
-    }
-    setSourceProperty(callback) {
-        if (this._tileJSONRequest) {
-            this._tileJSONRequest.cancel();
-        }
-        callback();
-        this.load();
-    }
-    /**
-     * Sets the source `tiles` property and re-renders the map.
-     *
-     * @param tiles - An array of one or more tile source URLs, as in the raster tiles spec (See the [Style Specification](https://maplibre.org/maplibre-style-spec/)
-     * @returns `this`
-     */
-    setTiles(tiles) {
-        this.setSourceProperty(() => {
-            this._options.tiles = tiles;
-        });
-        return this;
-    }
-    serialize() {
-        return performance.extend({}, this._options);
-    }
-    hasTile(tileID) {
-        return !this.tileBounds || this.tileBounds.contains(tileID.canonical);
-    }
-    loadTile(tile, callback) {
-        const url = tile.tileID.canonical.url(this.tiles, this.map.getPixelRatio(), this.scheme);
-        tile.request = ImageRequest.getImage(this.map._requestManager.transformRequest(url, ResourceType.Tile), (err, img, expiry) => {
-            delete tile.request;
-            if (tile.aborted) {
-                tile.state = 'unloaded';
-                callback(null);
-            }
-            else if (err) {
-                tile.state = 'errored';
-                callback(err);
-            }
-            else if (img) {
-                if (this.map._refreshExpiredTiles && expiry)
-                    tile.setExpiryData(expiry);
-                const context = this.map.painter.context;
-                const gl = context.gl;
-                tile.texture = this.map.painter.getTileTexture(img.width);
-                if (tile.texture) {
-                    tile.texture.update(img, { useMipmap: true });
-                }
-                else {
-                    tile.texture = new Texture(context, img, gl.RGBA, { useMipmap: true });
-                    tile.texture.bind(gl.LINEAR, gl.CLAMP_TO_EDGE, gl.LINEAR_MIPMAP_NEAREST);
-                    if (context.extTextureFilterAnisotropic) {
-                        gl.texParameterf(gl.TEXTURE_2D, context.extTextureFilterAnisotropic.TEXTURE_MAX_ANISOTROPY_EXT, context.extTextureFilterAnisotropicMax);
-                    }
-                }
-                tile.state = 'loaded';
-                callback(null);
-            }
-        }, this.map._refreshExpiredTiles);
-    }
-    abortTile(tile, callback) {
-        if (tile.request) {
-            tile.request.cancel();
-            delete tile.request;
-        }
-        callback();
-    }
-    unloadTile(tile, callback) {
-        if (tile.texture)
-            this.map.painter.saveTileTexture(tile.texture);
-        callback();
-    }
-    hasTransition() {
-        return false;
-    }
+    return globalDispatcher;
 }
-
-/**
- * A source containing raster DEM tiles (See the [Style Specification](https://maplibre.org/maplibre-style-spec/) for detailed documentation of options.)
- * This source can be used to show hillshading and 3D terrain
- *
- * @group Sources
- *
- * @example
- * ```ts
- * map.addSource('raster-dem-source', {
- *      type: 'raster-dem',
- *      url: 'https://demotiles.maplibre.org/terrain-tiles/tiles.json',
- *      tileSize: 256
- * });
- * ```
- * @see [3D Terrain](https://maplibre.org/maplibre-gl-js/docs/examples/3d-terrain/)
- */
-class RasterDEMTileSource extends RasterTileSource {
-    constructor(id, options, dispatcher, eventedParent) {
-        super(id, options, dispatcher, eventedParent);
-        this.type = 'raster-dem';
-        this.maxzoom = 22;
-        this._options = performance.extend({ type: 'raster-dem' }, options);
-        this.encoding = options.encoding || 'mapbox';
-        this.redFactor = options.redFactor;
-        this.greenFactor = options.greenFactor;
-        this.blueFactor = options.blueFactor;
-        this.baseShift = options.baseShift;
-    }
-    loadTile(tile, callback) {
-        const url = tile.tileID.canonical.url(this.tiles, this.map.getPixelRatio(), this.scheme);
-        const request = this.map._requestManager.transformRequest(url, ResourceType.Tile);
-        tile.neighboringTiles = this._getNeighboringTiles(tile.tileID);
-        tile.request = ImageRequest.getImage(request, (err, img, expiry) => performance.__awaiter(this, void 0, void 0, function* () {
-            delete tile.request;
-            if (tile.aborted) {
-                tile.state = 'unloaded';
-                callback(null);
-            }
-            else if (err) {
-                tile.state = 'errored';
-                callback(err);
-            }
-            else if (img) {
-                if (this.map._refreshExpiredTiles)
-                    tile.setExpiryData(expiry);
-                const transfer = performance.isImageBitmap(img) && performance.offscreenCanvasSupported();
-                const rawImageData = transfer ? img : yield readImageNow(img);
-                const params = {
-                    uid: tile.uid,
-                    coord: tile.tileID,
-                    source: this.id,
-                    rawImageData,
-                    encoding: this.encoding,
-                    redFactor: this.redFactor,
-                    greenFactor: this.greenFactor,
-                    blueFactor: this.blueFactor,
-                    baseShift: this.baseShift
-                };
-                if (!tile.actor || tile.state === 'expired') {
-                    tile.actor = this.dispatcher.getActor();
-                    tile.actor.send('loadDEMTile', params, done);
-                }
-            }
-        }), this.map._refreshExpiredTiles);
-        function readImageNow(img) {
-            return performance.__awaiter(this, void 0, void 0, function* () {
-                if (typeof VideoFrame !== 'undefined' && performance.isOffscreenCanvasDistorted()) {
-                    const width = img.width + 2;
-                    const height = img.height + 2;
-                    try {
-                        return new performance.RGBAImage({ width, height }, yield performance.readImageUsingVideoFrame(img, -1, -1, width, height));
-                    }
-                    catch (e) {
-                        // fall-back to browser canvas decoding
-                    }
-                }
-                return performance.browser.getImageData(img, 1);
-            });
-        }
-        function done(err, data) {
-            if (err) {
-                tile.state = 'errored';
-                callback(err);
-            }
-            if (data) {
-                tile.dem = data;
-                tile.needsHillshadePrepare = true;
-                tile.needsTerrainPrepare = true;
-                tile.state = 'loaded';
-                callback(null);
-            }
-        }
-    }
-    _getNeighboringTiles(tileID) {
-        const canonical = tileID.canonical;
-        const dim = Math.pow(2, canonical.z);
-        const px = (canonical.x - 1 + dim) % dim;
-        const pxw = canonical.x === 0 ? tileID.wrap - 1 : tileID.wrap;
-        const nx = (canonical.x + 1 + dim) % dim;
-        const nxw = canonical.x + 1 === dim ? tileID.wrap + 1 : tileID.wrap;
-        const neighboringTiles = {};
-        // add adjacent tiles
-        neighboringTiles[new performance.OverscaledTileID(tileID.overscaledZ, pxw, canonical.z, px, canonical.y).key] = { backfilled: false };
-        neighboringTiles[new performance.OverscaledTileID(tileID.overscaledZ, nxw, canonical.z, nx, canonical.y).key] = { backfilled: false };
-        // Add upper neighboringTiles
-        if (canonical.y > 0) {
-            neighboringTiles[new performance.OverscaledTileID(tileID.overscaledZ, pxw, canonical.z, px, canonical.y - 1).key] = { backfilled: false };
-            neighboringTiles[new performance.OverscaledTileID(tileID.overscaledZ, tileID.wrap, canonical.z, canonical.x, canonical.y - 1).key] = { backfilled: false };
-            neighboringTiles[new performance.OverscaledTileID(tileID.overscaledZ, nxw, canonical.z, nx, canonical.y - 1).key] = { backfilled: false };
-        }
-        // Add lower neighboringTiles
-        if (canonical.y + 1 < dim) {
-            neighboringTiles[new performance.OverscaledTileID(tileID.overscaledZ, pxw, canonical.z, px, canonical.y + 1).key] = { backfilled: false };
-            neighboringTiles[new performance.OverscaledTileID(tileID.overscaledZ, tileID.wrap, canonical.z, canonical.x, canonical.y + 1).key] = { backfilled: false };
-            neighboringTiles[new performance.OverscaledTileID(tileID.overscaledZ, nxw, canonical.z, nx, canonical.y + 1).key] = { backfilled: false };
-        }
-        return neighboringTiles;
-    }
-    unloadTile(tile) {
-        if (tile.demTexture)
-            this.map.painter.saveTileTexture(tile.demTexture);
-        if (tile.fbo) {
-            tile.fbo.destroy();
-            delete tile.fbo;
-        }
-        if (tile.dem)
-            delete tile.dem;
-        delete tile.neighboringTiles;
-        tile.state = 'unloaded';
-        if (tile.actor) {
-            tile.actor.send('removeDEMTile', { uid: tile.uid, source: this.id });
-        }
-    }
-}
-
-/**
- * A source containing GeoJSON.
- * (See the [Style Specification](https://maplibre.org/maplibre-style-spec/#sources-geojson) for detailed documentation of options.)
- *
- * @group Sources
- *
- * @example
- * ```ts
- * map.addSource('some id', {
- *     type: 'geojson',
- *     data: 'https://d2ad6b4ur7yvpq.cloudfront.net/naturalearth-3.3.0/ne_10m_ports.geojson'
- * });
- * ```
- *
- * @example
- * ```ts
- * map.addSource('some id', {
- *    type: 'geojson',
- *    data: {
- *        "type": "FeatureCollection",
- *        "features": [{
- *            "type": "Feature",
- *            "properties": {},
- *            "geometry": {
- *                "type": "Point",
- *                "coordinates": [
- *                    -76.53063297271729,
- *                    39.18174077994108
- *                ]
- *            }
- *        }]
- *    }
- * });
- * ```
- *
- * @example
- * ```ts
- * map.getSource('some id').setData({
- *   "type": "FeatureCollection",
- *   "features": [{
- *       "type": "Feature",
- *       "properties": { "name": "Null Island" },
- *       "geometry": {
- *           "type": "Point",
- *           "coordinates": [ 0, 0 ]
- *       }
- *   }]
- * });
- * ```
- * @see [Draw GeoJSON points](https://maplibre.org/maplibre-gl-js/docs/examples/geojson-markers/)
- * @see [Add a GeoJSON line](https://maplibre.org/maplibre-gl-js/docs/examples/geojson-line/)
- * @see [Create a heatmap from points](https://maplibre.org/maplibre-gl-js/docs/examples/heatmap/)
- * @see [Create and style clusters](https://maplibre.org/maplibre-gl-js/docs/examples/cluster/)
- */
-class GeoJSONSource extends performance.Evented {
-    /** @internal */
-    constructor(id, options, dispatcher, eventedParent) {
-        super();
-        this.load = () => {
-            this._updateWorkerData();
-        };
-        this.serialize = () => {
-            return performance.extend({}, this._options, {
-                type: this.type,
-                data: this._data
-            });
-        };
-        this.id = id;
-        // `type` is a property rather than a constant to make it easy for 3rd
-        // parties to use GeoJSONSource to build their own source types.
-        this.type = 'geojson';
-        this.minzoom = 0;
-        this.maxzoom = 18;
-        this.tileSize = 512;
-        this.isTileClipped = true;
-        this.reparseOverscaled = true;
-        this._removed = false;
-        this._pendingLoads = 0;
-        this.actor = dispatcher.getActor();
-        this.setEventedParent(eventedParent);
-        this._data = options.data;
-        this._options = performance.extend({}, options);
-        this._collectResourceTiming = options.collectResourceTiming;
-        if (options.maxzoom !== undefined)
-            this.maxzoom = options.maxzoom;
-        if (options.type)
-            this.type = options.type;
-        if (options.attribution)
-            this.attribution = options.attribution;
-        this.promoteId = options.promoteId;
-        const scale = performance.EXTENT / this.tileSize;
-        // sent to the worker, along with `url: ...` or `data: literal geojson`,
-        // so that it can load/parse/index the geojson data
-        // extending with `options.workerOptions` helps to make it easy for
-        // third-party sources to hack/reuse GeoJSONSource.
-        this.workerOptions = performance.extend({
-            source: this.id,
-            cluster: options.cluster || false,
-            geojsonVtOptions: {
-                buffer: (options.buffer !== undefined ? options.buffer : 128) * scale,
-                tolerance: (options.tolerance !== undefined ? options.tolerance : 0.375) * scale,
-                extent: performance.EXTENT,
-                maxZoom: this.maxzoom,
-                lineMetrics: options.lineMetrics || false,
-                generateId: options.generateId || false
-            },
-            superclusterOptions: {
-                maxZoom: options.clusterMaxZoom !== undefined ? options.clusterMaxZoom : this.maxzoom - 1,
-                minPoints: Math.max(2, options.clusterMinPoints || 2),
-                extent: performance.EXTENT,
-                radius: (options.clusterRadius || 50) * scale,
-                log: false,
-                generateId: options.generateId || false
-            },
-            clusterProperties: options.clusterProperties,
-            filter: options.filter
-        }, options.workerOptions);
-        // send the promoteId to the worker to have more flexible updates, but only if it is a string
-        if (typeof this.promoteId === 'string') {
-            this.workerOptions.promoteId = this.promoteId;
-        }
-    }
-    onAdd(map) {
-        this.map = map;
-        this.load();
-    }
-    /**
-     * Sets the GeoJSON data and re-renders the map.
-     *
-     * @param data - A GeoJSON data object or a URL to one. The latter is preferable in the case of large GeoJSON files.
-     * @returns `this`
-     */
-    setData(data) {
-        this._data = data;
-        this._updateWorkerData();
-        return this;
-    }
-    /**
-     * Updates the source's GeoJSON, and re-renders the map.
-     *
-     * For sources with lots of features, this method can be used to make updates more quickly.
-     *
-     * This approach requires unique IDs for every feature in the source. The IDs can either be specified on the feature,
-     * or by using the promoteId option to specify which property should be used as the ID.
-     *
-     * It is an error to call updateData on a source that did not have unique IDs for each of its features already.
-     *
-     * Updates are applied on a best-effort basis, updating an ID that does not exist will not result in an error.
-     *
-     * @param diff - The changes that need to be applied.
-     * @returns `this`
-     */
-    updateData(diff) {
-        this._updateWorkerData(diff);
-        return this;
-    }
-    /**
-     * To disable/enable clustering on the source options
-     * @param options - The options to set
-     * @returns `this`
-     * @example
-     * ```ts
-     * map.getSource('some id').setClusterOptions({cluster: false});
-     * map.getSource('some id').setClusterOptions({cluster: false, clusterRadius: 50, clusterMaxZoom: 14});
-     * ```
-     */
-    setClusterOptions(options) {
-        this.workerOptions.cluster = options.cluster;
-        if (options) {
-            if (options.clusterRadius !== undefined)
-                this.workerOptions.superclusterOptions.radius = options.clusterRadius;
-            if (options.clusterMaxZoom !== undefined)
-                this.workerOptions.superclusterOptions.maxZoom = options.clusterMaxZoom;
-        }
-        this._updateWorkerData();
-        return this;
-    }
-    /**
-     * For clustered sources, fetches the zoom at which the given cluster expands.
-     *
-     * @param clusterId - The value of the cluster's `cluster_id` property.
-     * @param callback - A callback to be called when the zoom value is retrieved (`(error, zoom) => { ... }`).
-     * @returns `this`
-     */
-    getClusterExpansionZoom(clusterId, callback) {
-        this.actor.send('geojson.getClusterExpansionZoom', { clusterId, source: this.id }, callback);
-        return this;
-    }
-    /**
-     * For clustered sources, fetches the children of the given cluster on the next zoom level (as an array of GeoJSON features).
-     *
-     * @param clusterId - The value of the cluster's `cluster_id` property.
-     * @param callback - A callback to be called when the features are retrieved (`(error, features) => { ... }`).
-     * @returns `this`
-     */
-    getClusterChildren(clusterId, callback) {
-        this.actor.send('geojson.getClusterChildren', { clusterId, source: this.id }, callback);
-        return this;
-    }
-    /**
-     * For clustered sources, fetches the original points that belong to the cluster (as an array of GeoJSON features).
-     *
-     * @param clusterId - The value of the cluster's `cluster_id` property.
-     * @param limit - The maximum number of features to return.
-     * @param offset - The number of features to skip (e.g. for pagination).
-     * @param callback - A callback to be called when the features are retrieved (`(error, features) => { ... }`).
-     * @returns `this`
-     * @example
-     * Retrieve cluster leaves on click
-     * ```ts
-     * map.on('click', 'clusters', function(e) {
-     *   let features = map.queryRenderedFeatures(e.point, {
-     *     layers: ['clusters']
-     *   });
-     *
-     *   let clusterId = features[0].properties.cluster_id;
-     *   let pointCount = features[0].properties.point_count;
-     *   let clusterSource = map.getSource('clusters');
-     *
-     *   clusterSource.getClusterLeaves(clusterId, pointCount, 0, function(error, features) {
-     *     // Print cluster leaves in the console
-     *     console.log('Cluster leaves:', error, features);
-     *   })
-     * });
-     * ```
-     */
-    getClusterLeaves(clusterId, limit, offset, callback) {
-        this.actor.send('geojson.getClusterLeaves', {
-            source: this.id,
-            clusterId,
-            limit,
-            offset
-        }, callback);
-        return this;
-    }
-    /**
-     * Responsible for invoking WorkerSource's geojson.loadData target, which
-     * handles loading the geojson data and preparing to serve it up as tiles,
-     * using geojson-vt or supercluster as appropriate.
-     * @param diff - the diff object
-     */
-    _updateWorkerData(diff) {
-        const options = performance.extend({}, this.workerOptions);
-        if (diff) {
-            options.dataDiff = diff;
-        }
-        else if (typeof this._data === 'string') {
-            options.request = this.map._requestManager.transformRequest(performance.browser.resolveURL(this._data), ResourceType.Source);
-            options.request.collectResourceTiming = this._collectResourceTiming;
-        }
-        else {
-            options.data = JSON.stringify(this._data);
-        }
-        this._pendingLoads++;
-        this.fire(new performance.Event('dataloading', { dataType: 'source' }));
-        // target {this.type}.loadData rather than literally geojson.loadData,
-        // so that other geojson-like source types can easily reuse this
-        // implementation
-        this.actor.send(`${this.type}.loadData`, options, (err, result) => {
-            this._pendingLoads--;
-            if (this._removed || (result && result.abandoned)) {
-                this.fire(new performance.Event('dataabort', { dataType: 'source' }));
-                return;
-            }
-            let resourceTiming = null;
-            if (result && result.resourceTiming && result.resourceTiming[this.id])
-                resourceTiming = result.resourceTiming[this.id].slice(0);
-            if (err) {
-                this.fire(new performance.ErrorEvent(err));
-                return;
-            }
-            const data = { dataType: 'source' };
-            if (this._collectResourceTiming && resourceTiming && resourceTiming.length > 0)
-                performance.extend(data, { resourceTiming });
-            // although GeoJSON sources contain no metadata, we fire this event to let the SourceCache
-            // know its ok to start requesting tiles.
-            this.fire(new performance.Event('data', Object.assign(Object.assign({}, data), { sourceDataType: 'metadata' })));
-            this.fire(new performance.Event('data', Object.assign(Object.assign({}, data), { sourceDataType: 'content' })));
-        });
-    }
-    loaded() {
-        return this._pendingLoads === 0;
-    }
-    loadTile(tile, callback) {
-        const message = !tile.actor ? 'loadTile' : 'reloadTile';
-        tile.actor = this.actor;
-        const params = {
-            type: this.type,
-            uid: tile.uid,
-            tileID: tile.tileID,
-            zoom: tile.tileID.overscaledZ,
-            maxZoom: this.maxzoom,
-            tileSize: this.tileSize,
-            source: this.id,
-            pixelRatio: this.map.getPixelRatio(),
-            showCollisionBoxes: this.map.showCollisionBoxes,
-            promoteId: this.promoteId
-        };
-        tile.request = this.actor.send(message, params, (err, data) => {
-            delete tile.request;
-            tile.unloadVectorData();
-            if (tile.aborted) {
-                return callback(null);
-            }
-            if (err) {
-                return callback(err);
-            }
-            tile.loadVectorData(data, this.map.painter, message === 'reloadTile');
-            return callback(null);
-        });
-    }
-    abortTile(tile) {
-        if (tile.request) {
-            tile.request.cancel();
-            delete tile.request;
-        }
-        tile.aborted = true;
-    }
-    unloadTile(tile) {
-        tile.unloadVectorData();
-        this.actor.send('removeTile', { uid: tile.uid, type: this.type, source: this.id });
-    }
-    onRemove() {
-        this._removed = true;
-        this.actor.send('removeSource', { type: this.type, source: this.id });
-    }
-    hasTransition() {
-        return false;
-    }
-}
-
-var rasterBoundsAttributes = performance.createLayout([
-    { name: 'a_pos', type: 'Int16', components: 2 },
-    { name: 'a_texture_pos', type: 'Int16', components: 2 }
-]);
-
-/**
- * A data source containing an image.
- * (See the [Style Specification](https://maplibre.org/maplibre-style-spec/#sources-image) for detailed documentation of options.)
- *
- * @group Sources
- *
- * @example
- * ```ts
- * // add to map
- * map.addSource('some id', {
- *    type: 'image',
- *    url: 'https://www.maplibre.org/images/foo.png',
- *    coordinates: [
- *        [-76.54, 39.18],
- *        [-76.52, 39.18],
- *        [-76.52, 39.17],
- *        [-76.54, 39.17]
- *    ]
- * });
- *
- * // update coordinates
- * let mySource = map.getSource('some id');
- * mySource.setCoordinates([
- *     [-76.54335737228394, 39.18579907229748],
- *     [-76.52803659439087, 39.1838364847587],
- *     [-76.5295386314392, 39.17683392507606],
- *     [-76.54520273208618, 39.17876344106642]
- * ]);
- *
- * // update url and coordinates simultaneously
- * mySource.updateImage({
- *    url: 'https://www.maplibre.org/images/bar.png',
- *    coordinates: [
- *        [-76.54335737228394, 39.18579907229748],
- *        [-76.52803659439087, 39.1838364847587],
- *        [-76.5295386314392, 39.17683392507606],
- *        [-76.54520273208618, 39.17876344106642]
- *    ]
- * })
- *
- * map.removeSource('some id');  // remove
- * ```
- */
-class ImageSource extends performance.Evented {
-    /** @internal */
-    constructor(id, options, dispatcher, eventedParent) {
-        super();
-        this.load = (newCoordinates, successCallback) => {
-            this._loaded = false;
-            this.fire(new performance.Event('dataloading', { dataType: 'source' }));
-            this.url = this.options.url;
-            this._request = ImageRequest.getImage(this.map._requestManager.transformRequest(this.url, ResourceType.Image), (err, image) => {
-                this._request = null;
-                this._loaded = true;
-                if (err) {
-                    this.fire(new performance.ErrorEvent(err));
-                }
-                else if (image) {
-                    this.image = image;
-                    if (newCoordinates) {
-                        this.coordinates = newCoordinates;
-                    }
-                    if (successCallback) {
-                        successCallback();
-                    }
-                    this._finishLoading();
-                }
-            });
-        };
-        this.prepare = () => {
-            if (Object.keys(this.tiles).length === 0 || !this.image) {
-                return;
-            }
-            const context = this.map.painter.context;
-            const gl = context.gl;
-            if (!this.boundsBuffer) {
-                this.boundsBuffer = context.createVertexBuffer(this._boundsArray, rasterBoundsAttributes.members);
-            }
-            if (!this.boundsSegments) {
-                this.boundsSegments = performance.SegmentVector.simpleSegment(0, 0, 4, 2);
-            }
-            if (!this.texture) {
-                this.texture = new Texture(context, this.image, gl.RGBA);
-                this.texture.bind(gl.LINEAR, gl.CLAMP_TO_EDGE);
-            }
-            let newTilesLoaded = false;
-            for (const w in this.tiles) {
-                const tile = this.tiles[w];
-                if (tile.state !== 'loaded') {
-                    tile.state = 'loaded';
-                    tile.texture = this.texture;
-                    newTilesLoaded = true;
-                }
-            }
-            if (newTilesLoaded) {
-                this.fire(new performance.Event('data', { dataType: 'source', sourceDataType: 'idle', sourceId: this.id }));
-            }
-        };
-        this.serialize = () => {
-            return {
-                type: 'image',
-                url: this.options.url,
-                coordinates: this.coordinates
-            };
-        };
-        this.id = id;
-        this.dispatcher = dispatcher;
-        this.coordinates = options.coordinates;
-        this.type = 'image';
-        this.minzoom = 0;
-        this.maxzoom = 22;
-        this.tileSize = 512;
-        this.tiles = {};
-        this._loaded = false;
-        this.setEventedParent(eventedParent);
-        this.options = options;
-    }
-    loaded() {
-        return this._loaded;
-    }
-    /**
-     * Updates the image URL and, optionally, the coordinates. To avoid having the image flash after changing,
-     * set the `raster-fade-duration` paint property on the raster layer to 0.
-     *
-     * @param options - The options object.
-     * @returns `this`
-     */
-    updateImage(options) {
-        if (!options.url) {
-            return this;
-        }
-        if (this._request) {
-            this._request.cancel();
-            this._request = null;
-        }
-        this.options.url = options.url;
-        this.load(options.coordinates, () => { this.texture = null; });
-        return this;
-    }
-    _finishLoading() {
-        if (this.map) {
-            this.setCoordinates(this.coordinates);
-            this.fire(new performance.Event('data', { dataType: 'source', sourceDataType: 'metadata' }));
-        }
-    }
-    onAdd(map) {
-        this.map = map;
-        this.load();
-    }
-    onRemove() {
-        if (this._request) {
-            this._request.cancel();
-            this._request = null;
-        }
-    }
-    /**
-     * Sets the image's coordinates and re-renders the map.
-     *
-     * @param coordinates - Four geographical coordinates,
-     * represented as arrays of longitude and latitude numbers, which define the corners of the image.
-     * The coordinates start at the top left corner of the image and proceed in clockwise order.
-     * They do not have to represent a rectangle.
-     * @returns `this`
-     */
-    setCoordinates(coordinates) {
-        this.coordinates = coordinates;
-        // Calculate which mercator tile is suitable for rendering the video in
-        // and create a buffer with the corner coordinates. These coordinates
-        // may be outside the tile, because raster tiles aren't clipped when rendering.
-        // transform the geo coordinates into (zoom 0) tile space coordinates
-        const cornerCoords = coordinates.map(performance.MercatorCoordinate.fromLngLat);
-        // Compute the coordinates of the tile we'll use to hold this image's
-        // render data
-        this.tileID = getCoordinatesCenterTileID(cornerCoords);
-        // Constrain min/max zoom to our tile's zoom level in order to force
-        // SourceCache to request this tile (no matter what the map's zoom
-        // level)
-        this.minzoom = this.maxzoom = this.tileID.z;
-        // Transform the corner coordinates into the coordinate space of our
-        // tile.
-        const tileCoords = cornerCoords.map((coord) => this.tileID.getTilePoint(coord)._round());
-        this._boundsArray = new performance.RasterBoundsArray();
-        this._boundsArray.emplaceBack(tileCoords[0].x, tileCoords[0].y, 0, 0);
-        this._boundsArray.emplaceBack(tileCoords[1].x, tileCoords[1].y, performance.EXTENT, 0);
-        this._boundsArray.emplaceBack(tileCoords[3].x, tileCoords[3].y, 0, performance.EXTENT);
-        this._boundsArray.emplaceBack(tileCoords[2].x, tileCoords[2].y, performance.EXTENT, performance.EXTENT);
-        if (this.boundsBuffer) {
-            this.boundsBuffer.destroy();
-            delete this.boundsBuffer;
-        }
-        this.fire(new performance.Event('data', { dataType: 'source', sourceDataType: 'content' }));
-        return this;
-    }
-    loadTile(tile, callback) {
-        // We have a single tile -- whose coordinates are this.tileID -- that
-        // covers the image we want to render.  If that's the one being
-        // requested, set it up with the image; otherwise, mark the tile as
-        // `errored` to indicate that we have no data for it.
-        // If the world wraps, we may have multiple "wrapped" copies of the
-        // single tile.
-        if (this.tileID && this.tileID.equals(tile.tileID.canonical)) {
-            this.tiles[String(tile.tileID.wrap)] = tile;
-            tile.buckets = {};
-            callback(null);
-        }
-        else {
-            tile.state = 'errored';
-            callback(null);
-        }
-    }
-    hasTransition() {
-        return false;
-    }
-}
-/**
- * Given a list of coordinates, get their center as a coordinate.
- *
- * @returns centerpoint
- * @internal
- */
-function getCoordinatesCenterTileID(coords) {
-    let minX = Infinity;
-    let minY = Infinity;
-    let maxX = -Infinity;
-    let maxY = -Infinity;
-    for (const coord of coords) {
-        minX = Math.min(minX, coord.x);
-        minY = Math.min(minY, coord.y);
-        maxX = Math.max(maxX, coord.x);
-        maxY = Math.max(maxY, coord.y);
-    }
-    const dx = maxX - minX;
-    const dy = maxY - minY;
-    const dMax = Math.max(dx, dy);
-    const zoom = Math.max(0, Math.floor(-Math.log(dMax) / Math.LN2));
-    const tilesAtZoom = Math.pow(2, zoom);
-    return new performance.CanonicalTileID(zoom, Math.floor((minX + maxX) / 2 * tilesAtZoom), Math.floor((minY + maxY) / 2 * tilesAtZoom));
-}
-
-/**
- * A data source containing video.
- * (See the [Style Specification](https://maplibre.org/maplibre-style-spec/#sources-video) for detailed documentation of options.)
- *
- * @group Sources
- *
- * @example
- * ```ts
- * // add to map
- * map.addSource('some id', {
- *    type: 'video',
- *    url: [
- *        'https://www.mapbox.com/blog/assets/baltimore-smoke.mp4',
- *        'https://www.mapbox.com/blog/assets/baltimore-smoke.webm'
- *    ],
- *    coordinates: [
- *        [-76.54, 39.18],
- *        [-76.52, 39.18],
- *        [-76.52, 39.17],
- *        [-76.54, 39.17]
- *    ]
- * });
- *
- * // update
- * let mySource = map.getSource('some id');
- * mySource.setCoordinates([
- *     [-76.54335737228394, 39.18579907229748],
- *     [-76.52803659439087, 39.1838364847587],
- *     [-76.5295386314392, 39.17683392507606],
- *     [-76.54520273208618, 39.17876344106642]
- * ]);
- *
- * map.removeSource('some id');  // remove
- * ```
- * @see [Add a video](https://maplibre.org/maplibre-gl-js/docs/examples/video-on-a-map/)
- *
- * Note that when rendered as a raster layer, the layer's `raster-fade-duration` property will cause the video to fade in.
- * This happens when playback is started, paused and resumed, or when the video's coordinates are updated. To avoid this behavior,
- * set the layer's `raster-fade-duration` property to `0`.
- */
-class VideoSource extends ImageSource {
-    constructor(id, options, dispatcher, eventedParent) {
-        super(id, options, dispatcher, eventedParent);
-        this.load = () => {
-            this._loaded = false;
-            const options = this.options;
-            this.urls = [];
-            for (const url of options.urls) {
-                this.urls.push(this.map._requestManager.transformRequest(url, ResourceType.Source).url);
-            }
-            performance.getVideo(this.urls, (err, video) => {
-                this._loaded = true;
-                if (err) {
-                    this.fire(new performance.ErrorEvent(err));
-                }
-                else if (video) {
-                    this.video = video;
-                    this.video.loop = true;
-                    // Start repainting when video starts playing. hasTransition() will then return
-                    // true to trigger additional frames as long as the videos continues playing.
-                    this.video.addEventListener('playing', () => {
-                        this.map.triggerRepaint();
-                    });
-                    if (this.map) {
-                        this.video.play();
-                    }
-                    this._finishLoading();
-                }
-            });
-        };
-        /**
-         * Sets the video's coordinates and re-renders the map.
-         *
-         * @returns `this`
-         */
-        this.prepare = () => {
-            if (Object.keys(this.tiles).length === 0 || this.video.readyState < 2) {
-                return; // not enough data for current position
-            }
-            const context = this.map.painter.context;
-            const gl = context.gl;
-            if (!this.boundsBuffer) {
-                this.boundsBuffer = context.createVertexBuffer(this._boundsArray, rasterBoundsAttributes.members);
-            }
-            if (!this.boundsSegments) {
-                this.boundsSegments = performance.SegmentVector.simpleSegment(0, 0, 4, 2);
-            }
-            if (!this.texture) {
-                this.texture = new Texture(context, this.video, gl.RGBA);
-                this.texture.bind(gl.LINEAR, gl.CLAMP_TO_EDGE);
-            }
-            else if (!this.video.paused) {
-                this.texture.bind(gl.LINEAR, gl.CLAMP_TO_EDGE);
-                gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, this.video);
-            }
-            let newTilesLoaded = false;
-            for (const w in this.tiles) {
-                const tile = this.tiles[w];
-                if (tile.state !== 'loaded') {
-                    tile.state = 'loaded';
-                    tile.texture = this.texture;
-                    newTilesLoaded = true;
-                }
-            }
-            if (newTilesLoaded) {
-                this.fire(new performance.Event('data', { dataType: 'source', sourceDataType: 'idle', sourceId: this.id }));
-            }
-        };
-        this.serialize = () => {
-            return {
-                type: 'video',
-                urls: this.urls,
-                coordinates: this.coordinates
-            };
-        };
-        this.roundZoom = true;
-        this.type = 'video';
-        this.options = options;
-    }
-    /**
-     * Pauses the video.
-     */
-    pause() {
-        if (this.video) {
-            this.video.pause();
-        }
-    }
-    /**
-     * Plays the video.
-     */
-    play() {
-        if (this.video) {
-            this.video.play();
-        }
-    }
-    /**
-     * Sets playback to a timestamp, in seconds.
-     */
-    seek(seconds) {
-        if (this.video) {
-            const seekableRange = this.video.seekable;
-            if (seconds < seekableRange.start(0) || seconds > seekableRange.end(0)) {
-                this.fire(new performance.ErrorEvent(new performance.ValidationError(`sources.${this.id}`, null, `Playback for this video can be set only between the ${seekableRange.start(0)} and ${seekableRange.end(0)}-second mark.`)));
-            }
-            else
-                this.video.currentTime = seconds;
-        }
-    }
-    /**
-     * Returns the HTML `video` element.
-     *
-     * @returns The HTML `video` element.
-     */
-    getVideo() {
-        return this.video;
-    }
-    onAdd(map) {
-        if (this.map)
-            return;
-        this.map = map;
-        this.load();
-        if (this.video) {
-            this.video.play();
-            this.setCoordinates(this.coordinates);
-        }
-    }
-    hasTransition() {
-        return this.video && !this.video.paused;
-    }
-}
-
-/**
- * A data source containing the contents of an HTML canvas. See {@link CanvasSourceSpecification} for detailed documentation of options.
- *
- * @group Sources
- *
- * @example
- * ```ts
- * // add to map
- * map.addSource('some id', {
- *    type: 'canvas',
- *    canvas: 'idOfMyHTMLCanvas',
- *    animate: true,
- *    coordinates: [
- *        [-76.54, 39.18],
- *        [-76.52, 39.18],
- *        [-76.52, 39.17],
- *        [-76.54, 39.17]
- *    ]
- * });
- *
- * // update
- * let mySource = map.getSource('some id');
- * mySource.setCoordinates([
- *     [-76.54335737228394, 39.18579907229748],
- *     [-76.52803659439087, 39.1838364847587],
- *     [-76.5295386314392, 39.17683392507606],
- *     [-76.54520273208618, 39.17876344106642]
- * ]);
- *
- * map.removeSource('some id');  // remove
- * ```
- */
-class CanvasSource extends ImageSource {
-    /** @internal */
-    constructor(id, options, dispatcher, eventedParent) {
-        super(id, options, dispatcher, eventedParent);
-        this.load = () => {
-            this._loaded = true;
-            if (!this.canvas) {
-                this.canvas = (this.options.canvas instanceof HTMLCanvasElement) ?
-                    this.options.canvas :
-                    document.getElementById(this.options.canvas);
-                // cast to HTMLCanvasElement in else of ternary
-                // should we do a safety check and throw if it's not actually HTMLCanvasElement?
-            }
-            this.width = this.canvas.width;
-            this.height = this.canvas.height;
-            if (this._hasInvalidDimensions()) {
-                this.fire(new performance.ErrorEvent(new Error('Canvas dimensions cannot be less than or equal to zero.')));
-                return;
-            }
-            this.play = function () {
-                this._playing = true;
-                this.map.triggerRepaint();
-            };
-            this.pause = function () {
-                if (this._playing) {
-                    this.prepare();
-                    this._playing = false;
-                }
-            };
-            this._finishLoading();
-        };
-        this.prepare = () => {
-            let resize = false;
-            if (this.canvas.width !== this.width) {
-                this.width = this.canvas.width;
-                resize = true;
-            }
-            if (this.canvas.height !== this.height) {
-                this.height = this.canvas.height;
-                resize = true;
-            }
-            if (this._hasInvalidDimensions())
-                return;
-            if (Object.keys(this.tiles).length === 0)
-                return; // not enough data for current position
-            const context = this.map.painter.context;
-            const gl = context.gl;
-            if (!this.boundsBuffer) {
-                this.boundsBuffer = context.createVertexBuffer(this._boundsArray, rasterBoundsAttributes.members);
-            }
-            if (!this.boundsSegments) {
-                this.boundsSegments = performance.SegmentVector.simpleSegment(0, 0, 4, 2);
-            }
-            if (!this.texture) {
-                this.texture = new Texture(context, this.canvas, gl.RGBA, { premultiply: true });
-            }
-            else if (resize || this._playing) {
-                this.texture.update(this.canvas, { premultiply: true });
-            }
-            let newTilesLoaded = false;
-            for (const w in this.tiles) {
-                const tile = this.tiles[w];
-                if (tile.state !== 'loaded') {
-                    tile.state = 'loaded';
-                    tile.texture = this.texture;
-                    newTilesLoaded = true;
-                }
-            }
-            if (newTilesLoaded) {
-                this.fire(new performance.Event('data', { dataType: 'source', sourceDataType: 'idle', sourceId: this.id }));
-            }
-        };
-        this.serialize = () => {
-            return {
-                type: 'canvas',
-                coordinates: this.coordinates
-            };
-        };
-        // We build in some validation here, since canvas sources aren't included in the style spec:
-        if (!options.coordinates) {
-            this.fire(new performance.ErrorEvent(new performance.ValidationError(`sources.${id}`, null, 'missing required property "coordinates"')));
-        }
-        else if (!Array.isArray(options.coordinates) || options.coordinates.length !== 4 ||
-            options.coordinates.some(c => !Array.isArray(c) || c.length !== 2 || c.some(l => typeof l !== 'number'))) {
-            this.fire(new performance.ErrorEvent(new performance.ValidationError(`sources.${id}`, null, '"coordinates" property must be an array of 4 longitude/latitude array pairs')));
-        }
-        if (options.animate && typeof options.animate !== 'boolean') {
-            this.fire(new performance.ErrorEvent(new performance.ValidationError(`sources.${id}`, null, 'optional "animate" property must be a boolean value')));
-        }
-        if (!options.canvas) {
-            this.fire(new performance.ErrorEvent(new performance.ValidationError(`sources.${id}`, null, 'missing required property "canvas"')));
-        }
-        else if (typeof options.canvas !== 'string' && !(options.canvas instanceof HTMLCanvasElement)) {
-            this.fire(new performance.ErrorEvent(new performance.ValidationError(`sources.${id}`, null, '"canvas" must be either a string representing the ID of the canvas element from which to read, or an HTMLCanvasElement instance')));
-        }
-        this.options = options;
-        this.animate = options.animate !== undefined ? options.animate : true;
-    }
-    /**
-     * Returns the HTML `canvas` element.
-     *
-     * @returns The HTML `canvas` element.
-     */
-    getCanvas() {
-        return this.canvas;
-    }
-    onAdd(map) {
-        this.map = map;
-        this.load();
-        if (this.canvas) {
-            if (this.animate)
-                this.play();
-        }
-    }
-    onRemove() {
-        this.pause();
-    }
-    hasTransition() {
-        return this._playing;
-    }
-    _hasInvalidDimensions() {
-        for (const x of [this.canvas.width, this.canvas.height]) {
-            if (isNaN(x) || x <= 0)
-                return true;
-        }
-        return false;
-    }
-}
-
-const registeredSources = {};
-/**
- * Creates a tiled data source instance given an options object.
- *
- * @param id - The id for the source. Must not be used by any existing source.
- * @param specification - Source options, specific to the source type (except for `options.type`, which is always required).
- * @param source - A source definition object compliant with
- * [`maplibre-gl-style-spec`](https://maplibre.org/maplibre-style-spec/#sources) or, for a third-party source type,
-  * with that type's requirements.
- * @param dispatcher - A {@link Dispatcher} instance, which can be used to send messages to the workers.
- * @returns a newly created source
- */
-const create = (id, specification, dispatcher, eventedParent) => {
-    const Class = getSourceType(specification.type);
-    const source = new Class(id, specification, dispatcher, eventedParent);
-    if (source.id !== id) {
-        throw new Error(`Expected Source id to be ${id} instead of ${source.id}`);
-    }
-    return source;
-};
-const getSourceType = (name) => {
-    switch (name) {
-        case 'geojson':
-            return GeoJSONSource;
-        case 'image':
-            return ImageSource;
-        case 'raster':
-            return RasterTileSource;
-        case 'raster-dem':
-            return RasterDEMTileSource;
-        case 'vector':
-            return VectorTileSource;
-        case 'video':
-            return VideoSource;
-        case 'canvas':
-            return CanvasSource;
-    }
-    return registeredSources[name];
-};
-const setSourceType = (name, type) => {
-    registeredSources[name] = type;
-};
 
 /*
  * Returns a matrix that can be used to convert from tile coordinates to viewport pixel coordinates.
  */
 function getPixelPosMatrix(transform, tileID) {
-    const t = performance.create();
-    performance.translate(t, t, [1, 1, 0]);
-    performance.scale(t, t, [transform.width * 0.5, transform.height * 0.5, 1]);
-    return performance.multiply(t, t, transform.calculatePosMatrix(tileID.toUnwrapped()));
+    const t = performance$1.create();
+    performance$1.translate(t, t, [1, 1, 0]);
+    performance$1.scale(t, t, [transform.width * 0.5, transform.height * 0.5, 1]);
+    return performance$1.multiply(t, t, transform.calculatePosMatrix(tileID.toUnwrapped()));
 }
 function queryIncludes3DLayer(layers, styleLayers, sourceID) {
     if (layers) {
@@ -38271,6 +37042,1875 @@ function mergeRenderedFeatureLayers(tiles) {
     return result;
 }
 
+function loadTileJson(options, requestManager, abortController) {
+    return performance$1.__awaiter(this, void 0, void 0, function* () {
+        let tileJSON = options;
+        if (options.url) {
+            const response = yield performance$1.getJSON(requestManager.transformRequest(options.url, "Source" /* ResourceType.Source */), abortController);
+            tileJSON = response.data;
+        }
+        else {
+            yield browser.frameAsync(abortController);
+        }
+        if (!tileJSON) {
+            return null;
+        }
+        const result = performance$1.pick(
+        // explicit source options take precedence over TileJSON
+        performance$1.extend(tileJSON, options), ['tiles', 'minzoom', 'maxzoom', 'attribution', 'bounds', 'scheme', 'tileSize', 'encoding']);
+        if ('vector_layers' in tileJSON && tileJSON.vector_layers) {
+            result.vectorLayerIds = tileJSON.vector_layers.map((layer) => { return layer.id; });
+        }
+        return result;
+    });
+}
+
+/**
+ * A `LngLatBounds` object represents a geographical bounding box,
+ * defined by its southwest and northeast points in longitude and latitude.
+ *
+ * If no arguments are provided to the constructor, a `null` bounding box is created.
+ *
+ * Note that any Mapbox GL method that accepts a `LngLatBounds` object as an argument or option
+ * can also accept an `Array` of two {@link LngLatLike} constructs and will perform an implicit conversion.
+ * This flexible type is documented as {@link LngLatBoundsLike}.
+ *
+ * @group Geography and Geometry
+ *
+ * @example
+ * ```ts
+ * let sw = new LngLat(-73.9876, 40.7661);
+ * let ne = new LngLat(-73.9397, 40.8002);
+ * let llb = new LngLatBounds(sw, ne);
+ * ```
+ */
+class LngLatBounds {
+    /**
+     * @param sw - The southwest corner of the bounding box.
+     * OR array of 4 numbers in the order of  west, south, east, north
+     * OR array of 2 LngLatLike: [sw,ne]
+     * @param ne - The northeast corner of the bounding box.
+     * @example
+     * ```ts
+     * let sw = new LngLat(-73.9876, 40.7661);
+     * let ne = new LngLat(-73.9397, 40.8002);
+     * let llb = new LngLatBounds(sw, ne);
+     * ```
+     * OR
+     * ```ts
+     * let llb = new LngLatBounds([-73.9876, 40.7661, -73.9397, 40.8002]);
+     * ```
+     * OR
+     * ```ts
+     * let llb = new LngLatBounds([sw, ne]);
+     * ```
+     */
+    constructor(sw, ne) {
+        if (!sw) {
+            // noop
+        }
+        else if (ne) {
+            this.setSouthWest(sw).setNorthEast(ne);
+        }
+        else if (Array.isArray(sw)) {
+            if (sw.length === 4) {
+                // 4 element array: west, south, east, north
+                this.setSouthWest([sw[0], sw[1]]).setNorthEast([sw[2], sw[3]]);
+            }
+            else {
+                this.setSouthWest(sw[0]).setNorthEast(sw[1]);
+            }
+        }
+    }
+    /**
+     * Set the northeast corner of the bounding box
+     *
+     * @param ne - a {@link LngLatLike} object describing the northeast corner of the bounding box.
+     * @returns `this`
+     */
+    setNorthEast(ne) {
+        this._ne = ne instanceof performance$1.LngLat ? new performance$1.LngLat(ne.lng, ne.lat) : performance$1.LngLat.convert(ne);
+        return this;
+    }
+    /**
+     * Set the southwest corner of the bounding box
+     *
+     * @param sw - a {@link LngLatLike} object describing the southwest corner of the bounding box.
+     * @returns `this`
+     */
+    setSouthWest(sw) {
+        this._sw = sw instanceof performance$1.LngLat ? new performance$1.LngLat(sw.lng, sw.lat) : performance$1.LngLat.convert(sw);
+        return this;
+    }
+    /**
+     * Extend the bounds to include a given LngLatLike or LngLatBoundsLike.
+     *
+     * @param obj - object to extend to
+     * @returns `this`
+     */
+    extend(obj) {
+        const sw = this._sw, ne = this._ne;
+        let sw2, ne2;
+        if (obj instanceof performance$1.LngLat) {
+            sw2 = obj;
+            ne2 = obj;
+        }
+        else if (obj instanceof LngLatBounds) {
+            sw2 = obj._sw;
+            ne2 = obj._ne;
+            if (!sw2 || !ne2)
+                return this;
+        }
+        else {
+            if (Array.isArray(obj)) {
+                if (obj.length === 4 || obj.every(Array.isArray)) {
+                    const lngLatBoundsObj = obj;
+                    return this.extend(LngLatBounds.convert(lngLatBoundsObj));
+                }
+                else {
+                    const lngLatObj = obj;
+                    return this.extend(performance$1.LngLat.convert(lngLatObj));
+                }
+            }
+            else if (obj && ('lng' in obj || 'lon' in obj) && 'lat' in obj) {
+                return this.extend(performance$1.LngLat.convert(obj));
+            }
+            return this;
+        }
+        if (!sw && !ne) {
+            this._sw = new performance$1.LngLat(sw2.lng, sw2.lat);
+            this._ne = new performance$1.LngLat(ne2.lng, ne2.lat);
+        }
+        else {
+            sw.lng = Math.min(sw2.lng, sw.lng);
+            sw.lat = Math.min(sw2.lat, sw.lat);
+            ne.lng = Math.max(ne2.lng, ne.lng);
+            ne.lat = Math.max(ne2.lat, ne.lat);
+        }
+        return this;
+    }
+    /**
+     * Returns the geographical coordinate equidistant from the bounding box's corners.
+     *
+     * @returns The bounding box's center.
+     * @example
+     * ```ts
+     * let llb = new LngLatBounds([-73.9876, 40.7661], [-73.9397, 40.8002]);
+     * llb.getCenter(); // = LngLat {lng: -73.96365, lat: 40.78315}
+     * ```
+     */
+    getCenter() {
+        return new performance$1.LngLat((this._sw.lng + this._ne.lng) / 2, (this._sw.lat + this._ne.lat) / 2);
+    }
+    /**
+     * Returns the southwest corner of the bounding box.
+     *
+     * @returns The southwest corner of the bounding box.
+     */
+    getSouthWest() { return this._sw; }
+    /**
+     * Returns the northeast corner of the bounding box.
+     *
+     * @returns The northeast corner of the bounding box.
+     */
+    getNorthEast() { return this._ne; }
+    /**
+     * Returns the northwest corner of the bounding box.
+     *
+     * @returns The northwest corner of the bounding box.
+     */
+    getNorthWest() { return new performance$1.LngLat(this.getWest(), this.getNorth()); }
+    /**
+     * Returns the southeast corner of the bounding box.
+     *
+     * @returns The southeast corner of the bounding box.
+     */
+    getSouthEast() { return new performance$1.LngLat(this.getEast(), this.getSouth()); }
+    /**
+     * Returns the west edge of the bounding box.
+     *
+     * @returns The west edge of the bounding box.
+     */
+    getWest() { return this._sw.lng; }
+    /**
+     * Returns the south edge of the bounding box.
+     *
+     * @returns The south edge of the bounding box.
+     */
+    getSouth() { return this._sw.lat; }
+    /**
+     * Returns the east edge of the bounding box.
+     *
+     * @returns The east edge of the bounding box.
+     */
+    getEast() { return this._ne.lng; }
+    /**
+     * Returns the north edge of the bounding box.
+     *
+     * @returns The north edge of the bounding box.
+     */
+    getNorth() { return this._ne.lat; }
+    /**
+     * Returns the bounding box represented as an array.
+     *
+     * @returns The bounding box represented as an array, consisting of the
+     * southwest and northeast coordinates of the bounding represented as arrays of numbers.
+     * @example
+     * ```ts
+     * let llb = new LngLatBounds([-73.9876, 40.7661], [-73.9397, 40.8002]);
+     * llb.toArray(); // = [[-73.9876, 40.7661], [-73.9397, 40.8002]]
+     * ```
+     */
+    toArray() {
+        return [this._sw.toArray(), this._ne.toArray()];
+    }
+    /**
+     * Return the bounding box represented as a string.
+     *
+     * @returns The bounding box represents as a string of the format
+     * `'LngLatBounds(LngLat(lng, lat), LngLat(lng, lat))'`.
+     * @example
+     * ```ts
+     * let llb = new LngLatBounds([-73.9876, 40.7661], [-73.9397, 40.8002]);
+     * llb.toString(); // = "LngLatBounds(LngLat(-73.9876, 40.7661), LngLat(-73.9397, 40.8002))"
+     * ```
+     */
+    toString() {
+        return `LngLatBounds(${this._sw.toString()}, ${this._ne.toString()})`;
+    }
+    /**
+     * Check if the bounding box is an empty/`null`-type box.
+     *
+     * @returns True if bounds have been defined, otherwise false.
+     */
+    isEmpty() {
+        return !(this._sw && this._ne);
+    }
+    /**
+     * Check if the point is within the bounding box.
+     *
+     * @param lnglat - geographic point to check against.
+     * @returns `true` if the point is within the bounding box.
+     * @example
+     * ```ts
+     * let llb = new LngLatBounds(
+     *   new LngLat(-73.9876, 40.7661),
+     *   new LngLat(-73.9397, 40.8002)
+     * );
+     *
+     * let ll = new LngLat(-73.9567, 40.7789);
+     *
+     * console.log(llb.contains(ll)); // = true
+     * ```
+     */
+    contains(lnglat) {
+        const { lng, lat } = performance$1.LngLat.convert(lnglat);
+        const containsLatitude = this._sw.lat <= lat && lat <= this._ne.lat;
+        let containsLongitude = this._sw.lng <= lng && lng <= this._ne.lng;
+        if (this._sw.lng > this._ne.lng) { // wrapped coordinates
+            containsLongitude = this._sw.lng >= lng && lng >= this._ne.lng;
+        }
+        return containsLatitude && containsLongitude;
+    }
+    /**
+     * Converts an array to a `LngLatBounds` object.
+     *
+     * If a `LngLatBounds` object is passed in, the function returns it unchanged.
+     *
+     * Internally, the function calls `LngLat#convert` to convert arrays to `LngLat` values.
+     *
+     * @param input - An array of two coordinates to convert, or a `LngLatBounds` object to return.
+     * @returns A new `LngLatBounds` object, if a conversion occurred, or the original `LngLatBounds` object.
+     * @example
+     * ```ts
+     * let arr = [[-73.9876, 40.7661], [-73.9397, 40.8002]];
+     * let llb = LngLatBounds.convert(arr); // = LngLatBounds {_sw: LngLat {lng: -73.9876, lat: 40.7661}, _ne: LngLat {lng: -73.9397, lat: 40.8002}}
+     * ```
+     */
+    static convert(input) {
+        if (input instanceof LngLatBounds)
+            return input;
+        if (!input)
+            return input;
+        return new LngLatBounds(input);
+    }
+    /**
+     * Returns a `LngLatBounds` from the coordinates extended by a given `radius`. The returned `LngLatBounds` completely contains the `radius`.
+     *
+     * @param center - center coordinates of the new bounds.
+     * @param radius - Distance in meters from the coordinates to extend the bounds.
+     * @returns A new `LngLatBounds` object representing the coordinates extended by the `radius`.
+     * @example
+     * ```ts
+     * let center = new LngLat(-73.9749, 40.7736);
+     * LngLatBounds.fromLngLat(100).toArray(); // = [[-73.97501862141328, 40.77351016847229], [-73.97478137858673, 40.77368983152771]]
+     * ```
+     */
+    static fromLngLat(center, radius = 0) {
+        const earthCircumferenceInMetersAtEquator = 40075017;
+        const latAccuracy = 360 * radius / earthCircumferenceInMetersAtEquator, lngAccuracy = latAccuracy / Math.cos((Math.PI / 180) * center.lat);
+        return new LngLatBounds(new performance$1.LngLat(center.lng - lngAccuracy, center.lat - latAccuracy), new performance$1.LngLat(center.lng + lngAccuracy, center.lat + latAccuracy));
+    }
+}
+
+class TileBounds {
+    constructor(bounds, minzoom, maxzoom) {
+        this.bounds = LngLatBounds.convert(this.validateBounds(bounds));
+        this.minzoom = minzoom || 0;
+        this.maxzoom = maxzoom || 24;
+    }
+    validateBounds(bounds) {
+        // make sure the bounds property contains valid longitude and latitudes
+        if (!Array.isArray(bounds) || bounds.length !== 4)
+            return [-180, -90, 180, 90];
+        return [Math.max(-180, bounds[0]), Math.max(-90, bounds[1]), Math.min(180, bounds[2]), Math.min(90, bounds[3])];
+    }
+    contains(tileID) {
+        const worldSize = Math.pow(2, tileID.z);
+        const level = {
+            minX: Math.floor(performance$1.mercatorXfromLng(this.bounds.getWest()) * worldSize),
+            minY: Math.floor(performance$1.mercatorYfromLat(this.bounds.getNorth()) * worldSize),
+            maxX: Math.ceil(performance$1.mercatorXfromLng(this.bounds.getEast()) * worldSize),
+            maxY: Math.ceil(performance$1.mercatorYfromLat(this.bounds.getSouth()) * worldSize)
+        };
+        const hit = tileID.x >= level.minX && tileID.x < level.maxX && tileID.y >= level.minY && tileID.y < level.maxY;
+        return hit;
+    }
+}
+
+/**
+ * A source containing vector tiles in [Mapbox Vector Tile format](https://docs.mapbox.com/vector-tiles/reference/).
+ * (See the [Style Specification](https://maplibre.org/maplibre-style-spec/) for detailed documentation of options.)
+ *
+ * @group Sources
+ *
+ * @example
+ * ```ts
+ * map.addSource('some id', {
+ *     type: 'vector',
+ *     url: 'https://demotiles.maplibre.org/tiles/tiles.json'
+ * });
+ * ```
+ *
+ * @example
+ * ```ts
+ * map.addSource('some id', {
+ *     type: 'vector',
+ *     tiles: ['https://d25uarhxywzl1j.cloudfront.net/v0.1/{z}/{x}/{y}.mvt'],
+ *     minzoom: 6,
+ *     maxzoom: 14
+ * });
+ * ```
+ *
+ * @example
+ * ```ts
+ * map.getSource('some id').setUrl("https://demotiles.maplibre.org/tiles/tiles.json");
+ * ```
+ *
+ * @example
+ * ```ts
+ * map.getSource('some id').setTiles(['https://d25uarhxywzl1j.cloudfront.net/v0.1/{z}/{x}/{y}.mvt']);
+ * ```
+ * @see [Add a vector tile source](https://maplibre.org/maplibre-gl-js/docs/examples/vector-source/)
+ */
+class VectorTileSource extends performance$1.Evented {
+    constructor(id, options, dispatcher, eventedParent) {
+        super();
+        this.id = id;
+        this.dispatcher = dispatcher;
+        this.type = 'vector';
+        this.minzoom = 0;
+        this.maxzoom = 22;
+        this.scheme = 'xyz';
+        this.tileSize = 512;
+        this.reparseOverscaled = true;
+        this.isTileClipped = true;
+        this._loaded = false;
+        performance$1.extend(this, performance$1.pick(options, ['url', 'scheme', 'tileSize', 'promoteId']));
+        this._options = performance$1.extend({ type: 'vector' }, options);
+        this._collectResourceTiming = options.collectResourceTiming;
+        if (this.tileSize !== 512) {
+            throw new Error('vector tile sources must have a tileSize of 512');
+        }
+        this.setEventedParent(eventedParent);
+    }
+    load() {
+        return performance$1.__awaiter(this, void 0, void 0, function* () {
+            this._loaded = false;
+            this.fire(new performance$1.Event('dataloading', { dataType: 'source' }));
+            this._tileJSONRequest = new AbortController();
+            try {
+                const tileJSON = yield loadTileJson(this._options, this.map._requestManager, this._tileJSONRequest);
+                this._tileJSONRequest = null;
+                this._loaded = true;
+                this.map.style.sourceCaches[this.id].clearTiles();
+                if (tileJSON) {
+                    performance$1.extend(this, tileJSON);
+                    if (tileJSON.bounds)
+                        this.tileBounds = new TileBounds(tileJSON.bounds, this.minzoom, this.maxzoom);
+                    // `content` is included here to prevent a race condition where `Style#_updateSources` is called
+                    // before the TileJSON arrives. this makes sure the tiles needed are loaded once TileJSON arrives
+                    // ref: https://github.com/mapbox/mapbox-gl-js/pull/4347#discussion_r104418088
+                    this.fire(new performance$1.Event('data', { dataType: 'source', sourceDataType: 'metadata' }));
+                    this.fire(new performance$1.Event('data', { dataType: 'source', sourceDataType: 'content' }));
+                }
+            }
+            catch (err) {
+                this._tileJSONRequest = null;
+                this.fire(new performance$1.ErrorEvent(err));
+            }
+        });
+    }
+    loaded() {
+        return this._loaded;
+    }
+    hasTile(tileID) {
+        return !this.tileBounds || this.tileBounds.contains(tileID.canonical);
+    }
+    onAdd(map) {
+        this.map = map;
+        this.load();
+    }
+    setSourceProperty(callback) {
+        if (this._tileJSONRequest) {
+            this._tileJSONRequest.abort();
+        }
+        callback();
+        this.load();
+    }
+    /**
+     * Sets the source `tiles` property and re-renders the map.
+     *
+     * @param tiles - An array of one or more tile source URLs, as in the TileJSON spec.
+     * @returns `this`
+     */
+    setTiles(tiles) {
+        this.setSourceProperty(() => {
+            this._options.tiles = tiles;
+        });
+        return this;
+    }
+    /**
+     * Sets the source `url` property and re-renders the map.
+     *
+     * @param url - A URL to a TileJSON resource. Supported protocols are `http:` and `https:`.
+     * @returns `this`
+     */
+    setUrl(url) {
+        this.setSourceProperty(() => {
+            this.url = url;
+            this._options.url = url;
+        });
+        return this;
+    }
+    onRemove() {
+        if (this._tileJSONRequest) {
+            this._tileJSONRequest.abort();
+            this._tileJSONRequest = null;
+        }
+    }
+    serialize() {
+        return performance$1.extend({}, this._options);
+    }
+    loadTile(tile) {
+        return performance$1.__awaiter(this, void 0, void 0, function* () {
+            const url = tile.tileID.canonical.url(this.tiles, this.map.getPixelRatio(), this.scheme);
+            const params = {
+                request: this.map._requestManager.transformRequest(url, "Tile" /* ResourceType.Tile */),
+                uid: tile.uid,
+                tileID: tile.tileID,
+                zoom: tile.tileID.overscaledZ,
+                tileSize: this.tileSize * tile.tileID.overscaleFactor(),
+                type: this.type,
+                source: this.id,
+                pixelRatio: this.map.getPixelRatio(),
+                showCollisionBoxes: this.map.showCollisionBoxes,
+                promoteId: this.promoteId
+            };
+            params.request.collectResourceTiming = this._collectResourceTiming;
+            let messageType = "RT" /* MessageType.reloadTile */;
+            if (!tile.actor || tile.state === 'expired') {
+                tile.actor = this.dispatcher.getActor();
+                messageType = "LT" /* MessageType.loadTile */;
+            }
+            else if (tile.state === 'loading') {
+                return new Promise((resolve, reject) => {
+                    tile.reloadPromise = { resolve, reject };
+                });
+            }
+            tile.abortController = new AbortController();
+            try {
+                const data = yield tile.actor.sendAsync({ type: messageType, data: params }, tile.abortController);
+                delete tile.abortController;
+                if (tile.aborted) {
+                    return;
+                }
+                this._afterTileLoadWorkerResponse(tile, data);
+            }
+            catch (err) {
+                delete tile.abortController;
+                if (tile.aborted) {
+                    return;
+                }
+                if (err && err.status !== 404) {
+                    throw err;
+                }
+                this._afterTileLoadWorkerResponse(tile, null);
+            }
+        });
+    }
+    _afterTileLoadWorkerResponse(tile, data) {
+        if (data && data.resourceTiming) {
+            tile.resourceTiming = data.resourceTiming;
+        }
+        if (data && this.map._refreshExpiredTiles) {
+            tile.setExpiryData(data);
+        }
+        tile.loadVectorData(data, this.map.painter);
+        if (tile.reloadPromise) {
+            const reloadPromise = tile.reloadPromise;
+            tile.reloadPromise = null;
+            this.loadTile(tile).then(reloadPromise.resolve).catch(reloadPromise.reject);
+        }
+    }
+    abortTile(tile) {
+        return performance$1.__awaiter(this, void 0, void 0, function* () {
+            if (tile.abortController) {
+                tile.abortController.abort();
+                delete tile.abortController;
+            }
+            if (tile.actor) {
+                yield tile.actor.sendAsync({
+                    type: "AT" /* MessageType.abortTile */,
+                    data: { uid: tile.uid, type: this.type, source: this.id }
+                });
+            }
+        });
+    }
+    unloadTile(tile) {
+        return performance$1.__awaiter(this, void 0, void 0, function* () {
+            tile.unloadVectorData();
+            if (tile.actor) {
+                yield tile.actor.sendAsync({
+                    type: "RMT" /* MessageType.removeTile */,
+                    data: {
+                        uid: tile.uid,
+                        type: this.type,
+                        source: this.id
+                    }
+                });
+            }
+        });
+    }
+    hasTransition() {
+        return false;
+    }
+}
+
+/**
+ * A source containing raster tiles (See the [Style Specification](https://maplibre.org/maplibre-style-spec/) for detailed documentation of options.)
+ *
+ * @group Sources
+ *
+ * @example
+ * ```ts
+ * map.addSource('raster-source', {
+ *     'type': 'raster',
+ *     'tiles': ['https://tiles.stadiamaps.com/tiles/stamen_watercolor/{z}/{x}/{y}.jpg'],
+ *     'tileSize': 256,
+ * });
+ * ```
+ *
+ * @example
+ * ```ts
+ * map.addSource('wms-test-source', {
+ *      'type': 'raster',
+ * // use the tiles option to specify a WMS tile source URL
+ *      'tiles': [
+ *          'https://img.nj.gov/imagerywms/Natural2015?bbox={bbox-epsg-3857}&format=image/png&service=WMS&version=1.1.1&request=GetMap&srs=EPSG:3857&transparent=true&width=256&height=256&layers=Natural2015'
+ *      ],
+ *      'tileSize': 256
+ * });
+ * ```
+ * @see [Add a raster tile source](https://maplibre.org/maplibre-gl-js/docs/examples/map-tiles/)
+ * @see [Add a WMS source](https://maplibre.org/maplibre-gl-js/docs/examples/wms/)
+ * @see [Display a satellite map](https://maplibre.org/maplibre-gl-js/docs/examples/satellite-map/)
+ */
+class RasterTileSource extends performance$1.Evented {
+    constructor(id, options, dispatcher, eventedParent) {
+        super();
+        this.id = id;
+        this.dispatcher = dispatcher;
+        this.setEventedParent(eventedParent);
+        this.type = 'raster';
+        this.minzoom = 0;
+        this.maxzoom = 22;
+        this.roundZoom = true;
+        this.scheme = 'xyz';
+        this.tileSize = 512;
+        this._loaded = false;
+        this._options = performance$1.extend({ type: 'raster' }, options);
+        performance$1.extend(this, performance$1.pick(options, ['url', 'scheme', 'tileSize']));
+    }
+    load() {
+        return performance$1.__awaiter(this, void 0, void 0, function* () {
+            this._loaded = false;
+            this.fire(new performance$1.Event('dataloading', { dataType: 'source' }));
+            this._tileJSONRequest = new AbortController();
+            try {
+                const tileJSON = yield loadTileJson(this._options, this.map._requestManager, this._tileJSONRequest);
+                this._tileJSONRequest = null;
+                this._loaded = true;
+                if (tileJSON) {
+                    performance$1.extend(this, tileJSON);
+                    if (tileJSON.bounds)
+                        this.tileBounds = new TileBounds(tileJSON.bounds, this.minzoom, this.maxzoom);
+                    // `content` is included here to prevent a race condition where `Style#_updateSources` is called
+                    // before the TileJSON arrives. this makes sure the tiles needed are loaded once TileJSON arrives
+                    // ref: https://github.com/mapbox/mapbox-gl-js/pull/4347#discussion_r104418088
+                    this.fire(new performance$1.Event('data', { dataType: 'source', sourceDataType: 'metadata' }));
+                    this.fire(new performance$1.Event('data', { dataType: 'source', sourceDataType: 'content' }));
+                }
+            }
+            catch (err) {
+                this._tileJSONRequest = null;
+                this.fire(new performance$1.ErrorEvent(err));
+            }
+        });
+    }
+    loaded() {
+        return this._loaded;
+    }
+    onAdd(map) {
+        this.map = map;
+        this.load();
+    }
+    onRemove() {
+        if (this._tileJSONRequest) {
+            this._tileJSONRequest.abort();
+            this._tileJSONRequest = null;
+        }
+    }
+    setSourceProperty(callback) {
+        if (this._tileJSONRequest) {
+            this._tileJSONRequest.abort();
+            this._tileJSONRequest = null;
+        }
+        callback();
+        this.load();
+    }
+    /**
+     * Sets the source `tiles` property and re-renders the map.
+     *
+     * @param tiles - An array of one or more tile source URLs, as in the raster tiles spec (See the [Style Specification](https://maplibre.org/maplibre-style-spec/)
+     * @returns `this`
+     */
+    setTiles(tiles) {
+        this.setSourceProperty(() => {
+            this._options.tiles = tiles;
+        });
+        return this;
+    }
+    /**
+     * Sets the source `url` property and re-renders the map.
+     *
+     * @param url - A URL to a TileJSON resource. Supported protocols are `http:` and `https:`.
+     * @returns `this`
+     */
+    setUrl(url) {
+        this.setSourceProperty(() => {
+            this.url = url;
+            this._options.url = url;
+        });
+        return this;
+    }
+    serialize() {
+        return performance$1.extend({}, this._options);
+    }
+    hasTile(tileID) {
+        return !this.tileBounds || this.tileBounds.contains(tileID.canonical);
+    }
+    loadTile(tile) {
+        return performance$1.__awaiter(this, void 0, void 0, function* () {
+            const url = tile.tileID.canonical.url(this.tiles, this.map.getPixelRatio(), this.scheme);
+            tile.abortController = new AbortController();
+            try {
+                const response = yield ImageRequest.getImage(this.map._requestManager.transformRequest(url, "Tile" /* ResourceType.Tile */), tile.abortController, this.map._refreshExpiredTiles);
+                delete tile.abortController;
+                if (tile.aborted) {
+                    tile.state = 'unloaded';
+                    return;
+                }
+                if (response && response.data) {
+                    if (this.map._refreshExpiredTiles && response.cacheControl && response.expires) {
+                        tile.setExpiryData({ cacheControl: response.cacheControl, expires: response.expires });
+                    }
+                    const context = this.map.painter.context;
+                    const gl = context.gl;
+                    const img = response.data;
+                    tile.texture = this.map.painter.getTileTexture(img.width);
+                    if (tile.texture) {
+                        tile.texture.update(img, { useMipmap: true });
+                    }
+                    else {
+                        tile.texture = new Texture(context, img, gl.RGBA, { useMipmap: true });
+                        tile.texture.bind(gl.LINEAR, gl.CLAMP_TO_EDGE, gl.LINEAR_MIPMAP_NEAREST);
+                        if (context.extTextureFilterAnisotropic) {
+                            gl.texParameterf(gl.TEXTURE_2D, context.extTextureFilterAnisotropic.TEXTURE_MAX_ANISOTROPY_EXT, context.extTextureFilterAnisotropicMax);
+                        }
+                    }
+                    tile.state = 'loaded';
+                }
+            }
+            catch (err) {
+                delete tile.abortController;
+                if (tile.aborted) {
+                    tile.state = 'unloaded';
+                }
+                else if (err) {
+                    tile.state = 'errored';
+                    throw err;
+                }
+            }
+        });
+    }
+    abortTile(tile) {
+        return performance$1.__awaiter(this, void 0, void 0, function* () {
+            if (tile.abortController) {
+                tile.abortController.abort();
+                delete tile.abortController;
+            }
+        });
+    }
+    unloadTile(tile) {
+        return performance$1.__awaiter(this, void 0, void 0, function* () {
+            if (tile.texture) {
+                this.map.painter.saveTileTexture(tile.texture);
+            }
+        });
+    }
+    hasTransition() {
+        return false;
+    }
+}
+
+/**
+ * A source containing raster DEM tiles (See the [Style Specification](https://maplibre.org/maplibre-style-spec/) for detailed documentation of options.)
+ * This source can be used to show hillshading and 3D terrain
+ *
+ * @group Sources
+ *
+ * @example
+ * ```ts
+ * map.addSource('raster-dem-source', {
+ *      type: 'raster-dem',
+ *      url: 'https://demotiles.maplibre.org/terrain-tiles/tiles.json',
+ *      tileSize: 256
+ * });
+ * ```
+ * @see [3D Terrain](https://maplibre.org/maplibre-gl-js/docs/examples/3d-terrain/)
+ */
+class RasterDEMTileSource extends RasterTileSource {
+    constructor(id, options, dispatcher, eventedParent) {
+        super(id, options, dispatcher, eventedParent);
+        this.type = 'raster-dem';
+        this.maxzoom = 22;
+        this._options = performance$1.extend({ type: 'raster-dem' }, options);
+        this.encoding = options.encoding || 'mapbox';
+        this.redFactor = options.redFactor;
+        this.greenFactor = options.greenFactor;
+        this.blueFactor = options.blueFactor;
+        this.baseShift = options.baseShift;
+    }
+    loadTile(tile) {
+        return performance$1.__awaiter(this, void 0, void 0, function* () {
+            const url = tile.tileID.canonical.url(this.tiles, this.map.getPixelRatio(), this.scheme);
+            const request = this.map._requestManager.transformRequest(url, "Tile" /* ResourceType.Tile */);
+            tile.neighboringTiles = this._getNeighboringTiles(tile.tileID);
+            tile.abortController = new AbortController();
+            try {
+                const response = yield ImageRequest.getImage(request, tile.abortController, this.map._refreshExpiredTiles);
+                delete tile.abortController;
+                if (tile.aborted) {
+                    tile.state = 'unloaded';
+                    return;
+                }
+                if (response && response.data) {
+                    const img = response.data;
+                    if (this.map._refreshExpiredTiles && response.cacheControl && response.expires) {
+                        tile.setExpiryData({ cacheControl: response.cacheControl, expires: response.expires });
+                    }
+                    const transfer = performance$1.isImageBitmap(img) && performance$1.offscreenCanvasSupported();
+                    const rawImageData = transfer ? img : yield this.readImageNow(img);
+                    const params = {
+                        type: this.type,
+                        uid: tile.uid,
+                        source: this.id,
+                        rawImageData,
+                        encoding: this.encoding,
+                        redFactor: this.redFactor,
+                        greenFactor: this.greenFactor,
+                        blueFactor: this.blueFactor,
+                        baseShift: this.baseShift
+                    };
+                    if (!tile.actor || tile.state === 'expired') {
+                        tile.actor = this.dispatcher.getActor();
+                        /* eslint-disable require-atomic-updates */
+                        const data = yield tile.actor.sendAsync({ type: "LDT" /* MessageType.loadDEMTile */, data: params });
+                        tile.dem = data;
+                        tile.needsHillshadePrepare = true;
+                        tile.needsTerrainPrepare = true;
+                        tile.state = 'loaded';
+                        /* eslint-enable require-atomic-updates */
+                    }
+                }
+            }
+            catch (err) {
+                delete tile.abortController;
+                if (tile.aborted) {
+                    tile.state = 'unloaded';
+                }
+                else if (err) {
+                    tile.state = 'errored';
+                    throw err;
+                }
+            }
+        });
+    }
+    readImageNow(img) {
+        return performance$1.__awaiter(this, void 0, void 0, function* () {
+            if (typeof VideoFrame !== 'undefined' && performance$1.isOffscreenCanvasDistorted()) {
+                const width = img.width + 2;
+                const height = img.height + 2;
+                try {
+                    return new performance$1.RGBAImage({ width, height }, yield performance$1.readImageUsingVideoFrame(img, -1, -1, width, height));
+                }
+                catch (e) {
+                    // fall-back to browser canvas decoding
+                }
+            }
+            return browser.getImageData(img, 1);
+        });
+    }
+    _getNeighboringTiles(tileID) {
+        const canonical = tileID.canonical;
+        const dim = Math.pow(2, canonical.z);
+        const px = (canonical.x - 1 + dim) % dim;
+        const pxw = canonical.x === 0 ? tileID.wrap - 1 : tileID.wrap;
+        const nx = (canonical.x + 1 + dim) % dim;
+        const nxw = canonical.x + 1 === dim ? tileID.wrap + 1 : tileID.wrap;
+        const neighboringTiles = {};
+        // add adjacent tiles
+        neighboringTiles[new performance$1.OverscaledTileID(tileID.overscaledZ, pxw, canonical.z, px, canonical.y).key] = { backfilled: false };
+        neighboringTiles[new performance$1.OverscaledTileID(tileID.overscaledZ, nxw, canonical.z, nx, canonical.y).key] = { backfilled: false };
+        // Add upper neighboringTiles
+        if (canonical.y > 0) {
+            neighboringTiles[new performance$1.OverscaledTileID(tileID.overscaledZ, pxw, canonical.z, px, canonical.y - 1).key] = { backfilled: false };
+            neighboringTiles[new performance$1.OverscaledTileID(tileID.overscaledZ, tileID.wrap, canonical.z, canonical.x, canonical.y - 1).key] = { backfilled: false };
+            neighboringTiles[new performance$1.OverscaledTileID(tileID.overscaledZ, nxw, canonical.z, nx, canonical.y - 1).key] = { backfilled: false };
+        }
+        // Add lower neighboringTiles
+        if (canonical.y + 1 < dim) {
+            neighboringTiles[new performance$1.OverscaledTileID(tileID.overscaledZ, pxw, canonical.z, px, canonical.y + 1).key] = { backfilled: false };
+            neighboringTiles[new performance$1.OverscaledTileID(tileID.overscaledZ, tileID.wrap, canonical.z, canonical.x, canonical.y + 1).key] = { backfilled: false };
+            neighboringTiles[new performance$1.OverscaledTileID(tileID.overscaledZ, nxw, canonical.z, nx, canonical.y + 1).key] = { backfilled: false };
+        }
+        return neighboringTiles;
+    }
+    unloadTile(tile) {
+        return performance$1.__awaiter(this, void 0, void 0, function* () {
+            if (tile.demTexture)
+                this.map.painter.saveTileTexture(tile.demTexture);
+            if (tile.fbo) {
+                tile.fbo.destroy();
+                delete tile.fbo;
+            }
+            if (tile.dem)
+                delete tile.dem;
+            delete tile.neighboringTiles;
+            tile.state = 'unloaded';
+            if (tile.actor) {
+                yield tile.actor.sendAsync({ type: "RDT" /* MessageType.removeDEMTile */, data: { type: this.type, uid: tile.uid, source: this.id } });
+            }
+        });
+    }
+}
+
+/**
+ * A source containing GeoJSON.
+ * (See the [Style Specification](https://maplibre.org/maplibre-style-spec/#sources-geojson) for detailed documentation of options.)
+ *
+ * @group Sources
+ *
+ * @example
+ * ```ts
+ * map.addSource('some id', {
+ *     type: 'geojson',
+ *     data: 'https://d2ad6b4ur7yvpq.cloudfront.net/naturalearth-3.3.0/ne_10m_ports.geojson'
+ * });
+ * ```
+ *
+ * @example
+ * ```ts
+ * map.addSource('some id', {
+ *    type: 'geojson',
+ *    data: {
+ *        "type": "FeatureCollection",
+ *        "features": [{
+ *            "type": "Feature",
+ *            "properties": {},
+ *            "geometry": {
+ *                "type": "Point",
+ *                "coordinates": [
+ *                    -76.53063297271729,
+ *                    39.18174077994108
+ *                ]
+ *            }
+ *        }]
+ *    }
+ * });
+ * ```
+ *
+ * @example
+ * ```ts
+ * map.getSource('some id').setData({
+ *   "type": "FeatureCollection",
+ *   "features": [{
+ *       "type": "Feature",
+ *       "properties": { "name": "Null Island" },
+ *       "geometry": {
+ *           "type": "Point",
+ *           "coordinates": [ 0, 0 ]
+ *       }
+ *   }]
+ * });
+ * ```
+ * @see [Draw GeoJSON points](https://maplibre.org/maplibre-gl-js/docs/examples/geojson-markers/)
+ * @see [Add a GeoJSON line](https://maplibre.org/maplibre-gl-js/docs/examples/geojson-line/)
+ * @see [Create a heatmap from points](https://maplibre.org/maplibre-gl-js/docs/examples/heatmap/)
+ * @see [Create and style clusters](https://maplibre.org/maplibre-gl-js/docs/examples/cluster/)
+ */
+class GeoJSONSource extends performance$1.Evented {
+    /** @internal */
+    constructor(id, options, dispatcher, eventedParent) {
+        super();
+        this.id = id;
+        // `type` is a property rather than a constant to make it easy for 3rd
+        // parties to use GeoJSONSource to build their own source types.
+        this.type = 'geojson';
+        this.minzoom = 0;
+        this.maxzoom = 18;
+        this.tileSize = 512;
+        this.isTileClipped = true;
+        this.reparseOverscaled = true;
+        this._removed = false;
+        this._pendingLoads = 0;
+        this.actor = dispatcher.getActor();
+        this.setEventedParent(eventedParent);
+        this._data = options.data;
+        this._options = performance$1.extend({}, options);
+        this._collectResourceTiming = options.collectResourceTiming;
+        if (options.maxzoom !== undefined)
+            this.maxzoom = options.maxzoom;
+        if (options.type)
+            this.type = options.type;
+        if (options.attribution)
+            this.attribution = options.attribution;
+        this.promoteId = options.promoteId;
+        const scale = performance$1.EXTENT / this.tileSize;
+        // sent to the worker, along with `url: ...` or `data: literal geojson`,
+        // so that it can load/parse/index the geojson data
+        // extending with `options.workerOptions` helps to make it easy for
+        // third-party sources to hack/reuse GeoJSONSource.
+        this.workerOptions = performance$1.extend({
+            source: this.id,
+            cluster: options.cluster || false,
+            geojsonVtOptions: {
+                buffer: (options.buffer !== undefined ? options.buffer : 128) * scale,
+                tolerance: (options.tolerance !== undefined ? options.tolerance : 0.375) * scale,
+                extent: performance$1.EXTENT,
+                maxZoom: this.maxzoom,
+                lineMetrics: options.lineMetrics || false,
+                generateId: options.generateId || false
+            },
+            superclusterOptions: {
+                maxZoom: options.clusterMaxZoom !== undefined ? options.clusterMaxZoom : this.maxzoom - 1,
+                minPoints: Math.max(2, options.clusterMinPoints || 2),
+                extent: performance$1.EXTENT,
+                radius: (options.clusterRadius || 50) * scale,
+                log: false,
+                generateId: options.generateId || false
+            },
+            clusterProperties: options.clusterProperties,
+            filter: options.filter
+        }, options.workerOptions);
+        // send the promoteId to the worker to have more flexible updates, but only if it is a string
+        if (typeof this.promoteId === 'string') {
+            this.workerOptions.promoteId = this.promoteId;
+        }
+    }
+    load() {
+        return performance$1.__awaiter(this, void 0, void 0, function* () {
+            yield this._updateWorkerData();
+        });
+    }
+    onAdd(map) {
+        this.map = map;
+        this.load();
+    }
+    /**
+     * Sets the GeoJSON data and re-renders the map.
+     *
+     * @param data - A GeoJSON data object or a URL to one. The latter is preferable in the case of large GeoJSON files.
+     * @returns `this`
+     */
+    setData(data) {
+        this._data = data;
+        this._updateWorkerData();
+        return this;
+    }
+    /**
+     * Updates the source's GeoJSON, and re-renders the map.
+     *
+     * For sources with lots of features, this method can be used to make updates more quickly.
+     *
+     * This approach requires unique IDs for every feature in the source. The IDs can either be specified on the feature,
+     * or by using the promoteId option to specify which property should be used as the ID.
+     *
+     * It is an error to call updateData on a source that did not have unique IDs for each of its features already.
+     *
+     * Updates are applied on a best-effort basis, updating an ID that does not exist will not result in an error.
+     *
+     * @param diff - The changes that need to be applied.
+     * @returns `this`
+     */
+    updateData(diff) {
+        this._updateWorkerData(diff);
+        return this;
+    }
+    /**
+     * To disable/enable clustering on the source options
+     * @param options - The options to set
+     * @returns `this`
+     * @example
+     * ```ts
+     * map.getSource('some id').setClusterOptions({cluster: false});
+     * map.getSource('some id').setClusterOptions({cluster: false, clusterRadius: 50, clusterMaxZoom: 14});
+     * ```
+     */
+    setClusterOptions(options) {
+        this.workerOptions.cluster = options.cluster;
+        if (options) {
+            if (options.clusterRadius !== undefined)
+                this.workerOptions.superclusterOptions.radius = options.clusterRadius;
+            if (options.clusterMaxZoom !== undefined)
+                this.workerOptions.superclusterOptions.maxZoom = options.clusterMaxZoom;
+        }
+        this._updateWorkerData();
+        return this;
+    }
+    /**
+     * For clustered sources, fetches the zoom at which the given cluster expands.
+     *
+     * @param clusterId - The value of the cluster's `cluster_id` property.
+     * @returns a promise that is resolved with the zoom number
+     */
+    getClusterExpansionZoom(clusterId) {
+        return this.actor.sendAsync({ type: "GCEZ" /* MessageType.getClusterExpansionZoom */, data: { type: this.type, clusterId, source: this.id } });
+    }
+    /**
+     * For clustered sources, fetches the children of the given cluster on the next zoom level (as an array of GeoJSON features).
+     *
+     * @param clusterId - The value of the cluster's `cluster_id` property.
+     * @returns a promise that is resolved when the features are retrieved
+     */
+    getClusterChildren(clusterId) {
+        return this.actor.sendAsync({ type: "GCC" /* MessageType.getClusterChildren */, data: { type: this.type, clusterId, source: this.id } });
+    }
+    /**
+     * For clustered sources, fetches the original points that belong to the cluster (as an array of GeoJSON features).
+     *
+     * @param clusterId - The value of the cluster's `cluster_id` property.
+     * @param limit - The maximum number of features to return.
+     * @param offset - The number of features to skip (e.g. for pagination).
+     * @returns a promise that is resolved when the features are retreived
+     * @example
+     * Retrieve cluster leaves on click
+     * ```ts
+     * map.on('click', 'clusters', (e) => {
+     *   let features = map.queryRenderedFeatures(e.point, {
+     *     layers: ['clusters']
+     *   });
+     *
+     *   let clusterId = features[0].properties.cluster_id;
+     *   let pointCount = features[0].properties.point_count;
+     *   let clusterSource = map.getSource('clusters');
+     *
+     *   const features = await clusterSource.getClusterLeaves(clusterId, pointCount) 0, function(error, features) {
+     *   // Print cluster leaves in the console
+     *   console.log('Cluster leaves:', features);
+     * });
+     * ```
+     */
+    getClusterLeaves(clusterId, limit, offset) {
+        return this.actor.sendAsync({ type: "GCL" /* MessageType.getClusterLeaves */, data: {
+                type: this.type,
+                source: this.id,
+                clusterId,
+                limit,
+                offset
+            } });
+    }
+    /**
+     * Responsible for invoking WorkerSource's geojson.loadData target, which
+     * handles loading the geojson data and preparing to serve it up as tiles,
+     * using geojson-vt or supercluster as appropriate.
+     * @param diff - the diff object
+     */
+    _updateWorkerData(diff) {
+        return performance$1.__awaiter(this, void 0, void 0, function* () {
+            const options = performance$1.extend({ type: this.type }, this.workerOptions);
+            if (diff) {
+                options.dataDiff = diff;
+            }
+            else if (typeof this._data === 'string') {
+                options.request = this.map._requestManager.transformRequest(browser.resolveURL(this._data), "Source" /* ResourceType.Source */);
+                options.request.collectResourceTiming = this._collectResourceTiming;
+            }
+            else {
+                options.data = JSON.stringify(this._data);
+            }
+            this._pendingLoads++;
+            this.fire(new performance$1.Event('dataloading', { dataType: 'source' }));
+            try {
+                const result = yield this.actor.sendAsync({ type: "LD" /* MessageType.loadData */, data: options });
+                this._pendingLoads--;
+                if (this._removed || result.abandoned) {
+                    this.fire(new performance$1.Event('dataabort', { dataType: 'source' }));
+                    return;
+                }
+                let resourceTiming = null;
+                if (result.resourceTiming && result.resourceTiming[this.id]) {
+                    resourceTiming = result.resourceTiming[this.id].slice(0);
+                }
+                const data = { dataType: 'source' };
+                if (this._collectResourceTiming && resourceTiming && resourceTiming.length > 0) {
+                    performance$1.extend(data, { resourceTiming });
+                }
+                // although GeoJSON sources contain no metadata, we fire this event to let the SourceCache
+                // know its ok to start requesting tiles.
+                this.fire(new performance$1.Event('data', Object.assign(Object.assign({}, data), { sourceDataType: 'metadata' })));
+                this.fire(new performance$1.Event('data', Object.assign(Object.assign({}, data), { sourceDataType: 'content' })));
+            }
+            catch (err) {
+                this._pendingLoads--;
+                if (this._removed) {
+                    this.fire(new performance$1.Event('dataabort', { dataType: 'source' }));
+                    return;
+                }
+                this.fire(new performance$1.ErrorEvent(err));
+            }
+        });
+    }
+    loaded() {
+        return this._pendingLoads === 0;
+    }
+    loadTile(tile) {
+        return performance$1.__awaiter(this, void 0, void 0, function* () {
+            const message = !tile.actor ? "LT" /* MessageType.loadTile */ : "RT" /* MessageType.reloadTile */;
+            tile.actor = this.actor;
+            const params = {
+                type: this.type,
+                uid: tile.uid,
+                tileID: tile.tileID,
+                zoom: tile.tileID.overscaledZ,
+                maxZoom: this.maxzoom,
+                tileSize: this.tileSize,
+                source: this.id,
+                pixelRatio: this.map.getPixelRatio(),
+                showCollisionBoxes: this.map.showCollisionBoxes,
+                promoteId: this.promoteId
+            };
+            tile.abortController = new AbortController();
+            const data = yield this.actor.sendAsync({ type: message, data: params }, tile.abortController);
+            delete tile.abortController;
+            tile.unloadVectorData();
+            if (!tile.aborted) {
+                tile.loadVectorData(data, this.map.painter, message === "RT" /* MessageType.reloadTile */);
+            }
+        });
+    }
+    abortTile(tile) {
+        return performance$1.__awaiter(this, void 0, void 0, function* () {
+            if (tile.abortController) {
+                tile.abortController.abort();
+                delete tile.abortController;
+            }
+            tile.aborted = true;
+        });
+    }
+    unloadTile(tile) {
+        return performance$1.__awaiter(this, void 0, void 0, function* () {
+            tile.unloadVectorData();
+            yield this.actor.sendAsync({ type: "RMT" /* MessageType.removeTile */, data: { uid: tile.uid, type: this.type, source: this.id } });
+        });
+    }
+    onRemove() {
+        this._removed = true;
+        this.actor.sendAsync({ type: "RS" /* MessageType.removeSource */, data: { type: this.type, source: this.id } });
+    }
+    serialize() {
+        return performance$1.extend({}, this._options, {
+            type: this.type,
+            data: this._data
+        });
+    }
+    hasTransition() {
+        return false;
+    }
+}
+
+var rasterBoundsAttributes = performance$1.createLayout([
+    { name: 'a_pos', type: 'Int16', components: 2 },
+    { name: 'a_texture_pos', type: 'Int16', components: 2 }
+]);
+
+/**
+ * A data source containing an image.
+ * (See the [Style Specification](https://maplibre.org/maplibre-style-spec/#sources-image) for detailed documentation of options.)
+ *
+ * @group Sources
+ *
+ * @example
+ * ```ts
+ * // add to map
+ * map.addSource('some id', {
+ *    type: 'image',
+ *    url: 'https://www.maplibre.org/images/foo.png',
+ *    coordinates: [
+ *        [-76.54, 39.18],
+ *        [-76.52, 39.18],
+ *        [-76.52, 39.17],
+ *        [-76.54, 39.17]
+ *    ]
+ * });
+ *
+ * // update coordinates
+ * let mySource = map.getSource('some id');
+ * mySource.setCoordinates([
+ *     [-76.54335737228394, 39.18579907229748],
+ *     [-76.52803659439087, 39.1838364847587],
+ *     [-76.5295386314392, 39.17683392507606],
+ *     [-76.54520273208618, 39.17876344106642]
+ * ]);
+ *
+ * // update url and coordinates simultaneously
+ * mySource.updateImage({
+ *    url: 'https://www.maplibre.org/images/bar.png',
+ *    coordinates: [
+ *        [-76.54335737228394, 39.18579907229748],
+ *        [-76.52803659439087, 39.1838364847587],
+ *        [-76.5295386314392, 39.17683392507606],
+ *        [-76.54520273208618, 39.17876344106642]
+ *    ]
+ * })
+ *
+ * map.removeSource('some id');  // remove
+ * ```
+ */
+class ImageSource extends performance$1.Evented {
+    /** @internal */
+    constructor(id, options, dispatcher, eventedParent) {
+        super();
+        this.id = id;
+        this.dispatcher = dispatcher;
+        this.coordinates = options.coordinates;
+        this.type = 'image';
+        this.minzoom = 0;
+        this.maxzoom = 22;
+        this.tileSize = 512;
+        this.tiles = {};
+        this._loaded = false;
+        this.setEventedParent(eventedParent);
+        this.options = options;
+    }
+    load(newCoordinates) {
+        return performance$1.__awaiter(this, void 0, void 0, function* () {
+            this._loaded = false;
+            this.fire(new performance$1.Event('dataloading', { dataType: 'source' }));
+            this.url = this.options.url;
+            this._request = new AbortController();
+            try {
+                const image = yield ImageRequest.getImage(this.map._requestManager.transformRequest(this.url, "Image" /* ResourceType.Image */), this._request);
+                this._request = null;
+                this._loaded = true;
+                if (image && image.data) {
+                    this.image = image.data;
+                    if (newCoordinates) {
+                        this.coordinates = newCoordinates;
+                    }
+                    this._finishLoading();
+                }
+            }
+            catch (err) {
+                this._request = null;
+                this._loaded = true;
+                this.fire(new performance$1.ErrorEvent(err));
+            }
+        });
+    }
+    loaded() {
+        return this._loaded;
+    }
+    /**
+     * Updates the image URL and, optionally, the coordinates. To avoid having the image flash after changing,
+     * set the `raster-fade-duration` paint property on the raster layer to 0.
+     *
+     * @param options - The options object.
+     * @returns `this`
+     */
+    updateImage(options) {
+        if (!options.url) {
+            return this;
+        }
+        if (this._request) {
+            this._request.abort();
+            this._request = null;
+        }
+        this.options.url = options.url;
+        this.load(options.coordinates).finally(() => { this.texture = null; });
+        return this;
+    }
+    _finishLoading() {
+        if (this.map) {
+            this.setCoordinates(this.coordinates);
+            this.fire(new performance$1.Event('data', { dataType: 'source', sourceDataType: 'metadata' }));
+        }
+    }
+    onAdd(map) {
+        this.map = map;
+        this.load();
+    }
+    onRemove() {
+        if (this._request) {
+            this._request.abort();
+            this._request = null;
+        }
+    }
+    /**
+     * Sets the image's coordinates and re-renders the map.
+     *
+     * @param coordinates - Four geographical coordinates,
+     * represented as arrays of longitude and latitude numbers, which define the corners of the image.
+     * The coordinates start at the top left corner of the image and proceed in clockwise order.
+     * They do not have to represent a rectangle.
+     * @returns `this`
+     */
+    setCoordinates(coordinates) {
+        this.coordinates = coordinates;
+        // Calculate which mercator tile is suitable for rendering the video in
+        // and create a buffer with the corner coordinates. These coordinates
+        // may be outside the tile, because raster tiles aren't clipped when rendering.
+        // transform the geo coordinates into (zoom 0) tile space coordinates
+        const cornerCoords = coordinates.map(performance$1.MercatorCoordinate.fromLngLat);
+        // Compute the coordinates of the tile we'll use to hold this image's
+        // render data
+        this.tileID = getCoordinatesCenterTileID(cornerCoords);
+        // Constrain min/max zoom to our tile's zoom level in order to force
+        // SourceCache to request this tile (no matter what the map's zoom
+        // level)
+        this.minzoom = this.maxzoom = this.tileID.z;
+        // Transform the corner coordinates into the coordinate space of our
+        // tile.
+        const tileCoords = cornerCoords.map((coord) => this.tileID.getTilePoint(coord)._round());
+        this._boundsArray = new performance$1.RasterBoundsArray();
+        this._boundsArray.emplaceBack(tileCoords[0].x, tileCoords[0].y, 0, 0);
+        this._boundsArray.emplaceBack(tileCoords[1].x, tileCoords[1].y, performance$1.EXTENT, 0);
+        this._boundsArray.emplaceBack(tileCoords[3].x, tileCoords[3].y, 0, performance$1.EXTENT);
+        this._boundsArray.emplaceBack(tileCoords[2].x, tileCoords[2].y, performance$1.EXTENT, performance$1.EXTENT);
+        if (this.boundsBuffer) {
+            this.boundsBuffer.destroy();
+            delete this.boundsBuffer;
+        }
+        this.fire(new performance$1.Event('data', { dataType: 'source', sourceDataType: 'content' }));
+        return this;
+    }
+    prepare() {
+        if (Object.keys(this.tiles).length === 0 || !this.image) {
+            return;
+        }
+        const context = this.map.painter.context;
+        const gl = context.gl;
+        if (!this.boundsBuffer) {
+            this.boundsBuffer = context.createVertexBuffer(this._boundsArray, rasterBoundsAttributes.members);
+        }
+        if (!this.boundsSegments) {
+            this.boundsSegments = performance$1.SegmentVector.simpleSegment(0, 0, 4, 2);
+        }
+        if (!this.texture) {
+            this.texture = new Texture(context, this.image, gl.RGBA);
+            this.texture.bind(gl.LINEAR, gl.CLAMP_TO_EDGE);
+        }
+        let newTilesLoaded = false;
+        for (const w in this.tiles) {
+            const tile = this.tiles[w];
+            if (tile.state !== 'loaded') {
+                tile.state = 'loaded';
+                tile.texture = this.texture;
+                newTilesLoaded = true;
+            }
+        }
+        if (newTilesLoaded) {
+            this.fire(new performance$1.Event('data', { dataType: 'source', sourceDataType: 'idle', sourceId: this.id }));
+        }
+    }
+    loadTile(tile) {
+        return performance$1.__awaiter(this, void 0, void 0, function* () {
+            // We have a single tile -- whose coordinates are this.tileID -- that
+            // covers the image we want to render.  If that's the one being
+            // requested, set it up with the image; otherwise, mark the tile as
+            // `errored` to indicate that we have no data for it.
+            // If the world wraps, we may have multiple "wrapped" copies of the
+            // single tile.
+            if (this.tileID && this.tileID.equals(tile.tileID.canonical)) {
+                this.tiles[String(tile.tileID.wrap)] = tile;
+                tile.buckets = {};
+            }
+            else {
+                tile.state = 'errored';
+            }
+        });
+    }
+    serialize() {
+        return {
+            type: 'image',
+            url: this.options.url,
+            coordinates: this.coordinates
+        };
+    }
+    hasTransition() {
+        return false;
+    }
+}
+/**
+ * Given a list of coordinates, get their center as a coordinate.
+ *
+ * @returns centerpoint
+ * @internal
+ */
+function getCoordinatesCenterTileID(coords) {
+    let minX = Infinity;
+    let minY = Infinity;
+    let maxX = -Infinity;
+    let maxY = -Infinity;
+    for (const coord of coords) {
+        minX = Math.min(minX, coord.x);
+        minY = Math.min(minY, coord.y);
+        maxX = Math.max(maxX, coord.x);
+        maxY = Math.max(maxY, coord.y);
+    }
+    const dx = maxX - minX;
+    const dy = maxY - minY;
+    const dMax = Math.max(dx, dy);
+    const zoom = Math.max(0, Math.floor(-Math.log(dMax) / Math.LN2));
+    const tilesAtZoom = Math.pow(2, zoom);
+    return new performance$1.CanonicalTileID(zoom, Math.floor((minX + maxX) / 2 * tilesAtZoom), Math.floor((minY + maxY) / 2 * tilesAtZoom));
+}
+
+/**
+ * A data source containing video.
+ * (See the [Style Specification](https://maplibre.org/maplibre-style-spec/#sources-video) for detailed documentation of options.)
+ *
+ * @group Sources
+ *
+ * @example
+ * ```ts
+ * // add to map
+ * map.addSource('some id', {
+ *    type: 'video',
+ *    url: [
+ *        'https://www.mapbox.com/blog/assets/baltimore-smoke.mp4',
+ *        'https://www.mapbox.com/blog/assets/baltimore-smoke.webm'
+ *    ],
+ *    coordinates: [
+ *        [-76.54, 39.18],
+ *        [-76.52, 39.18],
+ *        [-76.52, 39.17],
+ *        [-76.54, 39.17]
+ *    ]
+ * });
+ *
+ * // update
+ * let mySource = map.getSource('some id');
+ * mySource.setCoordinates([
+ *     [-76.54335737228394, 39.18579907229748],
+ *     [-76.52803659439087, 39.1838364847587],
+ *     [-76.5295386314392, 39.17683392507606],
+ *     [-76.54520273208618, 39.17876344106642]
+ * ]);
+ *
+ * map.removeSource('some id');  // remove
+ * ```
+ * @see [Add a video](https://maplibre.org/maplibre-gl-js/docs/examples/video-on-a-map/)
+ *
+ * Note that when rendered as a raster layer, the layer's `raster-fade-duration` property will cause the video to fade in.
+ * This happens when playback is started, paused and resumed, or when the video's coordinates are updated. To avoid this behavior,
+ * set the layer's `raster-fade-duration` property to `0`.
+ */
+class VideoSource extends ImageSource {
+    constructor(id, options, dispatcher, eventedParent) {
+        super(id, options, dispatcher, eventedParent);
+        this.roundZoom = true;
+        this.type = 'video';
+        this.options = options;
+    }
+    load() {
+        return performance$1.__awaiter(this, void 0, void 0, function* () {
+            this._loaded = false;
+            const options = this.options;
+            this.urls = [];
+            for (const url of options.urls) {
+                this.urls.push(this.map._requestManager.transformRequest(url, "Source" /* ResourceType.Source */).url);
+            }
+            try {
+                const video = yield performance$1.getVideo(this.urls);
+                this._loaded = true;
+                if (!video) {
+                    return;
+                }
+                this.video = video;
+                this.video.loop = true;
+                // Start repainting when video starts playing. hasTransition() will then return
+                // true to trigger additional frames as long as the videos continues playing.
+                this.video.addEventListener('playing', () => {
+                    this.map.triggerRepaint();
+                });
+                if (this.map) {
+                    this.video.play();
+                }
+                this._finishLoading();
+            }
+            catch (err) {
+                this.fire(new performance$1.ErrorEvent(err));
+            }
+        });
+    }
+    /**
+     * Pauses the video.
+     */
+    pause() {
+        if (this.video) {
+            this.video.pause();
+        }
+    }
+    /**
+     * Plays the video.
+     */
+    play() {
+        if (this.video) {
+            this.video.play();
+        }
+    }
+    /**
+     * Sets playback to a timestamp, in seconds.
+     */
+    seek(seconds) {
+        if (this.video) {
+            const seekableRange = this.video.seekable;
+            if (seconds < seekableRange.start(0) || seconds > seekableRange.end(0)) {
+                this.fire(new performance$1.ErrorEvent(new performance$1.ValidationError(`sources.${this.id}`, null, `Playback for this video can be set only between the ${seekableRange.start(0)} and ${seekableRange.end(0)}-second mark.`)));
+            }
+            else
+                this.video.currentTime = seconds;
+        }
+    }
+    /**
+     * Returns the HTML `video` element.
+     *
+     * @returns The HTML `video` element.
+     */
+    getVideo() {
+        return this.video;
+    }
+    onAdd(map) {
+        if (this.map)
+            return;
+        this.map = map;
+        this.load();
+        if (this.video) {
+            this.video.play();
+            this.setCoordinates(this.coordinates);
+        }
+    }
+    /**
+     * Sets the video's coordinates and re-renders the map.
+     *
+     * @returns `this`
+     */
+    prepare() {
+        if (Object.keys(this.tiles).length === 0 || this.video.readyState < 2) {
+            return; // not enough data for current position
+        }
+        const context = this.map.painter.context;
+        const gl = context.gl;
+        if (!this.boundsBuffer) {
+            this.boundsBuffer = context.createVertexBuffer(this._boundsArray, rasterBoundsAttributes.members);
+        }
+        if (!this.boundsSegments) {
+            this.boundsSegments = performance$1.SegmentVector.simpleSegment(0, 0, 4, 2);
+        }
+        if (!this.texture) {
+            this.texture = new Texture(context, this.video, gl.RGBA);
+            this.texture.bind(gl.LINEAR, gl.CLAMP_TO_EDGE);
+        }
+        else if (!this.video.paused) {
+            this.texture.bind(gl.LINEAR, gl.CLAMP_TO_EDGE);
+            gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, this.video);
+        }
+        let newTilesLoaded = false;
+        for (const w in this.tiles) {
+            const tile = this.tiles[w];
+            if (tile.state !== 'loaded') {
+                tile.state = 'loaded';
+                tile.texture = this.texture;
+                newTilesLoaded = true;
+            }
+        }
+        if (newTilesLoaded) {
+            this.fire(new performance$1.Event('data', { dataType: 'source', sourceDataType: 'idle', sourceId: this.id }));
+        }
+    }
+    serialize() {
+        return {
+            type: 'video',
+            urls: this.urls,
+            coordinates: this.coordinates
+        };
+    }
+    hasTransition() {
+        return this.video && !this.video.paused;
+    }
+}
+
+/**
+ * A data source containing the contents of an HTML canvas. See {@link CanvasSourceSpecification} for detailed documentation of options.
+ *
+ * @group Sources
+ *
+ * @example
+ * ```ts
+ * // add to map
+ * map.addSource('some id', {
+ *    type: 'canvas',
+ *    canvas: 'idOfMyHTMLCanvas',
+ *    animate: true,
+ *    coordinates: [
+ *        [-76.54, 39.18],
+ *        [-76.52, 39.18],
+ *        [-76.52, 39.17],
+ *        [-76.54, 39.17]
+ *    ]
+ * });
+ *
+ * // update
+ * let mySource = map.getSource('some id');
+ * mySource.setCoordinates([
+ *     [-76.54335737228394, 39.18579907229748],
+ *     [-76.52803659439087, 39.1838364847587],
+ *     [-76.5295386314392, 39.17683392507606],
+ *     [-76.54520273208618, 39.17876344106642]
+ * ]);
+ *
+ * map.removeSource('some id');  // remove
+ * ```
+ */
+class CanvasSource extends ImageSource {
+    /** @internal */
+    constructor(id, options, dispatcher, eventedParent) {
+        super(id, options, dispatcher, eventedParent);
+        // We build in some validation here, since canvas sources aren't included in the style spec:
+        if (!options.coordinates) {
+            this.fire(new performance$1.ErrorEvent(new performance$1.ValidationError(`sources.${id}`, null, 'missing required property "coordinates"')));
+        }
+        else if (!Array.isArray(options.coordinates) || options.coordinates.length !== 4 ||
+            options.coordinates.some(c => !Array.isArray(c) || c.length !== 2 || c.some(l => typeof l !== 'number'))) {
+            this.fire(new performance$1.ErrorEvent(new performance$1.ValidationError(`sources.${id}`, null, '"coordinates" property must be an array of 4 longitude/latitude array pairs')));
+        }
+        if (options.animate && typeof options.animate !== 'boolean') {
+            this.fire(new performance$1.ErrorEvent(new performance$1.ValidationError(`sources.${id}`, null, 'optional "animate" property must be a boolean value')));
+        }
+        if (!options.canvas) {
+            this.fire(new performance$1.ErrorEvent(new performance$1.ValidationError(`sources.${id}`, null, 'missing required property "canvas"')));
+        }
+        else if (typeof options.canvas !== 'string' && !(options.canvas instanceof HTMLCanvasElement)) {
+            this.fire(new performance$1.ErrorEvent(new performance$1.ValidationError(`sources.${id}`, null, '"canvas" must be either a string representing the ID of the canvas element from which to read, or an HTMLCanvasElement instance')));
+        }
+        this.options = options;
+        this.animate = options.animate !== undefined ? options.animate : true;
+    }
+    load() {
+        return performance$1.__awaiter(this, void 0, void 0, function* () {
+            this._loaded = true;
+            if (!this.canvas) {
+                this.canvas = (this.options.canvas instanceof HTMLCanvasElement) ?
+                    this.options.canvas :
+                    document.getElementById(this.options.canvas);
+                // cast to HTMLCanvasElement in else of ternary
+                // should we do a safety check and throw if it's not actually HTMLCanvasElement?
+            }
+            this.width = this.canvas.width;
+            this.height = this.canvas.height;
+            if (this._hasInvalidDimensions()) {
+                this.fire(new performance$1.ErrorEvent(new Error('Canvas dimensions cannot be less than or equal to zero.')));
+                return;
+            }
+            this.play = function () {
+                this._playing = true;
+                this.map.triggerRepaint();
+            };
+            this.pause = function () {
+                if (this._playing) {
+                    this.prepare();
+                    this._playing = false;
+                }
+            };
+            this._finishLoading();
+        });
+    }
+    /**
+     * Returns the HTML `canvas` element.
+     *
+     * @returns The HTML `canvas` element.
+     */
+    getCanvas() {
+        return this.canvas;
+    }
+    onAdd(map) {
+        this.map = map;
+        this.load();
+        if (this.canvas) {
+            if (this.animate)
+                this.play();
+        }
+    }
+    onRemove() {
+        this.pause();
+    }
+    prepare() {
+        let resize = false;
+        if (this.canvas.width !== this.width) {
+            this.width = this.canvas.width;
+            resize = true;
+        }
+        if (this.canvas.height !== this.height) {
+            this.height = this.canvas.height;
+            resize = true;
+        }
+        if (this._hasInvalidDimensions())
+            return;
+        if (Object.keys(this.tiles).length === 0)
+            return; // not enough data for current position
+        const context = this.map.painter.context;
+        const gl = context.gl;
+        if (!this.boundsBuffer) {
+            this.boundsBuffer = context.createVertexBuffer(this._boundsArray, rasterBoundsAttributes.members);
+        }
+        if (!this.boundsSegments) {
+            this.boundsSegments = performance$1.SegmentVector.simpleSegment(0, 0, 4, 2);
+        }
+        if (!this.texture) {
+            this.texture = new Texture(context, this.canvas, gl.RGBA, { premultiply: true });
+        }
+        else if (resize || this._playing) {
+            this.texture.update(this.canvas, { premultiply: true });
+        }
+        let newTilesLoaded = false;
+        for (const w in this.tiles) {
+            const tile = this.tiles[w];
+            if (tile.state !== 'loaded') {
+                tile.state = 'loaded';
+                tile.texture = this.texture;
+                newTilesLoaded = true;
+            }
+        }
+        if (newTilesLoaded) {
+            this.fire(new performance$1.Event('data', { dataType: 'source', sourceDataType: 'idle', sourceId: this.id }));
+        }
+    }
+    serialize() {
+        return {
+            type: 'canvas',
+            coordinates: this.coordinates
+        };
+    }
+    hasTransition() {
+        return this._playing;
+    }
+    _hasInvalidDimensions() {
+        for (const x of [this.canvas.width, this.canvas.height]) {
+            if (isNaN(x) || x <= 0)
+                return true;
+        }
+        return false;
+    }
+}
+
+const registeredSources = {};
+/**
+ * Creates a tiled data source instance given an options object.
+ *
+ * @param id - The id for the source. Must not be used by any existing source.
+ * @param specification - Source options, specific to the source type (except for `options.type`, which is always required).
+ * @param source - A source definition object compliant with
+ * [`maplibre-gl-style-spec`](https://maplibre.org/maplibre-style-spec/#sources) or, for a third-party source type,
+  * with that type's requirements.
+ * @param dispatcher - A {@link Dispatcher} instance, which can be used to send messages to the workers.
+ * @returns a newly created source
+ */
+const create = (id, specification, dispatcher, eventedParent) => {
+    const Class = getSourceType(specification.type);
+    const source = new Class(id, specification, dispatcher, eventedParent);
+    if (source.id !== id) {
+        throw new Error(`Expected Source id to be ${id} instead of ${source.id}`);
+    }
+    return source;
+};
+const getSourceType = (name) => {
+    switch (name) {
+        case 'geojson':
+            return GeoJSONSource;
+        case 'image':
+            return ImageSource;
+        case 'raster':
+            return RasterTileSource;
+        case 'raster-dem':
+            return RasterDEMTileSource;
+        case 'vector':
+            return VectorTileSource;
+        case 'video':
+            return VideoSource;
+        case 'canvas':
+            return CanvasSource;
+    }
+    return registeredSources[name];
+};
+const setSourceType = (name, type) => {
+    registeredSources[name] = type;
+};
+/**
+ * Adds a [custom source type](#Custom Sources), making it available for use with
+ * {@link Map#addSource}.
+ * @param name - The name of the source type; source definition objects use this name in the `{type: ...}` field.
+ * @param sourceType - A {@link SourceClass} - which is a constructor for the `Source` interface.
+ * @returns a promise that is resolved when the source type is ready or rejected with an error.
+ */
+const addSourceType = (name, SourceType) => performance$1.__awaiter(void 0, void 0, void 0, function* () {
+    if (getSourceType(name)) {
+        throw new Error(`A source type called "${name}" already exists.`);
+    }
+    setSourceType(name, SourceType);
+});
+
 function deserialize(input, style) {
     const output = {};
     // Guard against the case where the map's style has been set to null while
@@ -38297,9 +38937,89 @@ function deserialize(input, style) {
     return output;
 }
 
+const RTLPluginLoadedEventName = 'RTLPluginLoaded';
+
+class RTLMainThreadPlugin extends performance$1.Evented {
+    constructor() {
+        super(...arguments);
+        this.status = 'unavailable';
+        this.url = null;
+        this.dispatcher = getGlobalDispatcher();
+    }
+    /** Sync RTL plugin state by broadcasting a message to the worker */
+    _syncState(statusToSend) {
+        this.status = statusToSend;
+        return this.dispatcher.broadcast("SRPS" /* MessageType.syncRTLPluginState */, { pluginStatus: statusToSend, pluginURL: this.url })
+            .catch((e) => {
+            this.status = 'error';
+            throw e;
+        });
+    }
+    /** This one is exposed to outside */
+    getRTLTextPluginStatus() {
+        return this.status;
+    }
+    clearRTLTextPlugin() {
+        this.status = 'unavailable';
+        this.url = null;
+    }
+    setRTLTextPlugin(url_1) {
+        return performance$1.__awaiter(this, arguments, void 0, function* (url, deferred = false) {
+            if (this.url) {
+                // error
+                throw new Error('setRTLTextPlugin cannot be called multiple times.');
+            }
+            this.url = browser.resolveURL(url);
+            if (!this.url) {
+                throw new Error(`requested url ${url} is invalid`);
+            }
+            if (this.status === 'unavailable') {
+                // from initial state:
+                if (deferred) {
+                    this.status = 'deferred';
+                    // fire and forget: in this case it does not need wait for the broadcasting result
+                    // it is important to sync the deferred status once because
+                    // symbol_bucket will be checking it in worker
+                    this._syncState(this.status);
+                }
+                else {
+                    return this._requestImport();
+                }
+            }
+            else if (this.status === 'requested') {
+                return this._requestImport();
+            }
+        });
+    }
+    /** Send a message to worker which will import the RTL plugin script */
+    _requestImport() {
+        return performance$1.__awaiter(this, void 0, void 0, function* () {
+            // all errors/exceptions will be handled by _syncState
+            yield this._syncState('loading');
+            this.status = 'loaded';
+            this.fire(new performance$1.Event(RTLPluginLoadedEventName));
+        });
+    }
+    /** Start a lazy loading process of RTL plugin */
+    lazyLoad() {
+        if (this.status === 'unavailable') {
+            this.status = 'requested';
+        }
+        else if (this.status === 'deferred') {
+            this._requestImport();
+        }
+    }
+}
+let rtlMainThreadPlugin = null;
+function rtlMainThreadPluginFactory() {
+    if (!rtlMainThreadPlugin) {
+        rtlMainThreadPlugin = new RTLMainThreadPlugin();
+    }
+    return rtlMainThreadPlugin;
+}
+
 const CLOCK_SKEW_RETRY_TIMEOUT = 30000;
 /**
- * @internal
  * A tile object is the combination of a Coordinate, which defines
  * its place, as well as a unique ID and data tracking for its content
  */
@@ -38312,7 +39032,7 @@ class Tile {
         this.timeAdded = 0;
         this.fadeEndTime = 0;
         this.tileID = tileID;
-        this.uid = performance.uniqueId();
+        this.uid = performance$1.uniqueId();
         this.uses = 0;
         this.tileSize = size;
         this.buckets = {};
@@ -38361,7 +39081,7 @@ class Tile {
         this.state = 'loaded';
         // empty GeoJSON tile
         if (!data) {
-            this.collisionBoxArray = new performance.CollisionBoxArray();
+            this.collisionBoxArray = new performance$1.CollisionBoxArray();
             return;
         }
         if (data.featureIndex) {
@@ -38383,7 +39103,7 @@ class Tile {
         this.hasSymbolBuckets = false;
         for (const id in this.buckets) {
             const bucket = this.buckets[id];
-            if (bucket instanceof performance.SymbolBucket) {
+            if (bucket instanceof performance$1.SymbolBucket) {
                 this.hasSymbolBuckets = true;
                 if (justReloaded) {
                     bucket.justReloaded = true;
@@ -38397,10 +39117,10 @@ class Tile {
         if (this.hasSymbolBuckets) {
             for (const id in this.buckets) {
                 const bucket = this.buckets[id];
-                if (bucket instanceof performance.SymbolBucket) {
+                if (bucket instanceof performance$1.SymbolBucket) {
                     if (bucket.hasRTLText) {
                         this.hasRTLText = true;
-                        performance.lazyLoadRTLTextPlugin();
+                        rtlMainThreadPluginFactory().lazyLoad();
                         break;
                     }
                 }
@@ -38488,21 +39208,21 @@ class Tile {
         const layer = vtLayers._geojsonTileLayer || vtLayers[sourceLayer];
         if (!layer)
             return;
-        const filter = performance.createFilter(params && params.filter);
+        const filter = performance$1.createFilter(params && params.filter);
         const { z, x, y } = this.tileID.canonical;
         const coord = { z, x, y };
         for (let i = 0; i < layer.length; i++) {
             const feature = layer.feature(i);
             if (filter.needGeometry) {
-                const evaluationFeature = performance.toEvaluationFeature(feature, true);
-                if (!filter.filter(new performance.EvaluationParameters(this.tileID.overscaledZ), evaluationFeature, this.tileID.canonical))
+                const evaluationFeature = performance$1.toEvaluationFeature(feature, true);
+                if (!filter.filter(new performance$1.EvaluationParameters(this.tileID.overscaledZ), evaluationFeature, this.tileID.canonical))
                     continue;
             }
-            else if (!filter.filter(new performance.EvaluationParameters(this.tileID.overscaledZ), feature)) {
+            else if (!filter.filter(new performance$1.EvaluationParameters(this.tileID.overscaledZ), feature)) {
                 continue;
             }
             const id = featureIndex.getId(feature, sourceLayer);
-            const geojsonFeature = new performance.GeoJSONFeature(feature, z, x, y, id);
+            const geojsonFeature = new performance$1.GeoJSONFeature(feature, z, x, y, id);
             geojsonFeature.tile = coord;
             result.push(geojsonFeature);
         }
@@ -38516,7 +39236,7 @@ class Tile {
     setExpiryData(data) {
         const prior = this.expirationTime;
         if (data.cacheControl) {
-            const parsedCC = performance.parseCacheControl(data.cacheControl);
+            const parsedCC = performance$1.parseCacheControl(data.cacheControl);
             if (parsedCC['max-age'])
                 this.expirationTime = Date.now() + parsedCC['max-age'] * 1000;
         }
@@ -38599,13 +39319,13 @@ class Tile {
         return this.symbolFadeHoldUntil !== undefined;
     }
     symbolFadeFinished() {
-        return !this.symbolFadeHoldUntil || this.symbolFadeHoldUntil < performance.browser.now();
+        return !this.symbolFadeHoldUntil || this.symbolFadeHoldUntil < browser.now();
     }
     clearFadeHold() {
         this.symbolFadeHoldUntil = undefined;
     }
     setHoldDuration(duration) {
-        this.symbolFadeHoldUntil = performance.browser.now() + duration;
+        this.symbolFadeHoldUntil = browser.now() + duration;
     }
     setDependencies(namespace, dependencies) {
         const index = {};
@@ -38829,7 +39549,7 @@ class SourceFeatureState {
         const feature = String(featureId);
         this.stateChanges[sourceLayer] = this.stateChanges[sourceLayer] || {};
         this.stateChanges[sourceLayer][feature] = this.stateChanges[sourceLayer][feature] || {};
-        performance.extend(this.stateChanges[sourceLayer][feature], newState);
+        performance$1.extend(this.stateChanges[sourceLayer][feature], newState);
         if (this.deletedStates[sourceLayer] === null) {
             this.deletedStates[sourceLayer] = {};
             for (const ft in this.state[sourceLayer]) {
@@ -38886,7 +39606,7 @@ class SourceFeatureState {
         const feature = String(featureId);
         const base = this.state[sourceLayer] || {};
         const changes = this.stateChanges[sourceLayer] || {};
-        const reconciledState = performance.extend({}, base[feature], changes[feature]);
+        const reconciledState = performance$1.extend({}, base[feature], changes[feature]);
         //return empty object if the whole source layer is awaiting deletion
         if (this.deletedStates[sourceLayer] === null)
             return {};
@@ -38911,7 +39631,7 @@ class SourceFeatureState {
             for (const feature in this.stateChanges[sourceLayer]) {
                 if (!this.state[sourceLayer][feature])
                     this.state[sourceLayer][feature] = {};
-                performance.extend(this.state[sourceLayer][feature], this.stateChanges[sourceLayer][feature]);
+                performance$1.extend(this.state[sourceLayer][feature], this.stateChanges[sourceLayer][feature]);
                 layerStates[feature] = this.state[sourceLayer][feature];
             }
             featuresChanged[sourceLayer] = layerStates;
@@ -38939,7 +39659,7 @@ class SourceFeatureState {
                 }
             }
             featuresChanged[sourceLayer] = featuresChanged[sourceLayer] || {};
-            performance.extend(featuresChanged[sourceLayer], layerStates);
+            performance$1.extend(featuresChanged[sourceLayer], layerStates);
         }
         this.stateChanges = {};
         this.deletedStates = {};
@@ -38962,27 +39682,12 @@ class SourceFeatureState {
  *  - loading the tiles needed to render a given viewport
  *  - unloading the cached tiles not needed to render a given viewport
  */
-class SourceCache extends performance.Evented {
+class SourceCache extends performance$1.Evented {
     constructor(id, options, dispatcher) {
         super();
         this.id = id;
         this.dispatcher = dispatcher;
-        this.on('data', (e) => {
-            // this._sourceLoaded signifies that the TileJSON is loaded if applicable.
-            // if the source type does not come with a TileJSON, the flag signifies the
-            // source data has loaded (i.e geojson has been tiled on the worker and is ready)
-            if (e.dataType === 'source' && e.sourceDataType === 'metadata')
-                this._sourceLoaded = true;
-            // for sources with mutable data, this event fires when the underlying data
-            // to a source is changed. (i.e. GeoJSONSource#setData and ImageSource#serCoordinates)
-            if (this._sourceLoaded && !this._paused && e.dataType === 'source' && e.sourceDataType === 'content') {
-                this.reload();
-                if (this.transform) {
-                    this.update(this.transform, this.terrain);
-                }
-                this._didEmitContent = true;
-            }
-        });
+        this.on('data', (e) => this._dataHandler(e));
         this.on('dataloading', () => {
             this._sourceErrored = false;
         });
@@ -38992,7 +39697,7 @@ class SourceCache extends performance.Evented {
         });
         this._source = create(id, options, dispatcher, this);
         this._tiles = {};
-        this._cache = new TileCache(0, this._unloadTile.bind(this));
+        this._cache = new TileCache(0, (tile) => this._unloadTile(tile));
         this._timers = {};
         this._cacheTimers = {};
         this._maxTileCacheSize = null;
@@ -39062,17 +39767,32 @@ class SourceCache extends performance.Evented {
         if (this.transform)
             this.update(this.transform, this.terrain);
     }
-    _loadTile(tile, callback) {
-        return this._source.loadTile(tile, callback);
+    _loadTile(tile, id, state) {
+        return performance$1.__awaiter(this, void 0, void 0, function* () {
+            try {
+                yield this._source.loadTile(tile);
+                this._tileLoaded(tile, id, state);
+            }
+            catch (err) {
+                tile.state = 'errored';
+                if (err.status !== 404) {
+                    this._source.fire(new performance$1.ErrorEvent(err, { tile }));
+                }
+                else {
+                    // continue to try loading parent/children tiles if a tile doesn't exist (404)
+                    this.update(this.transform, this.terrain);
+                }
+            }
+        });
     }
     _unloadTile(tile) {
         if (this._source.unloadTile)
-            return this._source.unloadTile(tile, () => { });
+            this._source.unloadTile(tile);
     }
     _abortTile(tile) {
         if (this._source.abortTile)
-            this._source.abortTile(tile, () => { });
-        this._source.fire(new performance.Event('dataabort', { tile, coord: tile.tileID, dataType: 'source' }));
+            this._source.abortTile(tile);
+        this._source.fire(new performance$1.Event('dataabort', { tile, coord: tile.tileID, dataType: 'source' }));
     }
     serialize() {
         return this._source.serialize();
@@ -39104,8 +39824,8 @@ class SourceCache extends performance.Evented {
             return renderables.sort((a_, b_) => {
                 const a = a_.tileID;
                 const b = b_.tileID;
-                const rotatedA = (new performance.Point(a.canonical.x, a.canonical.y))._rotate(this.transform.angle);
-                const rotatedB = (new performance.Point(b.canonical.x, b.canonical.y))._rotate(this.transform.angle);
+                const rotatedA = (new performance$1.Point(a.canonical.x, a.canonical.y))._rotate(this.transform.angle);
+                const rotatedB = (new performance$1.Point(b.canonical.x, b.canonical.y))._rotate(this.transform.angle);
                 return a.overscaledZ - b.overscaledZ || rotatedB.y - rotatedA.y || rotatedB.x - rotatedA.x;
             }).map(tile => tile.tileID.key);
         }
@@ -39134,32 +39854,25 @@ class SourceCache extends performance.Evented {
         }
     }
     _reloadTile(id, state) {
-        const tile = this._tiles[id];
-        // this potentially does not address all underlying
-        // issues https://github.com/mapbox/mapbox-gl-js/issues/4252
-        // - hard to tell without repro steps
-        if (!tile)
-            return;
-        // The difference between "loading" tiles and "reloading" or "expired"
-        // tiles is that "reloading"/"expired" tiles are "renderable".
-        // Therefore, a "loading" tile cannot become a "reloading" tile without
-        // first becoming a "loaded" tile.
-        if (tile.state !== 'loading') {
-            tile.state = state;
-        }
-        this._loadTile(tile, this._tileLoaded.bind(this, tile, id, state));
+        return performance$1.__awaiter(this, void 0, void 0, function* () {
+            const tile = this._tiles[id];
+            // this potentially does not address all underlying
+            // issues https://github.com/mapbox/mapbox-gl-js/issues/4252
+            // - hard to tell without repro steps
+            if (!tile)
+                return;
+            // The difference between "loading" tiles and "reloading" or "expired"
+            // tiles is that "reloading"/"expired" tiles are "renderable".
+            // Therefore, a "loading" tile cannot become a "reloading" tile without
+            // first becoming a "loaded" tile.
+            if (tile.state !== 'loading') {
+                tile.state = state;
+            }
+            yield this._loadTile(tile, id, state);
+        });
     }
-    _tileLoaded(tile, id, previousState, err) {
-        if (err) {
-            tile.state = 'errored';
-            if (err.status !== 404)
-                this._source.fire(new performance.ErrorEvent(err, { tile }));
-            // continue to try loading parent/children tiles if a tile doesn't exist (404)
-            else
-                this.update(this.transform, this.terrain);
-            return;
-        }
-        tile.timeAdded = performance.browser.now();
+    _tileLoaded(tile, id, previousState) {
+        tile.timeAdded = browser.now();
         if (previousState === 'expired')
             tile.refreshedUponExpiration = true;
         this._setTileReloadTimer(id, tile);
@@ -39167,7 +39880,7 @@ class SourceCache extends performance.Evented {
             this._backfillDEM(tile);
         this._state.initializeTileState(tile, this.map ? this.map.painter : null);
         if (!tile.aborted) {
-            this._source.fire(new performance.Event('data', { dataType: 'source', tile, coord: tile.tileID }));
+            this._source.fire(new performance$1.Event('data', { dataType: 'source', tile, coord: tile.tileID }));
         }
     }
     /**
@@ -39300,7 +40013,7 @@ class SourceCache extends performance.Evented {
         const heightInTiles = Math.ceil(transform.height / this._source.tileSize) + 1;
         const approxTilesInView = widthInTiles * heightInTiles;
         const commonZoomRange = this._maxTileCacheZoomLevels === null ?
-            performance.config.MAX_TILE_CACHE_ZOOM_LEVELS : this._maxTileCacheZoomLevels;
+            performance$1.config.MAX_TILE_CACHE_ZOOM_LEVELS : this._maxTileCacheZoomLevels;
         const viewDependentMaxSize = Math.floor(approxTilesInView * commonZoomRange);
         const maxSize = typeof this._maxTileCacheSize === 'number' ?
             Math.min(this._maxTileCacheSize, viewDependentMaxSize) : viewDependentMaxSize;
@@ -39351,11 +40064,11 @@ class SourceCache extends performance.Evented {
      * are inside the viewport.
      */
     update(transform, terrain) {
-        this.transform = transform;
-        this.terrain = terrain;
         if (!this._sourceLoaded || this._paused) {
             return;
         }
+        this.transform = transform;
+        this.terrain = terrain;
         this.updateCacheSize(transform);
         this.handleWrapJump(this.transform.center.lng);
         // Covered is a list of retained tiles who's areas are fully covered by other,
@@ -39367,7 +40080,7 @@ class SourceCache extends performance.Evented {
         }
         else if (this._source.tileID) {
             idealTileIDs = transform.getVisibleUnwrappedCoordinates(this._source.tileID)
-                .map((unwrapped) => new performance.OverscaledTileID(unwrapped.canonical.z, unwrapped.wrap, unwrapped.canonical.z, unwrapped.canonical.x, unwrapped.canonical.y));
+                .map((unwrapped) => new performance$1.OverscaledTileID(unwrapped.canonical.z, unwrapped.wrap, unwrapped.canonical.z, unwrapped.canonical.x, unwrapped.canonical.y));
         }
         else {
             idealTileIDs = transform.coveringTiles({
@@ -39405,7 +40118,7 @@ class SourceCache extends performance.Evented {
         // if we won't have any tiles to fetch and content is already emitted
         // there will be no more data emissions, so we need to emit the event with isSourceLoaded = true
         if (noPendingDataEmissions) {
-            this.fire(new performance.Event('data', { sourceDataType: 'idle', dataType: 'source', sourceId: this.id }));
+            this.fire(new performance$1.Event('data', { sourceDataType: 'idle', dataType: 'source', sourceId: this.id }));
         }
         // Retain is a list of tiles that we shouldn't delete, even if they are not
         // the most ideal tile for the current viewport. This may include tiles like
@@ -39415,7 +40128,7 @@ class SourceCache extends performance.Evented {
             const parentsForFading = {};
             const fadingTiles = {};
             const ids = Object.keys(retain);
-            const now = performance.browser.now();
+            const now = browser.now();
             for (const id of ids) {
                 const tileID = retain[id];
                 const tile = this._tiles[id];
@@ -39488,7 +40201,7 @@ class SourceCache extends performance.Evented {
             this._tiles[retainedId].clearFadeHold();
         }
         // Remove the tiles we don't need anymore.
-        const remove = performance.keysDifference(this._tiles, retain);
+        const remove = performance$1.keysDifference(this._tiles, retain);
         for (const tileID of remove) {
             const tile = this._tiles[tileID];
             if (tile.hasSymbolBuckets && !tile.holdingForFade()) {
@@ -39632,12 +40345,12 @@ class SourceCache extends performance.Evented {
         const cached = tile;
         if (!tile) {
             tile = new Tile(tileID, this._source.tileSize * tileID.overscaleFactor());
-            this._loadTile(tile, this._tileLoaded.bind(this, tile, tileID.key, tile.state));
+            this._loadTile(tile, tileID.key, tile.state);
         }
         tile.uses++;
         this._tiles[tileID.key] = tile;
         if (!cached) {
-            this._source.fire(new performance.Event('dataloading', { tile, coord: tile.tileID, dataType: 'source' }));
+            this._source.fire(new performance$1.Event('dataloading', { tile, coord: tile.tileID, dataType: 'source' }));
         }
         return tile;
     }
@@ -39676,6 +40389,22 @@ class SourceCache extends performance.Evented {
             tile.aborted = true;
             this._abortTile(tile);
             this._unloadTile(tile);
+        }
+    }
+    /** @internal */
+    _dataHandler(e) {
+        const eventSourceDataType = e.sourceDataType;
+        if (e.dataType === 'source' && eventSourceDataType === 'metadata') {
+            this._sourceLoaded = true;
+        }
+        // for sources with mutable data, this event fires when the underlying data
+        // to a source is changed. (i.e. GeoJSONSource#setData and ImageSource#serCoordinates)
+        if (this._sourceLoaded && !this._paused && e.dataType === 'source' && eventSourceDataType === 'content') {
+            this.reload();
+            if (this.transform) {
+                this.update(this.transform, this.terrain);
+            }
+            this._didEmitContent = true;
         }
     }
     /**
@@ -39723,12 +40452,12 @@ class SourceCache extends performance.Evented {
             }
             const tileID = tile.tileID;
             const scale = Math.pow(2, transform.zoom - tile.tileID.overscaledZ);
-            const queryPadding = maxPitchScaleFactor * tile.queryPadding * performance.EXTENT / tile.tileSize / scale;
+            const queryPadding = maxPitchScaleFactor * tile.queryPadding * performance$1.EXTENT / tile.tileSize / scale;
             const tileSpaceBounds = [
-                tileID.getTilePoint(new performance.MercatorCoordinate(minX, minY)),
-                tileID.getTilePoint(new performance.MercatorCoordinate(maxX, maxY))
+                tileID.getTilePoint(new performance$1.MercatorCoordinate(minX, minY)),
+                tileID.getTilePoint(new performance$1.MercatorCoordinate(maxX, maxY))
             ];
-            if (tileSpaceBounds[0].x - queryPadding < performance.EXTENT && tileSpaceBounds[0].y - queryPadding < performance.EXTENT &&
+            if (tileSpaceBounds[0].x - queryPadding < performance$1.EXTENT && tileSpaceBounds[0].y - queryPadding < performance$1.EXTENT &&
                 tileSpaceBounds[1].x + queryPadding >= 0 && tileSpaceBounds[1].y + queryPadding >= 0) {
                 const tileSpaceQueryGeometry = queryGeometry.map((c) => tileID.getTilePoint(c));
                 const tileSpaceCameraQueryGeometry = cameraQueryGeometry.map((c) => tileID.getTilePoint(c));
@@ -39755,7 +40484,7 @@ class SourceCache extends performance.Evented {
             return true;
         }
         if (isRasterType(this._source.type)) {
-            const now = performance.browser.now();
+            const now = browser.now();
             for (const id in this._tiles) {
                 const tile = this._tiles[id];
                 if (tile.fadeEndTime >= now) {
@@ -39823,79 +40552,6 @@ function isRasterType(type) {
     return type === 'raster' || type === 'image' || type === 'video';
 }
 
-function workerFactory() {
-    return new Worker(performance.config.WORKER_URL);
-}
-
-const PRELOAD_POOL_ID = 'mapboxgl_preloaded_worker_pool';
-/**
- * Constructs a worker pool.
- */
-class WorkerPool {
-    constructor() {
-        this.active = {};
-    }
-    acquire(mapId) {
-        if (!this.workers) {
-            // Lazily look up the value of mapboxgl.workerCount so that
-            // client code has had a chance to set it.
-            this.workers = [];
-            while (this.workers.length < WorkerPool.workerCount) {
-                this.workers.push(workerFactory());
-            }
-        }
-        this.active[mapId] = true;
-        return this.workers.slice();
-    }
-    release(mapId) {
-        delete this.active[mapId];
-        if (this.numActive() === 0) {
-            this.workers.forEach((w) => {
-                w.terminate();
-            });
-            this.workers = null;
-        }
-    }
-    isPreloaded() {
-        return !!this.active[PRELOAD_POOL_ID];
-    }
-    numActive() {
-        return Object.keys(this.active).length;
-    }
-}
-// Based on results from A/B testing: https://github.com/maplibre/maplibre-gl-js/pull/2354
-const availableLogicalProcessors = Math.floor(performance.browser.hardwareConcurrency / 2);
-WorkerPool.workerCount = performance.isSafari(globalThis) ? Math.max(Math.min(availableLogicalProcessors, 3), 1) : 1;
-
-let globalWorkerPool;
-/**
- * Creates (if necessary) and returns the single, global WorkerPool instance
- * to be shared across each Map
- */
-function getGlobalWorkerPool() {
-    if (!globalWorkerPool) {
-        globalWorkerPool = new WorkerPool();
-    }
-    return globalWorkerPool;
-}
-function prewarm() {
-    const workerPool = getGlobalWorkerPool();
-    workerPool.acquire(PRELOAD_POOL_ID);
-}
-function clearPrewarmedResources() {
-    const pool = globalWorkerPool;
-    if (pool) {
-        // Remove the pool only if all maps that referenced the preloaded global worker pool have been removed.
-        if (pool.isPreloaded() && pool.numActive() === 1) {
-            pool.release(PRELOAD_POOL_ID);
-            globalWorkerPool = null;
-        }
-        else {
-            console.warn('Could not clear WebWorkers since there are active Map instances that still reference it. The pre-warmed WebWorker pool can only be cleared when all map instances have been removed with map.remove()');
-        }
-    }
-}
-
 class PathInterpolator {
     constructor(points_, padding_) {
         this.reset(points_, padding_);
@@ -39916,7 +40572,7 @@ class PathInterpolator {
         if (this.points.length === 1) {
             return this.points[0];
         }
-        t = performance.clamp(t, 0, 1);
+        t = performance$1.clamp(t, 0, 1);
         // Find the correct segment [p0, p1] where p0 <= x < p1
         let currentIndex = 1;
         let distOfCurrentIdx = this._distances[currentIndex];
@@ -40239,9 +40895,10 @@ class GridIndex {
  * The points for both anchors and lines are stored in tile units. Each tile has it's own
  * coordinate space going from (0, 0) at the top left to (EXTENT, EXTENT) at the bottom right.
  *
- * ## GL coordinate space
- * At the end of everything, the vertex shader needs to produce a position in GL coordinate space,
+ * ## Clip space (GL coordinate space)
+ * At the end of everything, the vertex shader needs to produce a position in clip space,
  * which is (-1, 1) at the top left and (1, -1) in the bottom right.
+ * In the depth buffer, values are between 0 (near plane) to 1 (far plane).
  *
  * ## Map pixel coordinate spaces
  * Each tile has a pixel coordinate space. It's just the tile units scaled so that one unit is
@@ -40265,7 +40922,7 @@ class GridIndex {
  *      - viewport pixel space      pitch-alignment=viewport    rotation-alignment=*
  * 2. if the label follows a line, find the point along the line that is the correct distance from the anchor.
  * 3. add the glyph's corner offset to the point from step 3
- * 4. convert from the label coordinate space to gl coordinates
+ * 4. convert from the label coordinate space to clip space
  *
  * For horizontal labels we want to do step 1 in the shader for performance reasons (no cpu work).
  *      This is what `u_label_plane_matrix` is used for.
@@ -40279,27 +40936,27 @@ class GridIndex {
  * Returns a matrix for converting from tile units to the correct label coordinate space.
  */
 function getLabelPlaneMatrix(posMatrix, pitchWithMap, rotateWithMap, transform, pixelsToTileUnits) {
-    const m = performance.create();
+    const m = performance$1.create();
     if (pitchWithMap) {
-        performance.scale(m, m, [1 / pixelsToTileUnits, 1 / pixelsToTileUnits, 1]);
+        performance$1.scale(m, m, [1 / pixelsToTileUnits, 1 / pixelsToTileUnits, 1]);
         if (!rotateWithMap) {
-            performance.rotateZ(m, m, transform.angle);
+            performance$1.rotateZ(m, m, transform.angle);
         }
     }
     else {
-        performance.multiply(m, transform.labelPlaneMatrix, posMatrix);
+        performance$1.multiply(m, transform.labelPlaneMatrix, posMatrix);
     }
     return m;
 }
 /*
- * Returns a matrix for converting from the correct label coordinate space to gl coords.
+ * Returns a matrix for converting from the correct label coordinate space to clip space.
  */
 function getGlCoordMatrix(posMatrix, pitchWithMap, rotateWithMap, transform, pixelsToTileUnits) {
     if (pitchWithMap) {
-        const m = performance.clone(posMatrix);
-        performance.scale(m, m, [pixelsToTileUnits, pixelsToTileUnits, 1]);
+        const m = performance$1.clone(posMatrix);
+        performance$1.scale(m, m, [pixelsToTileUnits, pixelsToTileUnits, 1]);
         if (!rotateWithMap) {
-            performance.rotateZ(m, m, -transform.angle);
+            performance$1.rotateZ(m, m, -transform.angle);
         }
         return m;
     }
@@ -40311,7 +40968,7 @@ function project(point, matrix, getElevation) {
     let pos;
     if (getElevation) { // slow because of handle z-index
         pos = [point.x, point.y, getElevation(point.x, point.y), 1];
-        performance.transformMat4(pos, pos, matrix);
+        performance$1.transformMat4(pos, pos, matrix);
     }
     else { // fast because of ignore z-index
         pos = [point.x, point.y, 0, 1];
@@ -40319,7 +40976,7 @@ function project(point, matrix, getElevation) {
     }
     const w = pos[3];
     return {
-        point: new performance.Point(pos[0] / w, pos[1] / w),
+        point: new performance$1.Point(pos[0] / w, pos[1] / w),
         signedDistanceFromCamera: w
     };
 }
@@ -40341,7 +40998,7 @@ function isVisible(anchorPos, clippingBuffer) {
  */
 function updateLineLabels(bucket, posMatrix, painter, isText, labelPlaneMatrix, glCoordMatrix, pitchWithMap, keepUpright, rotateToLine, getElevation) {
     const sizeData = isText ? bucket.textSizeData : bucket.iconSizeData;
-    const partiallyEvaluatedSize = performance.evaluateSizeForZoom(sizeData, painter.transform.zoom);
+    const partiallyEvaluatedSize = performance$1.evaluateSizeForZoom(sizeData, painter.transform.zoom);
     const clippingBuffer = [256 / painter.width * 2 + 1, 256 / painter.height * 2 + 1];
     const dynamicLayoutVertexArray = isText ?
         bucket.text.dynamicLayoutVertexArray :
@@ -40356,7 +41013,7 @@ function updateLineLabels(bucket, posMatrix, painter, isText, labelPlaneMatrix, 
         // Don't do calculations for vertical glyphs unless the previous symbol was horizontal
         // and we determined that vertical glyphs were necessary.
         // Also don't do calculations for symbols that are collided and fully faded out
-        if (symbol.hidden || symbol.writingMode === performance.WritingMode.vertical && !useVertical) {
+        if (symbol.hidden || symbol.writingMode === performance$1.WritingMode.vertical && !useVertical) {
             hideGlyphs(symbol.numGlyphs, dynamicLayoutVertexArray);
             continue;
         }
@@ -40365,7 +41022,7 @@ function updateLineLabels(bucket, posMatrix, painter, isText, labelPlaneMatrix, 
         let anchorPos;
         if (getElevation) { // slow because of handle z-index
             anchorPos = [symbol.anchorX, symbol.anchorY, getElevation(symbol.anchorX, symbol.anchorY), 1];
-            performance.transformMat4(anchorPos, anchorPos, posMatrix);
+            performance$1.transformMat4(anchorPos, anchorPos, posMatrix);
         }
         else { // fast because of ignore z-index
             anchorPos = [symbol.anchorX, symbol.anchorY, 0, 1];
@@ -40378,9 +41035,9 @@ function updateLineLabels(bucket, posMatrix, painter, isText, labelPlaneMatrix, 
         }
         const cameraToAnchorDistance = anchorPos[3];
         const perspectiveRatio = getPerspectiveRatio(painter.transform.cameraToCenterDistance, cameraToAnchorDistance);
-        const fontSize = performance.evaluateSizeForFeature(sizeData, partiallyEvaluatedSize, symbol);
+        const fontSize = performance$1.evaluateSizeForFeature(sizeData, partiallyEvaluatedSize, symbol);
         const pitchScaledFontSize = pitchWithMap ? fontSize / perspectiveRatio : fontSize * perspectiveRatio;
-        const tileAnchorPoint = new performance.Point(symbol.anchorX, symbol.anchorY);
+        const tileAnchorPoint = new performance$1.Point(symbol.anchorX, symbol.anchorY);
         const anchorPoint = project(tileAnchorPoint, labelPlaneMatrix, getElevation).point;
         const projectionCache = { projections: {}, offsets: {} };
         const placeUnflipped = placeGlyphsAlongLine(symbol, pitchScaledFontSize, false /*unflipped*/, keepUpright, posMatrix, labelPlaneMatrix, glCoordMatrix, bucket.glyphOffsetArray, lineVertexArray, dynamicLayoutVertexArray, anchorPoint, tileAnchorPoint, projectionCache, aspectRatio, rotateToLine, getElevation);
@@ -40425,7 +41082,7 @@ function placeFirstAndLastGlyph(fontScale, glyphOffsetArray, lineOffsetX, lineOf
     return { first: firstPlacedGlyph, last: lastPlacedGlyph };
 }
 function requiresOrientationChange(writingMode, firstPoint, lastPoint, aspectRatio) {
-    if (writingMode === performance.WritingMode.horizontal) {
+    if (writingMode === performance$1.WritingMode.horizontal) {
         // On top of choosing whether to flip, choose whether to render this version of the glyphs or the alternate
         // vertical glyphs. We can't just filter out vertical glyphs in the horizontal range because the horizontal
         // and vertical versions can have slightly different projections which could lead to angles where both or
@@ -40436,7 +41093,7 @@ function requiresOrientationChange(writingMode, firstPoint, lastPoint, aspectRat
             return { useVertical: true };
         }
     }
-    if (writingMode === performance.WritingMode.vertical ? firstPoint.y < lastPoint.y : firstPoint.x > lastPoint.x) {
+    if (writingMode === performance$1.WritingMode.vertical ? firstPoint.y < lastPoint.y : firstPoint.x > lastPoint.x) {
         // Includes "horizontalOnly" case for labels without vertical glyphs
         return { needsFlipping: true };
     }
@@ -40486,7 +41143,7 @@ function placeGlyphsAlongLine(symbol, fontSize, flip, keepUpright, posMatrix, la
         if (keepUpright && !flip) {
             const a = project(tileAnchorPoint, posMatrix, getElevation).point;
             const tileVertexIndex = (symbol.lineStartIndex + symbol.segment + 1);
-            const tileSegmentEnd = new performance.Point(lineVertexArray.getx(tileVertexIndex), lineVertexArray.gety(tileVertexIndex));
+            const tileSegmentEnd = new performance$1.Point(lineVertexArray.getx(tileVertexIndex), lineVertexArray.gety(tileVertexIndex));
             const projectedVertex = project(tileSegmentEnd, posMatrix, getElevation);
             // We know the anchor will be in the viewport, but the end of the line segment may be
             // behind the plane of the camera, in which case we can use a point at any arbitrary (closer)
@@ -40505,7 +41162,7 @@ function placeGlyphsAlongLine(symbol, fontSize, flip, keepUpright, posMatrix, la
         placedGlyphs = [singleGlyph];
     }
     for (const glyph of placedGlyphs) {
-        performance.addDynamicAttributes(dynamicLayoutVertexArray, glyph.point, glyph.angle);
+        performance$1.addDynamicAttributes(dynamicLayoutVertexArray, glyph.point, glyph.angle);
     }
     return {};
 }
@@ -40529,7 +41186,7 @@ function projectVertexToViewport(index, projectionArgs) {
     if (projectionCache.projections[index]) {
         return projectionCache.projections[index];
     }
-    const currentVertex = new performance.Point(lineVertexArray.getx(index), lineVertexArray.gety(index));
+    const currentVertex = new performance$1.Point(lineVertexArray.getx(index), lineVertexArray.gety(index));
     const projection = project(currentVertex, labelPlaneMatrix, getElevation);
     if (projection.signedDistanceFromCamera > 0) {
         projectionCache.projections[index] = projection.point;
@@ -40540,7 +41197,7 @@ function projectVertexToViewport(index, projectionArgs) {
     const previousLineVertexIndex = index - direction;
     const previousTilePoint = distanceFromAnchor === 0 ?
         tileAnchorPoint :
-        new performance.Point(lineVertexArray.getx(previousLineVertexIndex), lineVertexArray.gety(previousLineVertexIndex));
+        new performance$1.Point(lineVertexArray.getx(previousLineVertexIndex), lineVertexArray.gety(previousLineVertexIndex));
     // Don't cache because the new vertex might not be far enough out for future glyphs on the same segment
     return projectTruncatedLineSegment(previousTilePoint, currentVertex, previousVertex, absOffsetX - distanceFromAnchor + 1, labelPlaneMatrix, getElevation);
 }
@@ -40586,7 +41243,7 @@ function findOffsetIntersectionPoint(index, prevToCurrentOffsetNormal, currentVe
     const offsetNextSegmentEnd = nextVertex.add(currentToNextOffsetNormal);
     // find the intersection of these two lines
     // if the lines are parallel, offsetCurrent/offsetNextBegin will touch
-    projectionCache.offsets[index] = performance.findLineIntersection(offsetPreviousVertex, offsetCurrentVertex, offsetNextSegmentBegin, offsetNextSegmentEnd) || offsetCurrentVertex;
+    projectionCache.offsets[index] = performance$1.findLineIntersection(offsetPreviousVertex, offsetCurrentVertex, offsetNextSegmentBegin, offsetNextSegmentEnd) || offsetCurrentVertex;
     return projectionCache.offsets[index];
 }
 /*
@@ -40756,11 +41413,11 @@ class CollisionIndex {
     }
     placeCollisionCircles(overlapMode, symbol, lineVertexArray, glyphOffsetArray, fontSize, posMatrix, labelPlaneMatrix, labelToScreenMatrix, showCollisionCircles, pitchWithMap, collisionGroupPredicate, circlePixelDiameter, textPixelPadding, getElevation) {
         const placedCollisionCircles = [];
-        const tileUnitAnchorPoint = new performance.Point(symbol.anchorX, symbol.anchorY);
+        const tileUnitAnchorPoint = new performance$1.Point(symbol.anchorX, symbol.anchorY);
         const screenAnchorPoint = project(tileUnitAnchorPoint, posMatrix, getElevation);
         const perspectiveRatio = getPerspectiveRatio(this.transform.cameraToCenterDistance, screenAnchorPoint.signedDistanceFromCamera);
         const labelPlaneFontSize = pitchWithMap ? fontSize / perspectiveRatio : fontSize * perspectiveRatio;
-        const labelPlaneFontScale = labelPlaneFontSize / performance.ONE_EM;
+        const labelPlaneFontScale = labelPlaneFontSize / performance$1.ONE_EM;
         const labelPlaneAnchorPoint = project(tileUnitAnchorPoint, labelPlaneMatrix, getElevation).point;
         const projectionCache = { projections: {}, offsets: {} };
         const lineOffsetX = symbol.lineOffsetX * labelPlaneFontScale;
@@ -40772,8 +41429,8 @@ class CollisionIndex {
         let entirelyOffscreen = true;
         if (firstAndLastGlyph) {
             const radius = circlePixelDiameter * 0.5 * perspectiveRatio + textPixelPadding;
-            const screenPlaneMin = new performance.Point(-viewportPadding, -viewportPadding);
-            const screenPlaneMax = new performance.Point(this.screenRightBoundary, this.screenBottomBoundary);
+            const screenPlaneMin = new performance$1.Point(-viewportPadding, -viewportPadding);
+            const screenPlaneMax = new performance$1.Point(this.screenRightBoundary, this.screenBottomBoundary);
             const interpolator = new PathInterpolator();
             // Construct a projected path from projected line vertices. Anchor points are ignored and removed
             const first = firstAndLastGlyph.first;
@@ -40822,7 +41479,7 @@ class CollisionIndex {
                     segments = [];
                 }
                 else {
-                    segments = performance.clipLine([projectedPath], screenPlaneMin.x, screenPlaneMin.y, screenPlaneMax.x, screenPlaneMax.y);
+                    segments = performance$1.clipLine([projectedPath], screenPlaneMin.x, screenPlaneMin.y, screenPlaneMax.x, screenPlaneMax.y);
                 }
             }
             for (const seg of segments) {
@@ -40884,7 +41541,7 @@ class CollisionIndex {
         let maxX = -Infinity;
         let maxY = -Infinity;
         for (const point of viewportQueryGeometry) {
-            const gridPoint = new performance.Point(point.x + viewportPadding, point.y + viewportPadding);
+            const gridPoint = new performance$1.Point(point.x + viewportPadding, point.y + viewportPadding);
             minX = Math.min(minX, gridPoint.x);
             minY = Math.min(minY, gridPoint.y);
             maxX = Math.max(maxX, gridPoint.x);
@@ -40910,12 +41567,12 @@ class CollisionIndex {
             // distinction doesn't matter as much, and box geometry is easier
             // to work with.
             const bbox = [
-                new performance.Point(feature.x1, feature.y1),
-                new performance.Point(feature.x2, feature.y1),
-                new performance.Point(feature.x2, feature.y2),
-                new performance.Point(feature.x1, feature.y2)
+                new performance$1.Point(feature.x1, feature.y1),
+                new performance$1.Point(feature.x2, feature.y1),
+                new performance$1.Point(feature.x2, feature.y2),
+                new performance$1.Point(feature.x1, feature.y2)
             ];
-            if (!performance.polygonIntersectsPolygon(query, bbox)) {
+            if (!performance$1.polygonIntersectsPolygon(query, bbox)) {
                 continue;
             }
             seenFeatures[featureKey.bucketInstanceId][featureKey.featureIndex] = true;
@@ -40942,13 +41599,13 @@ class CollisionIndex {
         let p;
         if (getElevation) { // slow because of handle z-index
             p = [x, y, getElevation(x, y), 1];
-            performance.transformMat4(p, p, posMatrix);
+            performance$1.transformMat4(p, p, posMatrix);
         }
         else { // fast because of ignore z-index
             p = [x, y, 0, 1];
             xyTransformMat4(p, p, posMatrix);
         }
-        const a = new performance.Point((((p[0] / p[3] + 1) / 2) * this.transform.width) + viewportPadding, (((-p[1] / p[3] + 1) / 2) * this.transform.height) + viewportPadding);
+        const a = new performance$1.Point((((p[0] / p[3] + 1) / 2) * this.transform.width) + viewportPadding, (((-p[1] / p[3] + 1) / 2) * this.transform.height) + viewportPadding);
         return {
             point: a,
             // See perspective ratio comment in symbol_sdf.vertex
@@ -40969,8 +41626,8 @@ class CollisionIndex {
     *   example transformation: clipPos = glCoordMatrix * viewportMatrix * circle_pos
     */
     getViewportMatrix() {
-        const m = performance.identity([]);
-        performance.translate(m, m, [-viewportPadding, -viewportPadding, 0.0]);
+        const m = performance$1.identity([]);
+        performance$1.translate(m, m, [-viewportPadding, -viewportPadding, 0.0]);
         return m;
     }
 }
@@ -40987,7 +41644,7 @@ class CollisionIndex {
  * @returns value in tile units
  */
 function pixelsToTileUnits(tile, pixelValue, z) {
-    return pixelValue * (performance.EXTENT / (tile.tileSize * Math.pow(2, z - tile.tileID.overscaledZ)));
+    return pixelValue * (performance$1.EXTENT / (tile.tileSize * Math.pow(2, z - tile.tileID.overscaledZ)));
 }
 
 class OpacityState {
@@ -41022,8 +41679,8 @@ class JointPlacement {
 }
 class CollisionCircleArray {
     constructor() {
-        this.invProjMatrix = performance.create();
-        this.viewportMatrix = performance.create();
+        this.invProjMatrix = performance$1.create();
+        this.viewportMatrix = performance$1.create();
         this.circles = [];
     }
 }
@@ -41064,14 +41721,14 @@ class CollisionGroups {
     }
 }
 function calculateVariableLayoutShift(anchor, width, height, textOffset, textBoxScale) {
-    const { horizontalAlign, verticalAlign } = performance.getAnchorAlignment(anchor);
+    const { horizontalAlign, verticalAlign } = performance$1.getAnchorAlignment(anchor);
     const shiftX = -(horizontalAlign - 0.5) * width;
     const shiftY = -(verticalAlign - 0.5) * height;
-    return new performance.Point(shiftX + textOffset[0] * textBoxScale, shiftY + textOffset[1] * textBoxScale);
+    return new performance$1.Point(shiftX + textOffset[0] * textBoxScale, shiftY + textOffset[1] * textBoxScale);
 }
 function shiftVariableCollisionBox(collisionBox, shiftX, shiftY, rotateWithMap, pitchWithMap, angle) {
     const { x1, x2, y1, y2, anchorPointX, anchorPointY } = collisionBox;
-    const rotatedOffset = new performance.Point(shiftX, shiftY);
+    const rotatedOffset = new performance$1.Point(shiftX, shiftY);
     if (rotateWithMap) {
         rotatedOffset._rotate(pitchWithMap ? angle : -angle);
     }
@@ -41113,7 +41770,7 @@ class Placement {
         const collisionBoxArray = tile.collisionBoxArray;
         const layout = symbolBucket.layers[0].layout;
         const scale = Math.pow(2, this.transform.zoom - tile.tileID.overscaledZ);
-        const textPixelRatio = tile.tileSize / performance.EXTENT;
+        const textPixelRatio = tile.tileSize / performance$1.EXTENT;
         const posMatrix = this.transform.calculatePosMatrix(tile.tileID.toUnwrapped());
         const pitchWithMap = layout.get('text-pitch-alignment') === 'map';
         const rotateWithMap = layout.get('text-rotation-alignment') === 'map';
@@ -41122,7 +41779,7 @@ class Placement {
         let labelToScreenMatrix = null;
         if (pitchWithMap) {
             const glMatrix = getGlCoordMatrix(posMatrix, pitchWithMap, rotateWithMap, this.transform, pixelsToTiles);
-            labelToScreenMatrix = performance.multiply([], this.transform.labelPlaneMatrix, glMatrix);
+            labelToScreenMatrix = performance$1.multiply([], this.transform.labelPlaneMatrix, glMatrix);
         }
         // As long as this placement lives, we have to hold onto this bucket's
         // matching FeatureIndex/data for querying purposes
@@ -41137,7 +41794,7 @@ class Placement {
             textPixelRatio,
             holdingForFade: tile.holdingForFade(),
             collisionBoxArray,
-            partiallyEvaluatedTextSize: performance.evaluateSizeForZoom(symbolBucket.textSizeData, this.transform.zoom),
+            partiallyEvaluatedTextSize: performance$1.evaluateSizeForZoom(symbolBucket.textSizeData, this.transform.zoom),
             collisionGroup: this.collisionGroups.get(symbolBucket.sourceID)
         };
         if (sortAcrossTiles) {
@@ -41155,7 +41812,7 @@ class Placement {
         }
     }
     attemptAnchorPlacement(textAnchorOffset, textBox, width, height, textBoxScale, rotateWithMap, pitchWithMap, textPixelRatio, posMatrix, collisionGroup, textOverlapMode, symbolInstance, bucket, orientation, iconBox, getElevation) {
-        const anchor = performance.TextAnchorEnum[textAnchorOffset.textAnchor];
+        const anchor = performance$1.TextAnchorEnum[textAnchorOffset.textAnchor];
         const textOffset = [textAnchorOffset.textOffset0, textAnchorOffset.textOffset1];
         const shift = calculateVariableLayoutShift(anchor, width, height, textOffset, textBoxScale);
         const placedGlyphBoxes = this.collisionIndex.placeCollisionBox(shiftVariableCollisionBox(textBox, shift.x, shift.y, rotateWithMap, pitchWithMap, this.transform.angle), textOverlapMode, textPixelRatio, posMatrix, collisionGroup.predicate, getElevation);
@@ -41196,9 +41853,9 @@ class Placement {
         const { bucket, layout, posMatrix, textLabelPlaneMatrix, labelToScreenMatrix, textPixelRatio, holdingForFade, collisionBoxArray, partiallyEvaluatedTextSize, collisionGroup } = bucketPart.parameters;
         const textOptional = layout.get('text-optional');
         const iconOptional = layout.get('icon-optional');
-        const textOverlapMode = performance.getOverlapMode(layout, 'text-overlap', 'text-allow-overlap');
+        const textOverlapMode = performance$1.getOverlapMode(layout, 'text-overlap', 'text-allow-overlap');
         const textAlwaysOverlap = textOverlapMode === 'always';
-        const iconOverlapMode = performance.getOverlapMode(layout, 'icon-overlap', 'icon-allow-overlap');
+        const iconOverlapMode = performance$1.getOverlapMode(layout, 'icon-overlap', 'icon-allow-overlap');
         const iconAlwaysOverlap = iconOverlapMode === 'always';
         const rotateWithMap = layout.get('text-rotation-alignment') === 'map';
         const pitchWithMap = layout.get('text-pitch-alignment') === 'map';
@@ -41259,7 +41916,7 @@ class Placement {
             const textBox = collisionArrays.textBox;
             if (textBox) {
                 const updatePreviousOrientationIfNotPlaced = (isPlaced) => {
-                    let previousOrientation = performance.WritingMode.horizontal;
+                    let previousOrientation = performance$1.WritingMode.horizontal;
                     if (bucket.allowVerticalPlacement && !isPlaced && this.prevPlacement) {
                         const prevPlacedOrientation = this.prevPlacement.placedOrientations[symbolInstance.crossTileID];
                         if (prevPlacedOrientation) {
@@ -41273,7 +41930,7 @@ class Placement {
                 const placeTextForPlacementModes = (placeHorizontalFn, placeVerticalFn) => {
                     if (bucket.allowVerticalPlacement && symbolInstance.numVerticalGlyphVertices > 0 && collisionArrays.verticalTextBox) {
                         for (const placementMode of bucket.writingModes) {
-                            if (placementMode === performance.WritingMode.vertical) {
+                            if (placementMode === performance$1.WritingMode.vertical) {
                                 placed = placeVerticalFn();
                                 placedVerticalText = placed;
                             }
@@ -41301,12 +41958,12 @@ class Placement {
                         return placedFeature;
                     };
                     const placeHorizontal = () => {
-                        return placeBox(textBox, performance.WritingMode.horizontal);
+                        return placeBox(textBox, performance$1.WritingMode.horizontal);
                     };
                     const placeVertical = () => {
                         const verticalTextBox = collisionArrays.verticalTextBox;
                         if (bucket.allowVerticalPlacement && symbolInstance.numVerticalGlyphVertices > 0 && verticalTextBox) {
-                            return placeBox(verticalTextBox, performance.WritingMode.vertical);
+                            return placeBox(verticalTextBox, performance$1.WritingMode.vertical);
                         }
                         return { box: null, offscreen: null };
                     };
@@ -41315,7 +41972,7 @@ class Placement {
                 }
                 else {
                     // If this symbol was in the last placement, prefer placement using same anchor, if it's still available
-                    let prevAnchor = performance.TextAnchorEnum[(_b = (_a = this.prevPlacement) === null || _a === void 0 ? void 0 : _a.variableOffsets[symbolInstance.crossTileID]) === null || _b === void 0 ? void 0 : _b.anchor];
+                    let prevAnchor = performance$1.TextAnchorEnum[(_b = (_a = this.prevPlacement) === null || _a === void 0 ? void 0 : _a.variableOffsets[symbolInstance.crossTileID]) === null || _b === void 0 ? void 0 : _b.anchor];
                     const placeBoxForVariableAnchors = (collisionTextBox, collisionIconBox, orientation) => {
                         const width = collisionTextBox.x2 - collisionTextBox.x1;
                         const height = collisionTextBox.y2 - collisionTextBox.y1;
@@ -41353,13 +42010,13 @@ class Placement {
                         return placedBox;
                     };
                     const placeHorizontal = () => {
-                        return placeBoxForVariableAnchors(textBox, collisionArrays.iconBox, performance.WritingMode.horizontal);
+                        return placeBoxForVariableAnchors(textBox, collisionArrays.iconBox, performance$1.WritingMode.horizontal);
                     };
                     const placeVertical = () => {
                         const verticalTextBox = collisionArrays.verticalTextBox;
                         const wasPlaced = placed && placed.box && placed.box.length;
                         if (bucket.allowVerticalPlacement && !wasPlaced && symbolInstance.numVerticalGlyphVertices > 0 && verticalTextBox) {
-                            return placeBoxForVariableAnchors(verticalTextBox, collisionArrays.verticalIconBox, performance.WritingMode.vertical);
+                            return placeBoxForVariableAnchors(verticalTextBox, collisionArrays.verticalIconBox, performance$1.WritingMode.vertical);
                         }
                         return { box: null, offscreen: null };
                     };
@@ -41385,12 +42042,12 @@ class Placement {
             offscreen = placedGlyphBoxes && placedGlyphBoxes.offscreen;
             if (symbolInstance.useRuntimeCollisionCircles) {
                 const placedSymbol = bucket.text.placedSymbolArray.get(symbolInstance.centerJustifiedTextSymbolIndex);
-                const fontSize = performance.evaluateSizeForFeature(bucket.textSizeData, partiallyEvaluatedTextSize, placedSymbol);
+                const fontSize = performance$1.evaluateSizeForFeature(bucket.textSizeData, partiallyEvaluatedTextSize, placedSymbol);
                 const textPixelPadding = layout.get('text-padding');
                 const circlePixelDiameter = symbolInstance.collisionCircleDiameter;
                 placedGlyphCircles = this.collisionIndex.placeCollisionCircles(textOverlapMode, placedSymbol, bucket.lineVertexArray, bucket.glyphOffsetArray, fontSize, posMatrix, textLabelPlaneMatrix, labelToScreenMatrix, showCollisionBoxes, pitchWithMap, collisionGroup.predicate, circlePixelDiameter, textPixelPadding, getElevation);
                 if (placedGlyphCircles.circles.length && placedGlyphCircles.collisionDetected && !showCollisionBoxes) {
-                    performance.warnOnce('Collisions detected, but collision boxes are not shown');
+                    performance$1.warnOnce('Collisions detected, but collision boxes are not shown');
                 }
                 // If text-overlap is set to 'always', force "placedCircles" to true
                 // In theory there should always be at least one circle placed
@@ -41486,7 +42143,7 @@ class Placement {
         if (showCollisionBoxes && bucket.bucketInstanceId in this.collisionCircleArrays) {
             const circleArray = this.collisionCircleArrays[bucket.bucketInstanceId];
             // Store viewport and inverse projection matrices per bucket
-            performance.invert(circleArray.invProjMatrix, posMatrix);
+            performance$1.invert(circleArray.invProjMatrix, posMatrix);
             circleArray.viewportMatrix = this.collisionIndex.getViewportMatrix();
         }
         bucket.justReloaded = false;
@@ -41498,11 +42155,11 @@ class Placement {
             'right': symbolInstance.rightJustifiedTextSymbolIndex
         };
         let autoIndex;
-        if (orientation === performance.WritingMode.vertical) {
+        if (orientation === performance$1.WritingMode.vertical) {
             autoIndex = symbolInstance.verticalPlacedTextSymbolIndex;
         }
         else {
-            autoIndex = justifications[performance.getAnchorJustification(placedAnchor)];
+            autoIndex = justifications[performance$1.getAnchorJustification(placedAnchor)];
         }
         const indexes = [
             symbolInstance.leftJustifiedTextSymbolIndex,
@@ -41524,8 +42181,8 @@ class Placement {
         }
     }
     markUsedOrientation(bucket, orientation, symbolInstance) {
-        const horizontal = (orientation === performance.WritingMode.horizontal || orientation === performance.WritingMode.horizontalOnly) ? orientation : 0;
-        const vertical = orientation === performance.WritingMode.vertical ? orientation : 0;
+        const horizontal = (orientation === performance$1.WritingMode.horizontal || orientation === performance$1.WritingMode.horizontalOnly) ? orientation : 0;
+        const vertical = orientation === performance$1.WritingMode.vertical ? orientation : 0;
         const horizontalIndexes = [
             symbolInstance.leftJustifiedTextSymbolIndex,
             symbolInstance.centerJustifiedTextSymbolIndex,
@@ -41659,8 +42316,8 @@ class Placement {
             const hasText = numHorizontalGlyphVertices > 0 || numVerticalGlyphVertices > 0;
             const hasIcon = symbolInstance.numIconVertices > 0;
             const placedOrientation = this.placedOrientations[symbolInstance.crossTileID];
-            const horizontalHidden = placedOrientation === performance.WritingMode.vertical;
-            const verticalHidden = placedOrientation === performance.WritingMode.horizontal || placedOrientation === performance.WritingMode.horizontalOnly;
+            const horizontalHidden = placedOrientation === performance$1.WritingMode.vertical;
+            const verticalHidden = placedOrientation === performance$1.WritingMode.horizontal || placedOrientation === performance$1.WritingMode.horizontalOnly;
             if (hasText) {
                 const packedOpacity = packOpacity(opacityState.text);
                 // Vertical text fades in/out on collision the same way as corresponding
@@ -41715,7 +42372,7 @@ class Placement {
             if (bucket.hasIconCollisionBoxData() || bucket.hasTextCollisionBoxData()) {
                 const collisionArrays = bucket.collisionArrays[s];
                 if (collisionArrays) {
-                    let shift = new performance.Point(0, 0);
+                    let shift = new performance$1.Point(0, 0);
                     if (collisionArrays.textBox || collisionArrays.verticalTextBox) {
                         let used = true;
                         if (hasVariablePlacement) {
@@ -41892,9 +42549,9 @@ class PauseablePlacement {
         return this._done;
     }
     continuePlacement(order, layers, layerTiles) {
-        const startTime = performance.browser.now();
+        const startTime = browser.now();
         const shouldPausePlacement = () => {
-            return this._forceFullPlacement ? false : (performance.browser.now() - startTime) > 2;
+            return this._forceFullPlacement ? false : (browser.now() - startTime) > 2;
         };
         while (this._currentPlacementIndex >= 0) {
             const layerId = order[this._currentPlacementIndex];
@@ -41939,7 +42596,7 @@ class PauseablePlacement {
     matching it with an existing id or assigning a new one.
 */
 // Round anchor positions to roughly 4 pixel grid
-const roundingFactor = 512 / performance.EXTENT / 2;
+const roundingFactor = 512 / performance$1.EXTENT / 2;
 const KDBUSH_THRESHHOLD = 128;
 class TileLayerIndex {
     constructor(tileID, symbolInstances, bucketInstanceId) {
@@ -41968,7 +42625,7 @@ class TileLayerIndex {
             const entry = { positions, crossTileIDs };
             // once we get too many symbols for a given key, it becomes much faster to index it before queries
             if (entry.positions.length > KDBUSH_THRESHHOLD) {
-                const index = new performance.KDBush(entry.positions.length, 16, Uint16Array);
+                const index = new performance$1.KDBush(entry.positions.length, 16, Uint16Array);
                 for (const { x, y } of entry.positions)
                     index.add(x, y);
                 index.finish();
@@ -41990,10 +42647,10 @@ class TileLayerIndex {
         const { x, y, z } = childTileID.canonical;
         const zDifference = z - localZ;
         const scale = roundingFactor / Math.pow(2, zDifference);
-        const xWorld = (x * performance.EXTENT + symbolInstance.anchorX) * scale;
-        const yWorld = (y * performance.EXTENT + symbolInstance.anchorY) * scale;
-        const xOffset = localX * performance.EXTENT * roundingFactor;
-        const yOffset = localY * performance.EXTENT * roundingFactor;
+        const xWorld = (x * performance$1.EXTENT + symbolInstance.anchorX) * scale;
+        const yWorld = (y * performance$1.EXTENT + symbolInstance.anchorY) * scale;
+        const xOffset = localX * performance$1.EXTENT * roundingFactor;
+        const yOffset = localY * performance$1.EXTENT * roundingFactor;
         const result = {
             x: Math.floor(xWorld - xOffset),
             y: Math.floor(yWorld - yOffset)
@@ -42216,37 +42873,33 @@ class CrossTileSymbolIndex {
 // We're skipping validation errors with the `source.canvas` identifier in order
 // to continue to allow canvas sources to be added at runtime/updated in
 // smart setStyle (see https://github.com/mapbox/mapbox-gl-js/pull/6424):
-const emitValidationErrors = (evented, errors) => performance.emitValidationErrors(evented, errors && errors.filter(error => error.identifier !== 'source.canvas'));
-const supportedDiffOperations = performance.pick(performance.operations, [
-    'addLayer',
-    'removeLayer',
-    'setPaintProperty',
-    'setLayoutProperty',
-    'setFilter',
-    'addSource',
-    'removeSource',
-    'setLayerZoomRange',
-    'setLight',
-    'setTransition',
-    'setGeoJSONSourceData',
-    'setGlyphs',
-    'setSprite',
-]);
-const ignoredDiffOperations = performance.pick(performance.operations, [
-    'setCenter',
-    'setZoom',
-    'setBearing',
-    'setPitch'
-]);
-const empty = performance.emptyStyle();
+const emitValidationErrors = (evented, errors) => performance$1.emitValidationErrors(evented, errors && errors.filter(error => error.identifier !== 'source.canvas'));
+const empty = performance$1.emptyStyle();
 /**
  * The Style base class
  */
-class Style extends performance.Evented {
+class Style extends performance$1.Evented {
     constructor(map, options = {}) {
         super();
+        this._rtlPluginLoaded = () => {
+            for (const id in this.sourceCaches) {
+                const sourceType = this.sourceCaches[id].getSource().type;
+                if (sourceType === 'vector' || sourceType === 'geojson') {
+                    // Non-vector sources don't have any symbols buckets to reload when the RTL text plugin loads
+                    // They also load more quickly, so they're more likely to have already displaying tiles
+                    // that would be unnecessarily booted by the plugin load event
+                    this.sourceCaches[id].reload(); // Should be a no-op if the plugin loads before any tiles load
+                }
+            }
+        };
         this.map = map;
-        this.dispatcher = new Dispatcher(getGlobalWorkerPool(), this, map._getMapId());
+        this.dispatcher = new Dispatcher(getGlobalWorkerPool(), map._getMapId());
+        this.dispatcher.registerMessageHandler("GG" /* MessageType.getGlyphs */, (mapId, params) => {
+            return this.getGlyphs(mapId, params);
+        });
+        this.dispatcher.registerMessageHandler("GI" /* MessageType.getImages */, (mapId, params) => {
+            return this.getImages(mapId, params);
+        });
         this.imageManager = new ImageManager();
         this.imageManager.setEventedParent(this);
         this.glyphManager = new GlyphManager(map._requestManager, options.localIdeographFontFamily);
@@ -42256,35 +42909,12 @@ class Style extends performance.Evented {
         this._layers = {};
         this._order = [];
         this.sourceCaches = {};
-        this.zoomHistory = new performance.ZoomHistory();
+        this.zoomHistory = new performance$1.ZoomHistory();
         this._loaded = false;
         this._availableImages = [];
         this._resetUpdates();
-        this.dispatcher.broadcast('setReferrer', performance.getReferrer());
-        const self = this;
-        this._rtlTextPluginCallback = Style.registerForPluginStateChange((event) => {
-            const state = {
-                pluginStatus: event.pluginStatus,
-                pluginURL: event.pluginURL
-            };
-            self.dispatcher.broadcast('syncRTLPluginState', state, (err, results) => {
-                performance.triggerPluginCompletionEvent(err);
-                if (results) {
-                    const allComplete = results.every((elem) => elem);
-                    if (allComplete) {
-                        for (const id in self.sourceCaches) {
-                            const sourceType = self.sourceCaches[id].getSource().type;
-                            if (sourceType === 'vector' || sourceType === 'geojson') {
-                                // Non-vector sources don't have any symbols buckets to reload when the RTL text plugin loads
-                                // They also load more quickly, so they're more likely to have already displaying tiles
-                                // that would be unnecessarily booted by the plugin load event
-                                self.sourceCaches[id].reload(); // Should be a no-op if the plugin loads before any tiles load
-                            }
-                        }
-                    }
-                }
-            });
-        });
+        this.dispatcher.broadcast("SR" /* MessageType.setReferrer */, performance$1.getReferrer());
+        rtlMainThreadPluginFactory().on(RTLPluginLoadedEventName, this._rtlPluginLoaded);
         this.on('data', (event) => {
             if (event.dataType !== 'source' || event.sourceDataType !== 'metadata') {
                 return;
@@ -42306,36 +42936,38 @@ class Style extends performance.Evented {
         });
     }
     loadURL(url, options = {}, previousStyle) {
-        this.fire(new performance.Event('dataloading', { dataType: 'style' }));
+        this.fire(new performance$1.Event('dataloading', { dataType: 'style' }));
         options.validate = typeof options.validate === 'boolean' ?
             options.validate : true;
-        const request = this.map._requestManager.transformRequest(url, ResourceType.Style);
-        this._request = performance.getJSON(request, (error, json) => {
-            this._request = null;
+        const request = this.map._requestManager.transformRequest(url, "Style" /* ResourceType.Style */);
+        this._loadStyleRequest = new AbortController();
+        performance$1.getJSON(request, this._loadStyleRequest).then((response) => {
+            this._loadStyleRequest = null;
+            this._load(response.data, options, previousStyle);
+        }).catch((error) => {
+            this._loadStyleRequest = null;
             if (error) {
-                this.fire(new performance.ErrorEvent(error));
-            }
-            else if (json) {
-                this._load(json, options, previousStyle);
+                this.fire(new performance$1.ErrorEvent(error));
             }
         });
     }
     loadJSON(json, options = {}, previousStyle) {
-        this.fire(new performance.Event('dataloading', { dataType: 'style' }));
-        this._request = performance.browser.frame(() => {
-            this._request = null;
+        this.fire(new performance$1.Event('dataloading', { dataType: 'style' }));
+        this._frameRequest = new AbortController();
+        browser.frameAsync(this._frameRequest).then(() => {
+            this._frameRequest = null;
             options.validate = options.validate !== false;
             this._load(json, options, previousStyle);
-        });
+        }).catch(() => { }); // ignore abort
     }
     loadEmpty() {
-        this.fire(new performance.Event('dataloading', { dataType: 'style' }));
+        this.fire(new performance$1.Event('dataloading', { dataType: 'style' }));
         this._load(empty, { validate: false });
     }
     _load(json, options, previousStyle) {
         var _a;
         const nextState = options.transformStyle ? options.transformStyle(previousStyle, json) : json;
-        if (options.validate && emitValidationErrors(this, performance.validateStyle(nextState))) {
+        if (options.validate && emitValidationErrors(this, performance$1.validateStyle(nextState))) {
             return;
         }
         this._loaded = true;
@@ -42353,32 +42985,31 @@ class Style extends performance.Evented {
         this._createLayers();
         this.light = new Light(this.stylesheet.light);
         this.map.setTerrain((_a = this.stylesheet.terrain) !== null && _a !== void 0 ? _a : null);
-        this.fire(new performance.Event('data', { dataType: 'style' }));
-        this.fire(new performance.Event('style.load'));
+        this.fire(new performance$1.Event('data', { dataType: 'style' }));
+        this.fire(new performance$1.Event('style.load'));
     }
     _createLayers() {
-        const dereferencedLayers = performance.derefLayers(this.stylesheet.layers);
+        const dereferencedLayers = performance$1.derefLayers(this.stylesheet.layers);
         // Broadcast layers to workers first, so that expensive style processing (createStyleLayer)
         // can happen in parallel on both main and worker threads.
-        this.dispatcher.broadcast('setLayers', dereferencedLayers);
+        this.dispatcher.broadcast("SL" /* MessageType.setLayers */, dereferencedLayers);
         this._order = dereferencedLayers.map((layer) => layer.id);
         this._layers = {};
         // reset serialization field, to be populated only when needed
         this._serializedLayers = null;
         for (const layer of dereferencedLayers) {
-            const styledLayer = performance.createStyleLayer(layer);
+            const styledLayer = performance$1.createStyleLayer(layer);
             styledLayer.setEventedParent(this, { layer: { id: layer.id } });
             this._layers[layer.id] = styledLayer;
         }
     }
     _loadSprite(sprite, isUpdate = false, completion = undefined) {
         this.imageManager.setLoaded(false);
-        this._spriteRequest = loadSprite(sprite, this.map._requestManager, this.map.getPixelRatio(), (err, images) => {
+        this._spriteRequest = new AbortController();
+        let err;
+        loadSprite(sprite, this.map._requestManager, this.map.getPixelRatio(), this._spriteRequest).then((images) => {
             this._spriteRequest = null;
-            if (err) {
-                this.fire(new performance.ErrorEvent(err));
-            }
-            else if (images) {
+            if (images) {
                 for (const spriteId in images) {
                     this._spritesImagesIds[spriteId] = [];
                     // remove old sprite's loaded images (for the same sprite id) that are not in new sprite
@@ -42404,13 +43035,18 @@ class Style extends performance.Evented {
                     }
                 }
             }
+        }).catch((error) => {
+            this._spriteRequest = null;
+            err = error;
+            this.fire(new performance$1.ErrorEvent(err));
+        }).finally(() => {
             this.imageManager.setLoaded(true);
             this._availableImages = this.imageManager.listImages();
             if (isUpdate) {
                 this._changed = true;
             }
-            this.dispatcher.broadcast('setImages', this._availableImages);
-            this.fire(new performance.Event('data', { dataType: 'style' }));
+            this.dispatcher.broadcast("SI" /* MessageType.setImages */, this._availableImages);
+            this.fire(new performance$1.Event('data', { dataType: 'style' }));
             if (completion) {
                 completion(err);
             }
@@ -42424,8 +43060,8 @@ class Style extends performance.Evented {
         this._spritesImagesIds = {};
         this._availableImages = this.imageManager.listImages();
         this._changed = true;
-        this.dispatcher.broadcast('setImages', this._availableImages);
-        this.fire(new performance.Event('data', { dataType: 'style' }));
+        this.dispatcher.broadcast("SI" /* MessageType.setImages */, this._availableImages);
+        this.fire(new performance$1.Event('data', { dataType: 'style' }));
     }
     _validateLayer(layer) {
         const sourceCache = this.sourceCaches[layer.source];
@@ -42438,7 +43074,7 @@ class Style extends performance.Evented {
         }
         const source = sourceCache.getSource();
         if (source.type === 'geojson' || (source.vectorLayerIds && source.vectorLayerIds.indexOf(sourceLayer) === -1)) {
-            this.fire(new performance.ErrorEvent(new Error(`Source layer "${sourceLayer}" ` +
+            this.fire(new performance$1.ErrorEvent(new Error(`Source layer "${sourceLayer}" ` +
                 `does not exist on source "${source.id}" ` +
                 `as specified by style layer "${layer.id}".`)));
         }
@@ -42456,6 +43092,7 @@ class Style extends performance.Evented {
         return true;
     }
     /**
+     * @hidden
      * take an array of string IDs, and based on this._layers, generate an array of LayerSpecification
      * @param ids - an array of string IDs, for which serialized layers will be generated. If omitted, all serialized layers will be returned
      * @returns generated result
@@ -42475,6 +43112,7 @@ class Style extends performance.Evented {
         return serializedLayers;
     }
     /**
+     * @hidden
      * Lazy initialization of this._serializedLayers dictionary and return it
      * @returns this._serializedLayers dictionary
      */
@@ -42523,7 +43161,7 @@ class Style extends performance.Evented {
             return;
         }
         const changed = this._changed;
-        if (this._changed) {
+        if (changed) {
             const updatedIds = Object.keys(this._updatedLayers);
             const removedIds = Object.keys(this._removedLayers);
             if (updatedIds.length || removedIds.length) {
@@ -42550,11 +43188,15 @@ class Style extends performance.Evented {
             this._resetUpdates();
         }
         const sourcesUsedBefore = {};
-        for (const sourceId in this.sourceCaches) {
-            const sourceCache = this.sourceCaches[sourceId];
-            sourcesUsedBefore[sourceId] = sourceCache.used;
+        // save 'used' status to sourcesUsedBefore object and reset all sourceCaches 'used' field to false
+        for (const sourceCacheId in this.sourceCaches) {
+            const sourceCache = this.sourceCaches[sourceCacheId];
+            // sourceCache.used could be undefined, and sourcesUsedBefore[sourceCacheId] is also 'undefined'
+            sourcesUsedBefore[sourceCacheId] = sourceCache.used;
             sourceCache.used = false;
         }
+        // loop all layers and find layers that are not hidden at parameters.zoom
+        // and set used to true in sourceCaches dictionary for the sources of these layers
         for (const layerId of this._order) {
             const layer = this._layers[layerId];
             layer.recalculate(parameters, this._availableImages);
@@ -42562,16 +43204,24 @@ class Style extends performance.Evented {
                 this.sourceCaches[layer.source].used = true;
             }
         }
-        for (const sourceId in sourcesUsedBefore) {
-            const sourceCache = this.sourceCaches[sourceId];
-            if (sourcesUsedBefore[sourceId] !== sourceCache.used) {
-                sourceCache.fire(new performance.Event('data', { sourceDataType: 'visibility', dataType: 'source', sourceId }));
+        // cross check sourcesUsedBefore against updated this.sourceCaches dictionary
+        // if "used" field is different fire visibility event
+        for (const sourcesUsedBeforeId in sourcesUsedBefore) {
+            const sourceCache = this.sourceCaches[sourcesUsedBeforeId];
+            // (undefine !== false) will evaluate to true and fire an useless visibility event
+            // need force "falsy" values to boolean to avoid the case above
+            if (!!sourcesUsedBefore[sourcesUsedBeforeId] !== !!sourceCache.used) {
+                sourceCache.fire(new performance$1.Event('data', {
+                    sourceDataType: 'visibility',
+                    dataType: 'source',
+                    sourceId: sourcesUsedBeforeId
+                }));
             }
         }
         this.light.recalculate(parameters);
         this.z = parameters.zoom;
         if (changed) {
-            this.fire(new performance.Event('data', { dataType: 'style' }));
+            this.fire(new performance$1.Event('data', { dataType: 'style' }));
         }
     }
     /*
@@ -42595,7 +43245,7 @@ class Style extends performance.Evented {
         }
     }
     _updateWorkerLayers(updatedIds, removedIds) {
-        this.dispatcher.broadcast('updateLayers', {
+        this.dispatcher.broadcast("UL" /* MessageType.updateLayers */, {
             layers: this._serializeByIds(updatedIds),
             removedIds
         });
@@ -42619,38 +43269,96 @@ class Style extends performance.Evented {
      * @returns true if any changes were made; false otherwise
      */
     setState(nextState, options = {}) {
+        var _a;
         this._checkLoaded();
         const serializedStyle = this.serialize();
         nextState = options.transformStyle ? options.transformStyle(serializedStyle, nextState) : nextState;
-        if (emitValidationErrors(this, performance.validateStyle(nextState)))
+        const validate = (_a = options.validate) !== null && _a !== void 0 ? _a : true;
+        if (validate && emitValidationErrors(this, performance$1.validateStyle(nextState)))
             return false;
-        nextState = performance.clone$1(nextState);
-        nextState.layers = performance.derefLayers(nextState.layers);
-        const changes = performance.diffStyles(serializedStyle, nextState)
-            .filter(op => !(op.command in ignoredDiffOperations));
-        if (changes.length === 0) {
+        nextState = performance$1.clone$1(nextState);
+        nextState.layers = performance$1.derefLayers(nextState.layers);
+        const changes = performance$1.diffStyles(serializedStyle, nextState);
+        const operations = this._getOperationsToPerform(changes);
+        if (operations.unimplemented.length > 0) {
+            throw new Error(`Unimplemented: ${operations.unimplemented.join(', ')}.`);
+        }
+        if (operations.operations.length === 0) {
             return false;
         }
-        const unimplementedOps = changes.filter(op => !(op.command in supportedDiffOperations));
-        if (unimplementedOps.length > 0) {
-            throw new Error(`Unimplemented: ${unimplementedOps.map(op => op.command).join(', ')}.`);
-        }
-        for (const op of changes) {
-            if (op.command === 'setTransition') {
-                // `transition` is always read directly off of
-                // `this.stylesheet`, which we update below
-                continue;
-            }
-            this[op.command].apply(this, op.args);
+        for (const styleChangeOperation of operations.operations) {
+            styleChangeOperation();
         }
         this.stylesheet = nextState;
         // reset serialization field, to be populated only when needed
         this._serializedLayers = null;
         return true;
     }
+    _getOperationsToPerform(diff) {
+        const operations = [];
+        const unimplemented = [];
+        for (const op of diff) {
+            switch (op.command) {
+                case 'setCenter':
+                case 'setZoom':
+                case 'setBearing':
+                case 'setPitch':
+                    continue;
+                case 'addLayer':
+                    operations.push(() => this.addLayer.apply(this, op.args));
+                    break;
+                case 'removeLayer':
+                    operations.push(() => this.removeLayer.apply(this, op.args));
+                    break;
+                case 'setPaintProperty':
+                    operations.push(() => this.setPaintProperty.apply(this, op.args));
+                    break;
+                case 'setLayoutProperty':
+                    operations.push(() => this.setLayoutProperty.apply(this, op.args));
+                    break;
+                case 'setFilter':
+                    operations.push(() => this.setFilter.apply(this, op.args));
+                    break;
+                case 'addSource':
+                    operations.push(() => this.addSource.apply(this, op.args));
+                    break;
+                case 'removeSource':
+                    operations.push(() => this.removeSource.apply(this, op.args));
+                    break;
+                case 'setLayerZoomRange':
+                    operations.push(() => this.setLayerZoomRange.apply(this, op.args));
+                    break;
+                case 'setLight':
+                    operations.push(() => this.setLight.apply(this, op.args));
+                    break;
+                case 'setGeoJSONSourceData':
+                    operations.push(() => this.setGeoJSONSourceData.apply(this, op.args));
+                    break;
+                case 'setGlyphs':
+                    operations.push(() => this.setGlyphs.apply(this, op.args));
+                    break;
+                case 'setSprite':
+                    operations.push(() => this.setSprite.apply(this, op.args));
+                    break;
+                case 'setTerrain':
+                    operations.push(() => this.map.setTerrain.apply(this, op.args));
+                    break;
+                case 'setTransition':
+                    operations.push(() => { });
+                    break;
+                default:
+                    unimplemented.push(op.command);
+                    break;
+            }
+        }
+        return {
+            operations,
+            unimplemented
+        };
+    }
     addImage(id, image) {
         if (this.getImage(id)) {
-            return this.fire(new performance.ErrorEvent(new Error(`An image named "${id}" already exists.`)));
+            return this.fire(new performance$1.ErrorEvent(new Error(`An image named "${id}" already exists.`)));
         }
         this.imageManager.addImage(id, image);
         this._afterImageUpdated(id);
@@ -42663,7 +43371,7 @@ class Style extends performance.Evented {
     }
     removeImage(id) {
         if (!this.getImage(id)) {
-            return this.fire(new performance.ErrorEvent(new Error(`An image named "${id}" does not exist.`)));
+            return this.fire(new performance$1.ErrorEvent(new Error(`An image named "${id}" does not exist.`)));
         }
         this.imageManager.removeImage(id);
         this._afterImageUpdated(id);
@@ -42672,8 +43380,8 @@ class Style extends performance.Evented {
         this._availableImages = this.imageManager.listImages();
         this._changedImages[id] = true;
         this._changed = true;
-        this.dispatcher.broadcast('setImages', this._availableImages);
-        this.fire(new performance.Event('data', { dataType: 'style' }));
+        this.dispatcher.broadcast("SI" /* MessageType.setImages */, this._availableImages);
+        this.fire(new performance$1.Event('data', { dataType: 'style' }));
     }
     listImages() {
         this._checkLoaded();
@@ -42689,7 +43397,7 @@ class Style extends performance.Evented {
         }
         const builtIns = ['vector', 'raster', 'geojson', 'video', 'image'];
         const shouldValidate = builtIns.indexOf(source.type) >= 0;
-        if (shouldValidate && this._validate(performance.validateStyle.source, `sources.${id}`, source, null, options))
+        if (shouldValidate && this._validate(performance$1.validateStyle.source, `sources.${id}`, source, null, options))
             return;
         if (this.map && this.map._collectResourceTiming)
             source.collectResourceTiming = true;
@@ -42716,13 +43424,13 @@ class Style extends performance.Evented {
         }
         for (const layerId in this._layers) {
             if (this._layers[layerId].source === id) {
-                return this.fire(new performance.ErrorEvent(new Error(`Source "${id}" cannot be removed while layer "${layerId}" is using it.`)));
+                return this.fire(new performance$1.ErrorEvent(new Error(`Source "${id}" cannot be removed while layer "${layerId}" is using it.`)));
             }
         }
         const sourceCache = this.sourceCaches[id];
         delete this.sourceCaches[id];
         delete this._updatedSources[id];
-        sourceCache.fire(new performance.Event('data', { sourceDataType: 'metadata', dataType: 'source', sourceId: id }));
+        sourceCache.fire(new performance$1.Event('data', { sourceDataType: 'metadata', dataType: 'source', sourceId: id }));
         sourceCache.setEventedParent(null);
         sourceCache.onRemove(this.map);
         this._changed = true;
@@ -42762,31 +43470,31 @@ class Style extends performance.Evented {
         this._checkLoaded();
         const id = layerObject.id;
         if (this.getLayer(id)) {
-            this.fire(new performance.ErrorEvent(new Error(`Layer "${id}" already exists on this map.`)));
+            this.fire(new performance$1.ErrorEvent(new Error(`Layer "${id}" already exists on this map.`)));
             return;
         }
         let layer;
         if (layerObject.type === 'custom') {
-            if (emitValidationErrors(this, performance.validateCustomStyleLayer(layerObject)))
+            if (emitValidationErrors(this, performance$1.validateCustomStyleLayer(layerObject)))
                 return;
-            layer = performance.createStyleLayer(layerObject);
+            layer = performance$1.createStyleLayer(layerObject);
         }
         else {
             if ('source' in layerObject && typeof layerObject.source === 'object') {
                 this.addSource(id, layerObject.source);
-                layerObject = performance.clone$1(layerObject);
-                layerObject = performance.extend(layerObject, { source: id });
+                layerObject = performance$1.clone$1(layerObject);
+                layerObject = performance$1.extend(layerObject, { source: id });
             }
             // this layer is not in the style.layers array, so we pass an impossible array index
-            if (this._validate(performance.validateStyle.layer, `layers.${id}`, layerObject, { arrayIndex: -1 }, options))
+            if (this._validate(performance$1.validateStyle.layer, `layers.${id}`, layerObject, { arrayIndex: -1 }, options))
                 return;
-            layer = performance.createStyleLayer(layerObject);
+            layer = performance$1.createStyleLayer(layerObject);
             this._validateLayer(layer);
             layer.setEventedParent(this, { layer: { id } });
         }
         const index = before ? this._order.indexOf(before) : this._order.length;
         if (before && index === -1) {
-            this.fire(new performance.ErrorEvent(new Error(`Cannot add layer "${id}" before non-existing layer "${before}".`)));
+            this.fire(new performance$1.ErrorEvent(new Error(`Cannot add layer "${id}" before non-existing layer "${before}".`)));
             return;
         }
         this._order.splice(index, 0, id);
@@ -42826,7 +43534,7 @@ class Style extends performance.Evented {
         this._changed = true;
         const layer = this._layers[id];
         if (!layer) {
-            this.fire(new performance.ErrorEvent(new Error(`The layer '${id}' does not exist in the map's style and cannot be moved.`)));
+            this.fire(new performance$1.ErrorEvent(new Error(`The layer '${id}' does not exist in the map's style and cannot be moved.`)));
             return;
         }
         if (id === before) {
@@ -42836,7 +43544,7 @@ class Style extends performance.Evented {
         this._order.splice(index, 1);
         const newIndex = before ? this._order.indexOf(before) : this._order.length;
         if (before && newIndex === -1) {
-            this.fire(new performance.ErrorEvent(new Error(`Cannot move layer "${id}" before non-existing layer "${before}".`)));
+            this.fire(new performance$1.ErrorEvent(new Error(`Cannot move layer "${id}" before non-existing layer "${before}".`)));
             return;
         }
         this._order.splice(newIndex, 0, id);
@@ -42854,7 +43562,7 @@ class Style extends performance.Evented {
         this._checkLoaded();
         const layer = this._layers[id];
         if (!layer) {
-            this.fire(new performance.ErrorEvent(new Error(`Cannot remove non-existing layer "${id}".`)));
+            this.fire(new performance$1.ErrorEvent(new Error(`Cannot remove non-existing layer "${id}".`)));
             return;
         }
         layer.setEventedParent(null);
@@ -42903,7 +43611,7 @@ class Style extends performance.Evented {
         this._checkLoaded();
         const layer = this.getLayer(layerId);
         if (!layer) {
-            this.fire(new performance.ErrorEvent(new Error(`Cannot set the zoom range of non-existing layer "${layerId}".`)));
+            this.fire(new performance$1.ErrorEvent(new Error(`Cannot set the zoom range of non-existing layer "${layerId}".`)));
             return;
         }
         if (layer.minzoom === minzoom && layer.maxzoom === maxzoom)
@@ -42920,10 +43628,10 @@ class Style extends performance.Evented {
         this._checkLoaded();
         const layer = this.getLayer(layerId);
         if (!layer) {
-            this.fire(new performance.ErrorEvent(new Error(`Cannot filter non-existing layer "${layerId}".`)));
+            this.fire(new performance$1.ErrorEvent(new Error(`Cannot filter non-existing layer "${layerId}".`)));
             return;
         }
-        if (performance.deepEqual(layer.filter, filter)) {
+        if (performance$1.deepEqual(layer.filter, filter)) {
             return;
         }
         if (filter === null || filter === undefined) {
@@ -42931,10 +43639,10 @@ class Style extends performance.Evented {
             this._updateLayer(layer);
             return;
         }
-        if (this._validate(performance.validateStyle.filter, `layers.${layer.id}.filter`, filter, null, options)) {
+        if (this._validate(performance$1.validateStyle.filter, `layers.${layer.id}.filter`, filter, null, options)) {
             return;
         }
-        layer.filter = performance.clone$1(filter);
+        layer.filter = performance$1.clone$1(filter);
         this._updateLayer(layer);
     }
     /**
@@ -42943,16 +43651,16 @@ class Style extends performance.Evented {
      * @returns the layer's filter, if any
      */
     getFilter(layer) {
-        return performance.clone$1(this.getLayer(layer).filter);
+        return performance$1.clone$1(this.getLayer(layer).filter);
     }
     setLayoutProperty(layerId, name, value, options = {}) {
         this._checkLoaded();
         const layer = this.getLayer(layerId);
         if (!layer) {
-            this.fire(new performance.ErrorEvent(new Error(`Cannot style non-existing layer "${layerId}".`)));
+            this.fire(new performance$1.ErrorEvent(new Error(`Cannot style non-existing layer "${layerId}".`)));
             return;
         }
-        if (performance.deepEqual(layer.getLayoutProperty(name), value))
+        if (performance$1.deepEqual(layer.getLayoutProperty(name), value))
             return;
         layer.setLayoutProperty(name, value, options);
         this._updateLayer(layer);
@@ -42966,7 +43674,7 @@ class Style extends performance.Evented {
     getLayoutProperty(layerId, name) {
         const layer = this.getLayer(layerId);
         if (!layer) {
-            this.fire(new performance.ErrorEvent(new Error(`Cannot get style of non-existing layer "${layerId}".`)));
+            this.fire(new performance$1.ErrorEvent(new Error(`Cannot get style of non-existing layer "${layerId}".`)));
             return;
         }
         return layer.getLayoutProperty(name);
@@ -42975,10 +43683,10 @@ class Style extends performance.Evented {
         this._checkLoaded();
         const layer = this.getLayer(layerId);
         if (!layer) {
-            this.fire(new performance.ErrorEvent(new Error(`Cannot style non-existing layer "${layerId}".`)));
+            this.fire(new performance$1.ErrorEvent(new Error(`Cannot style non-existing layer "${layerId}".`)));
             return;
         }
-        if (performance.deepEqual(layer.getPaintProperty(name), value))
+        if (performance$1.deepEqual(layer.getPaintProperty(name), value))
             return;
         const requiresRelayout = layer.setPaintProperty(name, value, options);
         if (requiresRelayout) {
@@ -42986,6 +43694,8 @@ class Style extends performance.Evented {
         }
         this._changed = true;
         this._updatedPaintProps[layerId] = true;
+        // reset serialization field, to be populated only when needed
+        this._serializedLayers = null;
     }
     getPaintProperty(layer, name) {
         return this.getLayer(layer).getPaintProperty(name);
@@ -42996,20 +43706,20 @@ class Style extends performance.Evented {
         const sourceLayer = target.sourceLayer;
         const sourceCache = this.sourceCaches[sourceId];
         if (sourceCache === undefined) {
-            this.fire(new performance.ErrorEvent(new Error(`The source '${sourceId}' does not exist in the map's style.`)));
+            this.fire(new performance$1.ErrorEvent(new Error(`The source '${sourceId}' does not exist in the map's style.`)));
             return;
         }
         const sourceType = sourceCache.getSource().type;
         if (sourceType === 'geojson' && sourceLayer) {
-            this.fire(new performance.ErrorEvent(new Error('GeoJSON sources cannot have a sourceLayer parameter.')));
+            this.fire(new performance$1.ErrorEvent(new Error('GeoJSON sources cannot have a sourceLayer parameter.')));
             return;
         }
         if (sourceType === 'vector' && !sourceLayer) {
-            this.fire(new performance.ErrorEvent(new Error('The sourceLayer parameter must be provided for vector source types.')));
+            this.fire(new performance$1.ErrorEvent(new Error('The sourceLayer parameter must be provided for vector source types.')));
             return;
         }
         if (target.id === undefined) {
-            this.fire(new performance.ErrorEvent(new Error('The feature id parameter must be provided.')));
+            this.fire(new performance$1.ErrorEvent(new Error('The feature id parameter must be provided.')));
         }
         sourceCache.setFeatureState(sourceLayer, target.id, state);
     }
@@ -43018,17 +43728,17 @@ class Style extends performance.Evented {
         const sourceId = target.source;
         const sourceCache = this.sourceCaches[sourceId];
         if (sourceCache === undefined) {
-            this.fire(new performance.ErrorEvent(new Error(`The source '${sourceId}' does not exist in the map's style.`)));
+            this.fire(new performance$1.ErrorEvent(new Error(`The source '${sourceId}' does not exist in the map's style.`)));
             return;
         }
         const sourceType = sourceCache.getSource().type;
         const sourceLayer = sourceType === 'vector' ? target.sourceLayer : undefined;
         if (sourceType === 'vector' && !sourceLayer) {
-            this.fire(new performance.ErrorEvent(new Error('The sourceLayer parameter must be provided for vector source types.')));
+            this.fire(new performance$1.ErrorEvent(new Error('The sourceLayer parameter must be provided for vector source types.')));
             return;
         }
         if (key && (typeof target.id !== 'string' && typeof target.id !== 'number')) {
-            this.fire(new performance.ErrorEvent(new Error('A feature id is required to remove its specific state property.')));
+            this.fire(new performance$1.ErrorEvent(new Error('A feature id is required to remove its specific state property.')));
             return;
         }
         sourceCache.removeFeatureState(sourceLayer, target.id, key);
@@ -43039,21 +43749,21 @@ class Style extends performance.Evented {
         const sourceLayer = target.sourceLayer;
         const sourceCache = this.sourceCaches[sourceId];
         if (sourceCache === undefined) {
-            this.fire(new performance.ErrorEvent(new Error(`The source '${sourceId}' does not exist in the map's style.`)));
+            this.fire(new performance$1.ErrorEvent(new Error(`The source '${sourceId}' does not exist in the map's style.`)));
             return;
         }
         const sourceType = sourceCache.getSource().type;
         if (sourceType === 'vector' && !sourceLayer) {
-            this.fire(new performance.ErrorEvent(new Error('The sourceLayer parameter must be provided for vector source types.')));
+            this.fire(new performance$1.ErrorEvent(new Error('The sourceLayer parameter must be provided for vector source types.')));
             return;
         }
         if (target.id === undefined) {
-            this.fire(new performance.ErrorEvent(new Error('The feature id parameter must be provided.')));
+            this.fire(new performance$1.ErrorEvent(new Error('The feature id parameter must be provided.')));
         }
         return sourceCache.getFeatureState(sourceLayer, target.id);
     }
     getTransition() {
-        return performance.extend({ duration: 300, delay: 0 }, this.stylesheet && this.stylesheet.transition);
+        return performance$1.extend({ duration: 300, delay: 0 }, this.stylesheet && this.stylesheet.transition);
     }
     serialize() {
         // We return undefined before we're loaded, following the pattern of Map.getStyle() before
@@ -43062,11 +43772,11 @@ class Style extends performance.Evented {
         // calling Style._checkLoaded() first if their validation requires the style to be loaded.
         if (!this._loaded)
             return;
-        const sources = performance.mapObject(this.sourceCaches, (source) => source.serialize());
+        const sources = performance$1.mapObject(this.sourceCaches, (source) => source.serialize());
         const layers = this._serializeByIds(this._order);
         const terrain = this.map.getTerrain() || undefined;
         const myStyleSheet = this.stylesheet;
-        return performance.filterObject({
+        return performance$1.filterObject({
             version: myStyleSheet.version,
             name: myStyleSheet.name,
             metadata: myStyleSheet.metadata,
@@ -43161,19 +43871,19 @@ class Style extends performance.Evented {
     }
     queryRenderedFeatures(queryGeometry, params, transform) {
         if (params && params.filter) {
-            this._validate(performance.validateStyle.filter, 'queryRenderedFeatures.filter', params.filter, null, params);
+            this._validate(performance$1.validateStyle.filter, 'queryRenderedFeatures.filter', params.filter, null, params);
         }
         const includedSources = {};
         if (params && params.layers) {
             if (!Array.isArray(params.layers)) {
-                this.fire(new performance.ErrorEvent(new Error('parameters.layers must be an Array.')));
+                this.fire(new performance$1.ErrorEvent(new Error('parameters.layers must be an Array.')));
                 return [];
             }
             for (const layerId of params.layers) {
                 const layer = this._layers[layerId];
                 if (!layer) {
                     // this layer is not in the style.layers array
-                    this.fire(new performance.ErrorEvent(new Error(`The layer '${layerId}' does not exist in the map's style and cannot be queried for features.`)));
+                    this.fire(new performance$1.ErrorEvent(new Error(`The layer '${layerId}' does not exist in the map's style and cannot be queried for features.`)));
                     return [];
                 }
                 includedSources[layer.source] = true;
@@ -43197,23 +43907,10 @@ class Style extends performance.Evented {
     }
     querySourceFeatures(sourceID, params) {
         if (params && params.filter) {
-            this._validate(performance.validateStyle.filter, 'querySourceFeatures.filter', params.filter, null, params);
+            this._validate(performance$1.validateStyle.filter, 'querySourceFeatures.filter', params.filter, null, params);
         }
         const sourceCache = this.sourceCaches[sourceID];
         return sourceCache ? querySourceFeatures(sourceCache, params) : [];
-    }
-    addSourceType(name, SourceType, callback) {
-        if (getSourceType(name)) {
-            return callback(new Error(`A source type called "${name}" already exists.`));
-        }
-        setSourceType(name, SourceType);
-        if (!SourceType.workerSourceURL) {
-            return callback(null, null);
-        }
-        this.dispatcher.broadcast('loadWorkerSource', {
-            name,
-            url: SourceType.workerSourceURL
-        }, callback);
     }
     getLight() {
         return this.light.getLight();
@@ -43223,7 +43920,7 @@ class Style extends performance.Evented {
         const light = this.light.getLight();
         let _update = false;
         for (const key in lightOptions) {
-            if (!performance.deepEqual(lightOptions[key], light[key])) {
+            if (!performance$1.deepEqual(lightOptions[key], light[key])) {
                 _update = true;
                 break;
             }
@@ -43231,8 +43928,8 @@ class Style extends performance.Evented {
         if (!_update)
             return;
         const parameters = {
-            now: performance.browser.now(),
-            transition: performance.extend({
+            now: browser.now(),
+            transition: performance$1.extend({
                 duration: 300,
                 delay: 0
             }, this.stylesheet.transition)
@@ -43244,23 +43941,27 @@ class Style extends performance.Evented {
         if (options && options.validate === false) {
             return false;
         }
-        return emitValidationErrors(this, validate.call(performance.validateStyle, performance.extend({
+        return emitValidationErrors(this, validate.call(performance$1.validateStyle, performance$1.extend({
             key,
             style: this.serialize(),
             value,
-            styleSpec: performance.v8Spec
+            styleSpec: performance$1.v8Spec
         }, props)));
     }
     _remove(mapRemoved = true) {
-        if (this._request) {
-            this._request.cancel();
-            this._request = null;
+        if (this._frameRequest) {
+            this._frameRequest.abort();
+            this._frameRequest = null;
+        }
+        if (this._loadStyleRequest) {
+            this._loadStyleRequest.abort();
+            this._loadStyleRequest = null;
         }
         if (this._spriteRequest) {
-            this._spriteRequest.cancel();
+            this._spriteRequest.abort();
             this._spriteRequest = null;
         }
-        performance.evented.off('pluginStateChange', this._rtlTextPluginCallback);
+        rtlMainThreadPluginFactory().off(RTLPluginLoadedEventName, this._rtlPluginLoaded);
         for (const layerId in this._layers) {
             const layer = this._layers[layerId];
             layer.setEventedParent(null);
@@ -43272,6 +43973,9 @@ class Style extends performance.Evented {
         }
         this.imageManager.setEventedParent(null);
         this.setEventedParent(null);
+        if (mapRemoved) {
+            this.dispatcher.broadcast("RM" /* MessageType.removeMap */, undefined);
+        }
         this.dispatcher.remove(mapRemoved);
     }
     _clearSource(id) {
@@ -43316,7 +44020,7 @@ class Style extends performance.Evented {
         // Also force full placement when fadeDuration === 0 to ensure that newly loaded
         // tiles will fully display symbols in their first frame
         forceFullPlacement = forceFullPlacement || this._layerOrderChanged || fadeDuration === 0;
-        if (forceFullPlacement || !this.pauseablePlacement || (this.pauseablePlacement.isDone() && !this.placement.stillRecent(performance.browser.now(), transform.zoom))) {
+        if (forceFullPlacement || !this.pauseablePlacement || (this.pauseablePlacement.isDone() && !this.placement.stillRecent(browser.now(), transform.zoom))) {
             this.pauseablePlacement = new PauseablePlacement(transform, this.map.terrain, this._order, forceFullPlacement, showCollisionBoxes, fadeDuration, crossSourceCollisions, this.placement);
             this._layerOrderChanged = false;
         }
@@ -43330,7 +44034,7 @@ class Style extends performance.Evented {
         else {
             this.pauseablePlacement.continuePlacement(this._order, this._layers, layerTiles);
             if (this.pauseablePlacement.isDone()) {
-                this.placement = this.pauseablePlacement.commit(performance.browser.now());
+                this.placement = this.pauseablePlacement.commit(browser.now());
                 placementCommitted = true;
             }
             if (symbolBucketsChanged) {
@@ -43349,7 +44053,7 @@ class Style extends performance.Evented {
             }
         }
         // needsRender is false when we have just finished a placement that didn't change the visibility of any symbols
-        const needsRerender = !this.pauseablePlacement.isDone() || this.placement.hasTransitions(performance.browser.now());
+        const needsRerender = !this.pauseablePlacement.isDone() || this.placement.hasTransitions(browser.now());
         return needsRerender;
     }
     _releaseSymbolFadeTiles() {
@@ -43358,40 +44062,43 @@ class Style extends performance.Evented {
         }
     }
     // Callbacks from web workers
-    getImages(mapId, params, callback) {
-        this.imageManager.getImages(params.icons, callback);
-        // Apply queued image changes before setting the tile's dependencies so that the tile
-        // is not reloaded unnecessarily. Without this forced update the reload could happen in cases
-        // like this one:
-        // - icons contains "my-image"
-        // - imageManager.getImages(...) triggers `onstyleimagemissing`
-        // - the user adds "my-image" within the callback
-        // - addImage adds "my-image" to this._changedImages
-        // - the next frame triggers a reload of this tile even though it already has the latest version
-        this._updateTilesForChangedImages();
-        const sourceCache = this.sourceCaches[params.source];
-        if (sourceCache) {
-            sourceCache.setDependencies(params.tileID.key, params.type, params.icons);
-        }
+    getImages(mapId, params) {
+        return performance$1.__awaiter(this, void 0, void 0, function* () {
+            const images = yield this.imageManager.getImages(params.icons);
+            // Apply queued image changes before setting the tile's dependencies so that the tile
+            // is not reloaded unnecessarily. Without this forced update the reload could happen in cases
+            // like this one:
+            // - icons contains "my-image"
+            // - imageManager.getImages(...) triggers `onstyleimagemissing`
+            // - the user adds "my-image" within the callback
+            // - addImage adds "my-image" to this._changedImages
+            // - the next frame triggers a reload of this tile even though it already has the latest version
+            this._updateTilesForChangedImages();
+            const sourceCache = this.sourceCaches[params.source];
+            if (sourceCache) {
+                sourceCache.setDependencies(params.tileID.key, params.type, params.icons);
+            }
+            return images;
+        });
     }
-    getGlyphs(mapId, params, callback) {
-        this.glyphManager.getGlyphs(params.stacks, callback);
-        const sourceCache = this.sourceCaches[params.source];
-        if (sourceCache) {
-            // we are not setting stacks as dependencies since for now
-            // we just need to know which tiles have glyph dependencies
-            sourceCache.setDependencies(params.tileID.key, params.type, ['']);
-        }
-    }
-    getResource(mapId, params, callback) {
-        return performance.makeRequest(params, callback);
+    getGlyphs(mapId, params) {
+        return performance$1.__awaiter(this, void 0, void 0, function* () {
+            const glypgs = yield this.glyphManager.getGlyphs(params.stacks);
+            const sourceCache = this.sourceCaches[params.source];
+            if (sourceCache) {
+                // we are not setting stacks as dependencies since for now
+                // we just need to know which tiles have glyph dependencies
+                sourceCache.setDependencies(params.tileID.key, params.type, ['']);
+            }
+            return glypgs;
+        });
     }
     getGlyphsUrl() {
         return this.stylesheet.glyphs || null;
     }
     setGlyphs(glyphsUrl, options = {}) {
         this._checkLoaded();
-        if (glyphsUrl && this._validate(performance.validateStyle.glyphs, 'glyphs', glyphsUrl, null, options)) {
+        if (glyphsUrl && this._validate(performance$1.validateStyle.glyphs, 'glyphs', glyphsUrl, null, options)) {
             return;
         }
         this._glyphsDidChange = true;
@@ -43414,7 +44121,7 @@ class Style extends performance.Evented {
             ...coerceSpriteToArray(this.stylesheet.sprite),
             ...spriteToAdd
         ];
-        if (this._validate(performance.validateStyle.sprite, 'sprite', updatedSprite, null, options))
+        if (this._validate(performance$1.validateStyle.sprite, 'sprite', updatedSprite, null, options))
             return;
         this.stylesheet.sprite = updatedSprite;
         this._loadSprite(spriteToAdd, true, completion);
@@ -43429,7 +44136,7 @@ class Style extends performance.Evented {
         this._checkLoaded();
         const internalSpriteRepresentation = coerceSpriteToArray(this.stylesheet.sprite);
         if (!internalSpriteRepresentation.find(sprite => sprite.id === id)) {
-            this.fire(new performance.ErrorEvent(new Error(`Sprite "${id}" doesn't exists on this map.`)));
+            this.fire(new performance$1.ErrorEvent(new Error(`Sprite "${id}" doesn't exists on this map.`)));
             return;
         }
         if (this._spritesImagesIds[id]) {
@@ -43443,8 +44150,8 @@ class Style extends performance.Evented {
         delete this._spritesImagesIds[id];
         this._availableImages = this.imageManager.listImages();
         this._changed = true;
-        this.dispatcher.broadcast('setImages', this._availableImages);
-        this.fire(new performance.Event('data', { dataType: 'style' }));
+        this.dispatcher.broadcast("SI" /* MessageType.setImages */, this._availableImages);
+        this.fire(new performance$1.Event('data', { dataType: 'style' }));
     }
     /**
      * Get the current sprite value.
@@ -43463,7 +44170,7 @@ class Style extends performance.Evented {
      */
     setSprite(sprite, options = {}, completion) {
         this._checkLoaded();
-        if (sprite && this._validate(performance.validateStyle.sprite, 'sprite', sprite, null, options)) {
+        if (sprite && this._validate(performance$1.validateStyle.sprite, 'sprite', sprite, null, options)) {
             return;
         }
         this.stylesheet.sprite = sprite;
@@ -43478,9 +44185,8 @@ class Style extends performance.Evented {
         }
     }
 }
-Style.registerForPluginStateChange = performance.registerForPluginStateChange;
 
-var posAttributes = performance.createLayout([
+var posAttributes = performance$1.createLayout([
     { name: 'a_pos', type: 'Int16', components: 2 }
 ]);
 
@@ -43898,27 +44604,27 @@ class VertexArrayObject {
 }
 
 const terrainPreludeUniforms = (context, locations) => ({
-    'u_depth': new performance.Uniform1i(context, locations.u_depth),
-    'u_terrain': new performance.Uniform1i(context, locations.u_terrain),
-    'u_terrain_dim': new performance.Uniform1f(context, locations.u_terrain_dim),
-    'u_terrain_matrix': new performance.UniformMatrix4f(context, locations.u_terrain_matrix),
-    'u_terrain_unpack': new performance.Uniform4f(context, locations.u_terrain_unpack),
-    'u_terrain_exaggeration': new performance.Uniform1f(context, locations.u_terrain_exaggeration)
+    'u_depth': new performance$1.Uniform1i(context, locations.u_depth),
+    'u_terrain': new performance$1.Uniform1i(context, locations.u_terrain),
+    'u_terrain_dim': new performance$1.Uniform1f(context, locations.u_terrain_dim),
+    'u_terrain_matrix': new performance$1.UniformMatrix4f(context, locations.u_terrain_matrix),
+    'u_terrain_unpack': new performance$1.Uniform4f(context, locations.u_terrain_unpack),
+    'u_terrain_exaggeration': new performance$1.Uniform1f(context, locations.u_terrain_exaggeration)
 });
 const terrainUniforms = (context, locations) => ({
-    'u_matrix': new performance.UniformMatrix4f(context, locations.u_matrix),
-    'u_texture': new performance.Uniform1i(context, locations.u_texture),
-    'u_ele_delta': new performance.Uniform1f(context, locations.u_ele_delta)
+    'u_matrix': new performance$1.UniformMatrix4f(context, locations.u_matrix),
+    'u_texture': new performance$1.Uniform1i(context, locations.u_texture),
+    'u_ele_delta': new performance$1.Uniform1f(context, locations.u_ele_delta)
 });
 const terrainDepthUniforms = (context, locations) => ({
-    'u_matrix': new performance.UniformMatrix4f(context, locations.u_matrix),
-    'u_ele_delta': new performance.Uniform1f(context, locations.u_ele_delta)
+    'u_matrix': new performance$1.UniformMatrix4f(context, locations.u_matrix),
+    'u_ele_delta': new performance$1.Uniform1f(context, locations.u_ele_delta)
 });
 const terrainCoordsUniforms = (context, locations) => ({
-    'u_matrix': new performance.UniformMatrix4f(context, locations.u_matrix),
-    'u_texture': new performance.Uniform1i(context, locations.u_texture),
-    'u_terrain_coords_id': new performance.Uniform1f(context, locations.u_terrain_coords_id),
-    'u_ele_delta': new performance.Uniform1f(context, locations.u_ele_delta)
+    'u_matrix': new performance$1.UniformMatrix4f(context, locations.u_matrix),
+    'u_texture': new performance$1.Uniform1i(context, locations.u_texture),
+    'u_terrain_coords_id': new performance$1.Uniform1f(context, locations.u_terrain_coords_id),
+    'u_ele_delta': new performance$1.Uniform1f(context, locations.u_ele_delta)
 });
 const terrainUniformValues = (matrix, eleDelta) => ({
     'u_matrix': matrix,
@@ -44116,38 +44822,38 @@ function bgPatternUniformValues(image, crossfade, painter, tile) {
 }
 
 const fillExtrusionUniforms = (context, locations) => ({
-    'u_matrix': new performance.UniformMatrix4f(context, locations.u_matrix),
-    'u_lightpos': new performance.Uniform3f(context, locations.u_lightpos),
-    'u_lightintensity': new performance.Uniform1f(context, locations.u_lightintensity),
-    'u_lightcolor': new performance.Uniform3f(context, locations.u_lightcolor),
-    'u_vertical_gradient': new performance.Uniform1f(context, locations.u_vertical_gradient),
-    'u_opacity': new performance.Uniform1f(context, locations.u_opacity)
+    'u_matrix': new performance$1.UniformMatrix4f(context, locations.u_matrix),
+    'u_lightpos': new performance$1.Uniform3f(context, locations.u_lightpos),
+    'u_lightintensity': new performance$1.Uniform1f(context, locations.u_lightintensity),
+    'u_lightcolor': new performance$1.Uniform3f(context, locations.u_lightcolor),
+    'u_vertical_gradient': new performance$1.Uniform1f(context, locations.u_vertical_gradient),
+    'u_opacity': new performance$1.Uniform1f(context, locations.u_opacity)
 });
 const fillExtrusionPatternUniforms = (context, locations) => ({
-    'u_matrix': new performance.UniformMatrix4f(context, locations.u_matrix),
-    'u_lightpos': new performance.Uniform3f(context, locations.u_lightpos),
-    'u_lightintensity': new performance.Uniform1f(context, locations.u_lightintensity),
-    'u_lightcolor': new performance.Uniform3f(context, locations.u_lightcolor),
-    'u_vertical_gradient': new performance.Uniform1f(context, locations.u_vertical_gradient),
-    'u_height_factor': new performance.Uniform1f(context, locations.u_height_factor),
+    'u_matrix': new performance$1.UniformMatrix4f(context, locations.u_matrix),
+    'u_lightpos': new performance$1.Uniform3f(context, locations.u_lightpos),
+    'u_lightintensity': new performance$1.Uniform1f(context, locations.u_lightintensity),
+    'u_lightcolor': new performance$1.Uniform3f(context, locations.u_lightcolor),
+    'u_vertical_gradient': new performance$1.Uniform1f(context, locations.u_vertical_gradient),
+    'u_height_factor': new performance$1.Uniform1f(context, locations.u_height_factor),
     // pattern uniforms
-    'u_image': new performance.Uniform1i(context, locations.u_image),
-    'u_texsize': new performance.Uniform2f(context, locations.u_texsize),
-    'u_pixel_coord_upper': new performance.Uniform2f(context, locations.u_pixel_coord_upper),
-    'u_pixel_coord_lower': new performance.Uniform2f(context, locations.u_pixel_coord_lower),
-    'u_scale': new performance.Uniform3f(context, locations.u_scale),
-    'u_fade': new performance.Uniform1f(context, locations.u_fade),
-    'u_opacity': new performance.Uniform1f(context, locations.u_opacity)
+    'u_image': new performance$1.Uniform1i(context, locations.u_image),
+    'u_texsize': new performance$1.Uniform2f(context, locations.u_texsize),
+    'u_pixel_coord_upper': new performance$1.Uniform2f(context, locations.u_pixel_coord_upper),
+    'u_pixel_coord_lower': new performance$1.Uniform2f(context, locations.u_pixel_coord_lower),
+    'u_scale': new performance$1.Uniform3f(context, locations.u_scale),
+    'u_fade': new performance$1.Uniform1f(context, locations.u_fade),
+    'u_opacity': new performance$1.Uniform1f(context, locations.u_opacity)
 });
 const fillExtrusionUniformValues = (matrix, painter, shouldUseVerticalGradient, opacity) => {
     const light = painter.style.light;
     const _lp = light.properties.get('position');
     const lightPos = [_lp.x, _lp.y, _lp.z];
-    const lightMat = performance.create$1();
+    const lightMat = performance$1.create$1();
     if (light.properties.get('anchor') === 'viewport') {
-        performance.fromRotation(lightMat, -painter.transform.angle);
+        performance$1.fromRotation(lightMat, -painter.transform.angle);
     }
-    performance.transformMat3(lightPos, lightPos, lightMat);
+    performance$1.transformMat3(lightPos, lightPos, lightMat);
     const lightColor = light.properties.get('color');
     return {
         'u_matrix': matrix,
@@ -44159,56 +44865,56 @@ const fillExtrusionUniformValues = (matrix, painter, shouldUseVerticalGradient, 
     };
 };
 const fillExtrusionPatternUniformValues = (matrix, painter, shouldUseVerticalGradient, opacity, coord, crossfade, tile) => {
-    return performance.extend(fillExtrusionUniformValues(matrix, painter, shouldUseVerticalGradient, opacity), patternUniformValues(crossfade, painter, tile), {
+    return performance$1.extend(fillExtrusionUniformValues(matrix, painter, shouldUseVerticalGradient, opacity), patternUniformValues(crossfade, painter, tile), {
         'u_height_factor': -Math.pow(2, coord.overscaledZ) / tile.tileSize / 8
     });
 };
 
 const fillUniforms = (context, locations) => ({
-    'u_matrix': new performance.UniformMatrix4f(context, locations.u_matrix)
+    'u_matrix': new performance$1.UniformMatrix4f(context, locations.u_matrix)
 });
 const fillPatternUniforms = (context, locations) => ({
-    'u_matrix': new performance.UniformMatrix4f(context, locations.u_matrix),
-    'u_image': new performance.Uniform1i(context, locations.u_image),
-    'u_texsize': new performance.Uniform2f(context, locations.u_texsize),
-    'u_pixel_coord_upper': new performance.Uniform2f(context, locations.u_pixel_coord_upper),
-    'u_pixel_coord_lower': new performance.Uniform2f(context, locations.u_pixel_coord_lower),
-    'u_scale': new performance.Uniform3f(context, locations.u_scale),
-    'u_fade': new performance.Uniform1f(context, locations.u_fade)
+    'u_matrix': new performance$1.UniformMatrix4f(context, locations.u_matrix),
+    'u_image': new performance$1.Uniform1i(context, locations.u_image),
+    'u_texsize': new performance$1.Uniform2f(context, locations.u_texsize),
+    'u_pixel_coord_upper': new performance$1.Uniform2f(context, locations.u_pixel_coord_upper),
+    'u_pixel_coord_lower': new performance$1.Uniform2f(context, locations.u_pixel_coord_lower),
+    'u_scale': new performance$1.Uniform3f(context, locations.u_scale),
+    'u_fade': new performance$1.Uniform1f(context, locations.u_fade)
 });
 const fillOutlineUniforms = (context, locations) => ({
-    'u_matrix': new performance.UniformMatrix4f(context, locations.u_matrix),
-    'u_world': new performance.Uniform2f(context, locations.u_world)
+    'u_matrix': new performance$1.UniformMatrix4f(context, locations.u_matrix),
+    'u_world': new performance$1.Uniform2f(context, locations.u_world)
 });
 const fillOutlinePatternUniforms = (context, locations) => ({
-    'u_matrix': new performance.UniformMatrix4f(context, locations.u_matrix),
-    'u_world': new performance.Uniform2f(context, locations.u_world),
-    'u_image': new performance.Uniform1i(context, locations.u_image),
-    'u_texsize': new performance.Uniform2f(context, locations.u_texsize),
-    'u_pixel_coord_upper': new performance.Uniform2f(context, locations.u_pixel_coord_upper),
-    'u_pixel_coord_lower': new performance.Uniform2f(context, locations.u_pixel_coord_lower),
-    'u_scale': new performance.Uniform3f(context, locations.u_scale),
-    'u_fade': new performance.Uniform1f(context, locations.u_fade)
+    'u_matrix': new performance$1.UniformMatrix4f(context, locations.u_matrix),
+    'u_world': new performance$1.Uniform2f(context, locations.u_world),
+    'u_image': new performance$1.Uniform1i(context, locations.u_image),
+    'u_texsize': new performance$1.Uniform2f(context, locations.u_texsize),
+    'u_pixel_coord_upper': new performance$1.Uniform2f(context, locations.u_pixel_coord_upper),
+    'u_pixel_coord_lower': new performance$1.Uniform2f(context, locations.u_pixel_coord_lower),
+    'u_scale': new performance$1.Uniform3f(context, locations.u_scale),
+    'u_fade': new performance$1.Uniform1f(context, locations.u_fade)
 });
 const fillUniformValues = (matrix) => ({
     'u_matrix': matrix
 });
-const fillPatternUniformValues = (matrix, painter, crossfade, tile) => performance.extend(fillUniformValues(matrix), patternUniformValues(crossfade, painter, tile));
+const fillPatternUniformValues = (matrix, painter, crossfade, tile) => performance$1.extend(fillUniformValues(matrix), patternUniformValues(crossfade, painter, tile));
 const fillOutlineUniformValues = (matrix, drawingBufferSize) => ({
     'u_matrix': matrix,
     'u_world': drawingBufferSize
 });
-const fillOutlinePatternUniformValues = (matrix, painter, crossfade, tile, drawingBufferSize) => performance.extend(fillPatternUniformValues(matrix, painter, crossfade, tile), {
+const fillOutlinePatternUniformValues = (matrix, painter, crossfade, tile, drawingBufferSize) => performance$1.extend(fillPatternUniformValues(matrix, painter, crossfade, tile), {
     'u_world': drawingBufferSize
 });
 
 const circleUniforms = (context, locations) => ({
-    'u_camera_to_center_distance': new performance.Uniform1f(context, locations.u_camera_to_center_distance),
-    'u_scale_with_map': new performance.Uniform1i(context, locations.u_scale_with_map),
-    'u_pitch_with_map': new performance.Uniform1i(context, locations.u_pitch_with_map),
-    'u_extrude_scale': new performance.Uniform2f(context, locations.u_extrude_scale),
-    'u_device_pixel_ratio': new performance.Uniform1f(context, locations.u_device_pixel_ratio),
-    'u_matrix': new performance.UniformMatrix4f(context, locations.u_matrix)
+    'u_camera_to_center_distance': new performance$1.Uniform1f(context, locations.u_camera_to_center_distance),
+    'u_scale_with_map': new performance$1.Uniform1i(context, locations.u_scale_with_map),
+    'u_pitch_with_map': new performance$1.Uniform1i(context, locations.u_pitch_with_map),
+    'u_extrude_scale': new performance$1.Uniform2f(context, locations.u_extrude_scale),
+    'u_device_pixel_ratio': new performance$1.Uniform1f(context, locations.u_device_pixel_ratio),
+    'u_matrix': new performance$1.UniformMatrix4f(context, locations.u_matrix)
 });
 const circleUniformValues = (painter, coord, tile, layer) => {
     const transform = painter.transform;
@@ -44233,17 +44939,17 @@ const circleUniformValues = (painter, coord, tile, layer) => {
 };
 
 const collisionUniforms = (context, locations) => ({
-    'u_matrix': new performance.UniformMatrix4f(context, locations.u_matrix),
-    'u_camera_to_center_distance': new performance.Uniform1f(context, locations.u_camera_to_center_distance),
-    'u_pixels_to_tile_units': new performance.Uniform1f(context, locations.u_pixels_to_tile_units),
-    'u_extrude_scale': new performance.Uniform2f(context, locations.u_extrude_scale),
-    'u_overscale_factor': new performance.Uniform1f(context, locations.u_overscale_factor)
+    'u_matrix': new performance$1.UniformMatrix4f(context, locations.u_matrix),
+    'u_camera_to_center_distance': new performance$1.Uniform1f(context, locations.u_camera_to_center_distance),
+    'u_pixels_to_tile_units': new performance$1.Uniform1f(context, locations.u_pixels_to_tile_units),
+    'u_extrude_scale': new performance$1.Uniform2f(context, locations.u_extrude_scale),
+    'u_overscale_factor': new performance$1.Uniform1f(context, locations.u_overscale_factor)
 });
 const collisionCircleUniforms = (context, locations) => ({
-    'u_matrix': new performance.UniformMatrix4f(context, locations.u_matrix),
-    'u_inv_matrix': new performance.UniformMatrix4f(context, locations.u_inv_matrix),
-    'u_camera_to_center_distance': new performance.Uniform1f(context, locations.u_camera_to_center_distance),
-    'u_viewport_size': new performance.Uniform2f(context, locations.u_viewport_size)
+    'u_matrix': new performance$1.UniformMatrix4f(context, locations.u_matrix),
+    'u_inv_matrix': new performance$1.UniformMatrix4f(context, locations.u_inv_matrix),
+    'u_camera_to_center_distance': new performance$1.Uniform1f(context, locations.u_camera_to_center_distance),
+    'u_viewport_size': new performance$1.Uniform2f(context, locations.u_viewport_size)
 });
 const collisionUniformValues = (matrix, transform, tile) => {
     const pixelRatio = pixelsToTileUnits(tile, 1, transform.zoom);
@@ -44268,10 +44974,10 @@ const collisionCircleUniformValues = (matrix, invMatrix, transform) => {
 };
 
 const debugUniforms = (context, locations) => ({
-    'u_color': new performance.UniformColor(context, locations.u_color),
-    'u_matrix': new performance.UniformMatrix4f(context, locations.u_matrix),
-    'u_overlay': new performance.Uniform1i(context, locations.u_overlay),
-    'u_overlay_scale': new performance.Uniform1f(context, locations.u_overlay_scale)
+    'u_color': new performance$1.UniformColor(context, locations.u_color),
+    'u_matrix': new performance$1.UniformMatrix4f(context, locations.u_matrix),
+    'u_overlay': new performance$1.Uniform1i(context, locations.u_overlay),
+    'u_overlay_scale': new performance$1.Uniform1f(context, locations.u_overlay_scale)
 });
 const debugUniformValues = (matrix, color, scaleRatio = 1) => ({
     'u_matrix': matrix,
@@ -44281,23 +44987,23 @@ const debugUniformValues = (matrix, color, scaleRatio = 1) => ({
 });
 
 const clippingMaskUniforms = (context, locations) => ({
-    'u_matrix': new performance.UniformMatrix4f(context, locations.u_matrix)
+    'u_matrix': new performance$1.UniformMatrix4f(context, locations.u_matrix)
 });
 const clippingMaskUniformValues = (matrix) => ({
     'u_matrix': matrix
 });
 
 const heatmapUniforms = (context, locations) => ({
-    'u_extrude_scale': new performance.Uniform1f(context, locations.u_extrude_scale),
-    'u_intensity': new performance.Uniform1f(context, locations.u_intensity),
-    'u_matrix': new performance.UniformMatrix4f(context, locations.u_matrix)
+    'u_extrude_scale': new performance$1.Uniform1f(context, locations.u_extrude_scale),
+    'u_intensity': new performance$1.Uniform1f(context, locations.u_intensity),
+    'u_matrix': new performance$1.UniformMatrix4f(context, locations.u_matrix)
 });
 const heatmapTextureUniforms = (context, locations) => ({
-    'u_matrix': new performance.UniformMatrix4f(context, locations.u_matrix),
-    'u_world': new performance.Uniform2f(context, locations.u_world),
-    'u_image': new performance.Uniform1i(context, locations.u_image),
-    'u_color_ramp': new performance.Uniform1i(context, locations.u_color_ramp),
-    'u_opacity': new performance.Uniform1f(context, locations.u_opacity)
+    'u_matrix': new performance$1.UniformMatrix4f(context, locations.u_matrix),
+    'u_world': new performance$1.Uniform2f(context, locations.u_world),
+    'u_image': new performance$1.Uniform1i(context, locations.u_image),
+    'u_color_ramp': new performance$1.Uniform1i(context, locations.u_color_ramp),
+    'u_opacity': new performance$1.Uniform1f(context, locations.u_opacity)
 });
 const heatmapUniformValues = (matrix, tile, zoom, intensity) => ({
     'u_matrix': matrix,
@@ -44305,8 +45011,8 @@ const heatmapUniformValues = (matrix, tile, zoom, intensity) => ({
     'u_intensity': intensity
 });
 const heatmapTextureUniformValues = (painter, layer, textureUnit, colorRampUnit) => {
-    const matrix = performance.create();
-    performance.ortho(matrix, 0, painter.width, painter.height, 0, 0, 1);
+    const matrix = performance$1.create();
+    performance$1.ortho(matrix, 0, painter.width, painter.height, 0, 0, 1);
     const gl = painter.context.gl;
     return {
         'u_matrix': matrix,
@@ -44318,20 +45024,20 @@ const heatmapTextureUniformValues = (painter, layer, textureUnit, colorRampUnit)
 };
 
 const hillshadeUniforms = (context, locations) => ({
-    'u_matrix': new performance.UniformMatrix4f(context, locations.u_matrix),
-    'u_image': new performance.Uniform1i(context, locations.u_image),
-    'u_latrange': new performance.Uniform2f(context, locations.u_latrange),
-    'u_light': new performance.Uniform2f(context, locations.u_light),
-    'u_shadow': new performance.UniformColor(context, locations.u_shadow),
-    'u_highlight': new performance.UniformColor(context, locations.u_highlight),
-    'u_accent': new performance.UniformColor(context, locations.u_accent)
+    'u_matrix': new performance$1.UniformMatrix4f(context, locations.u_matrix),
+    'u_image': new performance$1.Uniform1i(context, locations.u_image),
+    'u_latrange': new performance$1.Uniform2f(context, locations.u_latrange),
+    'u_light': new performance$1.Uniform2f(context, locations.u_light),
+    'u_shadow': new performance$1.UniformColor(context, locations.u_shadow),
+    'u_highlight': new performance$1.UniformColor(context, locations.u_highlight),
+    'u_accent': new performance$1.UniformColor(context, locations.u_accent)
 });
 const hillshadePrepareUniforms = (context, locations) => ({
-    'u_matrix': new performance.UniformMatrix4f(context, locations.u_matrix),
-    'u_image': new performance.Uniform1i(context, locations.u_image),
-    'u_dimension': new performance.Uniform2f(context, locations.u_dimension),
-    'u_zoom': new performance.Uniform1f(context, locations.u_zoom),
-    'u_unpack': new performance.Uniform4f(context, locations.u_unpack)
+    'u_matrix': new performance$1.UniformMatrix4f(context, locations.u_matrix),
+    'u_image': new performance$1.Uniform1i(context, locations.u_image),
+    'u_dimension': new performance$1.Uniform2f(context, locations.u_dimension),
+    'u_zoom': new performance$1.Uniform1f(context, locations.u_zoom),
+    'u_unpack': new performance$1.Uniform4f(context, locations.u_unpack)
 });
 const hillshadeUniformValues = (painter, tile, layer, coord) => {
     const shadow = layer.paint.get('hillshade-shadow-color');
@@ -44355,10 +45061,10 @@ const hillshadeUniformValues = (painter, tile, layer, coord) => {
 };
 const hillshadeUniformPrepareValues = (tileID, dem) => {
     const stride = dem.stride;
-    const matrix = performance.create();
+    const matrix = performance$1.create();
     // Flip rendering at y axis.
-    performance.ortho(matrix, 0, performance.EXTENT, -performance.EXTENT, 0, 0, 1);
-    performance.translate(matrix, matrix, [0, -performance.EXTENT, 0]);
+    performance$1.ortho(matrix, 0, performance$1.EXTENT, -performance$1.EXTENT, 0, 0, 1);
+    performance$1.translate(matrix, matrix, [0, -performance$1.EXTENT, 0]);
     return {
         'u_matrix': matrix,
         'u_image': 1,
@@ -44372,47 +45078,47 @@ function getTileLatRange(painter, tileID) {
     const tilesAtZoom = Math.pow(2, tileID.canonical.z);
     const y = tileID.canonical.y;
     return [
-        new performance.MercatorCoordinate(0, y / tilesAtZoom).toLngLat().lat,
-        new performance.MercatorCoordinate(0, (y + 1) / tilesAtZoom).toLngLat().lat
+        new performance$1.MercatorCoordinate(0, y / tilesAtZoom).toLngLat().lat,
+        new performance$1.MercatorCoordinate(0, (y + 1) / tilesAtZoom).toLngLat().lat
     ];
 }
 
 const lineUniforms = (context, locations) => ({
-    'u_matrix': new performance.UniformMatrix4f(context, locations.u_matrix),
-    'u_ratio': new performance.Uniform1f(context, locations.u_ratio),
-    'u_device_pixel_ratio': new performance.Uniform1f(context, locations.u_device_pixel_ratio),
-    'u_units_to_pixels': new performance.Uniform2f(context, locations.u_units_to_pixels)
+    'u_matrix': new performance$1.UniformMatrix4f(context, locations.u_matrix),
+    'u_ratio': new performance$1.Uniform1f(context, locations.u_ratio),
+    'u_device_pixel_ratio': new performance$1.Uniform1f(context, locations.u_device_pixel_ratio),
+    'u_units_to_pixels': new performance$1.Uniform2f(context, locations.u_units_to_pixels)
 });
 const lineGradientUniforms = (context, locations) => ({
-    'u_matrix': new performance.UniformMatrix4f(context, locations.u_matrix),
-    'u_ratio': new performance.Uniform1f(context, locations.u_ratio),
-    'u_device_pixel_ratio': new performance.Uniform1f(context, locations.u_device_pixel_ratio),
-    'u_units_to_pixels': new performance.Uniform2f(context, locations.u_units_to_pixels),
-    'u_image': new performance.Uniform1i(context, locations.u_image),
-    'u_image_height': new performance.Uniform1f(context, locations.u_image_height)
+    'u_matrix': new performance$1.UniformMatrix4f(context, locations.u_matrix),
+    'u_ratio': new performance$1.Uniform1f(context, locations.u_ratio),
+    'u_device_pixel_ratio': new performance$1.Uniform1f(context, locations.u_device_pixel_ratio),
+    'u_units_to_pixels': new performance$1.Uniform2f(context, locations.u_units_to_pixels),
+    'u_image': new performance$1.Uniform1i(context, locations.u_image),
+    'u_image_height': new performance$1.Uniform1f(context, locations.u_image_height)
 });
 const linePatternUniforms = (context, locations) => ({
-    'u_matrix': new performance.UniformMatrix4f(context, locations.u_matrix),
-    'u_texsize': new performance.Uniform2f(context, locations.u_texsize),
-    'u_ratio': new performance.Uniform1f(context, locations.u_ratio),
-    'u_device_pixel_ratio': new performance.Uniform1f(context, locations.u_device_pixel_ratio),
-    'u_image': new performance.Uniform1i(context, locations.u_image),
-    'u_units_to_pixels': new performance.Uniform2f(context, locations.u_units_to_pixels),
-    'u_scale': new performance.Uniform3f(context, locations.u_scale),
-    'u_fade': new performance.Uniform1f(context, locations.u_fade)
+    'u_matrix': new performance$1.UniformMatrix4f(context, locations.u_matrix),
+    'u_texsize': new performance$1.Uniform2f(context, locations.u_texsize),
+    'u_ratio': new performance$1.Uniform1f(context, locations.u_ratio),
+    'u_device_pixel_ratio': new performance$1.Uniform1f(context, locations.u_device_pixel_ratio),
+    'u_image': new performance$1.Uniform1i(context, locations.u_image),
+    'u_units_to_pixels': new performance$1.Uniform2f(context, locations.u_units_to_pixels),
+    'u_scale': new performance$1.Uniform3f(context, locations.u_scale),
+    'u_fade': new performance$1.Uniform1f(context, locations.u_fade)
 });
 const lineSDFUniforms = (context, locations) => ({
-    'u_matrix': new performance.UniformMatrix4f(context, locations.u_matrix),
-    'u_ratio': new performance.Uniform1f(context, locations.u_ratio),
-    'u_device_pixel_ratio': new performance.Uniform1f(context, locations.u_device_pixel_ratio),
-    'u_units_to_pixels': new performance.Uniform2f(context, locations.u_units_to_pixels),
-    'u_patternscale_a': new performance.Uniform2f(context, locations.u_patternscale_a),
-    'u_patternscale_b': new performance.Uniform2f(context, locations.u_patternscale_b),
-    'u_sdfgamma': new performance.Uniform1f(context, locations.u_sdfgamma),
-    'u_image': new performance.Uniform1i(context, locations.u_image),
-    'u_tex_y_a': new performance.Uniform1f(context, locations.u_tex_y_a),
-    'u_tex_y_b': new performance.Uniform1f(context, locations.u_tex_y_b),
-    'u_mix': new performance.Uniform1f(context, locations.u_mix)
+    'u_matrix': new performance$1.UniformMatrix4f(context, locations.u_matrix),
+    'u_ratio': new performance$1.Uniform1f(context, locations.u_ratio),
+    'u_device_pixel_ratio': new performance$1.Uniform1f(context, locations.u_device_pixel_ratio),
+    'u_units_to_pixels': new performance$1.Uniform2f(context, locations.u_units_to_pixels),
+    'u_patternscale_a': new performance$1.Uniform2f(context, locations.u_patternscale_a),
+    'u_patternscale_b': new performance$1.Uniform2f(context, locations.u_patternscale_b),
+    'u_sdfgamma': new performance$1.Uniform1f(context, locations.u_sdfgamma),
+    'u_image': new performance$1.Uniform1i(context, locations.u_image),
+    'u_tex_y_a': new performance$1.Uniform1f(context, locations.u_tex_y_a),
+    'u_tex_y_b': new performance$1.Uniform1f(context, locations.u_tex_y_b),
+    'u_mix': new performance$1.Uniform1f(context, locations.u_mix)
 });
 const lineUniformValues = (painter, tile, layer, coord) => {
     const transform = painter.transform;
@@ -44427,7 +45133,7 @@ const lineUniformValues = (painter, tile, layer, coord) => {
     };
 };
 const lineGradientUniformValues = (painter, tile, layer, imageHeight, coord) => {
-    return performance.extend(lineUniformValues(painter, tile, layer, coord), {
+    return performance$1.extend(lineUniformValues(painter, tile, layer, coord), {
         'u_image': 0,
         'u_image_height': imageHeight,
     });
@@ -44459,7 +45165,7 @@ const lineSDFUniformValues = (painter, tile, layer, dasharray, crossfade, coord)
     const posB = lineAtlas.getDash(dasharray.to, round);
     const widthA = posA.width * crossfade.fromScale;
     const widthB = posB.width * crossfade.toScale;
-    return performance.extend(lineUniformValues(painter, tile, layer, coord), {
+    return performance$1.extend(lineUniformValues(painter, tile, layer, coord), {
         'u_patternscale_a': [tileRatio / widthA, -posA.height / 2],
         'u_patternscale_b': [tileRatio / widthB, -posB.height / 2],
         'u_sdfgamma': lineAtlas.width / (Math.min(widthA, widthB) * 256 * painter.pixelRatio) / 2,
@@ -44477,19 +45183,19 @@ function calculateMatrix(painter, tile, layer, coord) {
 }
 
 const rasterUniforms = (context, locations) => ({
-    'u_matrix': new performance.UniformMatrix4f(context, locations.u_matrix),
-    'u_tl_parent': new performance.Uniform2f(context, locations.u_tl_parent),
-    'u_scale_parent': new performance.Uniform1f(context, locations.u_scale_parent),
-    'u_buffer_scale': new performance.Uniform1f(context, locations.u_buffer_scale),
-    'u_fade_t': new performance.Uniform1f(context, locations.u_fade_t),
-    'u_opacity': new performance.Uniform1f(context, locations.u_opacity),
-    'u_image0': new performance.Uniform1i(context, locations.u_image0),
-    'u_image1': new performance.Uniform1i(context, locations.u_image1),
-    'u_brightness_low': new performance.Uniform1f(context, locations.u_brightness_low),
-    'u_brightness_high': new performance.Uniform1f(context, locations.u_brightness_high),
-    'u_saturation_factor': new performance.Uniform1f(context, locations.u_saturation_factor),
-    'u_contrast_factor': new performance.Uniform1f(context, locations.u_contrast_factor),
-    'u_spin_weights': new performance.Uniform3f(context, locations.u_spin_weights)
+    'u_matrix': new performance$1.UniformMatrix4f(context, locations.u_matrix),
+    'u_tl_parent': new performance$1.Uniform2f(context, locations.u_tl_parent),
+    'u_scale_parent': new performance$1.Uniform1f(context, locations.u_scale_parent),
+    'u_buffer_scale': new performance$1.Uniform1f(context, locations.u_buffer_scale),
+    'u_fade_t': new performance$1.Uniform1f(context, locations.u_fade_t),
+    'u_opacity': new performance$1.Uniform1f(context, locations.u_opacity),
+    'u_image0': new performance$1.Uniform1i(context, locations.u_image0),
+    'u_image1': new performance$1.Uniform1i(context, locations.u_image1),
+    'u_brightness_low': new performance$1.Uniform1f(context, locations.u_brightness_low),
+    'u_brightness_high': new performance$1.Uniform1f(context, locations.u_brightness_high),
+    'u_saturation_factor': new performance$1.Uniform1f(context, locations.u_saturation_factor),
+    'u_contrast_factor': new performance$1.Uniform1f(context, locations.u_contrast_factor),
+    'u_spin_weights': new performance$1.Uniform3f(context, locations.u_spin_weights)
 });
 const rasterUniformValues = (matrix, parentTL, parentScaleBy, fade, layer) => ({
     'u_matrix': matrix,
@@ -44528,66 +45234,66 @@ function saturationFactor(saturation) {
 }
 
 const symbolIconUniforms = (context, locations) => ({
-    'u_is_size_zoom_constant': new performance.Uniform1i(context, locations.u_is_size_zoom_constant),
-    'u_is_size_feature_constant': new performance.Uniform1i(context, locations.u_is_size_feature_constant),
-    'u_size_t': new performance.Uniform1f(context, locations.u_size_t),
-    'u_size': new performance.Uniform1f(context, locations.u_size),
-    'u_camera_to_center_distance': new performance.Uniform1f(context, locations.u_camera_to_center_distance),
-    'u_pitch': new performance.Uniform1f(context, locations.u_pitch),
-    'u_rotate_symbol': new performance.Uniform1i(context, locations.u_rotate_symbol),
-    'u_aspect_ratio': new performance.Uniform1f(context, locations.u_aspect_ratio),
-    'u_fade_change': new performance.Uniform1f(context, locations.u_fade_change),
-    'u_matrix': new performance.UniformMatrix4f(context, locations.u_matrix),
-    'u_label_plane_matrix': new performance.UniformMatrix4f(context, locations.u_label_plane_matrix),
-    'u_coord_matrix': new performance.UniformMatrix4f(context, locations.u_coord_matrix),
-    'u_is_text': new performance.Uniform1i(context, locations.u_is_text),
-    'u_pitch_with_map': new performance.Uniform1i(context, locations.u_pitch_with_map),
-    'u_texsize': new performance.Uniform2f(context, locations.u_texsize),
-    'u_texture': new performance.Uniform1i(context, locations.u_texture)
+    'u_is_size_zoom_constant': new performance$1.Uniform1i(context, locations.u_is_size_zoom_constant),
+    'u_is_size_feature_constant': new performance$1.Uniform1i(context, locations.u_is_size_feature_constant),
+    'u_size_t': new performance$1.Uniform1f(context, locations.u_size_t),
+    'u_size': new performance$1.Uniform1f(context, locations.u_size),
+    'u_camera_to_center_distance': new performance$1.Uniform1f(context, locations.u_camera_to_center_distance),
+    'u_pitch': new performance$1.Uniform1f(context, locations.u_pitch),
+    'u_rotate_symbol': new performance$1.Uniform1i(context, locations.u_rotate_symbol),
+    'u_aspect_ratio': new performance$1.Uniform1f(context, locations.u_aspect_ratio),
+    'u_fade_change': new performance$1.Uniform1f(context, locations.u_fade_change),
+    'u_matrix': new performance$1.UniformMatrix4f(context, locations.u_matrix),
+    'u_label_plane_matrix': new performance$1.UniformMatrix4f(context, locations.u_label_plane_matrix),
+    'u_coord_matrix': new performance$1.UniformMatrix4f(context, locations.u_coord_matrix),
+    'u_is_text': new performance$1.Uniform1i(context, locations.u_is_text),
+    'u_pitch_with_map': new performance$1.Uniform1i(context, locations.u_pitch_with_map),
+    'u_texsize': new performance$1.Uniform2f(context, locations.u_texsize),
+    'u_texture': new performance$1.Uniform1i(context, locations.u_texture)
 });
 const symbolSDFUniforms = (context, locations) => ({
-    'u_is_size_zoom_constant': new performance.Uniform1i(context, locations.u_is_size_zoom_constant),
-    'u_is_size_feature_constant': new performance.Uniform1i(context, locations.u_is_size_feature_constant),
-    'u_size_t': new performance.Uniform1f(context, locations.u_size_t),
-    'u_size': new performance.Uniform1f(context, locations.u_size),
-    'u_camera_to_center_distance': new performance.Uniform1f(context, locations.u_camera_to_center_distance),
-    'u_pitch': new performance.Uniform1f(context, locations.u_pitch),
-    'u_rotate_symbol': new performance.Uniform1i(context, locations.u_rotate_symbol),
-    'u_aspect_ratio': new performance.Uniform1f(context, locations.u_aspect_ratio),
-    'u_fade_change': new performance.Uniform1f(context, locations.u_fade_change),
-    'u_matrix': new performance.UniformMatrix4f(context, locations.u_matrix),
-    'u_label_plane_matrix': new performance.UniformMatrix4f(context, locations.u_label_plane_matrix),
-    'u_coord_matrix': new performance.UniformMatrix4f(context, locations.u_coord_matrix),
-    'u_is_text': new performance.Uniform1i(context, locations.u_is_text),
-    'u_pitch_with_map': new performance.Uniform1i(context, locations.u_pitch_with_map),
-    'u_texsize': new performance.Uniform2f(context, locations.u_texsize),
-    'u_texture': new performance.Uniform1i(context, locations.u_texture),
-    'u_gamma_scale': new performance.Uniform1f(context, locations.u_gamma_scale),
-    'u_device_pixel_ratio': new performance.Uniform1f(context, locations.u_device_pixel_ratio),
-    'u_is_halo': new performance.Uniform1i(context, locations.u_is_halo)
+    'u_is_size_zoom_constant': new performance$1.Uniform1i(context, locations.u_is_size_zoom_constant),
+    'u_is_size_feature_constant': new performance$1.Uniform1i(context, locations.u_is_size_feature_constant),
+    'u_size_t': new performance$1.Uniform1f(context, locations.u_size_t),
+    'u_size': new performance$1.Uniform1f(context, locations.u_size),
+    'u_camera_to_center_distance': new performance$1.Uniform1f(context, locations.u_camera_to_center_distance),
+    'u_pitch': new performance$1.Uniform1f(context, locations.u_pitch),
+    'u_rotate_symbol': new performance$1.Uniform1i(context, locations.u_rotate_symbol),
+    'u_aspect_ratio': new performance$1.Uniform1f(context, locations.u_aspect_ratio),
+    'u_fade_change': new performance$1.Uniform1f(context, locations.u_fade_change),
+    'u_matrix': new performance$1.UniformMatrix4f(context, locations.u_matrix),
+    'u_label_plane_matrix': new performance$1.UniformMatrix4f(context, locations.u_label_plane_matrix),
+    'u_coord_matrix': new performance$1.UniformMatrix4f(context, locations.u_coord_matrix),
+    'u_is_text': new performance$1.Uniform1i(context, locations.u_is_text),
+    'u_pitch_with_map': new performance$1.Uniform1i(context, locations.u_pitch_with_map),
+    'u_texsize': new performance$1.Uniform2f(context, locations.u_texsize),
+    'u_texture': new performance$1.Uniform1i(context, locations.u_texture),
+    'u_gamma_scale': new performance$1.Uniform1f(context, locations.u_gamma_scale),
+    'u_device_pixel_ratio': new performance$1.Uniform1f(context, locations.u_device_pixel_ratio),
+    'u_is_halo': new performance$1.Uniform1i(context, locations.u_is_halo)
 });
 const symbolTextAndIconUniforms = (context, locations) => ({
-    'u_is_size_zoom_constant': new performance.Uniform1i(context, locations.u_is_size_zoom_constant),
-    'u_is_size_feature_constant': new performance.Uniform1i(context, locations.u_is_size_feature_constant),
-    'u_size_t': new performance.Uniform1f(context, locations.u_size_t),
-    'u_size': new performance.Uniform1f(context, locations.u_size),
-    'u_camera_to_center_distance': new performance.Uniform1f(context, locations.u_camera_to_center_distance),
-    'u_pitch': new performance.Uniform1f(context, locations.u_pitch),
-    'u_rotate_symbol': new performance.Uniform1i(context, locations.u_rotate_symbol),
-    'u_aspect_ratio': new performance.Uniform1f(context, locations.u_aspect_ratio),
-    'u_fade_change': new performance.Uniform1f(context, locations.u_fade_change),
-    'u_matrix': new performance.UniformMatrix4f(context, locations.u_matrix),
-    'u_label_plane_matrix': new performance.UniformMatrix4f(context, locations.u_label_plane_matrix),
-    'u_coord_matrix': new performance.UniformMatrix4f(context, locations.u_coord_matrix),
-    'u_is_text': new performance.Uniform1i(context, locations.u_is_text),
-    'u_pitch_with_map': new performance.Uniform1i(context, locations.u_pitch_with_map),
-    'u_texsize': new performance.Uniform2f(context, locations.u_texsize),
-    'u_texsize_icon': new performance.Uniform2f(context, locations.u_texsize_icon),
-    'u_texture': new performance.Uniform1i(context, locations.u_texture),
-    'u_texture_icon': new performance.Uniform1i(context, locations.u_texture_icon),
-    'u_gamma_scale': new performance.Uniform1f(context, locations.u_gamma_scale),
-    'u_device_pixel_ratio': new performance.Uniform1f(context, locations.u_device_pixel_ratio),
-    'u_is_halo': new performance.Uniform1i(context, locations.u_is_halo)
+    'u_is_size_zoom_constant': new performance$1.Uniform1i(context, locations.u_is_size_zoom_constant),
+    'u_is_size_feature_constant': new performance$1.Uniform1i(context, locations.u_is_size_feature_constant),
+    'u_size_t': new performance$1.Uniform1f(context, locations.u_size_t),
+    'u_size': new performance$1.Uniform1f(context, locations.u_size),
+    'u_camera_to_center_distance': new performance$1.Uniform1f(context, locations.u_camera_to_center_distance),
+    'u_pitch': new performance$1.Uniform1f(context, locations.u_pitch),
+    'u_rotate_symbol': new performance$1.Uniform1i(context, locations.u_rotate_symbol),
+    'u_aspect_ratio': new performance$1.Uniform1f(context, locations.u_aspect_ratio),
+    'u_fade_change': new performance$1.Uniform1f(context, locations.u_fade_change),
+    'u_matrix': new performance$1.UniformMatrix4f(context, locations.u_matrix),
+    'u_label_plane_matrix': new performance$1.UniformMatrix4f(context, locations.u_label_plane_matrix),
+    'u_coord_matrix': new performance$1.UniformMatrix4f(context, locations.u_coord_matrix),
+    'u_is_text': new performance$1.Uniform1i(context, locations.u_is_text),
+    'u_pitch_with_map': new performance$1.Uniform1i(context, locations.u_pitch_with_map),
+    'u_texsize': new performance$1.Uniform2f(context, locations.u_texsize),
+    'u_texsize_icon': new performance$1.Uniform2f(context, locations.u_texsize_icon),
+    'u_texture': new performance$1.Uniform1i(context, locations.u_texture),
+    'u_texture_icon': new performance$1.Uniform1i(context, locations.u_texture_icon),
+    'u_gamma_scale': new performance$1.Uniform1f(context, locations.u_gamma_scale),
+    'u_device_pixel_ratio': new performance$1.Uniform1f(context, locations.u_device_pixel_ratio),
+    'u_is_halo': new performance$1.Uniform1i(context, locations.u_is_halo)
 });
 const symbolIconUniformValues = (functionType, size, rotateInShader, pitchWithMap, painter, matrix, labelPlaneMatrix, glCoordMatrix, isText, texSize) => {
     const transform = painter.transform;
@@ -44612,48 +45318,48 @@ const symbolIconUniformValues = (functionType, size, rotateInShader, pitchWithMa
 };
 const symbolSDFUniformValues = (functionType, size, rotateInShader, pitchWithMap, painter, matrix, labelPlaneMatrix, glCoordMatrix, isText, texSize, isHalo) => {
     const transform = painter.transform;
-    return performance.extend(symbolIconUniformValues(functionType, size, rotateInShader, pitchWithMap, painter, matrix, labelPlaneMatrix, glCoordMatrix, isText, texSize), {
+    return performance$1.extend(symbolIconUniformValues(functionType, size, rotateInShader, pitchWithMap, painter, matrix, labelPlaneMatrix, glCoordMatrix, isText, texSize), {
         'u_gamma_scale': (pitchWithMap ? Math.cos(transform._pitch) * transform.cameraToCenterDistance : 1),
         'u_device_pixel_ratio': painter.pixelRatio,
         'u_is_halo': +isHalo
     });
 };
 const symbolTextAndIconUniformValues = (functionType, size, rotateInShader, pitchWithMap, painter, matrix, labelPlaneMatrix, glCoordMatrix, texSizeSDF, texSizeIcon) => {
-    return performance.extend(symbolSDFUniformValues(functionType, size, rotateInShader, pitchWithMap, painter, matrix, labelPlaneMatrix, glCoordMatrix, true, texSizeSDF, true), {
+    return performance$1.extend(symbolSDFUniformValues(functionType, size, rotateInShader, pitchWithMap, painter, matrix, labelPlaneMatrix, glCoordMatrix, true, texSizeSDF, true), {
         'u_texsize_icon': texSizeIcon,
         'u_texture_icon': 1
     });
 };
 
 const backgroundUniforms = (context, locations) => ({
-    'u_matrix': new performance.UniformMatrix4f(context, locations.u_matrix),
-    'u_opacity': new performance.Uniform1f(context, locations.u_opacity),
-    'u_color': new performance.UniformColor(context, locations.u_color)
+    'u_matrix': new performance$1.UniformMatrix4f(context, locations.u_matrix),
+    'u_opacity': new performance$1.Uniform1f(context, locations.u_opacity),
+    'u_color': new performance$1.UniformColor(context, locations.u_color)
 });
 const backgroundPatternUniforms = (context, locations) => ({
-    'u_matrix': new performance.UniformMatrix4f(context, locations.u_matrix),
-    'u_opacity': new performance.Uniform1f(context, locations.u_opacity),
-    'u_image': new performance.Uniform1i(context, locations.u_image),
-    'u_pattern_tl_a': new performance.Uniform2f(context, locations.u_pattern_tl_a),
-    'u_pattern_br_a': new performance.Uniform2f(context, locations.u_pattern_br_a),
-    'u_pattern_tl_b': new performance.Uniform2f(context, locations.u_pattern_tl_b),
-    'u_pattern_br_b': new performance.Uniform2f(context, locations.u_pattern_br_b),
-    'u_texsize': new performance.Uniform2f(context, locations.u_texsize),
-    'u_mix': new performance.Uniform1f(context, locations.u_mix),
-    'u_pattern_size_a': new performance.Uniform2f(context, locations.u_pattern_size_a),
-    'u_pattern_size_b': new performance.Uniform2f(context, locations.u_pattern_size_b),
-    'u_scale_a': new performance.Uniform1f(context, locations.u_scale_a),
-    'u_scale_b': new performance.Uniform1f(context, locations.u_scale_b),
-    'u_pixel_coord_upper': new performance.Uniform2f(context, locations.u_pixel_coord_upper),
-    'u_pixel_coord_lower': new performance.Uniform2f(context, locations.u_pixel_coord_lower),
-    'u_tile_units_to_pixels': new performance.Uniform1f(context, locations.u_tile_units_to_pixels)
+    'u_matrix': new performance$1.UniformMatrix4f(context, locations.u_matrix),
+    'u_opacity': new performance$1.Uniform1f(context, locations.u_opacity),
+    'u_image': new performance$1.Uniform1i(context, locations.u_image),
+    'u_pattern_tl_a': new performance$1.Uniform2f(context, locations.u_pattern_tl_a),
+    'u_pattern_br_a': new performance$1.Uniform2f(context, locations.u_pattern_br_a),
+    'u_pattern_tl_b': new performance$1.Uniform2f(context, locations.u_pattern_tl_b),
+    'u_pattern_br_b': new performance$1.Uniform2f(context, locations.u_pattern_br_b),
+    'u_texsize': new performance$1.Uniform2f(context, locations.u_texsize),
+    'u_mix': new performance$1.Uniform1f(context, locations.u_mix),
+    'u_pattern_size_a': new performance$1.Uniform2f(context, locations.u_pattern_size_a),
+    'u_pattern_size_b': new performance$1.Uniform2f(context, locations.u_pattern_size_b),
+    'u_scale_a': new performance$1.Uniform1f(context, locations.u_scale_a),
+    'u_scale_b': new performance$1.Uniform1f(context, locations.u_scale_b),
+    'u_pixel_coord_upper': new performance$1.Uniform2f(context, locations.u_pixel_coord_upper),
+    'u_pixel_coord_lower': new performance$1.Uniform2f(context, locations.u_pixel_coord_lower),
+    'u_tile_units_to_pixels': new performance$1.Uniform1f(context, locations.u_tile_units_to_pixels)
 });
 const backgroundUniformValues = (matrix, opacity, color) => ({
     'u_matrix': matrix,
     'u_opacity': opacity,
     'u_color': color
 });
-const backgroundPatternUniformValues = (matrix, opacity, painter, image, tile, crossfade) => performance.extend(bgPatternUniformValues(image, crossfade, painter, tile), {
+const backgroundPatternUniformValues = (matrix, opacity, painter, image, tile, crossfade) => performance$1.extend(bgPatternUniformValues(image, crossfade, painter, tile), {
     'u_matrix': matrix,
     'u_opacity': opacity
 });
@@ -44847,7 +45553,7 @@ class BaseValue {
 }
 class ClearColor extends BaseValue {
     getDefault() {
-        return performance.Color.transparent;
+        return performance$1.Color.transparent;
     }
     set(v) {
         const c = this.current;
@@ -45045,7 +45751,7 @@ class BlendFunc extends BaseValue {
 }
 class BlendColor extends BaseValue {
     getDefault() {
-        return performance.Color.transparent;
+        return performance$1.Color.transparent;
     }
     set(v) {
         const c = this.current;
@@ -45339,7 +46045,7 @@ class Framebuffer {
             this.depthAttachment = hasStencil ? new DepthStencilAttachment(context, fbo) : new DepthAttachment(context, fbo);
         }
         else if (hasStencil) {
-            throw new Error('Stencil cannot be setted without depth');
+            throw new Error('Stencil cannot be set without depth');
         }
         if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) !== gl.FRAMEBUFFER_COMPLETE) {
             throw new Error('Framebuffer is not complete');
@@ -45370,9 +46076,9 @@ class ColorMode {
     }
 }
 ColorMode.Replace = [ONE, ZERO];
-ColorMode.disabled = new ColorMode(ColorMode.Replace, performance.Color.transparent, [false, false, false, false]);
-ColorMode.unblended = new ColorMode(ColorMode.Replace, performance.Color.transparent, [true, true, true, true]);
-ColorMode.alphaBlended = new ColorMode([ONE, ONE_MINUS_SRC_ALPHA], performance.Color.transparent, [true, true, true, true]);
+ColorMode.disabled = new ColorMode(ColorMode.Replace, performance$1.Color.transparent, [false, false, false, false]);
+ColorMode.unblended = new ColorMode(ColorMode.Replace, performance$1.Color.transparent, [true, true, true, true]);
+ColorMode.alphaBlended = new ColorMode([ONE, ONE_MINUS_SRC_ALPHA], performance$1.Color.transparent, [true, true, true, true]);
 
 /**
  * @internal
@@ -45572,7 +46278,7 @@ class Context {
         }
     }
     setColorMode(colorMode) {
-        if (performance.deepEqual(colorMode.blendFunction, ColorMode.Replace)) {
+        if (performance$1.deepEqual(colorMode.blendFunction, ColorMode.Replace)) {
             this.blend.set(false);
         }
         else {
@@ -45664,10 +46370,10 @@ function drawCollisionDebug(painter, sourceCache, layer, coords, translate, tran
             // We need to know the projection matrix that was used for projecting collision circles to the screen.
             // This might vary between buckets as the symbol placement is a continuous process. This matrix is
             // required for transforming points from previous screen space to the current one
-            const invTransform = performance.create();
+            const invTransform = performance$1.create();
             const transform = posMatrix;
-            performance.mul(invTransform, bucket.placementInvProjMatrix, painter.transform.glCoordMatrix);
-            performance.mul(invTransform, invTransform, bucket.placementViewportMatrix);
+            performance$1.mul(invTransform, bucket.placementInvProjMatrix, painter.transform.glCoordMatrix);
+            performance$1.mul(invTransform, invTransform, bucket.placementViewportMatrix);
             tileBatches.push({
                 circleArray,
                 circleOffset,
@@ -45688,7 +46394,7 @@ function drawCollisionDebug(painter, sourceCache, layer, coords, translate, tran
     // Render collision circles
     const circleProgram = painter.useProgram('collisionCircle');
     // Construct vertex data
-    const vertexData = new performance.CollisionCircleLayoutArray();
+    const vertexData = new performance$1.CollisionCircleLayoutArray();
     vertexData.resize(circleCount * 4);
     vertexData._trim();
     let vertexOffset = 0;
@@ -45710,18 +46416,18 @@ function drawCollisionDebug(painter, sourceCache, layer, coords, translate, tran
         quadTriangles = createQuadTriangles(circleCount);
     }
     const indexBuffer = context.createIndexBuffer(quadTriangles, true);
-    const vertexBuffer = context.createVertexBuffer(vertexData, performance.collisionCircleLayout.members, true);
+    const vertexBuffer = context.createVertexBuffer(vertexData, performance$1.collisionCircleLayout.members, true);
     // Render batches
     for (const batch of tileBatches) {
         const uniforms = collisionCircleUniformValues(batch.transform, batch.invTransform, painter.transform);
-        circleProgram.draw(context, gl.TRIANGLES, DepthMode.disabled, StencilMode.disabled, painter.colorModeForRenderPass(), CullFaceMode.disabled, uniforms, painter.style.map.terrain && painter.style.map.terrain.getTerrainData(batch.coord), layer.id, vertexBuffer, indexBuffer, performance.SegmentVector.simpleSegment(0, batch.circleOffset * 2, batch.circleArray.length, batch.circleArray.length / 2), null, painter.transform.zoom, null, null, null);
+        circleProgram.draw(context, gl.TRIANGLES, DepthMode.disabled, StencilMode.disabled, painter.colorModeForRenderPass(), CullFaceMode.disabled, uniforms, painter.style.map.terrain && painter.style.map.terrain.getTerrainData(batch.coord), layer.id, vertexBuffer, indexBuffer, performance$1.SegmentVector.simpleSegment(0, batch.circleOffset * 2, batch.circleArray.length, batch.circleArray.length / 2), null, painter.transform.zoom, null, null, null);
     }
     vertexBuffer.destroy();
     indexBuffer.destroy();
 }
 function createQuadTriangles(quadCount) {
     const triCount = quadCount * 2;
-    const array = new performance.QuadTriangleArray();
+    const array = new performance$1.QuadTriangleArray();
     array.resize(triCount);
     array._trim();
     // Two triangles and 4 vertices per quad.
@@ -45737,7 +46443,7 @@ function createQuadTriangles(quadCount) {
     return array;
 }
 
-const identityMat4 = performance.identity(new Float32Array(16));
+const identityMat4 = performance$1.identity(new Float32Array(16));
 function drawSymbols(painter, sourceCache, layer, coords, variableOffsets) {
     if (painter.renderPass !== 'translucent')
         return;
@@ -45762,10 +46468,10 @@ function drawSymbols(painter, sourceCache, layer, coords, variableOffsets) {
     }
 }
 function calculateVariableRenderShift(anchor, width, height, textOffset, textBoxScale, renderTextSize) {
-    const { horizontalAlign, verticalAlign } = performance.getAnchorAlignment(anchor);
+    const { horizontalAlign, verticalAlign } = performance$1.getAnchorAlignment(anchor);
     const shiftX = -(horizontalAlign - 0.5) * width;
     const shiftY = -(verticalAlign - 0.5) * height;
-    return new performance.Point((shiftX / textBoxScale + textOffset[0]) * renderTextSize, (shiftY / textBoxScale + textOffset[1]) * renderTextSize);
+    return new performance$1.Point((shiftX / textBoxScale + textOffset[0]) * renderTextSize, (shiftY / textBoxScale + textOffset[1]) * renderTextSize);
 }
 function updateVariableAnchors(coords, painter, layer, sourceCache, rotationAlignment, pitchAlignment, variableOffsets) {
     const tr = painter.transform;
@@ -45777,7 +46483,7 @@ function updateVariableAnchors(coords, painter, layer, sourceCache, rotationAlig
         if (!bucket || !bucket.text || !bucket.text.segments.get().length)
             continue;
         const sizeData = bucket.textSizeData;
-        const size = performance.evaluateSizeForZoom(sizeData, tr.zoom);
+        const size = performance$1.evaluateSizeForZoom(sizeData, tr.zoom);
         const pixelToTileScale = pixelsToTileUnits(tile, 1, painter.transform.zoom);
         const labelPlaneMatrix = getLabelPlaneMatrix(coord.posMatrix, pitchWithMap, rotateWithMap, painter.transform, pixelToTileScale);
         const updateTextFitIcon = layer.layout.get('icon-text-fit') !== 'none' && bucket.hasIconData();
@@ -45804,10 +46510,10 @@ function updateVariableAnchorsForBucket(bucket, rotateWithMap, pitchWithMap, var
             hideGlyphs(symbol.numGlyphs, dynamicTextLayoutVertexArray);
         }
         else {
-            const tileAnchor = new performance.Point(symbol.anchorX, symbol.anchorY);
+            const tileAnchor = new performance$1.Point(symbol.anchorX, symbol.anchorY);
             const projectedAnchor = project(tileAnchor, pitchWithMap ? posMatrix : labelPlaneMatrix, getElevation);
             const perspectiveRatio = getPerspectiveRatio(transform.cameraToCenterDistance, projectedAnchor.signedDistanceFromCamera);
-            let renderTextSize = performance.evaluateSizeForFeature(bucket.textSizeData, size, symbol) * perspectiveRatio / performance.ONE_EM;
+            let renderTextSize = performance$1.evaluateSizeForFeature(bucket.textSizeData, size, symbol) * perspectiveRatio / performance$1.ONE_EM;
             if (pitchWithMap) {
                 // Go from size in pixels to equivalent size in tile units
                 renderTextSize *= bucket.tilePixelRatio / tileScale;
@@ -45822,9 +46528,9 @@ function updateVariableAnchorsForBucket(bucket, rotateWithMap, pitchWithMap, var
                 projectedAnchor.point.add(rotateWithMap ?
                     shift.rotate(-transform.angle) :
                     shift);
-            const angle = (bucket.allowVerticalPlacement && symbol.placedOrientation === performance.WritingMode.vertical) ? Math.PI / 2 : 0;
+            const angle = (bucket.allowVerticalPlacement && symbol.placedOrientation === performance$1.WritingMode.vertical) ? Math.PI / 2 : 0;
             for (let g = 0; g < symbol.numGlyphs; g++) {
-                performance.addDynamicAttributes(dynamicTextLayoutVertexArray, shiftedAnchor, angle);
+                performance$1.addDynamicAttributes(dynamicTextLayoutVertexArray, shiftedAnchor, angle);
             }
             //Only offset horizontal text icons
             if (updateTextFitIcon && symbol.associatedIconIndex >= 0) {
@@ -45847,7 +46553,7 @@ function updateVariableAnchorsForBucket(bucket, rotateWithMap, pitchWithMap, var
                 }
                 else {
                     for (let g = 0; g < placedIcon.numGlyphs; g++) {
-                        performance.addDynamicAttributes(dynamicIconLayoutVertexArray, shift.shiftedAnchor, shift.angle);
+                        performance$1.addDynamicAttributes(dynamicIconLayoutVertexArray, shift.shiftedAnchor, shift.angle);
                     }
                 }
             }
@@ -45896,7 +46602,7 @@ function drawLayerSymbols(painter, sourceCache, layer, coords, isText, translate
         const sizeData = isText ? bucket.textSizeData : bucket.iconSizeData;
         const transformed = pitchWithMap || tr.pitch !== 0;
         const program = painter.useProgram(getSymbolProgramName(isSDF, isText, bucket), programConfiguration);
-        const size = performance.evaluateSizeForZoom(sizeData, tr.zoom);
+        const size = performance$1.evaluateSizeForZoom(sizeData, tr.zoom);
         const terrainData = painter.style.map.terrain && painter.style.map.terrain.getTerrainData(coord);
         let texSize;
         let texSizeIcon = [0, 0];
@@ -45965,7 +46671,7 @@ function drawLayerSymbols(painter, sourceCache, layer, coords, isText, translate
             const oldSegments = buffers.segments.get();
             for (const segment of oldSegments) {
                 tileRenderState.push({
-                    segments: new performance.SegmentVector([segment]),
+                    segments: new performance$1.SegmentVector([segment]),
                     sortKey: segment.sortKey,
                     state,
                     terrainData
@@ -45987,12 +46693,10 @@ function drawLayerSymbols(painter, sourceCache, layer, coords, isText, translate
     for (const segmentState of tileRenderState) {
         const state = segmentState.state;
         context.activeTexture.set(gl.TEXTURE0);
-        // @ts-ignore
         state.atlasTexture.bind(state.atlasInterpolation, gl.CLAMP_TO_EDGE);
         if (state.atlasTextureIcon) {
             context.activeTexture.set(gl.TEXTURE1);
             if (state.atlasTextureIcon) {
-                // @ts-ignore
                 state.atlasTextureIcon.bind(state.atlasInterpolationIcon, gl.CLAMP_TO_EDGE);
             }
         }
@@ -46055,7 +46759,7 @@ function drawCircles(painter, sourceCache, layer, coords) {
             const oldSegments = bucket.segments.get();
             for (const segment of oldSegments) {
                 segmentsRenderStates.push({
-                    segments: new performance.SegmentVector([segment]),
+                    segments: new performance$1.SegmentVector([segment]),
                     sortKey: segment.sortKey,
                     state
                 });
@@ -46090,9 +46794,9 @@ function drawHeatmap(painter, sourceCache, layer, coords) {
         // large kernels are not clipped to tiles
         const stencilMode = StencilMode.disabled;
         // Turn on additive blending for kernels, which is a key aspect of kernel density estimation formula
-        const colorMode = new ColorMode([gl.ONE, gl.ONE], performance.Color.transparent, [true, true, true, true]);
+        const colorMode = new ColorMode([gl.ONE, gl.ONE], performance$1.Color.transparent, [true, true, true, true]);
         bindFramebuffer(context, painter, layer);
-        context.clear({ color: performance.Color.transparent });
+        context.clear({ color: performance$1.Color.transparent });
         for (let i = 0; i < coords.length; i++) {
             const coord = coords[i];
             // Skip tiles that have uncovered parents to avoid flickering; we don't need
@@ -46230,14 +46934,14 @@ function drawLine(painter, sourceCache, layer, coords) {
                     const sourceMaxZoom = sourceCache.getSource().maxzoom;
                     const potentialOverzoom = coord.canonical.z === sourceMaxZoom ?
                         Math.ceil(1 << (painter.transform.maxZoom - coord.canonical.z)) : 1;
-                    const lineLength = bucket.maxLineLength / performance.EXTENT;
+                    const lineLength = bucket.maxLineLength / performance$1.EXTENT;
                     // Logical pixel tile size is 512px, and 1024px right before current zoom + 1
                     const maxTilePixelSize = 1024;
                     // Maximum possible texture coverage heuristic, bound by hardware max texture size
                     const maxTextureCoverage = lineLength * maxTilePixelSize * potentialOverzoom;
-                    textureResolution = performance.clamp(performance.nextPowerOfTwo(maxTextureCoverage), 256, context.maxTextureSize);
+                    textureResolution = performance$1.clamp(performance$1.nextPowerOfTwo(maxTextureCoverage), 256, context.maxTextureSize);
                 }
-                layerGradient.gradient = performance.renderColorRamp({
+                layerGradient.gradient = performance$1.renderColorRamp({
                     expression: layer.gradientExpression(),
                     evaluationKey: 'lineProgress',
                     resolution: textureResolution,
@@ -46308,7 +47012,7 @@ function drawFill(painter, sourceCache, layer, coords) {
     const pattern = layer.paint.get('fill-pattern');
     const pass = painter.opaquePassEnabledForLayer() &&
         (!pattern.constantOr(1) &&
-            color.constantOr(performance.Color.transparent).a === 1 &&
+            color.constantOr(performance$1.Color.transparent).a === 1 &&
             opacity.constantOr(0) === 1) ? 'opaque' : 'translucent';
     // Draw fill
     if (painter.renderPass === pass) {
@@ -46557,7 +47261,7 @@ function drawRaster(painter, sourceCache, layer, tileIDs) {
 function getFadeValues(tile, parentTile, sourceCache, layer, transform, terrain) {
     const fadeDuration = layer.paint.get('raster-fade-duration');
     if (!terrain && fadeDuration > 0) {
-        const now = performance.browser.now();
+        const now = browser.now();
         const sinceTile = (now - tile.timeAdded) / fadeDuration;
         const sinceParent = parentTile ? (now - parentTile.timeAdded) / fadeDuration : -1;
         const source = sourceCache.getSource();
@@ -46567,7 +47271,7 @@ function getFadeValues(tile, parentTile, sourceCache, layer, transform, terrain)
         });
         // if no parent or parent is older, fade in; if parent is younger, fade out
         const fadeIn = !parentTile || Math.abs(parentTile.tileID.overscaledZ - idealZ) > Math.abs(tile.tileID.overscaledZ - idealZ);
-        const childOpacity = (fadeIn && tile.refreshedUponExpiration) ? 1 : performance.clamp(fadeIn ? sinceTile : 1 - sinceParent, 0, 1);
+        const childOpacity = (fadeIn && tile.refreshedUponExpiration) ? 1 : performance$1.clamp(fadeIn ? sinceTile : 1 - sinceParent, 0, 1);
         // we don't crossfade tiles that were just refreshed upon expiring:
         // once they're old enough to pass the crossfading threshold
         // (fadeDuration), unset the `refreshedUponExpiration` flag so we don't
@@ -46630,11 +47334,11 @@ function drawBackground(painter, sourceCache, layer, coords) {
     }
 }
 
-const topColor = new performance.Color(1, 0, 0, 1);
-const btmColor = new performance.Color(0, 1, 0, 1);
-const leftColor = new performance.Color(0, 0, 1, 1);
-const rightColor = new performance.Color(1, 0, 1, 1);
-const centerColor = new performance.Color(0, 1, 1, 1);
+const topColor = new performance$1.Color(1, 0, 0, 1);
+const btmColor = new performance$1.Color(0, 1, 0, 1);
+const leftColor = new performance$1.Color(0, 0, 1, 1);
+const rightColor = new performance$1.Color(1, 0, 1, 1);
+const centerColor = new performance$1.Color(0, 1, 1, 1);
 function drawDebugPadding(painter) {
     const padding = painter.transform.padding;
     const lineWidth = 3;
@@ -46699,8 +47403,8 @@ function drawDebugTile(painter, sourceCache, coord) {
     }
     const tileLabel = `${tileIdText} ${tileSizeKb}kB`;
     drawTextToOverlay(painter, tileLabel);
-    program.draw(context, gl.TRIANGLES, depthMode, stencilMode, ColorMode.alphaBlended, CullFaceMode.disabled, debugUniformValues(posMatrix, performance.Color.transparent, scaleRatio), null, id, painter.debugBuffer, painter.quadTriangleIndexBuffer, painter.debugSegments);
-    program.draw(context, gl.LINE_STRIP, depthMode, stencilMode, colorMode, CullFaceMode.disabled, debugUniformValues(posMatrix, performance.Color.red), terrainData, id, painter.debugBuffer, painter.tileBorderIndexBuffer, painter.debugSegments);
+    program.draw(context, gl.TRIANGLES, depthMode, stencilMode, ColorMode.alphaBlended, CullFaceMode.disabled, debugUniformValues(posMatrix, performance$1.Color.transparent, scaleRatio), null, id, painter.debugBuffer, painter.quadTriangleIndexBuffer, painter.debugSegments);
+    program.draw(context, gl.LINE_STRIP, depthMode, stencilMode, colorMode, CullFaceMode.disabled, debugUniformValues(posMatrix, performance$1.Color.red), terrainData, id, painter.debugBuffer, painter.tileBorderIndexBuffer, painter.debugSegments);
 }
 function drawTextToOverlay(painter, text) {
     painter.initDebugOverlayCanvas();
@@ -46790,7 +47494,7 @@ function drawDepth(painter, terrain) {
     const program = painter.useProgram('terrainDepth');
     context.bindFramebuffer.set(terrain.getFramebuffer('depth').framebuffer);
     context.viewport.set([0, 0, painter.width / devicePixelRatio, painter.height / devicePixelRatio]);
-    context.clear({ color: performance.Color.transparent, depth: 1 });
+    context.clear({ color: performance$1.Color.transparent, depth: 1 });
     for (const tile of tiles) {
         const terrainData = terrain.getTerrainData(tile.tileID);
         const posMatrix = painter.transform.calculatePosMatrix(tile.tileID.toUnwrapped());
@@ -46817,7 +47521,7 @@ function drawCoords(painter, terrain) {
     const program = painter.useProgram('terrainCoords');
     context.bindFramebuffer.set(terrain.getFramebuffer('coords').framebuffer);
     context.viewport.set([0, 0, painter.width / devicePixelRatio, painter.height / devicePixelRatio]);
-    context.clear({ color: performance.Color.transparent, depth: 1 });
+    context.clear({ color: performance$1.Color.transparent, depth: 1 });
     terrain.coordsIndex = [];
     for (const tile of tiles) {
         const terrainData = terrain.getTerrainData(tile.tileID);
@@ -46860,7 +47564,7 @@ class Painter {
         this.context = new Context(gl);
         this.transform = transform;
         this._tileTextures = {};
-        this.terrainFacilitator = { dirty: true, matrix: performance.create(), renderTime: 0 };
+        this.terrainFacilitator = { dirty: true, matrix: performance$1.identity(new Float64Array(16)), renderTime: 0 };
         this.setup();
         // Within each layer there are multiple distinct z-planes that can be drawn to.
         // This is implemented using the WebGL depth buffer.
@@ -46885,42 +47589,42 @@ class Painter {
     }
     setup() {
         const context = this.context;
-        const tileExtentArray = new performance.PosArray();
+        const tileExtentArray = new performance$1.PosArray();
         tileExtentArray.emplaceBack(0, 0);
-        tileExtentArray.emplaceBack(performance.EXTENT, 0);
-        tileExtentArray.emplaceBack(0, performance.EXTENT);
-        tileExtentArray.emplaceBack(performance.EXTENT, performance.EXTENT);
+        tileExtentArray.emplaceBack(performance$1.EXTENT, 0);
+        tileExtentArray.emplaceBack(0, performance$1.EXTENT);
+        tileExtentArray.emplaceBack(performance$1.EXTENT, performance$1.EXTENT);
         this.tileExtentBuffer = context.createVertexBuffer(tileExtentArray, posAttributes.members);
-        this.tileExtentSegments = performance.SegmentVector.simpleSegment(0, 0, 4, 2);
-        const debugArray = new performance.PosArray();
+        this.tileExtentSegments = performance$1.SegmentVector.simpleSegment(0, 0, 4, 2);
+        const debugArray = new performance$1.PosArray();
         debugArray.emplaceBack(0, 0);
-        debugArray.emplaceBack(performance.EXTENT, 0);
-        debugArray.emplaceBack(0, performance.EXTENT);
-        debugArray.emplaceBack(performance.EXTENT, performance.EXTENT);
+        debugArray.emplaceBack(performance$1.EXTENT, 0);
+        debugArray.emplaceBack(0, performance$1.EXTENT);
+        debugArray.emplaceBack(performance$1.EXTENT, performance$1.EXTENT);
         this.debugBuffer = context.createVertexBuffer(debugArray, posAttributes.members);
-        this.debugSegments = performance.SegmentVector.simpleSegment(0, 0, 4, 5);
-        const rasterBoundsArray = new performance.RasterBoundsArray();
+        this.debugSegments = performance$1.SegmentVector.simpleSegment(0, 0, 4, 5);
+        const rasterBoundsArray = new performance$1.RasterBoundsArray();
         rasterBoundsArray.emplaceBack(0, 0, 0, 0);
-        rasterBoundsArray.emplaceBack(performance.EXTENT, 0, performance.EXTENT, 0);
-        rasterBoundsArray.emplaceBack(0, performance.EXTENT, 0, performance.EXTENT);
-        rasterBoundsArray.emplaceBack(performance.EXTENT, performance.EXTENT, performance.EXTENT, performance.EXTENT);
+        rasterBoundsArray.emplaceBack(performance$1.EXTENT, 0, performance$1.EXTENT, 0);
+        rasterBoundsArray.emplaceBack(0, performance$1.EXTENT, 0, performance$1.EXTENT);
+        rasterBoundsArray.emplaceBack(performance$1.EXTENT, performance$1.EXTENT, performance$1.EXTENT, performance$1.EXTENT);
         this.rasterBoundsBuffer = context.createVertexBuffer(rasterBoundsArray, rasterBoundsAttributes.members);
-        this.rasterBoundsSegments = performance.SegmentVector.simpleSegment(0, 0, 4, 2);
-        const viewportArray = new performance.PosArray();
+        this.rasterBoundsSegments = performance$1.SegmentVector.simpleSegment(0, 0, 4, 2);
+        const viewportArray = new performance$1.PosArray();
         viewportArray.emplaceBack(0, 0);
         viewportArray.emplaceBack(1, 0);
         viewportArray.emplaceBack(0, 1);
         viewportArray.emplaceBack(1, 1);
         this.viewportBuffer = context.createVertexBuffer(viewportArray, posAttributes.members);
-        this.viewportSegments = performance.SegmentVector.simpleSegment(0, 0, 4, 2);
-        const tileLineStripIndices = new performance.LineStripIndexArray();
+        this.viewportSegments = performance$1.SegmentVector.simpleSegment(0, 0, 4, 2);
+        const tileLineStripIndices = new performance$1.LineStripIndexArray();
         tileLineStripIndices.emplaceBack(0);
         tileLineStripIndices.emplaceBack(1);
         tileLineStripIndices.emplaceBack(3);
         tileLineStripIndices.emplaceBack(2);
         tileLineStripIndices.emplaceBack(0);
         this.tileBorderIndexBuffer = context.createIndexBuffer(tileLineStripIndices);
-        const quadTriangleIndices = new performance.TriangleIndexArray();
+        const quadTriangleIndices = new performance$1.TriangleIndexArray();
         quadTriangleIndices.emplaceBack(0, 1, 2);
         quadTriangleIndices.emplaceBack(2, 1, 3);
         this.quadTriangleIndexBuffer = context.createIndexBuffer(quadTriangleIndices);
@@ -46940,9 +47644,9 @@ class Painter {
         // pending an upstream fix, we draw a fullscreen stencil=0 clipping mask here,
         // effectively clearing the stencil buffer: once an upstream patch lands, remove
         // this function in favor of context.clear({ stencil: 0x0 })
-        const matrix = performance.create();
-        performance.ortho(matrix, 0, this.width, this.height, 0, 0, 1);
-        performance.scale(matrix, matrix, [gl.drawingBufferWidth, gl.drawingBufferHeight, 0]);
+        const matrix = performance$1.create();
+        performance$1.ortho(matrix, 0, this.width, this.height, 0, 0, 1);
+        performance$1.scale(matrix, matrix, [gl.drawingBufferWidth, gl.drawingBufferHeight, 0]);
         this.useProgram('clippingMask').draw(context, gl.TRIANGLES, DepthMode.disabled, this.stencilClearMode, ColorMode.disabled, CullFaceMode.disabled, clippingMaskUniformValues(matrix), null, '$clipping', this.viewportBuffer, this.quadTriangleIndexBuffer, this.viewportSegments);
     }
     _renderTileClippingMasks(layer, tileIDs) {
@@ -47014,7 +47718,7 @@ class Painter {
         if (this._showOverdrawInspector) {
             const numOverdrawSteps = 8;
             const a = 1 / numOverdrawSteps;
-            return new ColorMode([gl.CONSTANT_COLOR, gl.ONE], new performance.Color(a, a, a, 0), [true, true, true, true]);
+            return new ColorMode([gl.CONSTANT_COLOR, gl.ONE], new performance$1.Color(a, a, a, 0), [true, true, true, true]);
         }
         else if (this.renderPass === 'opaque') {
             return ColorMode.unblended;
@@ -47045,7 +47749,7 @@ class Painter {
         this.lineAtlas = style.lineAtlas;
         this.imageManager = style.imageManager;
         this.glyphManager = style.glyphManager;
-        this.symbolFadeChange = style.placement.symbolFadeChange(performance.browser.now());
+        this.symbolFadeChange = style.placement.symbolFadeChange(browser.now());
         this.imageManager.beginFrame();
         const layerIds = this.style._order;
         const sourceCaches = this.style.sourceCaches;
@@ -47069,19 +47773,11 @@ class Painter {
                 break;
             }
         }
+        this.maybeDrawDepthAndCoords(false);
         if (this.renderToTexture) {
             this.renderToTexture.prepareForRender(this.style, this.transform.zoom);
             // this is disabled, because render-to-texture is rendering all layers from bottom to top.
             this.opaquePassCutoff = 0;
-            // update coords/depth-framebuffer on camera movement, or tile reloading
-            const newTiles = this.style.map.terrain.sourceCache.tilesAfterTime(this.terrainFacilitator.renderTime);
-            if (this.terrainFacilitator.dirty || !performance.equals(this.terrainFacilitator.matrix, this.transform.projMatrix) || newTiles.length) {
-                performance.copy(this.terrainFacilitator.matrix, this.transform.projMatrix);
-                this.terrainFacilitator.renderTime = Date.now();
-                this.terrainFacilitator.dirty = false;
-                drawDepth(this, this.style.map.terrain);
-                drawCoords(this, this.style.map.terrain);
-            }
         }
         // Offscreen pass ===============================================
         // We first do all rendering that requires rendering to a separate
@@ -47100,7 +47796,7 @@ class Painter {
         // Rebind the main framebuffer now that all offscreen layers have been rendered:
         this.context.bindFramebuffer.set(null);
         // Clear buffers in preparation for drawing to the main framebuffer
-        this.context.clear({ color: options.showOverdrawInspector ? performance.Color.black : performance.Color.transparent, depth: 1 });
+        this.context.clear({ color: options.showOverdrawInspector ? performance$1.Color.black : performance$1.Color.transparent, depth: 1 });
         this.clearStencil();
         this._showOverdrawInspector = options.showOverdrawInspector;
         this.depthRangeFor3D = [0, 1 - ((style._order.length + 2) * this.numSublayers * this.depthEpsilon)];
@@ -47143,6 +47839,30 @@ class Painter {
         // Set defaults for most GL values so that anyone using the state after the render
         // encounters more expected values.
         this.context.setDefault();
+    }
+    /**
+     * Update the depth and coords framebuffers, if the contents of those frame buffers is out of date.
+     * If requireExact is false, then the contents of those frame buffers is not updated if it is close
+     * to accurate (that is, the camera has not moved much since it was updated last).
+     */
+    maybeDrawDepthAndCoords(requireExact) {
+        if (!this.style || !this.style.map || !this.style.map.terrain) {
+            return;
+        }
+        const prevMatrix = this.terrainFacilitator.matrix;
+        const currMatrix = this.transform.projMatrix;
+        // Update coords/depth-framebuffer on camera movement, or tile reloading
+        let doUpdate = this.terrainFacilitator.dirty;
+        doUpdate || (doUpdate = requireExact ? !performance$1.exactEquals(prevMatrix, currMatrix) : !performance$1.equals(prevMatrix, currMatrix));
+        doUpdate || (doUpdate = this.style.map.terrain.sourceCache.tilesAfterTime(this.terrainFacilitator.renderTime).length > 0);
+        if (!doUpdate) {
+            return;
+        }
+        performance$1.copy(prevMatrix, currMatrix);
+        this.terrainFacilitator.renderTime = Date.now();
+        this.terrainFacilitator.dirty = false;
+        drawDepth(this, this.style.map.terrain);
+        drawCoords(this, this.style.map.terrain);
     }
     renderLayer(painter, sourceCache, layer, coords) {
         if (layer.isHidden(this.transform.zoom))
@@ -47208,7 +47928,7 @@ class Painter {
             0
         ];
         const translatedMatrix = new Float32Array(16);
-        performance.translate(translatedMatrix, matrix, translation);
+        performance$1.translate(translatedMatrix, matrix, translation);
         return translatedMatrix;
     }
     saveTileTexture(texture) {
@@ -47319,23 +48039,23 @@ class Frustum {
         const scale = Math.pow(2, zoom);
         // Transform frustum corner points from clip space to tile space, Z to meters
         const frustumCoords = clipSpaceCorners.map(v => {
-            v = performance.transformMat4([], v, invProj);
+            v = performance$1.transformMat4([], v, invProj);
             const s = 1.0 / v[3] / worldSize * scale;
-            return performance.mul$1(v, v, [s, s, 1.0 / v[3], s]);
+            return performance$1.mul$1(v, v, [s, s, 1.0 / v[3], s]);
         });
         const frustumPlanePointIndices = [
-            [0, 1, 2],
-            [6, 5, 4],
-            [0, 3, 7],
-            [2, 1, 5],
-            [3, 2, 6],
+            [0, 1, 2], // near
+            [6, 5, 4], // far
+            [0, 3, 7], // left
+            [2, 1, 5], // right
+            [3, 2, 6], // bottom
             [0, 4, 5] // top
         ];
         const frustumPlanes = frustumPlanePointIndices.map((p) => {
-            const a = performance.sub([], frustumCoords[p[0]], frustumCoords[p[1]]);
-            const b = performance.sub([], frustumCoords[p[2]], frustumCoords[p[1]]);
-            const n = performance.normalize([], performance.cross([], a, b));
-            const d = -performance.dot(n, frustumCoords[p[1]]);
+            const a = performance$1.sub([], frustumCoords[p[0]], frustumCoords[p[1]]);
+            const b = performance$1.sub([], frustumCoords[p[2]], frustumCoords[p[1]]);
+            const n = performance$1.normalize([], performance$1.cross([], a, b));
+            const d = -performance$1.dot(n, frustumCoords[p[1]]);
             return n.concat(d);
         });
         return new Frustum(frustumCoords, frustumPlanes);
@@ -47345,12 +48065,12 @@ class Aabb {
     constructor(min_, max_) {
         this.min = min_;
         this.max = max_;
-        this.center = performance.scale$1([], performance.add([], this.min, this.max), 0.5);
+        this.center = performance$1.scale$1([], performance$1.add([], this.min, this.max), 0.5);
     }
     quadrant(index) {
         const split = [(index % 2) === 0, index < 2];
-        const qMin = performance.clone$2(this.min);
-        const qMax = performance.clone$2(this.max);
+        const qMin = performance$1.clone$2(this.min);
+        const qMax = performance$1.clone$2(this.max);
         for (let axis = 0; axis < split.length; axis++) {
             qMin[axis] = split[axis] ? this.min[axis] : this.center[axis];
             qMax[axis] = split[axis] ? this.center[axis] : this.max[axis];
@@ -47387,7 +48107,7 @@ class Aabb {
             const plane = frustum.planes[p];
             let pointsInside = 0;
             for (let i = 0; i < aabbPoints.length; i++) {
-                if (performance.dot$1(plane, aabbPoints[i]) >= 0) {
+                if (performance$1.dot$1(plane, aabbPoints[i]) >= 0) {
                     pointsInside++;
                 }
             }
@@ -47443,13 +48163,13 @@ class EdgeInsets {
      */
     interpolate(start, target, t) {
         if (target.top != null && start.top != null)
-            this.top = performance.interpolate.number(start.top, target.top, t);
+            this.top = performance$1.interpolate.number(start.top, target.top, t);
         if (target.bottom != null && start.bottom != null)
-            this.bottom = performance.interpolate.number(start.bottom, target.bottom, t);
+            this.bottom = performance$1.interpolate.number(start.bottom, target.bottom, t);
         if (target.left != null && start.left != null)
-            this.left = performance.interpolate.number(start.left, target.left, t);
+            this.left = performance$1.interpolate.number(start.left, target.left, t);
         if (target.right != null && start.right != null)
-            this.right = performance.interpolate.number(start.right, target.right, t);
+            this.right = performance$1.interpolate.number(start.right, target.right, t);
         return this;
     }
     /**
@@ -47462,9 +48182,9 @@ class EdgeInsets {
      */
     getCenter(width, height) {
         // Clamp insets so they never overflow width/height and always calculate a valid center
-        const x = performance.clamp((this.left + width - this.right) / 2, 0, width);
-        const y = performance.clamp((this.top + height - this.bottom) / 2, 0, height);
-        return new performance.Point(x, y);
+        const x = performance$1.clamp((this.left + width - this.right) / 2, 0, width);
+        const y = performance$1.clamp((this.top + height - this.bottom) / 2, 0, height);
+        return new performance$1.Point(x, y);
     }
     equals(other) {
         return this.top === other.top &&
@@ -47491,6 +48211,7 @@ class EdgeInsets {
     }
 }
 
+const MAX_VALID_LATITUDE = 85.051129;
 /**
  * @internal
  * A single transform, generally used for a single tile to be
@@ -47499,7 +48220,6 @@ class EdgeInsets {
 class Transform {
     constructor(minZoom, maxZoom, minPitch, maxPitch, renderWorldCopies) {
         this.tileSize = 512; // constant
-        this.maxValidLatitude = 85.051129; // constant
         this._renderWorldCopies = renderWorldCopies === undefined ? true : !!renderWorldCopies;
         this._minZoom = minZoom || 0;
         this._maxZoom = maxZoom || 22;
@@ -47508,7 +48228,7 @@ class Transform {
         this.setMaxBounds();
         this.width = 0;
         this.height = 0;
-        this._center = new performance.LngLat(0, 0);
+        this._center = new performance$1.LngLat(0, 0);
         this._elevation = 0;
         this.zoom = 0;
         this.angle = 0;
@@ -47518,7 +48238,7 @@ class Transform {
         this._edgeInsets = new EdgeInsets();
         this._posMatrixCache = {};
         this._alignedPosMatrixCache = {};
-        this._minEleveationForCurrentTile = 0;
+        this.minElevationForCurrentTile = 0;
     }
     clone() {
         const clone = new Transform(this._minZoom, this._maxZoom, this._minPitch, this.maxPitch, this._renderWorldCopies);
@@ -47532,7 +48252,7 @@ class Transform {
         this.height = that.height;
         this._center = that._center;
         this._elevation = that._elevation;
-        this._minEleveationForCurrentTile = that._minEleveationForCurrentTile;
+        this.minElevationForCurrentTile = that.minElevationForCurrentTile;
         this.zoom = that.zoom;
         this.angle = that.angle;
         this._fov = that._fov;
@@ -47586,27 +48306,27 @@ class Transform {
         return this.centerPoint._sub(this.size._div(2));
     }
     get size() {
-        return new performance.Point(this.width, this.height);
+        return new performance$1.Point(this.width, this.height);
     }
     get bearing() {
         return -this.angle / Math.PI * 180;
     }
     set bearing(bearing) {
-        const b = -performance.wrap(bearing, -180, 180) * Math.PI / 180;
+        const b = -performance$1.wrap(bearing, -180, 180) * Math.PI / 180;
         if (this.angle === b)
             return;
         this._unmodified = false;
         this.angle = b;
         this._calcMatrices();
         // 2x2 matrix for rotating points
-        this.rotationMatrix = performance.create$2();
-        performance.rotate(this.rotationMatrix, this.rotationMatrix, this.angle);
+        this.rotationMatrix = performance$1.create$2();
+        performance$1.rotate(this.rotationMatrix, this.rotationMatrix, this.angle);
     }
     get pitch() {
         return this._pitch / Math.PI * 180;
     }
     set pitch(pitch) {
-        const p = performance.clamp(pitch, this.minPitch, this.maxPitch) / 180 * Math.PI;
+        const p = performance$1.clamp(pitch, this.minPitch, this.maxPitch) / 180 * Math.PI;
         if (this._pitch === p)
             return;
         this._unmodified = false;
@@ -47645,6 +48365,9 @@ class Transform {
         this._constrain();
         this._calcMatrices();
     }
+    /**
+     * Elevation at current center point, meters above sea level
+     */
     get elevation() { return this._elevation; }
     set elevation(elevation) {
         if (elevation === this._elevation)
@@ -47706,12 +48429,12 @@ class Transform {
      * in the current view.
      */
     getVisibleUnwrappedCoordinates(tileID) {
-        const result = [new performance.UnwrappedTileID(0, tileID)];
+        const result = [new performance$1.UnwrappedTileID(0, tileID)];
         if (this._renderWorldCopies) {
-            const utl = this.pointCoordinate(new performance.Point(0, 0));
-            const utr = this.pointCoordinate(new performance.Point(this.width, 0));
-            const ubl = this.pointCoordinate(new performance.Point(this.width, this.height));
-            const ubr = this.pointCoordinate(new performance.Point(0, this.height));
+            const utl = this.pointCoordinate(new performance$1.Point(0, 0));
+            const utr = this.pointCoordinate(new performance$1.Point(this.width, 0));
+            const ubl = this.pointCoordinate(new performance$1.Point(this.width, this.height));
+            const ubr = this.pointCoordinate(new performance$1.Point(0, this.height));
             const w0 = Math.floor(Math.min(utl.x, utr.x, ubl.x, ubr.x));
             const w1 = Math.floor(Math.max(utl.x, utr.x, ubl.x, ubr.x));
             // Add an extra copy of the world on each side to properly render ImageSources and CanvasSources.
@@ -47721,7 +48444,7 @@ class Transform {
             for (let w = w0 - extraWorldCopy; w <= w1 + extraWorldCopy; w++) {
                 if (w === 0)
                     continue;
-                result.push(new performance.UnwrappedTileID(w, tileID));
+                result.push(new performance$1.UnwrappedTileID(w, tileID));
             }
         }
         return result;
@@ -47741,7 +48464,7 @@ class Transform {
         if (options.maxzoom !== undefined && z > options.maxzoom)
             z = options.maxzoom;
         const cameraCoord = this.pointCoordinate(this.getCameraPoint());
-        const centerCoord = performance.MercatorCoordinate.fromLngLat(this.center);
+        const centerCoord = performance$1.MercatorCoordinate.fromLngLat(this.center);
         const numTiles = Math.pow(2, z);
         const cameraPoint = [numTiles * cameraCoord.x, numTiles * cameraCoord.y, 0];
         const centerPoint = [numTiles * centerCoord.x, numTiles * centerCoord.y, 0];
@@ -47802,8 +48525,8 @@ class Transform {
             if (it.zoom === maxZoom || (longestDim > distToSplit && it.zoom >= minZoom)) {
                 const dz = maxZoom - it.zoom, dx = cameraPoint[0] - 0.5 - (x << dz), dy = cameraPoint[1] - 0.5 - (y << dz);
                 result.push({
-                    tileID: new performance.OverscaledTileID(it.zoom === maxZoom ? overscaledZ : it.zoom, it.wrap, it.zoom, x, y),
-                    distanceSq: performance.sqrLen([centerPoint[0] - 0.5 - x, centerPoint[1] - 0.5 - y]),
+                    tileID: new performance$1.OverscaledTileID(it.zoom === maxZoom ? overscaledZ : it.zoom, it.wrap, it.zoom, x, y),
+                    distanceSq: performance$1.sqrLen([centerPoint[0] - 0.5 - x, centerPoint[1] - 0.5 - y]),
                     // this variable is currently not used, but may be important to reduce the amount of loaded tiles
                     tileDistanceToCamera: Math.sqrt(dx * dx + dy * dy)
                 });
@@ -47815,7 +48538,7 @@ class Transform {
                 const childZ = it.zoom + 1;
                 let quadrant = it.aabb.quadrant(i);
                 if (options.terrain) {
-                    const tileID = new performance.OverscaledTileID(childZ, it.wrap, childZ, childX, childY);
+                    const tileID = new performance$1.OverscaledTileID(childZ, it.wrap, childZ, childX, childY);
                     const minMax = options.terrain.getMinMaxElevation(tileID);
                     const minElevation = (_a = minMax.minElevation) !== null && _a !== void 0 ? _a : this.elevation;
                     const maxElevation = (_b = minMax.maxElevation) !== null && _b !== void 0 ? _b : this.elevation;
@@ -47836,12 +48559,22 @@ class Transform {
     get unmodified() { return this._unmodified; }
     zoomScale(zoom) { return Math.pow(2, zoom); }
     scaleZoom(scale) { return Math.log(scale) / Math.LN2; }
+    /**
+     * Convert from LngLat to world coordinates (Mercator coordinates scaled by 512)
+     * @param lnglat - the lngLat
+     * @returns Point
+     */
     project(lnglat) {
-        const lat = performance.clamp(lnglat.lat, -this.maxValidLatitude, this.maxValidLatitude);
-        return new performance.Point(performance.mercatorXfromLng(lnglat.lng) * this.worldSize, performance.mercatorYfromLat(lat) * this.worldSize);
+        const lat = performance$1.clamp(lnglat.lat, -MAX_VALID_LATITUDE, MAX_VALID_LATITUDE);
+        return new performance$1.Point(performance$1.mercatorXfromLng(lnglat.lng) * this.worldSize, performance$1.mercatorYfromLat(lat) * this.worldSize);
     }
+    /**
+     * Convert from world coordinates ([0, 512],[0, 512]) to LngLat ([-180, 180], [-90, 90])
+     * @param point - world coordinate
+     * @returns LngLat
+     */
     unproject(point) {
-        return new performance.MercatorCoordinate(point.x / this.worldSize, point.y / this.worldSize).toLngLat();
+        return new performance$1.MercatorCoordinate(point.x / this.worldSize, point.y / this.worldSize).toLngLat();
     }
     get point() { return this.project(this.center); }
     /**
@@ -47860,20 +48593,24 @@ class Transform {
      * @param terrain - the terrain
      */
     recalculateZoom(terrain) {
+        const origElevation = this.elevation;
+        const origAltitude = Math.cos(this._pitch) * this.cameraToCenterDistance / this._pixelPerMeter;
         // find position the camera is looking on
         const center = this.pointLocation(this.centerPoint, terrain);
         const elevation = terrain.getElevationForLngLatZoom(center, this.tileZoom);
         const deltaElevation = this.elevation - elevation;
         if (!deltaElevation)
             return;
-        // calculate mercator distance between camera & target
-        const cameraPosition = this.getCameraPosition();
-        const camera = performance.MercatorCoordinate.fromLngLat(cameraPosition.lngLat, cameraPosition.altitude);
-        const target = performance.MercatorCoordinate.fromLngLat(center, elevation);
-        const dx = camera.x - target.x, dy = camera.y - target.y, dz = camera.z - target.z;
-        const distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
-        // from this distance we calculate the new zoomlevel
-        const zoom = this.scaleZoom(this.cameraToCenterDistance / distance / this.tileSize);
+        // The camera's altitude off the ground + the ground's elevation = a constant:
+        // this means the camera stays at the same total height.
+        const requiredAltitude = origAltitude + origElevation - elevation;
+        // Since altitude = Math.cos(this._pitch) * this.cameraToCenterDistance / pixelPerMeter:
+        const requiredPixelPerMeter = Math.cos(this._pitch) * this.cameraToCenterDistance / requiredAltitude;
+        // Since pixelPerMeter = mercatorZfromAltitude(1, center.lat) * worldSize:
+        const requiredWorldSize = requiredPixelPerMeter / performance$1.mercatorZfromAltitude(1, center.lat);
+        // Since worldSize = this.tileSize * scale:
+        const requiredScale = requiredWorldSize / this.tileSize;
+        const zoom = this.scaleZoom(requiredScale);
         // update matrices
         this._elevation = elevation;
         this._center = center;
@@ -47883,14 +48620,14 @@ class Transform {
         const a = this.pointCoordinate(point);
         const b = this.pointCoordinate(this.centerPoint);
         const loc = this.locationCoordinate(lnglat);
-        const newCenter = new performance.MercatorCoordinate(loc.x - (a.x - b.x), loc.y - (a.y - b.y));
+        const newCenter = new performance$1.MercatorCoordinate(loc.x - (a.x - b.x), loc.y - (a.y - b.y));
         this.center = this.coordinateLocation(newCenter);
         if (this._renderWorldCopies) {
             this.center = this.center.wrap();
         }
     }
     /**
-     * Given a location, return the screen point that corresponds to it
+     * Given a LngLat location, return the screen point that corresponds to it
      * @param lnglat - location
      * @param terrain - optional terrain
      * @returns screen point
@@ -47911,16 +48648,16 @@ class Transform {
     }
     /**
      * Given a geographical lnglat, return an unrounded
-     * coordinate that represents it at this transform's zoom level.
+     * coordinate that represents it at low zoom level.
      * @param lnglat - the location
      * @returns The mercator coordinate
      */
     locationCoordinate(lnglat) {
-        return performance.MercatorCoordinate.fromLngLat(lnglat);
+        return performance$1.MercatorCoordinate.fromLngLat(lnglat);
     }
     /**
      * Given a Coordinate, return its geographical position.
-     * @param coord - mercator coordivates
+     * @param coord - mercator coordinates
      * @returns lng and lat
      */
     coordinateLocation(coord) {
@@ -47947,8 +48684,8 @@ class Transform {
         // line with z=0
         const coord0 = [p.x, p.y, 0, 1];
         const coord1 = [p.x, p.y, 1, 1];
-        performance.transformMat4(coord0, coord0, this.pixelMatrixInverse);
-        performance.transformMat4(coord1, coord1, this.pixelMatrixInverse);
+        performance$1.transformMat4(coord0, coord0, this.pixelMatrixInverse);
+        performance$1.transformMat4(coord1, coord1, this.pixelMatrixInverse);
         const w0 = coord0[3];
         const w1 = coord1[3];
         const x0 = coord0[0] / w0;
@@ -47958,7 +48695,7 @@ class Transform {
         const z0 = coord0[2] / w0;
         const z1 = coord1[2] / w1;
         const t = z0 === z1 ? 0 : (targetZ - z0) / (z1 - z0);
-        return new performance.MercatorCoordinate(performance.interpolate.number(x0, x1, t) / this.worldSize, performance.interpolate.number(y0, y1, t) / this.worldSize);
+        return new performance$1.MercatorCoordinate(performance$1.interpolate.number(x0, x1, t) / this.worldSize, performance$1.interpolate.number(y0, y1, t) / this.worldSize);
     }
     /**
      * Given a coordinate, return the screen point that corresponds to it
@@ -47969,8 +48706,8 @@ class Transform {
      */
     coordinatePoint(coord, elevation = 0, pixelMatrix = this.pixelMatrix) {
         const p = [coord.x * this.worldSize, coord.y * this.worldSize, elevation, 1];
-        performance.transformMat4(p, p, pixelMatrix);
-        return new performance.Point(p[0] / p[3], p[1] / p[3]);
+        performance$1.transformMat4(p, p, pixelMatrix);
+        return new performance$1.Point(p[0] / p[3], p[1] / p[3]);
     }
     /**
      * Returns the map's geographical bounds. When the bearing or pitch is non-zero, the visible region is not
@@ -47980,10 +48717,10 @@ class Transform {
     getBounds() {
         const top = Math.max(0, this.height / 2 - this.getHorizon());
         return new LngLatBounds()
-            .extend(this.pointLocation(new performance.Point(0, top)))
-            .extend(this.pointLocation(new performance.Point(this.width, top)))
-            .extend(this.pointLocation(new performance.Point(this.width, this.height)))
-            .extend(this.pointLocation(new performance.Point(0, this.height)));
+            .extend(this.pointLocation(new performance$1.Point(0, top)))
+            .extend(this.pointLocation(new performance$1.Point(this.width, top)))
+            .extend(this.pointLocation(new performance$1.Point(this.width, this.height)))
+            .extend(this.pointLocation(new performance$1.Point(0, this.height)));
     }
     /**
      * Returns the maximum geographical bounds the map is constrained to, or `null` if none set.
@@ -48016,7 +48753,7 @@ class Transform {
         }
         else {
             this.lngRange = null;
-            this.latRange = [-this.maxValidLatitude, this.maxValidLatitude];
+            this.latRange = [-MAX_VALID_LATITUDE, MAX_VALID_LATITUDE];
         }
     }
     /**
@@ -48032,70 +48769,102 @@ class Transform {
         const canonical = unwrappedTileID.canonical;
         const scale = this.worldSize / this.zoomScale(canonical.z);
         const unwrappedX = canonical.x + Math.pow(2, canonical.z) * unwrappedTileID.wrap;
-        const posMatrix = performance.identity(new Float64Array(16));
-        performance.translate(posMatrix, posMatrix, [unwrappedX * scale, canonical.y * scale, 0]);
-        performance.scale(posMatrix, posMatrix, [scale / performance.EXTENT, scale / performance.EXTENT, 1]);
-        performance.multiply(posMatrix, aligned ? this.alignedProjMatrix : this.projMatrix, posMatrix);
+        const posMatrix = performance$1.identity(new Float64Array(16));
+        performance$1.translate(posMatrix, posMatrix, [unwrappedX * scale, canonical.y * scale, 0]);
+        performance$1.scale(posMatrix, posMatrix, [scale / performance$1.EXTENT, scale / performance$1.EXTENT, 1]);
+        performance$1.multiply(posMatrix, aligned ? this.alignedProjMatrix : this.projMatrix, posMatrix);
         cache[posMatrixKey] = new Float32Array(posMatrix);
         return cache[posMatrixKey];
     }
     customLayerMatrix() {
         return this.mercatorMatrix.slice();
     }
+    /**
+     * Get center lngLat and zoom to ensure that
+     * 1) everything beyond the bounds is excluded
+     * 2) a given lngLat is as near the center as possible
+     * Bounds are those set by maxBounds or North & South "Poles" and, if only 1 globe is displayed, antimeridian.
+     */
+    getConstrained(lngLat, zoom) {
+        zoom = performance$1.clamp(+zoom, this.minZoom, this.maxZoom);
+        const result = {
+            center: new performance$1.LngLat(lngLat.lng, lngLat.lat),
+            zoom
+        };
+        let lngRange = this.lngRange;
+        if (!this._renderWorldCopies && lngRange === null) {
+            const almost180 = 180 - 1e-10;
+            lngRange = [-almost180, almost180];
+        }
+        const worldSize = this.tileSize * this.zoomScale(result.zoom); // A world size for the requested zoom level, not the current world size
+        let minY = 0;
+        let maxY = worldSize;
+        let minX = 0;
+        let maxX = worldSize;
+        let scaleY = 0;
+        let scaleX = 0;
+        const { x: screenWidth, y: screenHeight } = this.size;
+        if (this.latRange) {
+            const latRange = this.latRange;
+            minY = performance$1.mercatorYfromLat(latRange[1]) * worldSize;
+            maxY = performance$1.mercatorYfromLat(latRange[0]) * worldSize;
+            const shouldZoomIn = maxY - minY < screenHeight;
+            if (shouldZoomIn)
+                scaleY = screenHeight / (maxY - minY);
+        }
+        if (lngRange) {
+            minX = performance$1.wrap(performance$1.mercatorXfromLng(lngRange[0]) * worldSize, 0, worldSize);
+            maxX = performance$1.wrap(performance$1.mercatorXfromLng(lngRange[1]) * worldSize, 0, worldSize);
+            if (maxX < minX)
+                maxX += worldSize;
+            const shouldZoomIn = maxX - minX < screenWidth;
+            if (shouldZoomIn)
+                scaleX = screenWidth / (maxX - minX);
+        }
+        const { x: originalX, y: originalY } = this.project.call({ worldSize }, lngLat);
+        let modifiedX, modifiedY;
+        const scale = Math.max(scaleX || 0, scaleY || 0);
+        if (scale) {
+            // zoom in to exclude all beyond the given lng/lat ranges
+            const newPoint = new performance$1.Point(scaleX ? (maxX + minX) / 2 : originalX, scaleY ? (maxY + minY) / 2 : originalY);
+            result.center = this.unproject.call({ worldSize }, newPoint).wrap();
+            result.zoom += this.scaleZoom(scale);
+            return result;
+        }
+        if (this.latRange) {
+            const h2 = screenHeight / 2;
+            if (originalY - h2 < minY)
+                modifiedY = minY + h2;
+            if (originalY + h2 > maxY)
+                modifiedY = maxY - h2;
+        }
+        if (lngRange) {
+            const centerX = (minX + maxX) / 2;
+            let wrappedX = originalX;
+            if (this._renderWorldCopies) {
+                wrappedX = performance$1.wrap(originalX, centerX - worldSize / 2, centerX + worldSize / 2);
+            }
+            const w2 = screenWidth / 2;
+            if (wrappedX - w2 < minX)
+                modifiedX = minX + w2;
+            if (wrappedX + w2 > maxX)
+                modifiedX = maxX - w2;
+        }
+        // pan the map if the screen goes off the range
+        if (modifiedX !== undefined || modifiedY !== undefined) {
+            const newPoint = new performance$1.Point(modifiedX !== null && modifiedX !== void 0 ? modifiedX : originalX, modifiedY !== null && modifiedY !== void 0 ? modifiedY : originalY);
+            result.center = this.unproject.call({ worldSize }, newPoint).wrap();
+        }
+        return result;
+    }
     _constrain() {
         if (!this.center || !this.width || !this.height || this._constraining)
             return;
         this._constraining = true;
-        let minY = -90;
-        let maxY = 90;
-        let minX = -180;
-        let maxX = 180;
-        let sy, sx, x2, y2;
-        const size = this.size, unmodified = this._unmodified;
-        if (this.latRange) {
-            const latRange = this.latRange;
-            minY = performance.mercatorYfromLat(latRange[1]) * this.worldSize;
-            maxY = performance.mercatorYfromLat(latRange[0]) * this.worldSize;
-            sy = maxY - minY < size.y ? size.y / (maxY - minY) : 0;
-        }
-        if (this.lngRange) {
-            const lngRange = this.lngRange;
-            minX = performance.wrap(performance.mercatorXfromLng(lngRange[0]) * this.worldSize, 0, this.worldSize);
-            maxX = performance.wrap(performance.mercatorXfromLng(lngRange[1]) * this.worldSize, 0, this.worldSize);
-            if (maxX < minX)
-                maxX += this.worldSize;
-            sx = maxX - minX < size.x ? size.x / (maxX - minX) : 0;
-        }
-        const point = this.point;
-        // how much the map should scale to fit the screen into given latitude/longitude ranges
-        const s = Math.max(sx || 0, sy || 0);
-        if (s) {
-            this.center = this.unproject(new performance.Point(sx ? (maxX + minX) / 2 : point.x, sy ? (maxY + minY) / 2 : point.y));
-            this.zoom += this.scaleZoom(s);
-            this._unmodified = unmodified;
-            this._constraining = false;
-            return;
-        }
-        if (this.latRange) {
-            const y = point.y, h2 = size.y / 2;
-            if (y - h2 < minY)
-                y2 = minY + h2;
-            if (y + h2 > maxY)
-                y2 = maxY - h2;
-        }
-        if (this.lngRange) {
-            const centerX = (minX + maxX) / 2;
-            const x = performance.wrap(point.x, centerX - this.worldSize / 2, centerX + this.worldSize / 2);
-            const w2 = size.x / 2;
-            if (x - w2 < minX)
-                x2 = minX + w2;
-            if (x + w2 > maxX)
-                x2 = maxX - w2;
-        }
-        // pan the map if the screen goes off the range
-        if (x2 !== undefined || y2 !== undefined) {
-            this.center = this.unproject(new performance.Point(x2 !== undefined ? x2 : point.x, y2 !== undefined ? y2 : point.y)).wrap();
-        }
+        const unmodified = this._unmodified;
+        const { center, zoom } = this.getConstrained(this.center, this.zoom);
+        this.center = center;
+        this.zoom = zoom;
         this._unmodified = unmodified;
         this._constraining = false;
     }
@@ -48106,20 +48875,20 @@ class Transform {
         const offset = this.centerOffset;
         const x = this.point.x, y = this.point.y;
         this.cameraToCenterDistance = 0.5 / Math.tan(halfFov) * this.height;
-        this._pixelPerMeter = performance.mercatorZfromAltitude(1, this.center.lat) * this.worldSize;
-        let m = performance.identity(new Float64Array(16));
-        performance.scale(m, m, [this.width / 2, -this.height / 2, 1]);
-        performance.translate(m, m, [1, -1, 0]);
+        this._pixelPerMeter = performance$1.mercatorZfromAltitude(1, this.center.lat) * this.worldSize;
+        let m = performance$1.identity(new Float64Array(16));
+        performance$1.scale(m, m, [this.width / 2, -this.height / 2, 1]);
+        performance$1.translate(m, m, [1, -1, 0]);
         this.labelPlaneMatrix = m;
-        m = performance.identity(new Float64Array(16));
-        performance.scale(m, m, [1, -1, 1]);
-        performance.translate(m, m, [-1, -1, 0]);
-        performance.scale(m, m, [2 / this.width, 2 / this.height, 1]);
+        m = performance$1.identity(new Float64Array(16));
+        performance$1.scale(m, m, [1, -1, 1]);
+        performance$1.translate(m, m, [-1, -1, 0]);
+        performance$1.scale(m, m, [2 / this.width, 2 / this.height, 1]);
         this.glCoordMatrix = m;
         // Calculate the camera to sea-level distance in pixel in respect of terrain
         const cameraToSeaLevelDistance = this.cameraToCenterDistance + this._elevation * this._pixelPerMeter / Math.cos(this._pitch);
         // In case of negative minimum elevation (e.g. the dead see, under the sea maps) use a lower plane for calculation
-        const minElevation = Math.min(this.elevation, this._minEleveationForCurrentTile);
+        const minElevation = Math.min(this.elevation, this.minElevationForCurrentTile);
         const cameraToLowestPointDistance = cameraToSeaLevelDistance - minElevation * this._pixelPerMeter / Math.cos(this._pitch);
         const lowestPlane = minElevation < 0 ? cameraToLowestPointDistance : cameraToSeaLevelDistance;
         // Find the distance from the center point [width/2 + offset.x, height/2 + offset.y] to the
@@ -48128,12 +48897,12 @@ class Transform {
         // (the distance between[width/2, height/2] and [width/2 + 1, height/2])
         const groundAngle = Math.PI / 2 + this._pitch;
         const fovAboveCenter = this._fov * (0.5 + offset.y / this.height);
-        const topHalfSurfaceDistance = Math.sin(fovAboveCenter) * lowestPlane / Math.sin(performance.clamp(Math.PI - groundAngle - fovAboveCenter, 0.01, Math.PI - 0.01));
+        const topHalfSurfaceDistance = Math.sin(fovAboveCenter) * lowestPlane / Math.sin(performance$1.clamp(Math.PI - groundAngle - fovAboveCenter, 0.01, Math.PI - 0.01));
         // Find the distance from the center point to the horizon
         const horizon = this.getHorizon();
         const horizonAngle = Math.atan(horizon / this.cameraToCenterDistance);
         const fovCenterToHorizon = 2 * horizonAngle * (0.5 + offset.y / (horizon * 2));
-        const topHalfSurfaceDistanceHorizon = Math.sin(fovCenterToHorizon) * lowestPlane / Math.sin(performance.clamp(Math.PI - groundAngle - fovCenterToHorizon, 0.01, Math.PI - 0.01));
+        const topHalfSurfaceDistanceHorizon = Math.sin(fovCenterToHorizon) * lowestPlane / Math.sin(performance$1.clamp(Math.PI - groundAngle - fovCenterToHorizon, 0.01, Math.PI - 0.01));
         // Calculate z distance of the farthest fragment that should be rendered.
         // Add a bit extra to avoid precision problems when a fragment's distance is exactly `furthestDistance`
         const topHalfMinDistance = Math.min(topHalfSurfaceDistance, topHalfSurfaceDistanceHorizon);
@@ -48142,34 +48911,34 @@ class Transform {
         // - the more depth precision is available for features (good)
         // - clipping starts appearing sooner when the camera is close to 3d features (bad)
         //
-        // Smaller values worked well for mapbox-gl-js but deckgl was encountering precision issues
-        // when rendering it's layers using custom layers. This value was experimentally chosen and
+        // Other values work for mapbox-gl-js but deckgl was encountering precision issues
+        // when rendering custom layers. This value was experimentally chosen and
         // seems to solve z-fighting issues in deckgl while not clipping buildings too close to the camera.
         const nearZ = this.height / 50;
-        // matrix for conversion from location to GL coordinates (-1 .. 1)
+        // matrix for conversion from location to clip space(-1 .. 1)
         m = new Float64Array(16);
-        performance.perspective(m, this._fov, this.width / this.height, nearZ, farZ);
+        performance$1.perspective(m, this._fov, this.width / this.height, nearZ, farZ);
         // Apply center of perspective offset
         m[8] = -offset.x * 2 / this.width;
         m[9] = offset.y * 2 / this.height;
-        performance.scale(m, m, [1, -1, 1]);
-        performance.translate(m, m, [0, 0, -this.cameraToCenterDistance]);
-        performance.rotateX(m, m, this._pitch);
-        performance.rotateZ(m, m, this.angle);
-        performance.translate(m, m, [-x, -y, 0]);
+        performance$1.scale(m, m, [1, -1, 1]);
+        performance$1.translate(m, m, [0, 0, -this.cameraToCenterDistance]);
+        performance$1.rotateX(m, m, this._pitch);
+        performance$1.rotateZ(m, m, this.angle);
+        performance$1.translate(m, m, [-x, -y, 0]);
         // The mercatorMatrix can be used to transform points from mercator coordinates
-        // ([0, 0] nw, [1, 1] se) to GL coordinates.
-        this.mercatorMatrix = performance.scale([], m, [this.worldSize, this.worldSize, this.worldSize]);
+        // ([0, 0] nw, [1, 1] se) to clip space.
+        this.mercatorMatrix = performance$1.scale([], m, [this.worldSize, this.worldSize, this.worldSize]);
         // scale vertically to meters per pixel (inverse of ground resolution):
-        performance.scale(m, m, [1, 1, this._pixelPerMeter]);
-        // matrix for conversion from location to screen coordinates in 2D
-        this.pixelMatrix = performance.multiply(new Float64Array(16), this.labelPlaneMatrix, m);
-        // matrix for conversion from location to GL coordinates (-1 .. 1)
-        performance.translate(m, m, [0, 0, -this.elevation]); // elevate camera over terrain
+        performance$1.scale(m, m, [1, 1, this._pixelPerMeter]);
+        // matrix for conversion from world space to screen coordinates in 2D
+        this.pixelMatrix = performance$1.multiply(new Float64Array(16), this.labelPlaneMatrix, m);
+        // matrix for conversion from world space to clip space (-1 .. 1)
+        performance$1.translate(m, m, [0, 0, -this.elevation]); // elevate camera over terrain
         this.projMatrix = m;
-        this.invProjMatrix = performance.invert([], m);
-        // matrix for conversion from location to screen coordinates in 2D
-        this.pixelMatrix3D = performance.multiply(new Float64Array(16), this.labelPlaneMatrix, m);
+        this.invProjMatrix = performance$1.invert([], m);
+        // matrix for conversion from world space to screen coordinates in 3D
+        this.pixelMatrix3D = performance$1.multiply(new Float64Array(16), this.labelPlaneMatrix, m);
         // Make a second projection matrix that is aligned to a pixel grid for rendering raster tiles.
         // We're rounding the (floating point) x/y values to achieve to avoid rendering raster images to fractional
         // coordinates. Additionally, we adjust by half a pixel in either direction in case that viewport dimension
@@ -48178,10 +48947,10 @@ class Transform {
         // it is always <= 0.5 pixels.
         const xShift = (this.width % 2) / 2, yShift = (this.height % 2) / 2, angleCos = Math.cos(this.angle), angleSin = Math.sin(this.angle), dx = x - Math.round(x) + angleCos * xShift + angleSin * yShift, dy = y - Math.round(y) + angleCos * yShift + angleSin * xShift;
         const alignedM = new Float64Array(m);
-        performance.translate(alignedM, alignedM, [dx > 0.5 ? dx - 1 : dx, dy > 0.5 ? dy - 1 : dy, 0]);
+        performance$1.translate(alignedM, alignedM, [dx > 0.5 ? dx - 1 : dx, dy > 0.5 ? dy - 1 : dy, 0]);
         this.alignedProjMatrix = alignedM;
-        // inverse matrix for conversion from screen coordinaes to location
-        m = performance.invert(new Float64Array(16), this.pixelMatrix);
+        // inverse matrix for conversion from screen coordinates to location
+        m = performance$1.invert(new Float64Array(16), this.pixelMatrix);
         if (!m)
             throw new Error('failed to invert matrix');
         this.pixelMatrixInverse = m;
@@ -48192,9 +48961,9 @@ class Transform {
         // calcMatrices hasn't run yet
         if (!this.pixelMatrixInverse)
             return 1;
-        const coord = this.pointCoordinate(new performance.Point(0, 0));
+        const coord = this.pointCoordinate(new performance$1.Point(0, 0));
         const p = [coord.x * this.worldSize, coord.y * this.worldSize, 0, 1];
-        const topPoint = performance.transformMat4(p, p, this.pixelMatrix);
+        const topPoint = performance$1.transformMat4(p, p, this.pixelMatrix);
         return topPoint[3] / this.cameraToCenterDistance;
     }
     /**
@@ -48211,7 +48980,7 @@ class Transform {
     getCameraPoint() {
         const pitch = this._pitch;
         const yOffset = Math.tan(pitch) * (this.cameraToCenterDistance || 1);
-        return this.centerPoint.add(new performance.Point(0, yOffset));
+        return this.centerPoint.add(new performance$1.Point(0, yOffset));
     }
     /**
      * When the map is pitched, some of the 3D features that intersect a query will not intersect
@@ -48240,13 +49009,27 @@ class Transform {
                 maxY = Math.max(maxY, p.y);
             }
             return [
-                new performance.Point(minX, minY),
-                new performance.Point(maxX, minY),
-                new performance.Point(maxX, maxY),
-                new performance.Point(minX, maxY),
-                new performance.Point(minX, minY)
+                new performance$1.Point(minX, minY),
+                new performance$1.Point(maxX, minY),
+                new performance$1.Point(maxX, maxY),
+                new performance$1.Point(minX, maxY),
+                new performance$1.Point(minX, minY)
             ];
         }
+    }
+    /**
+     * Return the distance to the camera in clip space from a LngLat.
+     * This can be compared to the value from the depth buffer (terrain.depthAtPoint)
+     * to determine whether a point is occluded.
+     * @param lngLat - the point
+     * @param elevation - the point's elevation
+     * @returns depth value in clip space (between 0 and 1)
+     */
+    lngLatToCameraDepth(lngLat, elevation) {
+        const coord = this.locationCoordinate(lngLat);
+        const p = [coord.x * this.worldSize, coord.y * this.worldSize, elevation, 1];
+        performance$1.transformMat4(p, p, this.projMatrix);
+        return (p[2] / p[3]);
     }
 }
 
@@ -48395,21 +49178,21 @@ class Hash {
 
 const defaultInertiaOptions = {
     linearity: 0.3,
-    easing: performance.bezier(0, 0, 0.3, 1),
+    easing: performance$1.bezier(0, 0, 0.3, 1),
 };
-const defaultPanInertiaOptions = performance.extend({
+const defaultPanInertiaOptions = performance$1.extend({
     deceleration: 2500,
     maxSpeed: 1400
 }, defaultInertiaOptions);
-const defaultZoomInertiaOptions = performance.extend({
+const defaultZoomInertiaOptions = performance$1.extend({
     deceleration: 20,
     maxSpeed: 1400
 }, defaultInertiaOptions);
-const defaultBearingInertiaOptions = performance.extend({
+const defaultBearingInertiaOptions = performance$1.extend({
     deceleration: 1000,
     maxSpeed: 360
 }, defaultInertiaOptions);
-const defaultPitchInertiaOptions = performance.extend({
+const defaultPitchInertiaOptions = performance$1.extend({
     deceleration: 1000,
     maxSpeed: 90
 }, defaultInertiaOptions);
@@ -48423,10 +49206,10 @@ class HandlerInertia {
     }
     record(settings) {
         this._drainInertiaBuffer();
-        this._inertiaBuffer.push({ time: performance.browser.now(), settings });
+        this._inertiaBuffer.push({ time: browser.now(), settings });
     }
     _drainInertiaBuffer() {
-        const inertia = this._inertiaBuffer, now = performance.browser.now(), cutoff = 160; //msec
+        const inertia = this._inertiaBuffer, now = browser.now(), cutoff = 160; //msec
         while (inertia.length > 0 && now - inertia[0].time > cutoff)
             inertia.shift();
     }
@@ -48439,7 +49222,7 @@ class HandlerInertia {
             zoom: 0,
             bearing: 0,
             pitch: 0,
-            pan: new performance.Point(0, 0),
+            pan: new performance$1.Point(0, 0),
             pinchAround: undefined,
             around: undefined
         };
@@ -48458,7 +49241,7 @@ class HandlerInertia {
         const duration = (lastEntry.time - this._inertiaBuffer[0].time);
         const easeOptions = {};
         if (deltas.pan.mag()) {
-            const result = calculateEasing(deltas.pan.mag(), duration, performance.extend({}, defaultPanInertiaOptions, panInertiaOptions || {}));
+            const result = calculateEasing(deltas.pan.mag(), duration, performance$1.extend({}, defaultPanInertiaOptions, panInertiaOptions || {}));
             easeOptions.offset = deltas.pan.mult(result.amount / deltas.pan.mag());
             easeOptions.center = this._map.transform.center;
             extendDuration(easeOptions, result);
@@ -48470,7 +49253,7 @@ class HandlerInertia {
         }
         if (deltas.bearing) {
             const result = calculateEasing(deltas.bearing, duration, defaultBearingInertiaOptions);
-            easeOptions.bearing = this._map.transform.bearing + performance.clamp(result.amount, -179, 179);
+            easeOptions.bearing = this._map.transform.bearing + performance$1.clamp(result.amount, -179, 179);
             extendDuration(easeOptions, result);
         }
         if (deltas.pitch) {
@@ -48483,7 +49266,7 @@ class HandlerInertia {
             easeOptions.around = last ? this._map.unproject(last) : this._map.getCenter();
         }
         this.clear();
-        return performance.extend(easeOptions, {
+        return performance$1.extend(easeOptions, {
             noMoveStart: true
         });
     }
@@ -48498,7 +49281,7 @@ function extendDuration(easeOptions, result) {
 }
 function calculateEasing(amount, inertiaDuration, inertiaOptions) {
     const { maxSpeed, linearity, deceleration } = inertiaOptions;
-    const speed = performance.clamp(amount * linearity / (inertiaDuration / 1000), -maxSpeed, maxSpeed);
+    const speed = performance$1.clamp(amount * linearity / (inertiaDuration / 1000), -maxSpeed, maxSpeed);
     const duration = Math.abs(speed) / (deceleration * linearity);
     return {
         easing: inertiaOptions.easing,
@@ -48509,6 +49292,9 @@ function calculateEasing(amount, inertiaDuration, inertiaOptions) {
 
 /**
  * `MapMouseEvent` is the event type for mouse-related map events.
+ *
+ * @group Event Related
+ *
  * @example
  * ```ts
  * // The `click` event is an example of a `MapMouseEvent`.
@@ -48520,7 +49306,7 @@ function calculateEasing(amount, inertiaDuration, inertiaOptions) {
  * });
  * ```
  */
-class MapMouseEvent extends performance.Event {
+class MapMouseEvent extends performance$1.Event {
     /**
      * Prevents subsequent default processing of the event by the map.
      *
@@ -48542,9 +49328,9 @@ class MapMouseEvent extends performance.Event {
         return this._defaultPrevented;
     }
     constructor(type, map, originalEvent, data = {}) {
-        const point = DOM.mousePos(map.getCanvasContainer(), originalEvent);
+        const point = DOM.mousePos(map.getCanvas(), originalEvent);
         const lngLat = map.unproject(point);
-        super(type, performance.extend({ point, lngLat, originalEvent }, data));
+        super(type, performance$1.extend({ point, lngLat, originalEvent }, data));
         this._defaultPrevented = false;
         this.target = map;
     }
@@ -48554,7 +49340,7 @@ class MapMouseEvent extends performance.Event {
  *
  * @group Event Related
  */
-class MapTouchEvent extends performance.Event {
+class MapTouchEvent extends performance$1.Event {
     /**
      * Prevents subsequent default processing of the event by the map.
      *
@@ -48579,7 +49365,7 @@ class MapTouchEvent extends performance.Event {
         const lngLats = points.map((t) => map.unproject(t));
         const point = points.reduce((prev, curr, i, arr) => {
             return prev.add(curr.div(arr.length));
-        }, new performance.Point(0, 0));
+        }, new performance$1.Point(0, 0));
         const lngLat = map.unproject(point);
         super(type, { points, point, lngLats, lngLat, originalEvent });
         this._defaultPrevented = false;
@@ -48590,7 +49376,7 @@ class MapTouchEvent extends performance.Event {
  *
  * @group Event Related
  */
-class MapWheelEvent extends performance.Event {
+class MapWheelEvent extends performance$1.Event {
     /**
      * Prevents subsequent default processing of the event by the map.
      *
@@ -48762,7 +49548,7 @@ class TransformProvider {
         return this.transform.bearing;
     }
     unproject(point) {
-        return this.transform.pointLocation(performance.Point.convert(point), this._map.terrain);
+        return this.transform.pointLocation(performance$1.Point.convert(point), this._map.terrain);
     }
 }
 
@@ -48863,7 +49649,7 @@ class BoxZoomHandler {
             this._fireEvent('boxzoomcancel', e);
         }
         else {
-            this._map.fire(new performance.Event('boxzoomend', { originalEvent: e }));
+            this._map.fire(new performance$1.Event('boxzoomend', { originalEvent: e }));
             return {
                 cameraAnimation: map => map.fitScreenCoordinates(p0, p1, this._tr.bearing, { linear: true })
             };
@@ -48889,7 +49675,7 @@ class BoxZoomHandler {
         delete this._lastPos;
     }
     _fireEvent(type, e) {
-        return this._map.fire(new performance.Event(type, { originalEvent: e }));
+        return this._map.fire(new performance$1.Event(type, { originalEvent: e }));
     }
 }
 
@@ -48904,7 +49690,7 @@ function indexTouches(touches, points) {
 }
 
 function getCentroid(points) {
-    const sum = new performance.Point(0, 0);
+    const sum = new performance$1.Point(0, 0);
     for (const point of points) {
         sum._add(point);
     }
@@ -49000,6 +49786,9 @@ class TapRecognizer {
     }
 }
 
+/**
+ * A `TapZoomHandler` allows the user to zoom the map at a point by double tapping
+ */
 class TapZoomHandler {
     constructor(map) {
         this._tr = new TransformProvider(map);
@@ -49275,9 +50064,11 @@ const generateMousePitchHandler = ({ enable, clickTolerance, pitchDegreesPerPixe
     });
 };
 
+/**
+ * A `TouchPanHandler` allows the user to pan the map using touch gestures.
+ */
 class TouchPanHandler {
     constructor(options, map) {
-        this._minTouches = options.cooperativeGestures ? 2 : 1;
         this._clickTolerance = options.clickTolerance || 1;
         this._map = map;
         this.reset();
@@ -49285,34 +50076,23 @@ class TouchPanHandler {
     reset() {
         this._active = false;
         this._touches = {};
-        this._sum = new performance.Point(0, 0);
-        // Put a delay on the cooperative gesture message so it's less twitchy
-        setTimeout(() => {
-            this._cancelCooperativeMessage = false;
-        }, 200);
+        this._sum = new performance$1.Point(0, 0);
+    }
+    minTouchs() {
+        return this._map.cooperativeGestures.isEnabled() ? 2 : 1;
     }
     touchstart(e, points, mapTouches) {
         return this._calculateTransform(e, points, mapTouches);
     }
     touchmove(e, points, mapTouches) {
-        if (this._map._cooperativeGestures) {
-            if (this._minTouches === 2 && mapTouches.length < 2 && !this._cancelCooperativeMessage) {
-                // If coop gesture enabled, show panning info to user
-                this._map._onCooperativeGesture(e, false, mapTouches.length);
-            }
-            else if (!this._cancelCooperativeMessage) {
-                // If user is successfully navigating, we don't need this warning until the touch resets
-                this._cancelCooperativeMessage = true;
-            }
-        }
-        if (!this._active || mapTouches.length < this._minTouches)
+        if (!this._active || mapTouches.length < this.minTouchs())
             return;
         e.preventDefault();
         return this._calculateTransform(e, points, mapTouches);
     }
     touchend(e, points, mapTouches) {
         this._calculateTransform(e, points, mapTouches);
-        if (this._active && mapTouches.length < this._minTouches) {
+        if (this._active && mapTouches.length < this.minTouchs()) {
             this.reset();
         }
     }
@@ -49323,8 +50103,8 @@ class TouchPanHandler {
         if (mapTouches.length > 0)
             this._active = true;
         const touches = indexTouches(mapTouches, points);
-        const touchPointSum = new performance.Point(0, 0);
-        const touchDeltaSum = new performance.Point(0, 0);
+        const touchPointSum = new performance$1.Point(0, 0);
+        const touchDeltaSum = new performance$1.Point(0, 0);
         let touchDeltaCount = 0;
         for (const identifier in touches) {
             const point = touches[identifier];
@@ -49337,7 +50117,7 @@ class TouchPanHandler {
             }
         }
         this._touches = touches;
-        if (touchDeltaCount < this._minTouches || !touchDeltaSum.mag())
+        if (touchDeltaCount < this.minTouchs() || !touchDeltaSum.mag())
             return;
         const panDelta = touchDeltaSum.div(touchDeltaCount);
         this._sum._add(panDelta);
@@ -49367,7 +50147,6 @@ class TouchPanHandler {
 /**
  * The `TwoFingersTouchHandler`s allows the user to zoom, pitch and rotate the map using two fingers
  *
- * @group Handlers
  */
 class TwoFingersTouchHandler {
     /** @internal */
@@ -49447,7 +50226,7 @@ class TwoFingersTouchHandler {
      * @returns  `true` if the "drag to pitch" interaction is enabled.
      */
     isEnabled() {
-        return this._enabled;
+        return !!this._enabled;
     }
     /**
      * Returns a Boolean indicating whether the "drag to pitch" interaction is active, i.e. currently being used.
@@ -49455,7 +50234,7 @@ class TwoFingersTouchHandler {
      * @returns `true` if the "drag to pitch" interaction is active.
      */
     isActive() {
-        return this._active;
+        return !!this._active;
     }
 }
 function getTouchById(mapTouches, points, identifier) {
@@ -49463,6 +50242,7 @@ function getTouchById(mapTouches, points, identifier) {
         if (mapTouches[i].identifier === identifier)
             return points[i];
     }
+    return undefined;
 }
 /* ZOOM */
 const ZOOM_THRESHOLD = 0.1;
@@ -49516,7 +50296,7 @@ class TwoFingersTouchRotateHandler extends TwoFingersTouchHandler {
         this._startVector = this._vector = points[0].sub(points[1]);
         this._minDiameter = points[0].dist(points[1]);
     }
-    _move(points, pinchAround) {
+    _move(points, pinchAround, _e) {
         const lastVector = this._vector;
         this._vector = points[0].sub(points[1]);
         if (!this._active && this._isBelowThreshold(this._vector))
@@ -49557,6 +50337,7 @@ const ALLOWED_SINGLE_TOUCH_TIME = 100;
 class TwoFingersTouchPitchHandler extends TwoFingersTouchHandler {
     constructor(map) {
         super();
+        this._currentTouchCount = 0;
         this._map = map;
     }
     reset() {
@@ -49578,7 +50359,7 @@ class TwoFingersTouchPitchHandler extends TwoFingersTouchHandler {
     }
     _move(points, center, e) {
         // If cooperative gestures is enabled, we need a 3-finger minimum for this gesture to register
-        if (this._map._cooperativeGestures && this._currentTouchCount < 3) {
+        if (this._map.cooperativeGestures.isEnabled() && this._currentTouchCount < 3) {
             return;
         }
         const vectorA = points[0].sub(this._lastPoints[0]);
@@ -49833,7 +50614,6 @@ class ScrollZoomHandler {
         };
         this._map = map;
         this._tr = new TransformProvider(map);
-        this._el = map.getCanvasContainer();
         this._triggerRenderFrame = triggerRenderFrame;
         this._delta = 0;
         this._defaultZoomRate = defaultZoomRate;
@@ -49913,16 +50693,11 @@ class ScrollZoomHandler {
     wheel(e) {
         if (!this.isEnabled())
             return;
-        if (this._map._cooperativeGestures) {
-            if (e[this._map._metaKey]) {
-                e.preventDefault();
-            }
-            else {
-                return;
-            }
+        if (this._map.cooperativeGestures.isEnabled() && !e[this._map.cooperativeGestures._bypassKey]) {
+            return;
         }
         let value = e.deltaMode === WheelEvent.DOM_DELTA_LINE ? e.deltaY * 40 : e.deltaY;
-        const now = performance.browser.now(), timeDelta = now - (this._lastWheelEventTime || 0);
+        const now = browser.now(), timeDelta = now - (this._lastWheelEventTime || 0);
         this._lastWheelEventTime = now;
         if (value !== 0 && (value % wheelZoomDelta) === 0) {
             // This one is definitely a mouse wheel event.
@@ -49978,9 +50753,16 @@ class ScrollZoomHandler {
             clearTimeout(this._finishTimeout);
             delete this._finishTimeout;
         }
-        const pos = DOM.mousePos(this._el, e);
+        const pos = DOM.mousePos(this._map.getCanvas(), e);
         const tr = this._tr;
-        this._around = performance.LngLat.convert(this._aroundCenter ? tr.center : tr.unproject(pos));
+        if (pos.y > tr.transform.height / 2 - tr.transform.getHorizon()) {
+            this._around = performance$1.LngLat.convert(this._aroundCenter ? tr.center : tr.unproject(pos));
+        }
+        else {
+            // Do not use current cursor position if above the horizon to avoid 'unproject' this point
+            // as it is not mapped into 'coords' framebuffer or inversible with 'pixelMatrixInverse'.
+            this._around = performance$1.LngLat.convert(tr.center);
+        }
         this._aroundPoint = tr.transform.locationPoint(this._around);
         if (!this._frameId) {
             this._frameId = true;
@@ -50022,9 +50804,9 @@ class ScrollZoomHandler {
         let finished = false;
         let zoom;
         if (this._type === 'wheel' && startZoom && easing) {
-            const t = Math.min((performance.browser.now() - this._lastWheelEventTime) / 200, 1);
+            const t = Math.min((browser.now() - this._lastWheelEventTime) / 200, 1);
             const k = easing(t);
-            zoom = performance.interpolate.number(startZoom, targetZoom, k);
+            zoom = performance$1.interpolate.number(startZoom, targetZoom, k);
             if (t < 1) {
                 if (!this._frameId) {
                     this._frameId = true;
@@ -50057,18 +50839,18 @@ class ScrollZoomHandler {
         };
     }
     _smoothOutEasing(duration) {
-        let easing = performance.defaultEasing;
+        let easing = performance$1.defaultEasing;
         if (this._prevEase) {
             const currentEase = this._prevEase;
-            const t = (performance.browser.now() - currentEase.start) / currentEase.duration;
+            const t = (browser.now() - currentEase.start) / currentEase.duration;
             const speed = currentEase.easing(t + 0.01) - currentEase.easing(t);
             // Quick hack to make new bezier that is continuous with last
             const x = 0.27 / Math.sqrt(speed * speed + 0.0001) * 0.01;
             const y = Math.sqrt(0.27 * 0.27 - x * x);
-            easing = performance.bezier(x, y, 0.25, 1);
+            easing = performance$1.bezier(x, y, 0.25, 1);
         }
         this._prevEase = {
-            start: performance.browser.now(),
+            start: browser.now(),
             duration,
             easing
         };
@@ -50179,6 +50961,9 @@ class ClickZoomHandler {
     }
 }
 
+/**
+ * A `TapDragZoomHandler` allows the user to zoom the map at a point by double tapping. It also allows the user pan the map by dragging.
+ */
 class TapDragZoomHandler {
     constructor() {
         this._tap = new TapRecognizer({
@@ -50483,8 +51268,99 @@ class TwoFingersTouchZoomRotateHandler {
     }
 }
 
+/**
+ * A `CooperativeGestureHandler` is a control that adds cooperative gesture info when user tries to zoom in/out.
+ *
+ * @group Handlers
+ *
+ * @example
+ * ```ts
+ * const map = new Map({
+ *   cooperativeGestures: true
+ * });
+ * ```
+ * @see [Example: cooperative gestures](https://maplibre.org/maplibre-gl-js-docs/example/cooperative-gestures/)
+ **/
+class CooperativeGesturesHandler {
+    constructor(map, options) {
+        /**
+         * This is the key that will allow to bypass the cooperative gesture protection
+         */
+        this._bypassKey = navigator.userAgent.indexOf('Mac') !== -1 ? 'metaKey' : 'ctrlKey';
+        this._map = map;
+        this._options = options;
+        this._enabled = false;
+    }
+    isActive() {
+        return false;
+    }
+    reset() { }
+    _setupUI() {
+        if (this._container)
+            return;
+        const mapCanvasContainer = this._map.getCanvasContainer();
+        // Add a cooperative gestures class (enable touch-action: pan-x pan-y;)
+        mapCanvasContainer.classList.add('maplibregl-cooperative-gestures');
+        this._container = DOM.create('div', 'maplibregl-cooperative-gesture-screen', mapCanvasContainer);
+        let desktopMessage = this._map._getUIString('CooperativeGesturesHandler.WindowsHelpText');
+        if (this._bypassKey === 'metaKey') {
+            desktopMessage = this._map._getUIString('CooperativeGesturesHandler.MacHelpText');
+        }
+        const mobileMessage = this._map._getUIString('CooperativeGesturesHandler.MobileHelpText');
+        // Create and append the desktop message div
+        const desktopDiv = document.createElement('div');
+        desktopDiv.className = 'maplibregl-desktop-message';
+        desktopDiv.textContent = desktopMessage;
+        this._container.appendChild(desktopDiv);
+        // Create and append the mobile message div
+        const mobileDiv = document.createElement('div');
+        mobileDiv.className = 'maplibregl-mobile-message';
+        mobileDiv.textContent = mobileMessage;
+        this._container.appendChild(mobileDiv);
+        // Remove cooperative gesture screen from the accessibility tree since screenreaders cannot interact with the map using gestures
+        this._container.setAttribute('aria-hidden', 'true');
+    }
+    _destoryUI() {
+        if (this._container) {
+            DOM.remove(this._container);
+            const mapCanvasContainer = this._map.getCanvasContainer();
+            mapCanvasContainer.classList.remove('maplibregl-cooperative-gestures');
+        }
+        delete this._container;
+    }
+    enable() {
+        this._setupUI();
+        this._enabled = true;
+    }
+    disable() {
+        this._enabled = false;
+        this._destoryUI();
+    }
+    isEnabled() {
+        return this._enabled;
+    }
+    touchmove(e) {
+        this._onCooperativeGesture(e.touches.length === 1);
+    }
+    wheel(e) {
+        if (!this._map.scrollZoom.isEnabled()) {
+            return;
+        }
+        this._onCooperativeGesture(!e[this._bypassKey]);
+    }
+    _onCooperativeGesture(showNotification) {
+        if (!this._enabled || !showNotification)
+            return;
+        // Alert user how to scroll/pan
+        this._container.classList.add('maplibregl-show');
+        setTimeout(() => {
+            this._container.classList.remove('maplibregl-show');
+        }, 100);
+    }
+}
+
 const isMoving = p => p.zoom || p.drag || p.pitch || p.rotate;
-class RenderFrameEvent extends performance.Event {
+class RenderFrameEvent extends performance$1.Event {
 }
 function hasChange(result) {
     return (result.panDelta && result.panDelta.mag()) || result.zoomDelta || result.bearingDelta || result.pitchDelta;
@@ -50510,7 +51386,9 @@ class HandlerManager {
             const activeHandlers = {};
             const eventTouches = e.touches;
             const mapTouches = eventTouches ? this._getMapTouches(eventTouches) : undefined;
-            const points = mapTouches ? DOM.touchPos(this._el, mapTouches) : DOM.mousePos(this._el, e);
+            const points = mapTouches ?
+                DOM.touchPos(this._map.getCanvas(), mapTouches) :
+                DOM.mousePos(this._map.getCanvas(), e);
             for (const { handlerName, handler, allowed } of this._handlers) {
                 if (!handler.isEnabled())
                     continue;
@@ -50615,6 +51493,11 @@ class HandlerManager {
         this._add('boxZoom', boxZoom);
         if (options.interactive && options.boxZoom) {
             boxZoom.enable();
+        }
+        const cooperativeGestures = map.cooperativeGestures = new CooperativeGesturesHandler(map, options.cooperativeGestures);
+        this._add('cooperativeGestures', cooperativeGestures);
+        if (options.cooperativeGestures) {
+            cooperativeGestures.enable();
         }
         const tapZoom = new TapZoomHandler(map);
         const clickZoom = new ClickZoomHandler(map);
@@ -50721,7 +51604,7 @@ class HandlerManager {
     mergeHandlerResult(mergedHandlerResult, eventsInProgress, handlerResult, name, e) {
         if (!handlerResult)
             return;
-        performance.extend(mergedHandlerResult, handlerResult);
+        performance$1.extend(mergedHandlerResult, handlerResult);
         const eventData = { handlerName: name, originalEvent: handlerResult.originalEvent || e };
         // track which handler changed which camera property
         if (handlerResult.zoomDelta !== undefined) {
@@ -50743,7 +51626,7 @@ class HandlerManager {
         const combinedDeactivatedHandlers = {};
         for (const [change, eventsInProgress, deactivatedHandlers] of this._changes) {
             if (change.panDelta)
-                combined.panDelta = (combined.panDelta || new performance.Point(0, 0))._add(change.panDelta);
+                combined.panDelta = (combined.panDelta || new performance$1.Point(0, 0))._add(change.panDelta);
             if (change.zoomDelta)
                 combined.zoomDelta = (combined.zoomDelta || 0) + change.zoomDelta;
             if (change.bearingDelta)
@@ -50756,8 +51639,8 @@ class HandlerManager {
                 combined.pinchAround = change.pinchAround;
             if (change.noInertia)
                 combined.noInertia = change.noInertia;
-            performance.extend(combinedEventsInProgress, eventsInProgress);
-            performance.extend(combinedDeactivatedHandlers, deactivatedHandlers);
+            performance$1.extend(combinedEventsInProgress, eventsInProgress);
+            performance$1.extend(combinedDeactivatedHandlers, deactivatedHandlers);
         }
         this._updateMapTransform(combined, combinedEventsInProgress, combinedDeactivatedHandlers);
         this._changes = [];
@@ -50861,7 +51744,7 @@ class HandlerManager {
             this._updatingCamera = true;
             const inertialEase = this._inertia._onMoveEnd(this._map.dragPan._inertiaOptions);
             const shouldSnapToNorth = bearing => bearing !== 0 && -this._bearingSnap < bearing && bearing < this._bearingSnap;
-            if (inertialEase && (inertialEase.essential || !performance.browser.prefersReducedMotion)) {
+            if (inertialEase && (inertialEase.essential || !browser.prefersReducedMotion)) {
                 if (shouldSnapToNorth(inertialEase.bearing || this._map.getBearing())) {
                     inertialEase.bearing = 0;
                 }
@@ -50869,7 +51752,7 @@ class HandlerManager {
                 this._map.easeTo(inertialEase, { originalEvent: originalEndEvent });
             }
             else {
-                this._map.fire(new performance.Event('moveend', { originalEvent: originalEndEvent }));
+                this._map.fire(new performance$1.Event('moveend', { originalEvent: originalEndEvent }));
                 if (shouldSnapToNorth(this._map.getBearing())) {
                     this._map.resetNorth();
                 }
@@ -50878,7 +51761,7 @@ class HandlerManager {
         }
     }
     _fireEvent(type, e) {
-        this._map.fire(new performance.Event(type, e ? { originalEvent: e } : {}));
+        this._map.fire(new performance$1.Event(type, e ? { originalEvent: e } : {}));
     }
     _requestFrame() {
         this._map.triggerRepaint();
@@ -50895,12 +51778,12 @@ class HandlerManager {
     }
 }
 
-class Camera extends performance.Evented {
+class Camera extends performance$1.Evented {
     constructor(transform, options) {
         super();
         // Callback for map._requestRenderFrame
         this._renderFrameCallback = () => {
-            const t = Math.min((performance.browser.now() - this._easeStart) / this._easeOptions.duration, 1);
+            const t = Math.min((browser.now() - this._easeStart) / this._easeOptions.duration, 1);
             this._onEaseFrame(this._easeOptions.easing(t));
             // if _stop is called during _onEaseFrame from _fireMoveEvents we should avoid a new _requestRenderFrame, checking it by ensuring _easeFrameId was not deleted
             if (t < 1 && this._easeFrameId) {
@@ -50930,7 +51813,7 @@ class Camera extends performance.Evented {
      * let {lng, lat} = map.getCenter();
      * ```
      */
-    getCenter() { return new performance.LngLat(this.transform.center.lng, this.transform.center.lat); }
+    getCenter() { return new performance$1.LngLat(this.transform.center.lng, this.transform.center.lat); }
     /**
      * Sets the map's geographical centerpoint. Equivalent to `jumpTo({center: center})`.
      *
@@ -50959,8 +51842,8 @@ class Camera extends performance.Evented {
      * @see [Navigate the map with game-like controls](https://maplibre.org/maplibre-gl-js/docs/examples/game-controls/)
      */
     panBy(offset, options, eventData) {
-        offset = performance.Point.convert(offset).mult(-1);
-        return this.panTo(this.transform.center, performance.extend({ offset }, options), eventData);
+        offset = performance$1.Point.convert(offset).mult(-1);
+        return this.panTo(this.transform.center, performance$1.extend({ offset }, options), eventData);
     }
     /**
      * Pans the map to the specified location with an animated transition.
@@ -50980,7 +51863,7 @@ class Camera extends performance.Evented {
      * @see [Update a feature in realtime](https://maplibre.org/maplibre-gl-js/docs/examples/live-update-feature/)
      */
     panTo(lnglat, options, eventData) {
-        return this.easeTo(performance.extend({
+        return this.easeTo(performance$1.extend({
             center: lnglat
         }, options), eventData);
     }
@@ -51033,7 +51916,7 @@ class Camera extends performance.Evented {
      * ```
      */
     zoomTo(zoom, options, eventData) {
-        return this.easeTo(performance.extend({
+        return this.easeTo(performance$1.extend({
             zoom
         }, options), eventData);
     }
@@ -51140,7 +52023,7 @@ class Camera extends performance.Evented {
      * @returns `this`
      */
     rotateTo(bearing, options, eventData) {
-        return this.easeTo(performance.extend({
+        return this.easeTo(performance$1.extend({
             bearing
         }, options), eventData);
     }
@@ -51154,7 +52037,7 @@ class Camera extends performance.Evented {
      * @returns `this`
      */
     resetNorth(options, eventData) {
-        this.rotateTo(0, performance.extend({ duration: 1000 }, options), eventData);
+        this.rotateTo(0, performance$1.extend({ duration: 1000 }, options), eventData);
         return this;
     }
     /**
@@ -51167,7 +52050,7 @@ class Camera extends performance.Evented {
      * @returns `this`
      */
     resetNorthPitch(options, eventData) {
-        this.easeTo(performance.extend({
+        this.easeTo(performance$1.extend({
             bearing: 0,
             pitch: 0,
             duration: 1000
@@ -51257,7 +52140,7 @@ class Camera extends performance.Evented {
             right: 0,
             left: 0
         };
-        options = performance.extend({
+        options = performance$1.extend({
             padding: defaultPadding,
             offset: [0, 0],
             maxZoom: this.transform.maxZoom
@@ -51271,35 +52154,43 @@ class Camera extends performance.Evented {
                 left: p
             };
         }
-        options.padding = performance.extend(defaultPadding, options.padding);
+        options.padding = performance$1.extend(defaultPadding, options.padding);
         const tr = this.transform;
         const edgePadding = tr.padding;
-        // We want to calculate the upper right and lower left of the box defined by p0 and p1
-        // in a coordinate system rotate to match the destination bearing.
-        const p0world = tr.project(performance.LngLat.convert(p0));
-        const p1world = tr.project(performance.LngLat.convert(p1));
-        const p0rotated = p0world.rotate(-bearing * Math.PI / 180);
-        const p1rotated = p1world.rotate(-bearing * Math.PI / 180);
-        const upperRight = new performance.Point(Math.max(p0rotated.x, p1rotated.x), Math.max(p0rotated.y, p1rotated.y));
-        const lowerLeft = new performance.Point(Math.min(p0rotated.x, p1rotated.x), Math.min(p0rotated.y, p1rotated.y));
+        // Consider all corners of the rotated bounding box derived from the given points
+        // when find the camera position that fits the given points.
+        const bounds = new LngLatBounds(p0, p1);
+        const nwWorld = tr.project(bounds.getNorthWest());
+        const neWorld = tr.project(bounds.getNorthEast());
+        const seWorld = tr.project(bounds.getSouthEast());
+        const swWorld = tr.project(bounds.getSouthWest());
+        const bearingRadians = performance$1.degreesToRadians(-bearing);
+        const nwRotatedWorld = nwWorld.rotate(bearingRadians);
+        const neRotatedWorld = neWorld.rotate(bearingRadians);
+        const seRotatedWorld = seWorld.rotate(bearingRadians);
+        const swRotatedWorld = swWorld.rotate(bearingRadians);
+        const upperRight = new performance$1.Point(Math.max(nwRotatedWorld.x, neRotatedWorld.x, swRotatedWorld.x, seRotatedWorld.x), Math.max(nwRotatedWorld.y, neRotatedWorld.y, swRotatedWorld.y, seRotatedWorld.y));
+        const lowerLeft = new performance$1.Point(Math.min(nwRotatedWorld.x, neRotatedWorld.x, swRotatedWorld.x, seRotatedWorld.x), Math.min(nwRotatedWorld.y, neRotatedWorld.y, swRotatedWorld.y, seRotatedWorld.y));
         // Calculate zoom: consider the original bbox and padding.
         const size = upperRight.sub(lowerLeft);
         const scaleX = (tr.width - (edgePadding.left + edgePadding.right + options.padding.left + options.padding.right)) / size.x;
         const scaleY = (tr.height - (edgePadding.top + edgePadding.bottom + options.padding.top + options.padding.bottom)) / size.y;
         if (scaleY < 0 || scaleX < 0) {
-            performance.warnOnce('Map cannot fit within canvas with the given bounds, padding, and/or offset.');
+            performance$1.warnOnce('Map cannot fit within canvas with the given bounds, padding, and/or offset.');
             return undefined;
         }
         const zoom = Math.min(tr.scaleZoom(tr.scale * Math.min(scaleX, scaleY)), options.maxZoom);
         // Calculate center: apply the zoom, the configured offset, as well as offset that exists as a result of padding.
-        const offset = performance.Point.convert(options.offset);
+        const offset = performance$1.Point.convert(options.offset);
         const paddingOffsetX = (options.padding.left - options.padding.right) / 2;
         const paddingOffsetY = (options.padding.top - options.padding.bottom) / 2;
-        const paddingOffset = new performance.Point(paddingOffsetX, paddingOffsetY);
-        const rotatedPaddingOffset = paddingOffset.rotate(bearing * Math.PI / 180);
+        const paddingOffset = new performance$1.Point(paddingOffsetX, paddingOffsetY);
+        const rotatedPaddingOffset = paddingOffset.rotate(performance$1.degreesToRadians(bearing));
         const offsetAtInitialZoom = offset.add(rotatedPaddingOffset);
         const offsetAtFinalZoom = offsetAtInitialZoom.mult(tr.scale / tr.zoomScale(zoom));
-        const center = tr.unproject(p0world.add(p1world).div(2).sub(offsetAtFinalZoom));
+        const center = tr.unproject(
+        // either world diagonal can be used (NW-SE or NE-SW)
+        nwWorld.add(seWorld).div(2).sub(offsetAtFinalZoom));
         return {
             center,
             zoom,
@@ -51314,7 +52205,7 @@ class Camera extends performance.Evented {
      *
      * @param bounds - Center these bounds in the viewport and use the highest
      * zoom level up to and including `Map#getMaxZoom()` that fits them in the viewport.
-     * @param options- Options supports all properties from {@link AnimationOptions} and {@link CameraOptions} in addition to the fields below.
+     * @param options - Options supports all properties from {@link AnimationOptions} and {@link CameraOptions} in addition to the fields below.
      * @param eventData - Additional properties to be added to event objects of events triggered by this method.
      * @returns `this`
      * @example
@@ -51353,13 +52244,13 @@ class Camera extends performance.Evented {
      * @see Used by {@link BoxZoomHandler}
      */
     fitScreenCoordinates(p0, p1, bearing, options, eventData) {
-        return this._fitInternal(this._cameraForBoxAndBearing(this.transform.pointLocation(performance.Point.convert(p0)), this.transform.pointLocation(performance.Point.convert(p1)), bearing, options), options, eventData);
+        return this._fitInternal(this._cameraForBoxAndBearing(this.transform.pointLocation(performance$1.Point.convert(p0)), this.transform.pointLocation(performance$1.Point.convert(p1)), bearing, options), options, eventData);
     }
     _fitInternal(calculatedOptions, options, eventData) {
         // cameraForBounds warns + returns undefined if unable to fit:
         if (!calculatedOptions)
             return this;
-        options = performance.extend(calculatedOptions, options);
+        options = performance$1.extend(calculatedOptions, options);
         // Explicitly remove the padding field because, calculatedOptions already accounts for padding by setting zoom and center accordingly.
         delete options.padding;
         return options.linear ?
@@ -51401,7 +52292,7 @@ class Camera extends performance.Evented {
             tr.zoom = +options.zoom;
         }
         if (options.center !== undefined) {
-            tr.center = performance.LngLat.convert(options.center);
+            tr.center = performance$1.LngLat.convert(options.center);
         }
         if ('bearing' in options && tr.bearing !== +options.bearing) {
             bearingChanged = true;
@@ -51415,24 +52306,24 @@ class Camera extends performance.Evented {
             tr.padding = options.padding;
         }
         this._applyUpdatedTransform(tr);
-        this.fire(new performance.Event('movestart', eventData))
-            .fire(new performance.Event('move', eventData));
+        this.fire(new performance$1.Event('movestart', eventData))
+            .fire(new performance$1.Event('move', eventData));
         if (zoomChanged) {
-            this.fire(new performance.Event('zoomstart', eventData))
-                .fire(new performance.Event('zoom', eventData))
-                .fire(new performance.Event('zoomend', eventData));
+            this.fire(new performance$1.Event('zoomstart', eventData))
+                .fire(new performance$1.Event('zoom', eventData))
+                .fire(new performance$1.Event('zoomend', eventData));
         }
         if (bearingChanged) {
-            this.fire(new performance.Event('rotatestart', eventData))
-                .fire(new performance.Event('rotate', eventData))
-                .fire(new performance.Event('rotateend', eventData));
+            this.fire(new performance$1.Event('rotatestart', eventData))
+                .fire(new performance$1.Event('rotate', eventData))
+                .fire(new performance$1.Event('rotateend', eventData));
         }
         if (pitchChanged) {
-            this.fire(new performance.Event('pitchstart', eventData))
-                .fire(new performance.Event('pitch', eventData))
-                .fire(new performance.Event('pitchend', eventData));
+            this.fire(new performance$1.Event('pitchstart', eventData))
+                .fire(new performance$1.Event('pitch', eventData))
+                .fire(new performance$1.Event('pitchend', eventData));
         }
-        return this.fire(new performance.Event('moveend', eventData));
+        return this.fire(new performance$1.Event('moveend', eventData));
     }
     /**
      * Calculates pitch, zoom and bearing for looking at `newCenter` with the camera position being `newCenter`
@@ -51444,8 +52335,8 @@ class Camera extends performance.Evented {
      * @returns the calculated camera options
      */
     calculateCameraOptionsFromTo(from, altitudeFrom, to, altitudeTo = 0) {
-        const fromMerc = performance.MercatorCoordinate.fromLngLat(from, altitudeFrom);
-        const toMerc = performance.MercatorCoordinate.fromLngLat(to, altitudeTo);
+        const fromMerc = performance$1.MercatorCoordinate.fromLngLat(from, altitudeFrom);
+        const toMerc = performance$1.MercatorCoordinate.fromLngLat(to, altitudeTo);
         const dx = toMerc.x - fromMerc.x;
         const dy = toMerc.y - fromMerc.y;
         const dz = toMerc.z - fromMerc.z;
@@ -51483,26 +52374,27 @@ class Camera extends performance.Evented {
      * @see [Navigate the map with game-like controls](https://maplibre.org/maplibre-gl-js/docs/examples/game-controls/)
      */
     easeTo(options, eventData) {
+        var _a;
         this._stop(false, options.easeId);
-        options = performance.extend({
+        options = performance$1.extend({
             offset: [0, 0],
             duration: 500,
-            easing: performance.defaultEasing
+            easing: performance$1.defaultEasing
         }, options);
-        if (options.animate === false || (!options.essential && performance.browser.prefersReducedMotion))
+        if (options.animate === false || (!options.essential && browser.prefersReducedMotion))
             options.duration = 0;
-        const tr = this._getTransformForUpdate(), startZoom = this.getZoom(), startBearing = this.getBearing(), startPitch = this.getPitch(), startPadding = this.getPadding(), zoom = 'zoom' in options ? +options.zoom : startZoom, bearing = 'bearing' in options ? this._normalizeBearing(options.bearing, startBearing) : startBearing, pitch = 'pitch' in options ? +options.pitch : startPitch, padding = 'padding' in options ? options.padding : tr.padding;
-        const offsetAsPoint = performance.Point.convert(options.offset);
+        const tr = this._getTransformForUpdate(), startZoom = this.getZoom(), startBearing = this.getBearing(), startPitch = this.getPitch(), startPadding = this.getPadding(), bearing = 'bearing' in options ? this._normalizeBearing(options.bearing, startBearing) : startBearing, pitch = 'pitch' in options ? +options.pitch : startPitch, padding = 'padding' in options ? options.padding : tr.padding;
+        const offsetAsPoint = performance$1.Point.convert(options.offset);
         let pointAtOffset = tr.centerPoint.add(offsetAsPoint);
         const locationAtOffset = tr.pointLocation(pointAtOffset);
-        const center = performance.LngLat.convert(options.center || locationAtOffset);
+        const { center, zoom } = tr.getConstrained(performance$1.LngLat.convert(options.center || locationAtOffset), (_a = options.zoom) !== null && _a !== void 0 ? _a : startZoom);
         this._normalizeCenter(center);
         const from = tr.project(locationAtOffset);
         const delta = tr.project(center).sub(from);
         const finalScale = tr.zoomScale(zoom - startZoom);
         let around, aroundPoint;
         if (options.around) {
-            around = performance.LngLat.convert(options.around);
+            around = performance$1.LngLat.convert(options.around);
             aroundPoint = tr.locationPoint(around);
         }
         const currently = {
@@ -51521,13 +52413,13 @@ class Camera extends performance.Evented {
             this._prepareElevation(center);
         this._ease((k) => {
             if (this._zooming) {
-                tr.zoom = performance.interpolate.number(startZoom, zoom, k);
+                tr.zoom = performance$1.interpolate.number(startZoom, zoom, k);
             }
             if (this._rotating) {
-                tr.bearing = performance.interpolate.number(startBearing, bearing, k);
+                tr.bearing = performance$1.interpolate.number(startBearing, bearing, k);
             }
             if (this._pitching) {
-                tr.pitch = performance.interpolate.number(startPitch, pitch, k);
+                tr.pitch = performance$1.interpolate.number(startPitch, pitch, k);
             }
             if (this._padding) {
                 tr.interpolatePadding(startPadding, padding, k);
@@ -51561,16 +52453,16 @@ class Camera extends performance.Evented {
     _prepareEase(eventData, noMoveStart, currently = {}) {
         this._moving = true;
         if (!noMoveStart && !currently.moving) {
-            this.fire(new performance.Event('movestart', eventData));
+            this.fire(new performance$1.Event('movestart', eventData));
         }
         if (this._zooming && !currently.zooming) {
-            this.fire(new performance.Event('zoomstart', eventData));
+            this.fire(new performance$1.Event('zoomstart', eventData));
         }
         if (this._rotating && !currently.rotating) {
-            this.fire(new performance.Event('rotatestart', eventData));
+            this.fire(new performance$1.Event('rotatestart', eventData));
         }
         if (this._pitching && !currently.pitching) {
-            this.fire(new performance.Event('pitchstart', eventData));
+            this.fire(new performance$1.Event('pitchstart', eventData));
         }
     }
     _prepareElevation(center) {
@@ -51580,7 +52472,7 @@ class Camera extends performance.Evented {
         this._elevationFreeze = true;
     }
     _updateElevation(k) {
-        this.transform._minEleveationForCurrentTile = this.terrain.getMinTileElevationForLngLatZoom(this._elevationCenter, this.transform.tileZoom);
+        this.transform.minElevationForCurrentTile = this.terrain.getMinTileElevationForLngLatZoom(this._elevationCenter, this.transform.tileZoom);
         const elevation = this.terrain.getElevationForLngLatZoom(this._elevationCenter, this.transform.tileZoom);
         // target terrain updated during flight, slowly move camera to new height
         if (k < 1 && elevation !== this._elevationTarget) {
@@ -51589,7 +52481,7 @@ class Camera extends performance.Evented {
             this._elevationStart += k * (pitch1 - pitch2);
             this._elevationTarget = elevation;
         }
-        this.transform.elevation = performance.interpolate.number(this._elevationStart, this._elevationTarget, k);
+        this.transform.elevation = performance$1.interpolate.number(this._elevationStart, this._elevationTarget, k);
     }
     _finalizeElevation() {
         this._elevationFreeze = false;
@@ -51635,15 +52527,15 @@ class Camera extends performance.Evented {
         this.transform.apply(nextTransform);
     }
     _fireMoveEvents(eventData) {
-        this.fire(new performance.Event('move', eventData));
+        this.fire(new performance$1.Event('move', eventData));
         if (this._zooming) {
-            this.fire(new performance.Event('zoom', eventData));
+            this.fire(new performance$1.Event('zoom', eventData));
         }
         if (this._rotating) {
-            this.fire(new performance.Event('rotate', eventData));
+            this.fire(new performance$1.Event('rotate', eventData));
         }
         if (this._pitching) {
-            this.fire(new performance.Event('pitch', eventData));
+            this.fire(new performance$1.Event('pitch', eventData));
         }
     }
     _afterEase(eventData, easeId) {
@@ -51662,15 +52554,15 @@ class Camera extends performance.Evented {
         this._pitching = false;
         this._padding = false;
         if (wasZooming) {
-            this.fire(new performance.Event('zoomend', eventData));
+            this.fire(new performance$1.Event('zoomend', eventData));
         }
         if (wasRotating) {
-            this.fire(new performance.Event('rotateend', eventData));
+            this.fire(new performance$1.Event('rotateend', eventData));
         }
         if (wasPitching) {
-            this.fire(new performance.Event('pitchend', eventData));
+            this.fire(new performance$1.Event('pitchend', eventData));
         }
-        this.fire(new performance.Event('moveend', eventData));
+        this.fire(new performance$1.Event('moveend', eventData));
     }
     /**
      * Changes any combination of center, zoom, bearing, and pitch, animating the transition along a curve that
@@ -51709,9 +52601,10 @@ class Camera extends performance.Evented {
      * @see [Fly to a location based on scroll position](https://maplibre.org/maplibre-gl-js/docs/examples/scroll-fly-to/)
      */
     flyTo(options, eventData) {
+        var _a;
         // Fall through to jumpTo if user has set prefers-reduced-motion
-        if (!options.essential && performance.browser.prefersReducedMotion) {
-            const coercedOptions = performance.pick(options, ['center', 'zoom', 'bearing', 'pitch', 'around']);
+        if (!options.essential && browser.prefersReducedMotion) {
+            const coercedOptions = performance$1.pick(options, ['center', 'zoom', 'bearing', 'pitch', 'around']);
             return this.jumpTo(coercedOptions, eventData);
         }
         // This method implements an “optimal path” animation, as detailed in:
@@ -51722,23 +52615,22 @@ class Camera extends performance.Evented {
         // Where applicable, local variable documentation begins with the associated variable or
         // function in van Wijk (2003).
         this.stop();
-        options = performance.extend({
+        options = performance$1.extend({
             offset: [0, 0],
             speed: 1.2,
             curve: 1.42,
-            easing: performance.defaultEasing
+            easing: performance$1.defaultEasing
         }, options);
         const tr = this._getTransformForUpdate(), startZoom = this.getZoom(), startBearing = this.getBearing(), startPitch = this.getPitch(), startPadding = this.getPadding();
-        const zoom = 'zoom' in options ? performance.clamp(+options.zoom, tr.minZoom, tr.maxZoom) : startZoom;
         const bearing = 'bearing' in options ? this._normalizeBearing(options.bearing, startBearing) : startBearing;
         const pitch = 'pitch' in options ? +options.pitch : startPitch;
         const padding = 'padding' in options ? options.padding : tr.padding;
-        const scale = tr.zoomScale(zoom - startZoom);
-        const offsetAsPoint = performance.Point.convert(options.offset);
+        const offsetAsPoint = performance$1.Point.convert(options.offset);
         let pointAtOffset = tr.centerPoint.add(offsetAsPoint);
         const locationAtOffset = tr.pointLocation(pointAtOffset);
-        const center = performance.LngLat.convert(options.center || locationAtOffset);
+        const { center, zoom } = tr.getConstrained(performance$1.LngLat.convert(options.center || locationAtOffset), (_a = options.zoom) !== null && _a !== void 0 ? _a : startZoom);
         this._normalizeCenter(center);
+        const scale = tr.zoomScale(zoom - startZoom);
         const from = tr.project(locationAtOffset);
         const delta = tr.project(center).sub(from);
         let rho = options.curve;
@@ -51750,7 +52642,7 @@ class Camera extends performance.Evented {
         // the world image origin at the initial scale.
         u1 = delta.mag();
         if ('minZoom' in options) {
-            const minZoom = performance.clamp(Math.min(options.minZoom, startZoom, zoom), tr.minZoom, tr.maxZoom);
+            const minZoom = performance$1.clamp(Math.min(options.minZoom, startZoom, zoom), tr.minZoom, tr.maxZoom);
             // w<sub>m</sub>: Maximum visible span, measured in pixels with respect to the initial
             // scale.
             const wMax = w0 / tr.zoomScale(minZoom - startZoom);
@@ -51817,10 +52709,10 @@ class Camera extends performance.Evented {
             const scale = 1 / w(s);
             tr.zoom = k === 1 ? zoom : startZoom + tr.scaleZoom(scale);
             if (this._rotating) {
-                tr.bearing = performance.interpolate.number(startBearing, bearing, k);
+                tr.bearing = performance$1.interpolate.number(startBearing, bearing, k);
             }
             if (this._pitching) {
-                tr.pitch = performance.interpolate.number(startPitch, pitch, k);
+                tr.pitch = performance$1.interpolate.number(startPitch, pitch, k);
             }
             if (this._padding) {
                 tr.interpolatePadding(startPadding, padding, k);
@@ -51879,7 +52771,7 @@ class Camera extends performance.Evented {
             finish();
         }
         else {
-            this._easeStart = performance.browser.now();
+            this._easeStart = browser.now();
             this._easeOptions = options;
             this._onEaseFrame = frame;
             this._onEaseEnd = finish;
@@ -51888,7 +52780,7 @@ class Camera extends performance.Evented {
     }
     // convert bearing so that it's numerically close to the current one so that it interpolates properly
     _normalizeBearing(bearing, currentBearing) {
-        bearing = performance.wrap(bearing, -180, 180);
+        bearing = performance$1.wrap(bearing, -180, 180);
         const diff = Math.abs(bearing - currentBearing);
         if (Math.abs(bearing - 360 - currentBearing) < diff)
             bearing -= 360;
@@ -51908,32 +52800,34 @@ class Camera extends performance.Evented {
                 delta < -180 ? 360 : 0;
     }
     /**
-     * Query the current elevation of location. It return null if terrain is not enabled. the elevation is in meters relative to mean sea-level
+     * Get the elevation difference between a given point
+     * and a point that is currently in the middle of the screen.
+     * This method should be used for proper positioning of custom 3d objects, as explained [here](https://maplibre.org/maplibre-gl-js/docs/examples/add-3d-model-with-terrain/)
+     * Returns null if terrain is not enabled.
+     * This method is subject to change in Maplibre GL JS v5.
      * @param lngLatLike - [x,y] or LngLat coordinates of the location
-     * @returns elevation in meters
+     * @returns elevation offset in meters
      */
     queryTerrainElevation(lngLatLike) {
         if (!this.terrain) {
             return null;
         }
-        const elevation = this.terrain.getElevationForLngLatZoom(performance.LngLat.convert(lngLatLike), this.transform.tileZoom);
-        /**
-         * Different zoomlevels with different terrain-tiles the elevation-values are not the same.
-         * map.transform.elevation variable with the center-altitude.
-         * In maplibre the proj-matrix is translated by this value in negative z-direction.
-         * So we need to add this value to the elevation to get the correct value.
-         */
+        const elevation = this.terrain.getElevationForLngLatZoom(performance$1.LngLat.convert(lngLatLike), this.transform.tileZoom);
         return elevation - this.transform.elevation;
     }
 }
 
+const defaultAtributionControlOptions = {
+    compact: true,
+    customAttribution: '<a href="https://maplibre.org/" target="_blank">MapLibre</a>'
+};
 /**
  * An `AttributionControl` control presents the map's attribution information. By default, the attribution control is expanded (regardless of map width).
  * @group Markers and Controls
  * @example
  * ```ts
- * let map = new maplibregl.Map({attributionControl: false})
- *     .addControl(new maplibregl.AttributionControl({
+ * let map = new Map({attributionControl: false})
+ *     .addControl(new AttributionControl({
  *         compact: true
  *     }));
  * ```
@@ -51942,7 +52836,7 @@ class AttributionControl {
     /**
      * @param options - the attribution options
      */
-    constructor(options = {}) {
+    constructor(options = defaultAtributionControlOptions) {
         this._toggleAttribution = () => {
             if (this._container.classList.contains('maplibregl-compact')) {
                 if (this._container.classList.contains('maplibregl-compact-show')) {
@@ -51992,7 +52886,7 @@ class AttributionControl {
     /** {@inheritDoc IControl.onAdd} */
     onAdd(map) {
         this._map = map;
-        this._compact = this.options && this.options.compact;
+        this._compact = this.options.compact;
         this._container = DOM.create('details', 'maplibregl-ctrl maplibregl-ctrl-attrib');
         this._compactButton = DOM.create('summary', 'maplibregl-ctrl-attrib-button', this._container);
         this._compactButton.addEventListener('click', this._toggleAttribution);
@@ -52093,7 +52987,7 @@ class AttributionControl {
  *
  * @example
  * ```ts
- * map.addControl(new maplibregl.LogoControl({compact: false}));
+ * map.addControl(new LogoControl({compact: false}));
  * ```
  **/
 class LogoControl {
@@ -52191,27 +53085,7 @@ class TaskQueue {
     }
 }
 
-const defaultLocale = {
-    'AttributionControl.ToggleAttribution': 'Toggle attribution',
-    'AttributionControl.MapFeedback': 'Map feedback',
-    'FullscreenControl.Enter': 'Enter fullscreen',
-    'FullscreenControl.Exit': 'Exit fullscreen',
-    'GeolocateControl.FindMyLocation': 'Find my location',
-    'GeolocateControl.LocationNotAvailable': 'Location not available',
-    'LogoControl.Title': 'Mapbox logo',
-    'NavigationControl.ResetBearing': 'Reset bearing to north',
-    'NavigationControl.ZoomIn': 'Zoom in',
-    'NavigationControl.ZoomOut': 'Zoom out',
-    'ScaleControl.Feet': 'ft',
-    'ScaleControl.Meters': 'm',
-    'ScaleControl.Kilometers': 'km',
-    'ScaleControl.Miles': 'mi',
-    'ScaleControl.NauticalMiles': 'nm',
-    'TerrainControl.enableTerrain': 'Enable terrain',
-    'TerrainControl.disableTerrain': 'Disable terrain'
-};
-
-var pos3dAttributes = performance.createLayout([
+var pos3dAttributes = performance$1.createLayout([
     { name: 'a_pos3d', type: 'Int16', components: 3 }
 ]);
 
@@ -52224,7 +53098,7 @@ var pos3dAttributes = performance.createLayout([
  *   - finds all necessary renderToTexture tiles for a OverscaledTileID area
  *   - finds the corresponding raster-dem tile for OverscaledTileID
  */
-class TerrainSourceCache extends performance.Evented {
+class TerrainSourceCache extends performance$1.Evented {
     constructor(sourceCache) {
         super();
         this.sourceCache = sourceCache;
@@ -52264,7 +53138,7 @@ class TerrainSourceCache extends performance.Evented {
             this._renderableTilesKeys.push(tileID.key);
             if (!this._tiles[tileID.key]) {
                 tileID.posMatrix = new Float64Array(16);
-                performance.ortho(tileID.posMatrix, 0, performance.EXTENT, 0, performance.EXTENT, 0, 1);
+                performance$1.ortho(tileID.posMatrix, 0, performance$1.EXTENT, 0, performance$1.EXTENT, 0, 1);
                 this._tiles[tileID.key] = new Tile(tileID, this.tileSize);
             }
         }
@@ -52312,7 +53186,7 @@ class TerrainSourceCache extends performance.Evented {
             if (_tileID.canonical.equals(tileID.canonical)) {
                 const coord = tileID.clone();
                 coord.posMatrix = new Float64Array(16);
-                performance.ortho(coord.posMatrix, 0, performance.EXTENT, 0, performance.EXTENT, 0, 1);
+                performance$1.ortho(coord.posMatrix, 0, performance$1.EXTENT, 0, performance$1.EXTENT, 0, 1);
                 coords[key] = coord;
             }
             else if (_tileID.canonical.isChildOf(tileID.canonical)) {
@@ -52321,9 +53195,9 @@ class TerrainSourceCache extends performance.Evented {
                 const dz = _tileID.canonical.z - tileID.canonical.z;
                 const dx = _tileID.canonical.x - (_tileID.canonical.x >> dz << dz);
                 const dy = _tileID.canonical.y - (_tileID.canonical.y >> dz << dz);
-                const size = performance.EXTENT >> dz;
-                performance.ortho(coord.posMatrix, 0, size, 0, size, 0, 1);
-                performance.translate(coord.posMatrix, coord.posMatrix, [-dx * size, -dy * size, 0]);
+                const size = performance$1.EXTENT >> dz;
+                performance$1.ortho(coord.posMatrix, 0, size, 0, size, 0, 1);
+                performance$1.translate(coord.posMatrix, coord.posMatrix, [-dx * size, -dy * size, 0]);
                 coords[key] = coord;
             }
             else if (tileID.canonical.isChildOf(_tileID.canonical)) {
@@ -52332,10 +53206,10 @@ class TerrainSourceCache extends performance.Evented {
                 const dz = tileID.canonical.z - _tileID.canonical.z;
                 const dx = tileID.canonical.x - (tileID.canonical.x >> dz << dz);
                 const dy = tileID.canonical.y - (tileID.canonical.y >> dz << dz);
-                const size = performance.EXTENT >> dz;
-                performance.ortho(coord.posMatrix, 0, performance.EXTENT, 0, performance.EXTENT, 0, 1);
-                performance.translate(coord.posMatrix, coord.posMatrix, [dx * size, dy * size, 0]);
-                performance.scale(coord.posMatrix, coord.posMatrix, [1 / (2 ** dz), 1 / (2 ** dz), 0]);
+                const size = performance$1.EXTENT >> dz;
+                performance$1.ortho(coord.posMatrix, 0, performance$1.EXTENT, 0, performance$1.EXTENT, 0, 1);
+                performance$1.translate(coord.posMatrix, coord.posMatrix, [dx * size, dy * size, 0]);
+                performance$1.scale(coord.posMatrix, coord.posMatrix, [1 / (2 ** dz), 1 / (2 ** dz), 0]);
                 coords[key] = coord;
             }
         }
@@ -52365,7 +53239,7 @@ class TerrainSourceCache extends performance.Evented {
         return tile;
     }
     /**
-     * get a list of tiles, loaded after a spezific time. This is used to update depth & coords framebuffers.
+     * get a list of tiles, loaded after a specific time. This is used to update depth & coords framebuffers.
      * @param time - the time
      * @returns the relevant tiles
      */
@@ -52422,7 +53296,7 @@ class Terrain {
      * @param extent - optional, default 8192
      * @returns the elevation
      */
-    getDEMElevation(tileID, x, y, extent = performance.EXTENT) {
+    getDEMElevation(tileID, x, y, extent = performance$1.EXTENT) {
         var _a;
         if (!(x >= 0 && x < extent && y >= 0 && y < extent))
             return 0;
@@ -52430,7 +53304,7 @@ class Terrain {
         const dem = (_a = terrain.tile) === null || _a === void 0 ? void 0 : _a.dem;
         if (!dem)
             return 0;
-        const pos = performance.transformMat4$1([], [x / extent * performance.EXTENT, y / extent * performance.EXTENT], terrain.u_terrain_matrix);
+        const pos = performance$1.transformMat4$1([], [x / extent * performance$1.EXTENT, y / extent * performance$1.EXTENT], terrain.u_terrain_matrix);
         const coord = [pos[0] * dem.dim, pos[1] * dem.dim];
         // bilinear interpolation
         const cx = Math.floor(coord[0]), cy = Math.floor(coord[1]), tx = coord[0] - cx, ty = coord[1] - cy;
@@ -52447,7 +53321,7 @@ class Terrain {
      */
     getElevationForLngLatZoom(lnglat, zoom) {
         const { tileID, mercatorX, mercatorY } = this._getOverscaledTileIDFromLngLatZoom(lnglat, zoom);
-        return this.getElevation(tileID, mercatorX % performance.EXTENT, mercatorY % performance.EXTENT, performance.EXTENT);
+        return this.getElevation(tileID, mercatorX % performance$1.EXTENT, mercatorY % performance$1.EXTENT, performance$1.EXTENT);
     }
     /**
      * Get the elevation for given coordinate in respect of exaggeration.
@@ -52457,7 +53331,7 @@ class Terrain {
      * @param extent - optional, default 8192
      * @returns the elevation
      */
-    getElevation(tileID, x, y, extent = performance.EXTENT) {
+    getElevation(tileID, x, y, extent = performance$1.EXTENT) {
         return this.getDEMElevation(tileID, x, y, extent) * this.exaggeration;
     }
     /**
@@ -52470,12 +53344,12 @@ class Terrain {
         // creates an empty depth-buffer texture which is needed, during the initialization process of the 3d mesh..
         if (!this._emptyDemTexture) {
             const context = this.painter.context;
-            const image = new performance.RGBAImage({ width: 1, height: 1 }, new Uint8Array(1 * 4));
+            const image = new performance$1.RGBAImage({ width: 1, height: 1 }, new Uint8Array(1 * 4));
             this._emptyDepthTexture = new Texture(context, image, context.gl.RGBA, { premultiply: false });
             this._emptyDemUnpack = [0, 0, 0, 0];
-            this._emptyDemTexture = new Texture(context, new performance.RGBAImage({ width: 1, height: 1 }), context.gl.RGBA, { premultiply: false });
+            this._emptyDemTexture = new Texture(context, new performance$1.RGBAImage({ width: 1, height: 1 }), context.gl.RGBA, { premultiply: false });
             this._emptyDemTexture.bind(context.gl.NEAREST, context.gl.CLAMP_TO_EDGE);
-            this._emptyDemMatrix = performance.identity([]);
+            this._emptyDemMatrix = performance$1.identity([]);
         }
         // find covering dem tile and prepare demTexture
         const sourceTile = this.sourceCache.getSourceTile(tileID, true);
@@ -52498,12 +53372,12 @@ class Terrain {
                 if (tileID.canonical.z >= maxzoom)
                     dz = tileID.canonical.z - maxzoom;
                 else
-                    performance.warnOnce('cannot calculate elevation if elevation maxzoom > source.maxzoom');
+                    performance$1.warnOnce('cannot calculate elevation if elevation maxzoom > source.maxzoom');
             }
             const dx = tileID.canonical.x - (tileID.canonical.x >> dz << dz);
             const dy = tileID.canonical.y - (tileID.canonical.y >> dz << dz);
-            const demMatrix = performance.fromScaling(new Float64Array(16), [1 / (performance.EXTENT << dz), 1 / (performance.EXTENT << dz), 0]);
-            performance.translate(demMatrix, demMatrix, [dx * performance.EXTENT, dy * performance.EXTENT, 0]);
+            const demMatrix = performance$1.fromScaling(new Float64Array(16), [1 / (performance$1.EXTENT << dz), 1 / (performance$1.EXTENT << dz), 0]);
+            performance$1.translate(demMatrix, demMatrix, [dx * performance$1.EXTENT, dy * performance$1.EXTENT, 0]);
             this._demMatrixCache[tileID.key] = { matrix: demMatrix, coord: tileID };
         }
         // return uniform values & textures
@@ -52573,7 +53447,7 @@ class Terrain {
                 data[i + 2] = ((x >> 8) << 4) | (y >> 8);
                 data[i + 3] = 0;
             }
-        const image = new performance.RGBAImage({ width: this._coordsTextureSize, height: this._coordsTextureSize }, new Uint8Array(data.buffer));
+        const image = new performance$1.RGBAImage({ width: this._coordsTextureSize, height: this._coordsTextureSize }, new Uint8Array(data.buffer));
         const texture = new Texture(context, image, context.gl.RGBA, { premultiply: false });
         texture.bind(context.gl.NEAREST, context.gl.CLAMP_TO_EDGE);
         this._coordsTexture = texture;
@@ -52585,11 +53459,16 @@ class Terrain {
      * @returns mercator coordinate for a screen pixel
      */
     pointCoordinate(p) {
+        // First, ensure the coords framebuffer is up to date.
+        this.painter.maybeDrawDepthAndCoords(true);
         const rgba = new Uint8Array(4);
         const context = this.painter.context, gl = context.gl;
+        const px = Math.round(p.x * this.painter.pixelRatio / devicePixelRatio);
+        const py = Math.round(p.y * this.painter.pixelRatio / devicePixelRatio);
+        const fbHeight = Math.round(this.painter.height / devicePixelRatio);
         // grab coordinate pixel from coordinates framebuffer
         context.bindFramebuffer.set(this.getFramebuffer('coords').framebuffer);
-        gl.readPixels(p.x, this.painter.height / devicePixelRatio - p.y - 1, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, rgba);
+        gl.readPixels(px, fbHeight - py - 1, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, rgba);
         context.bindFramebuffer.set(null);
         // decode coordinates (encoding see getCoordsTexture)
         const x = rgba[0] + ((rgba[2] >> 4) << 8);
@@ -52600,8 +53479,22 @@ class Terrain {
             return null;
         const coordsSize = this._coordsTextureSize;
         const worldSize = (1 << tile.tileID.canonical.z) * coordsSize;
-        const mercatorX = (tile.tileID.canonical.x * coordsSize + x) / worldSize;
-        return new performance.MercatorCoordinate(this._allowMercatorOverflow(p, mercatorX), (tile.tileID.canonical.y * coordsSize + y) / worldSize, this.getElevation(tile.tileID, x, y, coordsSize));
+        return new performance$1.MercatorCoordinate((tile.tileID.canonical.x * coordsSize + x) / worldSize + tile.tileID.wrap, (tile.tileID.canonical.y * coordsSize + y) / worldSize, this.getElevation(tile.tileID, x, y, coordsSize));
+    }
+    /**
+     * Reads the depth value from the depth-framebuffer at a given screen pixel
+     * @param p - Screen coordinate
+     * @returns depth value in clip space (between 0 and 1)
+     */
+    depthAtPoint(p) {
+        const rgba = new Uint8Array(4);
+        const context = this.painter.context, gl = context.gl;
+        context.bindFramebuffer.set(this.getFramebuffer('depth').framebuffer);
+        gl.readPixels(p.x, this.painter.height / devicePixelRatio - p.y - 1, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, rgba);
+        context.bindFramebuffer.set(null);
+        // decode coordinates (encoding see terran_depth.fragment.glsl)
+        const depthValue = (rgba[0] / (256 * 256 * 256) + rgba[1] / (256 * 256) + rgba[2] / 256 + rgba[3]) / 256;
+        return depthValue;
     }
     /**
      * create a regular mesh which will be used by all terrain-tiles
@@ -52611,10 +53504,10 @@ class Terrain {
         if (this._mesh)
             return this._mesh;
         const context = this.painter.context;
-        const vertexArray = new performance.Pos3dArray();
-        const indexArray = new performance.TriangleIndexArray();
+        const vertexArray = new performance$1.Pos3dArray();
+        const indexArray = new performance$1.TriangleIndexArray();
         const meshSize = this.meshSize;
-        const delta = performance.EXTENT / meshSize;
+        const delta = performance$1.EXTENT / meshSize;
         const meshSize2 = meshSize * meshSize;
         for (let y = 0; y <= meshSize; y++)
             for (let x = 0; x <= meshSize; x++)
@@ -52630,7 +53523,7 @@ class Terrain {
         for (const y of [0, 1])
             for (let x = 0; x <= meshSize; x++)
                 for (const z of [0, 1])
-                    vertexArray.emplaceBack(x * delta, y * performance.EXTENT, z);
+                    vertexArray.emplaceBack(x * delta, y * performance$1.EXTENT, z);
         for (let x = 0; x < meshSize * 2; x += 2) {
             indexArray.emplaceBack(offsetBottom + x, offsetBottom + x + 1, offsetBottom + x + 3);
             indexArray.emplaceBack(offsetBottom + x, offsetBottom + x + 3, offsetBottom + x + 2);
@@ -52641,7 +53534,7 @@ class Terrain {
         for (const x of [0, 1])
             for (let y = 0; y <= meshSize; y++)
                 for (const z of [0, 1])
-                    vertexArray.emplaceBack(x * performance.EXTENT, y * delta, z);
+                    vertexArray.emplaceBack(x * performance$1.EXTENT, y * delta, z);
         for (let y = 0; y < meshSize * 2; y += 2) {
             indexArray.emplaceBack(offsetLeft + y, offsetLeft + y + 1, offsetLeft + y + 3);
             indexArray.emplaceBack(offsetLeft + y, offsetLeft + y + 3, offsetLeft + y + 2);
@@ -52651,7 +53544,7 @@ class Terrain {
         this._mesh = {
             indexBuffer: context.createIndexBuffer(indexArray),
             vertexBuffer: context.createVertexBuffer(vertexArray, pos3dAttributes.members),
-            segments: performance.SegmentVector.simpleSegment(0, 0, vertexArray.length, indexArray.length)
+            segments: performance$1.SegmentVector.simpleSegment(0, 0, vertexArray.length, indexArray.length)
         };
         return this._mesh;
     }
@@ -52663,7 +53556,7 @@ class Terrain {
      */
     getMeshFrameDelta(zoom) {
         // divide by 5 is evaluated by trial & error to get a frame in the right height
-        return 2 * Math.PI * performance.earthRadius / Math.pow(2, zoom) / 5;
+        return 2 * Math.PI * performance$1.earthRadius / Math.pow(2, zoom) / 5;
     }
     getMinTileElevationForLngLatZoom(lnglat, zoom) {
         var _a;
@@ -52688,28 +53581,17 @@ class Terrain {
         return minMax;
     }
     _getOverscaledTileIDFromLngLatZoom(lnglat, zoom) {
-        const mercatorCoordinate = performance.MercatorCoordinate.fromLngLat(lnglat.wrap());
-        const worldSize = (1 << zoom) * performance.EXTENT;
+        const mercatorCoordinate = performance$1.MercatorCoordinate.fromLngLat(lnglat.wrap());
+        const worldSize = (1 << zoom) * performance$1.EXTENT;
         const mercatorX = mercatorCoordinate.x * worldSize;
         const mercatorY = mercatorCoordinate.y * worldSize;
-        const tileX = Math.floor(mercatorX / performance.EXTENT), tileY = Math.floor(mercatorY / performance.EXTENT);
-        const tileID = new performance.OverscaledTileID(zoom, 0, zoom, tileX, tileY);
+        const tileX = Math.floor(mercatorX / performance$1.EXTENT), tileY = Math.floor(mercatorY / performance$1.EXTENT);
+        const tileID = new performance$1.OverscaledTileID(zoom, 0, zoom, tileX, tileY);
         return {
             tileID,
             mercatorX,
             mercatorY
         };
-    }
-    _allowMercatorOverflow(p, mercatorX) {
-        const inLeftHalf = p.x < (this.painter.width / 2);
-        let lng = performance.lngFromMercatorX(mercatorX);
-        const centerLng = this.painter.transform.center.lng;
-        if ((inLeftHalf && Math.sign(lng) > 0 && Math.sign(centerLng) < 0) ||
-            (!inLeftHalf && Math.sign(lng) < 0 && Math.sign(centerLng) > 0)) {
-            lng = 360 * Math.sign(centerLng) + lng;
-            return performance.mercatorXfromLng(lng);
-        }
-        return mercatorX;
     }
 }
 
@@ -52900,7 +53782,7 @@ class RenderToTexture {
                 tile.rtt[stack] = { id: obj.id, stamp: obj.stamp };
                 // prepare PoolObject for rendering
                 painter.context.bindFramebuffer.set(obj.fbo.framebuffer);
-                painter.context.clear({ color: performance.Color.transparent, stencil: 0 });
+                painter.context.clear({ color: performance$1.Color.transparent, stencil: 0 });
                 painter.currentStencilSource = undefined;
                 for (let l = 0; l < layers.length; l++) {
                     const layer = painter.style._layers[layers[l]];
@@ -52920,6 +53802,29 @@ class RenderToTexture {
         return false;
     }
 }
+
+const defaultLocale = {
+    'AttributionControl.ToggleAttribution': 'Toggle attribution',
+    'AttributionControl.MapFeedback': 'Map feedback',
+    'FullscreenControl.Enter': 'Enter fullscreen',
+    'FullscreenControl.Exit': 'Exit fullscreen',
+    'GeolocateControl.FindMyLocation': 'Find my location',
+    'GeolocateControl.LocationNotAvailable': 'Location not available',
+    'LogoControl.Title': 'MapLibre logo',
+    'NavigationControl.ResetBearing': 'Reset bearing to north',
+    'NavigationControl.ZoomIn': 'Zoom in',
+    'NavigationControl.ZoomOut': 'Zoom out',
+    'ScaleControl.Feet': 'ft',
+    'ScaleControl.Meters': 'm',
+    'ScaleControl.Kilometers': 'km',
+    'ScaleControl.Miles': 'mi',
+    'ScaleControl.NauticalMiles': 'nm',
+    'TerrainControl.Enable': 'Enable terrain',
+    'TerrainControl.Disable': 'Disable terrain',
+    'CooperativeGesturesHandler.WindowsHelpText': 'Use Ctrl + scroll to zoom the map',
+    'CooperativeGesturesHandler.MacHelpText': 'Use ⌘ + scroll to zoom the map',
+    'CooperativeGesturesHandler.MobileHelpText': 'Use two fingers to move the map',
+};
 
 const version$1 = packageJSON.version;
 const defaultMinZoom = -2;
@@ -52947,12 +53852,12 @@ const defaultOptions$4 = {
     doubleClickZoom: true,
     touchZoomRotate: true,
     touchPitch: true,
-    cooperativeGestures: undefined,
+    cooperativeGestures: false,
     bearingSnap: 7,
     clickTolerance: 3,
     pitchWithRotate: true,
     hash: false,
-    attributionControl: true,
+    attributionControl: defaultAtributionControlOptions,
     maplibreLogo: false,
     failIfMajorPerformanceCaveat: false,
     preserveDrawingBuffer: false,
@@ -52960,7 +53865,7 @@ const defaultOptions$4 = {
     renderWorldCopies: true,
     refreshExpiredTiles: true,
     maxTileCacheSize: null,
-    maxTileCacheZoomLevels: performance.config.MAX_TILE_CACHE_ZOOM_LEVELS,
+    maxTileCacheZoomLevels: performance$1.config.MAX_TILE_CACHE_ZOOM_LEVELS,
     localIdeographFontFamily: 'sans-serif',
     transformRequest: null,
     transformCameraUpdate: null,
@@ -52982,7 +53887,7 @@ const defaultOptions$4 = {
  *
  * @example
  * ```ts
- * let map = new maplibregl.Map({
+ * let map = new Map({
  *   container: 'map',
  *   center: [-122.420679, 37.772537],
  *   zoom: 13,
@@ -53003,8 +53908,8 @@ const defaultOptions$4 = {
  */
 let Map$1 = class Map extends Camera {
     constructor(options) {
-        performance.PerformanceUtils.mark(performance.PerformanceMarkers.create);
-        options = performance.extend({}, defaultOptions$4, options);
+        performance$1.PerformanceUtils.mark(performance$1.PerformanceMarkers.create);
+        options = performance$1.extend({}, defaultOptions$4, options);
         if (options.minZoom != null && options.maxZoom != null && options.minZoom > options.maxZoom) {
             throw new Error('maxZoom must be greater than or equal to minZoom');
         }
@@ -53019,22 +53924,19 @@ let Map$1 = class Map extends Camera {
         }
         const transform = new Transform(options.minZoom, options.maxZoom, options.minPitch, options.maxPitch, options.renderWorldCopies);
         super(transform, { bearingSnap: options.bearingSnap });
-        this._cooperativeGesturesOnWheel = (event) => {
-            this._onCooperativeGesture(event, event[this._metaKey], 1);
-        };
         this._contextLost = (event) => {
             event.preventDefault();
-            if (this._frame) {
-                this._frame.cancel();
-                this._frame = null;
+            if (this._frameRequest) {
+                this._frameRequest.abort();
+                this._frameRequest = null;
             }
-            this.fire(new performance.Event('webglcontextlost', { originalEvent: event }));
+            this.fire(new performance$1.Event('webglcontextlost', { originalEvent: event }));
         };
         this._contextRestored = (event) => {
             this._setupPainter();
             this.resize();
             this._update();
-            this.fire(new performance.Event('webglcontextrestored', { originalEvent: event }));
+            this.fire(new performance$1.Event('webglcontextrestored', { originalEvent: event }));
         };
         this._onMapScroll = (event) => {
             if (event.target !== this._container)
@@ -53048,8 +53950,6 @@ let Map$1 = class Map extends Camera {
             this._update();
         };
         this._interactive = options.interactive;
-        this._cooperativeGestures = options.cooperativeGestures;
-        this._metaKey = navigator.platform.indexOf('Mac') === 0 ? 'metaKey' : 'ctrlKey';
         this._maxTileCacheSize = options.maxTileCacheSize;
         this._maxTileCacheZoomLevels = options.maxTileCacheZoomLevels;
         this._failIfMajorPerformanceCaveat = options.failIfMajorPerformanceCaveat;
@@ -53064,8 +53964,8 @@ let Map$1 = class Map extends Camera {
         this._collectResourceTiming = options.collectResourceTiming;
         this._renderTaskQueue = new TaskQueue();
         this._controls = [];
-        this._mapId = performance.uniqueId();
-        this._locale = performance.extend({}, defaultLocale, options.locale);
+        this._mapId = performance$1.uniqueId();
+        this._locale = performance$1.extend({}, defaultLocale, options.locale);
         this._clickTolerance = options.clickTolerance;
         this._overridePixelRatio = options.pixelRatio;
         this._maxCanvasSize = options.maxCanvasSize;
@@ -53115,9 +54015,6 @@ let Map$1 = class Map extends Camera {
             this._resizeObserver.observe(this._container);
         }
         this.handlers = new HandlerManager(this, options);
-        if (this._cooperativeGestures) {
-            this._setupCooperativeGestures();
-        }
         const hashName = (typeof options.hash === 'string' && options.hash) || undefined;
         this._hash = options.hash && (new Hash(hashName)).addTo(this);
         // don't set position from options if set through hash
@@ -53130,7 +54027,7 @@ let Map$1 = class Map extends Camera {
             });
             if (options.bounds) {
                 this.resize();
-                this.fitBounds(options.bounds, performance.extend({}, options.fitBoundsOptions, { duration: 0 }));
+                this.fitBounds(options.bounds, performance$1.extend({}, options.fitBoundsOptions, { duration: 0 }));
             }
         }
         this.resize();
@@ -53139,7 +54036,7 @@ let Map$1 = class Map extends Camera {
         if (options.style)
             this.setStyle(options.style, { localIdeographFontFamily: options.localIdeographFontFamily });
         if (options.attributionControl)
-            this.addControl(new AttributionControl({ customAttribution: options.customAttribution }));
+            this.addControl(new AttributionControl(typeof options.attributionControl === 'boolean' ? undefined : options.attributionControl));
         if (options.maplibreLogo)
             this.addControl(new LogoControl(), options.logoPosition);
         this.on('style.load', () => {
@@ -53149,13 +54046,13 @@ let Map$1 = class Map extends Camera {
         });
         this.on('data', (event) => {
             this._update(event.dataType === 'style');
-            this.fire(new performance.Event(`${event.dataType}data`, event));
+            this.fire(new performance$1.Event(`${event.dataType}data`, event));
         });
         this.on('dataloading', (event) => {
-            this.fire(new performance.Event(`${event.dataType}dataloading`, event));
+            this.fire(new performance$1.Event(`${event.dataType}dataloading`, event));
         });
         this.on('dataabort', (event) => {
-            this.fire(new performance.Event('sourcedataabort', event));
+            this.fire(new performance$1.Event('sourcedataabort', event));
         });
     }
     /**
@@ -53179,7 +54076,7 @@ let Map$1 = class Map extends Camera {
      * @example
      * Add zoom and rotation controls to the map.
      * ```ts
-     * map.addControl(new maplibregl.NavigationControl());
+     * map.addControl(new NavigationControl());
      * ```
      * @see [Display map navigation controls](https://maplibre.org/maplibre-gl-js/docs/examples/navigation/)
      */
@@ -53193,7 +54090,7 @@ let Map$1 = class Map extends Camera {
             }
         }
         if (!control || !control.onAdd) {
-            return this.fire(new performance.ErrorEvent(new Error('Invalid argument to map.addControl(). Argument must be a control with onAdd and onRemove methods.')));
+            return this.fire(new performance$1.ErrorEvent(new Error('Invalid argument to map.addControl(). Argument must be a control with onAdd and onRemove methods.')));
         }
         const controlElement = control.onAdd(this);
         this._controls.push(control);
@@ -53216,7 +54113,7 @@ let Map$1 = class Map extends Camera {
      * @example
      * ```ts
      * // Define a new navigation control.
-     * let navigation = new maplibregl.NavigationControl();
+     * let navigation = new NavigationControl();
      * // Add zoom and rotation controls to the map.
      * map.addControl(navigation);
      * // Remove zoom and rotation controls from the map.
@@ -53225,7 +54122,7 @@ let Map$1 = class Map extends Camera {
      */
     removeControl(control) {
         if (!control || !control.onRemove) {
-            return this.fire(new performance.ErrorEvent(new Error('Invalid argument to map.removeControl(). Argument must be a control with onAdd and onRemove methods.')));
+            return this.fire(new performance$1.ErrorEvent(new Error('Invalid argument to map.removeControl(). Argument must be a control with onAdd and onRemove methods.')));
         }
         const ci = this._controls.indexOf(control);
         if (ci > -1)
@@ -53241,7 +54138,7 @@ let Map$1 = class Map extends Camera {
      * @example
      * ```ts
      * // Define a new navigation control.
-     * let navigation = new maplibregl.NavigationControl();
+     * let navigation = new NavigationControl();
      * // Add zoom and rotation controls to the map.
      * map.addControl(navigation);
      * // Check that the navigation control exists on the map.
@@ -53300,12 +54197,12 @@ let Map$1 = class Map extends Camera {
         const fireMoving = !this._moving;
         if (fireMoving) {
             this.stop();
-            this.fire(new performance.Event('movestart', eventData))
-                .fire(new performance.Event('move', eventData));
+            this.fire(new performance$1.Event('movestart', eventData))
+                .fire(new performance$1.Event('move', eventData));
         }
-        this.fire(new performance.Event('resize', eventData));
+        this.fire(new performance$1.Event('resize', eventData));
         if (fireMoving)
-            this.fire(new performance.Event('moveend', eventData));
+            this.fire(new performance$1.Event('moveend', eventData));
         return this;
     }
     /**
@@ -53537,6 +54434,7 @@ let Map$1 = class Map extends Camera {
     getMaxPitch() { return this.transform.maxPitch; }
     /**
      * Returns the state of `renderWorldCopies`. If `true`, multiple copies of the world will be rendered side by side beyond -180 and 180 degrees longitude. If set to `false`:
+     *
      * - When the map is zoomed out far enough that a single representation of the world does not fill the map's entire
      * container, there will be blank space beyond 180 and -180 degrees longitude.
      * - Features that cross 180 and -180 degrees longitude will be cut in two (with one portion on the right edge of the
@@ -53553,6 +54451,7 @@ let Map$1 = class Map extends Camera {
      * Sets the state of `renderWorldCopies`.
      *
      * @param renderWorldCopies - If `true`, multiple copies of the world will be rendered side by side beyond -180 and 180 degrees longitude. If set to `false`:
+     *
      * - When the map is zoomed out far enough that a single representation of the world does not fill the map's entire
      * container, there will be blank space beyond 180 and -180 degrees longitude.
      * - Features that cross 180 and -180 degrees longitude will be cut in two (with one portion on the right edge of the
@@ -53571,30 +54470,6 @@ let Map$1 = class Map extends Camera {
         return this._update();
     }
     /**
-     * Gets the map's cooperativeGestures option
-     *
-     * @returns The gestureOptions
-     */
-    getCooperativeGestures() {
-        return this._cooperativeGestures;
-    }
-    /**
-     * Sets or clears the map's cooperativeGestures option
-     *
-     * @param gestureOptions - If `true` or set to an options object, map is only accessible on desktop while holding Command/Ctrl and only accessible on mobile with two fingers. Interacting with the map using normal gestures will trigger an informational screen. With this option enabled, "drag to pitch" requires a three-finger gesture.
-     * @returns `this`
-     */
-    setCooperativeGestures(gestureOptions) {
-        this._cooperativeGestures = gestureOptions;
-        if (this._cooperativeGestures) {
-            this._setupCooperativeGestures();
-        }
-        else {
-            this._destroyCooperativeGestures();
-        }
-        return this;
-    }
-    /**
      * Returns a [Point](https://github.com/mapbox/point-geometry) representing pixel coordinates, relative to the map's `container`,
      * that correspond to the specified geographical location.
      *
@@ -53607,7 +54482,7 @@ let Map$1 = class Map extends Camera {
      * ```
      */
     project(lnglat) {
-        return this.transform.locationPoint(performance.LngLat.convert(lnglat), this.style && this.terrain);
+        return this.transform.locationPoint(performance$1.LngLat.convert(lnglat), this.style && this.terrain);
     }
     /**
      * Returns a {@link LngLat} representing geographical coordinates that correspond
@@ -53624,7 +54499,7 @@ let Map$1 = class Map extends Camera {
      * ```
      */
     unproject(point) {
-        return this.transform.pointLocation(performance.Point.convert(point), this.terrain);
+        return this.transform.pointLocation(performance$1.Point.convert(point), this.terrain);
     }
     /**
      * Returns true if the map is panning, zooming, rotating, or pitching due to a camera animation or user gesture.
@@ -53842,16 +54717,16 @@ let Map$1 = class Map extends Camera {
             return [];
         }
         let queryGeometry;
-        const isGeometry = geometryOrOptions instanceof performance.Point || Array.isArray(geometryOrOptions);
+        const isGeometry = geometryOrOptions instanceof performance$1.Point || Array.isArray(geometryOrOptions);
         const geometry = isGeometry ? geometryOrOptions : [[0, 0], [this.transform.width, this.transform.height]];
         options = options || (isGeometry ? {} : geometryOrOptions) || {};
-        if (geometry instanceof performance.Point || typeof geometry[0] === 'number') {
-            queryGeometry = [performance.Point.convert(geometry)];
+        if (geometry instanceof performance$1.Point || typeof geometry[0] === 'number') {
+            queryGeometry = [performance$1.Point.convert(geometry)];
         }
         else {
-            const tl = performance.Point.convert(geometry[0]);
-            const br = performance.Point.convert(geometry[1]);
-            queryGeometry = [tl, new performance.Point(br.x, tl.y), br, new performance.Point(tl.x, br.y), tl];
+            const tl = performance$1.Point.convert(geometry[0]);
+            const br = performance$1.Point.convert(geometry[1]);
+            queryGeometry = [tl, new performance$1.Point(br.x, tl.y), br, new performance$1.Point(tl.x, br.y), tl];
         }
         return this.style.queryRenderedFeatures(queryGeometry, options, this.transform);
     }
@@ -53937,7 +54812,7 @@ let Map$1 = class Map extends Camera {
      * ```
      */
     setStyle(style, options) {
-        options = performance.extend({}, {
+        options = performance$1.extend({}, {
             localIdeographFontFamily: this._localIdeographFontFamily,
             validate: this._validateStyle
         }, options);
@@ -54012,13 +54887,12 @@ let Map$1 = class Map extends Camera {
     _diffStyle(style, options) {
         if (typeof style === 'string') {
             const url = style;
-            const request = this._requestManager.transformRequest(url, ResourceType.Style);
-            performance.getJSON(request, (error, json) => {
+            const request = this._requestManager.transformRequest(url, "Style" /* ResourceType.Style */);
+            performance$1.getJSON(request, new AbortController()).then((response) => {
+                this._updateDiff(response.data, options);
+            }).catch((error) => {
                 if (error) {
-                    this.fire(new performance.ErrorEvent(error));
-                }
-                else if (json) {
-                    this._updateDiff(json, options);
+                    this.fire(new performance$1.ErrorEvent(error));
                 }
             });
         }
@@ -54033,7 +54907,7 @@ let Map$1 = class Map extends Camera {
             }
         }
         catch (e) {
-            performance.warnOnce(`Unable to perform style diff: ${e.message || e.error || e}.  Rebuilding the style from scratch.`);
+            performance$1.warnOnce(`Unable to perform style diff: ${e.message || e.error || e}.  Rebuilding the style from scratch.`);
             this._updateStyle(style, options);
         }
     }
@@ -54065,7 +54939,7 @@ let Map$1 = class Map extends Camera {
      */
     isStyleLoaded() {
         if (!this.style)
-            return performance.warnOnce('There is no style added to the map.');
+            return performance$1.warnOnce('There is no style added to the map.');
         return this.style.loaded();
     }
     /**
@@ -54127,7 +55001,7 @@ let Map$1 = class Map extends Camera {
     isSourceLoaded(id) {
         const source = this.style && this.style.sourceCaches[id];
         if (source === undefined) {
-            this.fire(new performance.ErrorEvent(new Error(`There is no source with ID '${id}'`)));
+            this.fire(new performance$1.ErrorEvent(new Error(`There is no source with ID '${id}'`)));
             return;
         }
         return source.loaded();
@@ -54157,7 +55031,7 @@ let Map$1 = class Map extends Camera {
             if (this.painter.renderToTexture)
                 this.painter.renderToTexture.destruct();
             this.painter.renderToTexture = null;
-            this.transform._minEleveationForCurrentTile = 0;
+            this.transform.minElevationForCurrentTile = 0;
             this.transform.elevation = 0;
         }
         else {
@@ -54165,16 +55039,19 @@ let Map$1 = class Map extends Camera {
             const sourceCache = this.style.sourceCaches[options.source];
             if (!sourceCache)
                 throw new Error(`cannot load terrain, because there exists no source with ID: ${options.source}`);
+            // Update terrain tiles when adding new terrain
+            if (this.terrain === null)
+                sourceCache.reload();
             // Warn once if user is using the same source for hillshade and terrain
             for (const index in this.style._layers) {
                 const thisLayer = this.style._layers[index];
                 if (thisLayer.type === 'hillshade' && thisLayer.source === options.source) {
-                    performance.warnOnce('You are using the same source for a hillshade layer and for 3D terrain. Please consider using two separate sources to improve rendering quality.');
+                    performance$1.warnOnce('You are using the same source for a hillshade layer and for 3D terrain. Please consider using two separate sources to improve rendering quality.');
                 }
             }
             this.terrain = new Terrain(this.painter, sourceCache, options);
             this.painter.renderToTexture = new RenderToTexture(this.painter, this.terrain);
-            this.transform._minEleveationForCurrentTile = this.terrain.getMinTileElevationForLngLatZoom(this.transform.center, this.transform.tileZoom);
+            this.transform.minElevationForCurrentTile = this.terrain.getMinTileElevationForLngLatZoom(this.transform.center, this.transform.tileZoom);
             this.transform.elevation = this.terrain.getElevationForLngLatZoom(this.transform.center, this.transform.tileZoom);
             this._terrainDataCallback = e => {
                 if (e.dataType === 'style') {
@@ -54182,7 +55059,7 @@ let Map$1 = class Map extends Camera {
                 }
                 else if (e.dataType === 'source' && e.tile) {
                     if (e.sourceId === options.source && !this._elevationFreeze) {
-                        this.transform._minEleveationForCurrentTile = this.terrain.getMinTileElevationForLngLatZoom(this.transform.center, this.transform.tileZoom);
+                        this.transform.minElevationForCurrentTile = this.terrain.getMinTileElevationForLngLatZoom(this.transform.center, this.transform.tileZoom);
                         this.transform.elevation = this.terrain.getElevationForLngLatZoom(this.transform.center, this.transform.tileZoom);
                     }
                     this.terrain.sourceCache.freeRtt(e.tile.tileID);
@@ -54190,7 +55067,7 @@ let Map$1 = class Map extends Camera {
             };
             this.style.on('data', this._terrainDataCallback);
         }
-        this.fire(new performance.Event('terrain', { terrain: options }));
+        this.fire(new performance$1.Event('terrain', { terrain: options }));
         return this;
     }
     /**
@@ -54227,17 +55104,6 @@ let Map$1 = class Map extends Camera {
             }
         }
         return true;
-    }
-    /**
-     * Adds a [custom source type](#Custom Sources), making it available for use with
-     * {@link Map#addSource}.
-     * @param name - The name of the source type; source definition objects use this name in the `{type: ...}` field.
-     * @param SourceType - A {@link Source} constructor.
-     * @param callback - Called when the source type is ready or with an error argument if there is an error.
-     */
-    addSourceType(name, SourceType, callback) {
-        this._lazyInitEmptyStyle();
-        return this.style.addSourceType(name, SourceType, callback);
     }
     /**
      * Removes a source from the map's style.
@@ -54322,19 +55188,19 @@ let Map$1 = class Map extends Camera {
         const { pixelRatio = 1, sdf = false, stretchX, stretchY, content } = options;
         this._lazyInitEmptyStyle();
         const version = 0;
-        if (image instanceof HTMLImageElement || performance.isImageBitmap(image)) {
-            const { width, height, data } = performance.browser.getImageData(image);
-            this.style.addImage(id, { data: new performance.RGBAImage({ width, height }, data), pixelRatio, stretchX, stretchY, content, sdf, version });
+        if (image instanceof HTMLImageElement || performance$1.isImageBitmap(image)) {
+            const { width, height, data } = browser.getImageData(image);
+            this.style.addImage(id, { data: new performance$1.RGBAImage({ width, height }, data), pixelRatio, stretchX, stretchY, content, sdf, version });
         }
         else if (image.width === undefined || image.height === undefined) {
-            return this.fire(new performance.ErrorEvent(new Error('Invalid arguments to map.addImage(). The second argument must be an `HTMLImageElement`, `ImageData`, `ImageBitmap`, ' +
+            return this.fire(new performance$1.ErrorEvent(new Error('Invalid arguments to map.addImage(). The second argument must be an `HTMLImageElement`, `ImageData`, `ImageBitmap`, ' +
                 'or object with `width`, `height`, and `data` properties with the same format as `ImageData`')));
         }
         else {
             const { width, height, data } = image;
             const userImage = image;
             this.style.addImage(id, {
-                data: new performance.RGBAImage({ width, height }, new Uint8Array(data)),
+                data: new performance$1.RGBAImage({ width, height }, new Uint8Array(data)),
                 pixelRatio,
                 stretchX,
                 stretchY,
@@ -54373,20 +55239,20 @@ let Map$1 = class Map extends Camera {
     updateImage(id, image) {
         const existingImage = this.style.getImage(id);
         if (!existingImage) {
-            return this.fire(new performance.ErrorEvent(new Error('The map has no image with that id. If you are adding a new image use `map.addImage(...)` instead.')));
+            return this.fire(new performance$1.ErrorEvent(new Error('The map has no image with that id. If you are adding a new image use `map.addImage(...)` instead.')));
         }
-        const imageData = (image instanceof HTMLImageElement || performance.isImageBitmap(image)) ?
-            performance.browser.getImageData(image) :
+        const imageData = (image instanceof HTMLImageElement || performance$1.isImageBitmap(image)) ?
+            browser.getImageData(image) :
             image;
         const { width, height, data } = imageData;
         if (width === undefined || height === undefined) {
-            return this.fire(new performance.ErrorEvent(new Error('Invalid arguments to map.updateImage(). The second argument must be an `HTMLImageElement`, `ImageData`, `ImageBitmap`, ' +
+            return this.fire(new performance$1.ErrorEvent(new Error('Invalid arguments to map.updateImage(). The second argument must be an `HTMLImageElement`, `ImageData`, `ImageBitmap`, ' +
                 'or object with `width`, `height`, and `data` properties with the same format as `ImageData`')));
         }
         if (width !== existingImage.data.width || height !== existingImage.data.height) {
-            return this.fire(new performance.ErrorEvent(new Error('The width and height of the updated image must be that same as the previous version of the image')));
+            return this.fire(new performance$1.ErrorEvent(new Error('The width and height of the updated image must be that same as the previous version of the image')));
         }
-        const copy = !(image instanceof HTMLImageElement || performance.isImageBitmap(image));
+        const copy = !(image instanceof HTMLImageElement || performance$1.isImageBitmap(image));
         existingImage.data.replace(data, copy);
         this.style.updateImage(id, existingImage);
         return this;
@@ -54425,7 +55291,7 @@ let Map$1 = class Map extends Camera {
      */
     hasImage(id) {
         if (!id) {
-            this.fire(new performance.ErrorEvent(new Error('Missing required image id')));
+            this.fire(new performance$1.ErrorEvent(new Error('Missing required image id')));
             return false;
         }
         return !!this.style.getImage(id);
@@ -54452,21 +55318,19 @@ let Map$1 = class Map extends Camera {
      * domains must support [CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS).
      *
      * @param url - The URL of the image file. Image file must be in png, webp, or jpg format.
-     * @param callback - Expecting `callback(error, data)`. Called when the image has loaded or with an error argument if there is an error.
+     * @returns a promise that is resolved when the image is loaded
      *
      * @example
      * Load an image from an external URL.
      * ```ts
-     * map.loadImage('http://placekitten.com/50/50', function(error, image) {
-     *   if (error) throw error;
-     *   // Add the loaded image to the style's sprite with the ID 'kitten'.
-     *   map.addImage('kitten', image);
-     * });
+     * const response = await map.loadImage('http://placekitten.com/50/50');
+     * // Add the loaded image to the style's sprite with the ID 'kitten'.
+     * map.addImage('kitten', response.data);
      * ```
      * @see [Add an icon to the map](https://maplibre.org/maplibre-gl-js/docs/examples/add-image/)
      */
-    loadImage(url, callback) {
-        ImageRequest.getImage(this._requestManager.transformRequest(url, ResourceType.Image), callback);
+    loadImage(url) {
+        return ImageRequest.getImage(this._requestManager.transformRequest(url, "Image" /* ResourceType.Image */), new AbortController());
     }
     /**
      * Returns an Array of strings containing the IDs of all images currently available in the map.
@@ -54885,6 +55749,7 @@ let Map$1 = class Map extends Camera {
      * Features are identified by their `feature.id` attribute, which can be any number or string.
      *
      * This method can only be used with sources that have a `feature.id` attribute. The `feature.id` attribute can be defined in three ways:
+     *
      * - For vector or GeoJSON sources, including an `id` attribute in the original data file.
      * - For vector or GeoJSON sources, using the [`promoteId`](https://maplibre.org/maplibre-style-spec/sources/#vector-promoteId) option at the time the source is defined.
      * - For GeoJSON sources, using the [`generateId`](https://maplibre.org/maplibre-style-spec/sources/#geojson-generateId) option to auto-assign an `id` based on the feature's index in the source data. If you change feature data using `map.getSource('some id').setData(..)`, you may need to re-apply state taking into account updated `id` values.
@@ -55064,30 +55929,6 @@ let Map$1 = class Map extends Camera {
         });
         this._container.addEventListener('scroll', this._onMapScroll, false);
     }
-    _setupCooperativeGestures() {
-        const container = this._container;
-        this._cooperativeGesturesScreen = DOM.create('div', 'maplibregl-cooperative-gesture-screen', container);
-        let desktopMessage = typeof this._cooperativeGestures !== 'boolean' && this._cooperativeGestures.windowsHelpText ? this._cooperativeGestures.windowsHelpText : 'Use Ctrl + scroll to zoom the map';
-        if (navigator.platform.indexOf('Mac') === 0) {
-            desktopMessage = typeof this._cooperativeGestures !== 'boolean' && this._cooperativeGestures.macHelpText ? this._cooperativeGestures.macHelpText : 'Use ⌘ + scroll to zoom the map';
-        }
-        const mobileMessage = typeof this._cooperativeGestures !== 'boolean' && this._cooperativeGestures.mobileHelpText ? this._cooperativeGestures.mobileHelpText : 'Use two fingers to move the map';
-        this._cooperativeGesturesScreen.innerHTML = `
-            <div class="maplibregl-desktop-message">${desktopMessage}</div>
-            <div class="maplibregl-mobile-message">${mobileMessage}</div>
-        `;
-        // Remove cooperative gesture screen from the accessibility tree since screenreaders cannot interact with the map using gestures
-        this._cooperativeGesturesScreen.setAttribute('aria-hidden', 'true');
-        // Add event to canvas container since gesture container is pointer-events: none
-        this._canvasContainer.addEventListener('wheel', this._cooperativeGesturesOnWheel, false);
-        // Add a cooperative gestures class (enable touch-action: pan-x pan-y;)
-        this._canvasContainer.classList.add('maplibregl-cooperative-gestures');
-    }
-    _destroyCooperativeGestures() {
-        DOM.remove(this._cooperativeGesturesScreen);
-        this._canvasContainer.removeEventListener('wheel', this._cooperativeGesturesOnWheel, false);
-        this._canvasContainer.classList.remove('maplibregl-cooperative-gestures');
-    }
     _resizeCanvas(width, height, pixelRatio) {
         // Request the required canvas size taking the pixelratio into account.
         this._canvas.width = Math.floor(pixelRatio * width);
@@ -55127,16 +55968,6 @@ let Map$1 = class Map extends Camera {
         }
         this.painter = new Painter(gl, this.transform);
         webpSupported.testSupport(gl);
-    }
-    _onCooperativeGesture(event, metaPress, touches) {
-        if (!metaPress && touches < 2) {
-            // Alert user how to scroll/pan
-            this._cooperativeGesturesScreen.classList.add('maplibregl-show');
-            setTimeout(() => {
-                this._cooperativeGesturesScreen.classList.remove('maplibregl-show');
-            }, 100);
-        }
-        return false;
     }
     /**
      * Returns a Boolean indicating whether the map is fully loaded.
@@ -55183,6 +56014,7 @@ let Map$1 = class Map extends Camera {
     /**
      * @internal
      * Call when a (re-)render of the map is required:
+     *
      * - The style has changed (`setPaintProperty()`, etc.)
      * - Source data has changed (e.g. tiles have finished loading)
      * - The map has is moving (or just finished moving)
@@ -55208,9 +56040,9 @@ let Map$1 = class Map extends Camera {
         if (this.style && this._styleDirty) {
             this._styleDirty = false;
             const zoom = this.transform.zoom;
-            const now = performance.browser.now();
+            const now = browser.now();
             this.style.zoomHistory.update(zoom, now);
-            const parameters = new performance.EvaluationParameters(zoom, {
+            const parameters = new performance$1.EvaluationParameters(zoom, {
                 now,
                 fadeDuration,
                 zoomHistory: this.style.zoomHistory,
@@ -55233,13 +56065,13 @@ let Map$1 = class Map extends Camera {
         // update terrain stuff
         if (this.terrain) {
             this.terrain.sourceCache.update(this.transform, this.terrain);
-            this.transform._minEleveationForCurrentTile = this.terrain.getMinTileElevationForLngLatZoom(this.transform.center, this.transform.tileZoom);
+            this.transform.minElevationForCurrentTile = this.terrain.getMinTileElevationForLngLatZoom(this.transform.center, this.transform.tileZoom);
             if (!this._elevationFreeze) {
                 this.transform.elevation = this.terrain.getElevationForLngLatZoom(this.transform.center, this.transform.tileZoom);
             }
         }
         else {
-            this.transform._minEleveationForCurrentTile = 0;
+            this.transform.minElevationForCurrentTile = 0;
             this.transform.elevation = 0;
         }
         this._placementDirty = this.style && this.style._updatePlacement(this.painter.transform, this.showCollisionBoxes, fadeDuration, this._crossSourceCollisions);
@@ -55253,11 +56085,11 @@ let Map$1 = class Map extends Camera {
             fadeDuration,
             showPadding: this.showPadding,
         });
-        this.fire(new performance.Event('render'));
+        this.fire(new performance$1.Event('render'));
         if (this.loaded() && !this._loaded) {
             this._loaded = true;
-            performance.PerformanceUtils.mark(performance.PerformanceMarkers.load);
-            this.fire(new performance.Event('load'));
+            performance$1.PerformanceUtils.mark(performance$1.PerformanceMarkers.load);
+            this.fire(new performance$1.Event('load'));
         }
         if (this.style && (this.style.hasTransitions() || crossFading)) {
             this._styleDirty = true;
@@ -55278,11 +56110,11 @@ let Map$1 = class Map extends Camera {
             this.triggerRepaint();
         }
         else if (!this.isMoving() && this.loaded()) {
-            this.fire(new performance.Event('idle'));
+            this.fire(new performance$1.Event('idle'));
         }
         if (this._loaded && !this._fullyLoaded && !somethingDirty) {
             this._fullyLoaded = true;
-            performance.PerformanceUtils.mark(performance.PerformanceMarkers.fullLoad);
+            performance$1.PerformanceUtils.mark(performance$1.PerformanceMarkers.fullLoad);
         }
         return this;
     }
@@ -55297,9 +56129,9 @@ let Map$1 = class Map extends Camera {
     redraw() {
         if (this.style) {
             // cancel the scheduled update
-            if (this._frame) {
-                this._frame.cancel();
-                this._frame = null;
+            if (this._frameRequest) {
+                this._frameRequest.abort();
+                this._frameRequest = null;
             }
             this._render(0);
         }
@@ -55321,9 +56153,9 @@ let Map$1 = class Map extends Camera {
         for (const control of this._controls)
             control.onRemove(this);
         this._controls = [];
-        if (this._frame) {
-            this._frame.cancel();
-            this._frame = null;
+        if (this._frameRequest) {
+            this._frameRequest.abort();
+            this._frameRequest = null;
         }
         this._renderTaskQueue.clear();
         this.painter.destroy();
@@ -55342,13 +56174,10 @@ let Map$1 = class Map extends Camera {
         this._canvas.removeEventListener('webglcontextlost', this._contextLost, false);
         DOM.remove(this._canvasContainer);
         DOM.remove(this._controlContainer);
-        if (this._cooperativeGestures) {
-            this._destroyCooperativeGestures();
-        }
         this._container.classList.remove('maplibregl-map');
-        performance.PerformanceUtils.clearMetrics();
+        performance$1.PerformanceUtils.clearMetrics();
         this._removed = true;
-        this.fire(new performance.Event('remove'));
+        this.fire(new performance$1.Event('remove'));
     }
     /**
      * Trigger the rendering of a single frame. Use this method with custom layers to
@@ -55362,12 +56191,13 @@ let Map$1 = class Map extends Camera {
      * @see [Add an animated icon to the map](https://maplibre.org/maplibre-gl-js/docs/examples/add-image-animated/)
      */
     triggerRepaint() {
-        if (this.style && !this._frame) {
-            this._frame = performance.browser.frame((paintStartTimeStamp) => {
-                performance.PerformanceUtils.frame(paintStartTimeStamp);
-                this._frame = null;
+        if (this.style && !this._frameRequest) {
+            this._frameRequest = new AbortController();
+            browser.frameAsync(this._frameRequest).then((paintStartTimeStamp) => {
+                performance$1.PerformanceUtils.frame(paintStartTimeStamp);
+                this._frameRequest = null;
                 this._render(paintStartTimeStamp);
-            });
+            }).catch(() => { }); // ignore abort error
         }
     }
     /**
@@ -55506,7 +56336,7 @@ const defaultOptions$3 = {
  *
  * @example
  * ```ts
- * let nav = new maplibregl.NavigationControl();
+ * let nav = new NavigationControl();
  * map.addControl(nav, 'top-left');
  * ```
  * @see [Display map navigation controls](https://maplibre.org/maplibre-gl-js/docs/examples/navigation/)
@@ -55536,7 +56366,7 @@ class NavigationControl {
             button.title = str;
             button.setAttribute('aria-label', str);
         };
-        this.options = performance.extend({}, defaultOptions$3, options);
+        this.options = performance$1.extend({}, defaultOptions$3, options);
         this._container = DOM.create('div', 'maplibregl-ctrl maplibregl-ctrl-group');
         this._container.addEventListener('contextmenu', (e) => e.preventDefault());
         if (this.options.showZoom) {
@@ -55558,6 +56388,7 @@ class NavigationControl {
             this._compassIcon.setAttribute('aria-hidden', 'true');
         }
     }
+    /** {@inheritDoc IControl.onAdd} */
     onAdd(map) {
         this._map = map;
         if (this.options.showZoom) {
@@ -55577,6 +56408,7 @@ class NavigationControl {
         }
         return this._container;
     }
+    /** {@inheritDoc IControl.onRemove} */
     onRemove() {
         DOM.remove(this._container);
         if (this.options.showZoom) {
@@ -55602,7 +56434,7 @@ class NavigationControl {
 class MouseRotateWrapper {
     constructor(map, element, pitch = false) {
         this.mousedown = (e) => {
-            this.startMouse(performance.extend({}, e, { ctrlKey: true, preventDefault: () => e.preventDefault() }), DOM.mousePos(this.element, e));
+            this.startMouse(performance$1.extend({}, e, { ctrlKey: true, preventDefault: () => e.preventDefault() }), DOM.mousePos(this.element, e));
             DOM.addEventListener(window, 'mousemove', this.mousemove);
             DOM.addEventListener(window, 'mouseup', this.mouseup);
         };
@@ -55725,28 +56557,29 @@ class MouseRotateWrapper {
 }
 
 let supportsGeolocation;
-function checkGeolocationSupport(callback, forceRecalculation = false) {
-    if (supportsGeolocation !== undefined && !forceRecalculation) {
-        callback(supportsGeolocation);
-    }
-    else if (window.navigator.permissions !== undefined) {
+function checkGeolocationSupport() {
+    return performance$1.__awaiter(this, arguments, void 0, function* (forceRecalculation = false) {
+        if (supportsGeolocation !== undefined && !forceRecalculation) {
+            return supportsGeolocation;
+        }
+        if (window.navigator.permissions === undefined) {
+            supportsGeolocation = !!window.navigator.geolocation;
+            return supportsGeolocation;
+        }
         // navigator.permissions has incomplete browser support
         // http://caniuse.com/#feat=permissions-api
         // Test for the case where a browser disables Geolocation because of an
         // insecure origin
-        window.navigator.permissions.query({ name: 'geolocation' }).then((p) => {
-            supportsGeolocation = p.state !== 'denied';
-            callback(supportsGeolocation);
-        }).catch(() => {
+        try {
+            const permissions = yield window.navigator.permissions.query({ name: 'geolocation' });
+            supportsGeolocation = permissions.state !== 'denied'; // eslint-disable-line require-atomic-updates
+        }
+        catch (_a) {
             // Fix for iOS16 which rejects query but still supports geolocation
-            supportsGeolocation = !!window.navigator.geolocation;
-            callback(supportsGeolocation);
-        });
-    }
-    else {
-        supportsGeolocation = !!window.navigator.geolocation;
-        callback(supportsGeolocation);
-    }
+            supportsGeolocation = !!window.navigator.geolocation; // eslint-disable-line require-atomic-updates
+        }
+        return supportsGeolocation;
+    });
 }
 
 /**
@@ -55763,13 +56596,14 @@ function checkGeolocationSupport(callback, forceRecalculation = false) {
  * should wrap just enough to avoid doing so.
  */
 function smartWrap(lngLat, priorPos, transform) {
-    lngLat = new performance.LngLat(lngLat.lng, lngLat.lat);
+    const originalLngLat = new performance$1.LngLat(lngLat.lng, lngLat.lat);
+    lngLat = new performance$1.LngLat(lngLat.lng, lngLat.lat);
     // First, try shifting one world in either direction, and see if either is closer to the
     // prior position. This preserves object constancy when the map center is auto-wrapped
     // during animations.
     if (priorPos) {
-        const left = new performance.LngLat(lngLat.lng - 360, lngLat.lat);
-        const right = new performance.LngLat(lngLat.lng + 360, lngLat.lat);
+        const left = new performance$1.LngLat(lngLat.lng - 360, lngLat.lat);
+        const right = new performance$1.LngLat(lngLat.lng + 360, lngLat.lat);
         const delta = transform.locationPoint(lngLat).distSqr(priorPos);
         if (transform.locationPoint(left).distSqr(priorPos) < delta) {
             lngLat = left;
@@ -55792,7 +56626,12 @@ function smartWrap(lngLat, priorPos, transform) {
             lngLat.lng += 360;
         }
     }
-    return lngLat;
+    // Apply the change only if new coord is below horizon
+    if (lngLat.lng !== originalLngLat.lng &&
+        transform.locationPoint(lngLat).y > (transform.height / 2 - transform.getHorizon())) {
+        return lngLat;
+    }
+    return originalLngLat;
 }
 
 const anchorTranslate = {
@@ -55821,7 +56660,7 @@ function applyAnchorClass(element, anchor, prefix) {
  *
  * @example
  * ```ts
- * let marker = new maplibregl.Marker()
+ * let marker = new Marker()
  *   .setLngLat([30.5, 50.5])
  *   .addTo(map);
  * ```
@@ -55829,7 +56668,7 @@ function applyAnchorClass(element, anchor, prefix) {
  * @example
  * Set options
  * ```ts
- * let marker = new maplibregl.Marker({
+ * let marker = new Marker({
  *     color: "#FFFFFF",
  *     draggable: true
  *   }).setLngLat([30.5, 50.5])
@@ -55846,7 +56685,7 @@ function applyAnchorClass(element, anchor, prefix) {
  *
  * @event `dragend` Fired when the marker is finished being dragged, `marker` object that was dragged
  */
-class Marker extends performance.Evented {
+class Marker extends performance$1.Evented {
     /**
      * @param options - the options
      */
@@ -55869,6 +56708,7 @@ class Marker extends performance.Evented {
             }
         };
         this._update = (e) => {
+            var _a;
             if (!this._map)
                 return;
             const isFullyLoaded = this._map.loaded() && !this._map.isMoving();
@@ -55876,9 +56716,16 @@ class Marker extends performance.Evented {
                 this._map.once('render', this._update);
             }
             if (this._map.transform.renderWorldCopies) {
-                this._lngLat = smartWrap(this._lngLat, this._pos, this._map.transform);
+                this._lngLat = smartWrap(this._lngLat, this._flatPos, this._map.transform);
             }
-            this._pos = this._map.project(this._lngLat)._add(this._offset);
+            else {
+                this._lngLat = (_a = this._lngLat) === null || _a === void 0 ? void 0 : _a.wrap();
+            }
+            this._flatPos = this._pos = this._map.project(this._lngLat)._add(this._offset);
+            if (this._map.terrain) {
+                // flat position is saved because smartWrap needs non-elevated points
+                this._flatPos = this._map.transform.locationPoint(this._lngLat)._add(this._offset);
+            }
             let rotation = '';
             if (this._rotationAlignment === 'viewport' || this._rotationAlignment === 'auto') {
                 rotation = `rotateZ(${this._rotation}deg)`;
@@ -55900,15 +56747,9 @@ class Marker extends performance.Evented {
                 this._pos = this._pos.round();
             }
             DOM.setTransform(this._element, `${anchorTranslate[this._anchor]} translate(${this._pos.x}px, ${this._pos.y}px) ${pitch} ${rotation}`);
-            // in case of 3D, ask the terrain coords-framebuffer for this pos and check if the marker is visible
-            // call this logic in setTimeout with a timeout of 100ms to save performance in map-movement
-            if (this._map.terrain && !this._opacityTimeout)
-                this._opacityTimeout = setTimeout(() => {
-                    const lnglat = this._map.unproject(this._pos);
-                    const metresPerPixel = 40075016.686 * Math.abs(Math.cos(this._lngLat.lat * Math.PI / 180)) / Math.pow(2, this._map.transform.tileZoom + 8);
-                    this._element.style.opacity = lnglat.distanceTo(this._lngLat) > metresPerPixel * 20 ? '0.2' : '1.0';
-                    this._opacityTimeout = null;
-                }, 100);
+            browser.frameAsync(new AbortController()).then(() => {
+                this._updateOpacity(e && e.type === 'moveend');
+            }).catch(() => { });
         };
         this._onMove = (e) => {
             if (!this._isDragging) {
@@ -55927,9 +56768,9 @@ class Marker extends performance.Evented {
             // imply that a drag is about to happen.
             if (this._state === 'pending') {
                 this._state = 'active';
-                this.fire(new performance.Event('dragstart'));
+                this.fire(new performance$1.Event('dragstart'));
             }
-            this.fire(new performance.Event('drag'));
+            this.fire(new performance$1.Event('drag'));
         };
         this._onUp = () => {
             // revert to normal pointer event handling
@@ -55941,7 +56782,7 @@ class Marker extends performance.Evented {
             this._map.off('touchmove', this._onMove);
             // only fire dragend if it was preceded by at least one drag event
             if (this._state === 'active') {
-                this.fire(new performance.Event('dragend'));
+                this.fire(new performance$1.Event('dragend'));
             }
             this._state = 'inactive';
         };
@@ -55973,6 +56814,8 @@ class Marker extends performance.Evented {
         this._rotation = options && options.rotation || 0;
         this._rotationAlignment = options && options.rotationAlignment || 'auto';
         this._pitchAlignment = options && options.pitchAlignment && options.pitchAlignment !== 'auto' ? options.pitchAlignment : this._rotationAlignment;
+        this.setOpacity(); // set default opacity
+        this.setOpacity(options === null || options === void 0 ? void 0 : options.opacity, options === null || options === void 0 ? void 0 : options.opacityWhenCovered);
         if (!options || !options.element) {
             this._defaultMarker = true;
             this._element = DOM.create('div');
@@ -56059,11 +56902,11 @@ class Marker extends performance.Evented {
             // the y value of the center of the shadow ellipse relative to the svg top left is "shadow transform translate-y (29.0) + ellipse cy (5.80029008)"
             // offset to the svg center "height (41 / 2)" gives (29.0 + 5.80029008) - (41 / 2) and rounded for an integer pixel offset gives 14
             // negative is used to move the marker up from the center so the tip is at the Marker lngLat
-            this._offset = performance.Point.convert(options && options.offset || [0, -14]);
+            this._offset = performance$1.Point.convert(options && options.offset || [0, -14]);
         }
         else {
             this._element = options.element;
-            this._offset = performance.Point.convert(options && options.offset || [0, 0]);
+            this._offset = performance$1.Point.convert(options && options.offset || [0, 0]);
         }
         this._element.classList.add('maplibregl-marker');
         this._element.addEventListener('dragstart', (e) => {
@@ -56087,7 +56930,7 @@ class Marker extends performance.Evented {
      * @returns `this`
      * @example
      * ```ts
-     * let marker = new maplibregl.Marker()
+     * let marker = new Marker()
      *   .setLngLat([30.5, 50.5])
      *   .addTo(map); // add the marker to the map
      * ```
@@ -56111,7 +56954,7 @@ class Marker extends performance.Evented {
      * Removes the marker from a map
      * @example
      * ```ts
-     * let marker = new maplibregl.Marker().addTo(map);
+     * let marker = new Marker().addTo(map);
      * marker.remove();
      * ```
      * @returns `this`
@@ -56165,7 +57008,7 @@ class Marker extends performance.Evented {
      * @example
      * Create a new marker, set the longitude and latitude, and add it to the map
      * ```ts
-     * new maplibregl.Marker()
+     * new Marker()
      *   .setLngLat([-65.017, -16.457])
      *   .addTo(map);
      * ```
@@ -56173,7 +57016,7 @@ class Marker extends performance.Evented {
      * @see [Create a draggable Marker](https://maplibre.org/maplibre-gl-js/docs/examples/drag-a-marker/)
      */
     setLngLat(lnglat) {
-        this._lngLat = performance.LngLat.convert(lnglat);
+        this._lngLat = performance$1.LngLat.convert(lnglat);
         this._pos = null;
         if (this._popup)
             this._popup.setLngLat(this._lngLat);
@@ -56194,9 +57037,9 @@ class Marker extends performance.Evented {
      * @returns `this`
      * @example
      * ```ts
-     * let marker = new maplibregl.Marker()
+     * let marker = new Marker()
      *  .setLngLat([0, 0])
-     *  .setPopup(new maplibregl.Popup().setHTML("<h1>Hello World!</h1>")) // add popup
+     *  .setPopup(new Popup().setHTML("<h1>Hello World!</h1>")) // add popup
      *  .addTo(map);
      * ```
      * @see [Attach a popup to a marker instance](https://maplibre.org/maplibre-gl-js/docs/examples/set-popup/)
@@ -56227,8 +57070,6 @@ class Marker extends performance.Evented {
                 } : this._offset;
             }
             this._popup = popup;
-            if (this._lngLat)
-                this._popup.setLngLat(this._lngLat);
             this._originalTabIndex = this._element.getAttribute('tabindex');
             if (!this._originalTabIndex) {
                 this._element.setAttribute('tabindex', '0');
@@ -56242,9 +57083,9 @@ class Marker extends performance.Evented {
      * @returns popup
      * @example
      * ```ts
-     * let marker = new maplibregl.Marker()
+     * let marker = new Marker()
      *  .setLngLat([0, 0])
-     *  .setPopup(new maplibregl.Popup().setHTML("<h1>Hello World!</h1>"))
+     *  .setPopup(new Popup().setHTML("<h1>Hello World!</h1>"))
      *  .addTo(map);
      *
      * console.log(marker.getPopup()); // return the popup instance
@@ -56258,9 +57099,9 @@ class Marker extends performance.Evented {
      * @returns `this`
      * @example
      * ```ts
-     * let marker = new maplibregl.Marker()
+     * let marker = new Marker()
      *  .setLngLat([0, 0])
-     *  .setPopup(new maplibregl.Popup().setHTML("<h1>Hello World!</h1>"))
+     *  .setPopup(new Popup().setHTML("<h1>Hello World!</h1>"))
      *  .addTo(map);
      *
      * marker.togglePopup(); // toggle popup open or closed
@@ -56268,13 +57109,59 @@ class Marker extends performance.Evented {
      */
     togglePopup() {
         const popup = this._popup;
+        if (this._element.style.opacity === this._opacityWhenCovered)
+            return this;
         if (!popup)
             return this;
         else if (popup.isOpen())
             popup.remove();
-        else
+        else {
+            popup.setLngLat(this._lngLat);
             popup.addTo(this._map);
+        }
         return this;
+    }
+    _updateOpacity(force = false) {
+        var _a, _b;
+        const terrain = (_a = this._map) === null || _a === void 0 ? void 0 : _a.terrain;
+        if (!terrain) {
+            if (this._element.style.opacity !== this._opacity) {
+                this._element.style.opacity = this._opacity;
+            }
+            return;
+        }
+        if (force) {
+            this._opacityTimeout = null;
+        }
+        else {
+            if (this._opacityTimeout) {
+                return;
+            }
+            this._opacityTimeout = setTimeout(() => {
+                this._opacityTimeout = null;
+            }, 100);
+        }
+        const map = this._map;
+        // Read depth framebuffer, getting position of terrain in line of sight to marker
+        const terrainDistance = map.terrain.depthAtPoint(this._pos);
+        // Transform marker position to clip space
+        const elevation = map.terrain.getElevationForLngLatZoom(this._lngLat, map.transform.tileZoom);
+        const markerDistance = map.transform.lngLatToCameraDepth(this._lngLat, elevation);
+        const forgiveness = .006;
+        if (markerDistance - terrainDistance < forgiveness) {
+            this._element.style.opacity = this._opacity;
+            return;
+        }
+        // If the base is obscured, use the offset to check if the marker's center is obscured.
+        const metersToCenter = -this._offset.y / map.transform._pixelPerMeter;
+        const elevationToCenter = Math.sin(map.getPitch() * Math.PI / 180) * metersToCenter;
+        const terrainDistanceCenter = map.terrain.depthAtPoint(new performance$1.Point(this._pos.x, this._pos.y - this._offset.y));
+        const markerDistanceCenter = map.transform.lngLatToCameraDepth(this._lngLat, elevation + elevationToCenter);
+        // Display at full opacity if center is visible.
+        const centerIsInvisible = markerDistanceCenter - terrainDistanceCenter > forgiveness;
+        if (((_b = this._popup) === null || _b === void 0 ? void 0 : _b.isOpen()) && centerIsInvisible)
+            this._popup.remove();
+        this._element.style.opacity = centerIsInvisible ? this._opacityWhenCovered : this._opacity;
     }
     /**
      * Get the marker's offset.
@@ -56289,7 +57176,7 @@ class Marker extends performance.Evented {
      * @returns `this`
      */
     setOffset(offset) {
-        this._offset = performance.Point.convert(offset);
+        this._offset = performance$1.Point.convert(offset);
         this._update();
         return this;
     }
@@ -56300,7 +57187,7 @@ class Marker extends performance.Evented {
      *
      * @example
      * ```
-     * let marker = new maplibregl.Marker()
+     * let marker = new Marker()
      * marker.addClassName('some-class')
      * ```
      */
@@ -56314,7 +57201,7 @@ class Marker extends performance.Evented {
      *
      * @example
      * ```ts
-     * let marker = new maplibregl.Marker()
+     * let marker = new Marker()
      * marker.removeClassName('some-class')
      * ```
      */
@@ -56330,7 +57217,7 @@ class Marker extends performance.Evented {
      *
      * @example
      * ```ts
-     * let marker = new maplibregl.Marker()
+     * let marker = new Marker()
      * marker.toggleClassName('toggleClass')
      * ```
      */
@@ -56416,6 +57303,29 @@ class Marker extends performance.Evented {
     getPitchAlignment() {
         return this._pitchAlignment;
     }
+    /**
+     * Sets the `opacity` and `opacityWhenCovered` properties of the marker.
+     * When called without arguments, resets opacity and opacityWhenCovered to defaults
+     * @param opacity - Sets the `opacity` property of the marker.
+     * @param opacityWhenCovered - Sets the `opacityWhenCovered` property of the marker.
+     * @returns `this`
+     */
+    setOpacity(opacity, opacityWhenCovered) {
+        if (opacity === undefined && opacityWhenCovered === undefined) {
+            this._opacity = '1';
+            this._opacityWhenCovered = '0.2';
+        }
+        if (opacity !== undefined) {
+            this._opacity = opacity;
+        }
+        if (opacityWhenCovered !== undefined) {
+            this._opacityWhenCovered = opacityWhenCovered;
+        }
+        if (this._map) {
+            this._updateOpacity(true);
+        }
+        return this;
+    }
 }
 
 const defaultOptions$2 = {
@@ -56440,12 +57350,12 @@ let noTimeout = false;
  * Not all browsers support geolocation,
  * and some users may disable the feature. Geolocation support for modern
  * browsers including Chrome requires sites to be served over HTTPS. If
- * geolocation support is not available, the GeolocateControl will show
+ * geolocation support is not available, the `GeolocateControl` will show
  * as disabled.
  *
  * The zoom level applied will depend on the accuracy of the geolocation provided by the device.
  *
- * The GeolocateControl has two modes. If `trackUserLocation` is `false` (default) the control acts as a button, which when pressed will set the map's camera to target the user location. If the user moves, the map won't update. This is most suited for the desktop. If `trackUserLocation` is `true` the control acts as a toggle button that when active the user's location is actively monitored for changes. In this mode the GeolocateControl has three interaction states:
+ * The `GeolocateControl` has two modes. If `trackUserLocation` is `false` (default) the control acts as a button, which when pressed will set the map's camera to target the user location. If the user moves, the map won't update. This is most suited for the desktop. If `trackUserLocation` is `true` the control acts as a toggle button that when active the user's location is actively monitored for changes. In this mode the `GeolocateControl` has three interaction states:
  * * active - the map's camera automatically updates as the user's location changes, keeping the location dot in the center. Initial state and upon clicking the `GeolocateControl` button.
  * * passive - the user's location dot automatically updates, but the map's camera does not. Occurs upon the user initiating a map movement.
  * * disabled - occurs if Geolocation is not available, disabled or denied.
@@ -56455,7 +57365,7 @@ let noTimeout = false;
  *
  * @example
  * ```ts
- * map.addControl(new maplibregl.GeolocateControl({
+ * map.addControl(new GeolocateControl({
  *     positionOptions: {
  *         enableHighAccuracy: true
  *     },
@@ -56466,9 +57376,9 @@ let noTimeout = false;
  *
  * ### Events
  *
- * @event `trackuserlocationend` - Fired when the Geolocate Control changes to the background state, which happens when a user changes the camera during an active position lock. This only applies when trackUserLocation is true. In the background state, the dot on the map will update with location updates but the camera will not.
+ * @event `trackuserlocationend` - Fired when the `GeolocateControl` changes to the background state, which happens when a user changes the camera during an active position lock. This only applies when `trackUserLocation` is `true`. In the background state, the dot on the map will update with location updates but the camera will not.
  *
- * @event `trackuserlocationstart` - Fired when the Geolocate Control changes to the active lock state, which happens either upon first obtaining a successful Geolocation API position for the user (a geolocate event will follow), or the user clicks the geolocate button when in the background state which uses the last known position to recenter the map and enter active lock state (no geolocate event will follow unless the users's location changes).
+ * @event `trackuserlocationstart` - Fired when the `GeolocateControl` changes to the active lock state, which happens either upon first obtaining a successful Geolocation API position for the user (a `geolocate` event will follow), or the user clicks the geolocate button when in the background state which uses the last known position to recenter the map and enter active lock state (no `geolocate` event will follow unless the users's location changes).
  *
  * @event `geolocate` - Fired on each Geolocation API position update which returned as success.
  * `data` - The returned [Position](https://developer.mozilla.org/en-US/docs/Web/API/Position) object from the callback in [Geolocation.getCurrentPosition()](https://developer.mozilla.org/en-US/docs/Web/API/Geolocation/getCurrentPosition) or [Geolocation.watchPosition()](https://developer.mozilla.org/en-US/docs/Web/API/Geolocation/watchPosition).
@@ -56476,13 +57386,13 @@ let noTimeout = false;
  * @event `error` - Fired on each Geolocation API position update which returned as an error.
  * `data` - The returned [PositionError](https://developer.mozilla.org/en-US/docs/Web/API/PositionError) object from the callback in [Geolocation.getCurrentPosition()](https://developer.mozilla.org/en-US/docs/Web/API/Geolocation/getCurrentPosition) or [Geolocation.watchPosition()](https://developer.mozilla.org/en-US/docs/Web/API/Geolocation/watchPosition).
  *
- * @event `outofmaxbounds` Fired on each Geolocation API position update which returned as success but user position is out of map maxBounds.
+ * @event `outofmaxbounds` Fired on each Geolocation API position update which returned as success but user position is out of map `maxBounds`.
  * `data` - The returned [Position](https://developer.mozilla.org/en-US/docs/Web/API/Position) object from the callback in [Geolocation.getCurrentPosition()](https://developer.mozilla.org/en-US/docs/Web/API/Geolocation/getCurrentPosition) or [Geolocation.watchPosition()](https://developer.mozilla.org/en-US/docs/Web/API/Geolocation/watchPosition).
  *
  * @example
  * ```ts
  * // Initialize the geolocate control.
- * let geolocate = new maplibregl.GeolocateControl({
+ * let geolocate = new GeolocateControl({
  *   positionOptions: {
  *       enableHighAccuracy: true
  *   },
@@ -56500,7 +57410,7 @@ let noTimeout = false;
  * @example
  * ```ts
  * // Initialize the geolocate control.
- * let geolocate = new maplibregl.GeolocateControl({
+ * let geolocate = new GeolocateControl({
  *   positionOptions: {
  *       enableHighAccuracy: true
  *   },
@@ -56518,7 +57428,7 @@ let noTimeout = false;
  * @example
  * ```ts
  * // Initialize the geolocate control.
- * let geolocate = new maplibregl.GeolocateControl({
+ * let geolocate = new GeolocateControl({
  *   positionOptions: {
  *       enableHighAccuracy: true
  *   },
@@ -56536,7 +57446,7 @@ let noTimeout = false;
  * @example
  * ```ts
  * // Initialize the geolocate control.
- * let geolocate = new maplibregl.GeolocateControl({
+ * let geolocate = new GeolocateControl({
  *   positionOptions: {
  *       enableHighAccuracy: true
  *   },
@@ -56554,7 +57464,7 @@ let noTimeout = false;
  * @example
  * ```ts
  * // Initialize the geolocate control.
- * let geolocate = new maplibregl.GeolocateControl({
+ * let geolocate = new GeolocateControl({
  *   positionOptions: {
  *       enableHighAccuracy: true
  *   },
@@ -56569,11 +57479,11 @@ let noTimeout = false;
  * });
  * ```
  */
-class GeolocateControl extends performance.Evented {
+class GeolocateControl extends performance$1.Evented {
     constructor(options) {
         super();
         /**
-         * When the Geolocation API returns a new location, update the GeolocateControl.
+         * When the Geolocation API returns a new location, update the `GeolocateControl`.
          *
          * @param position - the Geolocation API Position
          */
@@ -56584,7 +57494,7 @@ class GeolocateControl extends performance.Evented {
             }
             if (this._isOutOfMapMaxBounds(position)) {
                 this._setErrorState();
-                this.fire(new performance.Event('outofmaxbounds', position));
+                this.fire(new performance$1.Event('outofmaxbounds', position));
                 this._updateMarker();
                 this._finish();
                 return;
@@ -56626,7 +57536,7 @@ class GeolocateControl extends performance.Evented {
             if (this.options.showUserLocation) {
                 this._dotElement.classList.remove('maplibregl-user-location-dot-stale');
             }
-            this.fire(new performance.Event('geolocate', position));
+            this.fire(new performance$1.Event('geolocate', position));
             this._finish();
         };
         /**
@@ -56635,10 +57545,10 @@ class GeolocateControl extends performance.Evented {
          * @param position - the Geolocation API Position
          */
         this._updateCamera = (position) => {
-            const center = new performance.LngLat(position.coords.longitude, position.coords.latitude);
+            const center = new performance$1.LngLat(position.coords.longitude, position.coords.latitude);
             const radius = position.coords.accuracy;
             const bearing = this._map.getBearing();
-            const options = performance.extend({ bearing }, this.options.fitBoundsOptions);
+            const options = performance$1.extend({ bearing }, this.options.fitBoundsOptions);
             const newBounds = LngLatBounds.fromLngLat(center, radius);
             this._map.fitBounds(newBounds, options, {
                 geolocateSource: true // tag this camera change so it won't cause the control to change to background state
@@ -56651,7 +57561,7 @@ class GeolocateControl extends performance.Evented {
          */
         this._updateMarker = (position) => {
             if (position) {
-                const center = new performance.LngLat(position.coords.longitude, position.coords.latitude);
+                const center = new performance$1.LngLat(position.coords.longitude, position.coords.latitude);
                 this._accuracyCircleMarker.setLngLat(center).addTo(this._map);
                 this._userLocationDotMarker.setLngLat(center).addTo(this._map);
                 this._accuracy = position.coords.accuracy;
@@ -56705,7 +57615,7 @@ class GeolocateControl extends performance.Evented {
             if (this._watchState !== 'OFF' && this.options.showUserLocation) {
                 this._dotElement.classList.add('maplibregl-user-location-dot-stale');
             }
-            this.fire(new performance.Event('error', error));
+            this.fire(new performance$1.Event('error', error));
             this._finish();
         };
         this._finish = () => {
@@ -56725,7 +57635,7 @@ class GeolocateControl extends performance.Evented {
             DOM.create('span', 'maplibregl-ctrl-icon', this._geolocateButton).setAttribute('aria-hidden', 'true');
             this._geolocateButton.type = 'button';
             if (supported === false) {
-                performance.warnOnce('Geolocation support is not available so the GeolocateControl will be disabled.');
+                performance$1.warnOnce('Geolocation support is not available so the GeolocateControl will be disabled.');
                 const title = this._map._getUIString('GeolocateControl.LocationNotAvailable');
                 this._geolocateButton.disabled = true;
                 this._geolocateButton.title = title;
@@ -56750,7 +57660,7 @@ class GeolocateControl extends performance.Evented {
                     this._watchState = 'OFF';
                 this._map.on('zoom', this._onZoom);
             }
-            this._geolocateButton.addEventListener('click', this.trigger.bind(this));
+            this._geolocateButton.addEventListener('click', () => this.trigger());
             this._setup = true;
             // when the camera is changed (and it's not as a result of the Geolocation Control) change
             // the watch mode to background watch, so that the marker is updated but not the camera.
@@ -56761,18 +57671,18 @@ class GeolocateControl extends performance.Evented {
                         this._watchState = 'BACKGROUND';
                         this._geolocateButton.classList.add('maplibregl-ctrl-geolocate-background');
                         this._geolocateButton.classList.remove('maplibregl-ctrl-geolocate-active');
-                        this.fire(new performance.Event('trackuserlocationend'));
+                        this.fire(new performance$1.Event('trackuserlocationend'));
                     }
                 });
             }
         };
-        this.options = performance.extend({}, defaultOptions$2, options);
+        this.options = performance$1.extend({}, defaultOptions$2, options);
     }
     /** {@inheritDoc IControl.onAdd} */
     onAdd(map) {
         this._map = map;
         this._container = DOM.create('div', 'maplibregl-ctrl maplibregl-ctrl-group');
-        checkGeolocationSupport(this._setupUI);
+        checkGeolocationSupport().then((supported) => this._setupUI(supported));
         return this._container;
     }
     /** {@inheritDoc IControl.onRemove} */
@@ -56796,10 +57706,10 @@ class GeolocateControl extends performance.Evented {
         noTimeout = false;
     }
     /**
-     * Check if the Geolocation API Position is outside the map's maxbounds.
+     * Check if the Geolocation API Position is outside the map's `maxBounds`.
      *
      * @param position - the Geolocation API Position
-     * @returns `true` if position is outside the map's maxbounds, otherwise returns `false`.
+     * @returns `true` if position is outside the map's `maxBounds`, otherwise returns `false`.
      */
     _isOutOfMapMaxBounds(position) {
         const bounds = this._map.getMaxBounds();
@@ -56853,7 +57763,7 @@ class GeolocateControl extends performance.Evented {
      * @example
      * ```ts
      * // Initialize the geolocate control.
-     * let geolocate = new maplibregl.GeolocateControl({
+     * let geolocate = new GeolocateControl({
      *  positionOptions: {
      *    enableHighAccuracy: true
      *  },
@@ -56868,7 +57778,7 @@ class GeolocateControl extends performance.Evented {
      */
     trigger() {
         if (!this._setup) {
-            performance.warnOnce('Geolocate control triggered before added to a map');
+            performance$1.warnOnce('Geolocate control triggered before added to a map');
             return false;
         }
         if (this.options.trackUserLocation) {
@@ -56877,7 +57787,7 @@ class GeolocateControl extends performance.Evented {
                 case 'OFF':
                     // turn on the Geolocate Control
                     this._watchState = 'WAITING_ACTIVE';
-                    this.fire(new performance.Event('trackuserlocationstart'));
+                    this.fire(new performance$1.Event('trackuserlocationstart'));
                     break;
                 case 'WAITING_ACTIVE':
                 case 'ACTIVE_LOCK':
@@ -56892,7 +57802,7 @@ class GeolocateControl extends performance.Evented {
                     this._geolocateButton.classList.remove('maplibregl-ctrl-geolocate-active-error');
                     this._geolocateButton.classList.remove('maplibregl-ctrl-geolocate-background');
                     this._geolocateButton.classList.remove('maplibregl-ctrl-geolocate-background-error');
-                    this.fire(new performance.Event('trackuserlocationend'));
+                    this.fire(new performance$1.Event('trackuserlocationend'));
                     break;
                 case 'BACKGROUND':
                     this._watchState = 'ACTIVE_LOCK';
@@ -56900,7 +57810,7 @@ class GeolocateControl extends performance.Evented {
                     // set camera to last known location
                     if (this._lastKnownPosition)
                         this._updateCamera(this._lastKnownPosition);
-                    this.fire(new performance.Event('trackuserlocationstart'));
+                    this.fire(new performance$1.Event('trackuserlocationstart'));
                     break;
                 default:
                     throw new Error(`Unexpected watchState ${this._watchState}`);
@@ -56971,7 +57881,7 @@ const defaultOptions$1 = {
  *
  * @example
  * ```ts
- * let scale = new maplibregl.ScaleControl({
+ * let scale = new ScaleControl({
  *     maxWidth: 80,
  *     unit: 'imperial'
  * });
@@ -56994,7 +57904,7 @@ class ScaleControl {
             this.options.unit = unit;
             updateScale(this._map, this._container, this.options);
         };
-        this.options = performance.extend({}, defaultOptions$1, options);
+        this.options = Object.assign(Object.assign({}, defaultOptions$1), options);
     }
     getDefaultPosition() {
         return 'bottom-left';
@@ -57080,7 +57990,7 @@ function getRoundNum(num) {
  *
  * @example
  * ```ts
- * map.addControl(new maplibregl.FullscreenControl({container: document.querySelector('body')}));
+ * map.addControl(new FullscreenControl({container: document.querySelector('body')}));
  * ```
  * @see [View a fullscreen map](https://maplibre.org/maplibre-gl-js/docs/examples/fullscreen/)
  *
@@ -57090,14 +58000,18 @@ function getRoundNum(num) {
  *
  * @event `fullscreenend` - Fired when fullscreen mode has ended
  */
-class FullscreenControl extends performance.Evented {
+class FullscreenControl extends performance$1.Evented {
     constructor(options = {}) {
         super();
         this._onFullscreenChange = () => {
-            const fullscreenElement = window.document.fullscreenElement ||
+            var _a;
+            let fullscreenElement = window.document.fullscreenElement ||
                 window.document.mozFullScreenElement ||
                 window.document.webkitFullscreenElement ||
                 window.document.msFullscreenElement;
+            while ((_a = fullscreenElement === null || fullscreenElement === void 0 ? void 0 : fullscreenElement.shadowRoot) === null || _a === void 0 ? void 0 : _a.fullscreenElement) {
+                fullscreenElement = fullscreenElement.shadowRoot.fullscreenElement;
+            }
             if ((fullscreenElement === this._container) !== this._fullscreen) {
                 this._handleFullscreenChange();
             }
@@ -57116,7 +58030,7 @@ class FullscreenControl extends performance.Evented {
                 this._container = options.container;
             }
             else {
-                performance.warnOnce('Full screen control \'container\' must be a DOM element.');
+                performance$1.warnOnce('Full screen control \'container\' must be a DOM element.');
             }
         }
         if ('onfullscreenchange' in document) {
@@ -57172,17 +58086,14 @@ class FullscreenControl extends performance.Evented {
         this._fullscreenButton.classList.toggle('maplibregl-ctrl-fullscreen');
         this._updateTitle();
         if (this._fullscreen) {
-            this.fire(new performance.Event('fullscreenstart'));
-            if (this._map._cooperativeGestures) {
-                this._prevCooperativeGestures = this._map._cooperativeGestures;
-                this._map.setCooperativeGestures();
-            }
+            this.fire(new performance$1.Event('fullscreenstart'));
+            this._prevCooperativeGesturesEnabled = this._map.cooperativeGestures.isEnabled();
+            this._map.cooperativeGestures.disable();
         }
         else {
-            this.fire(new performance.Event('fullscreenend'));
-            if (this._prevCooperativeGestures) {
-                this._map.setCooperativeGestures(this._prevCooperativeGestures);
-                delete this._prevCooperativeGestures;
+            this.fire(new performance$1.Event('fullscreenend'));
+            if (this._prevCooperativeGesturesEnabled) {
+                this._map.cooperativeGestures.enable();
             }
         }
     }
@@ -57234,8 +58145,8 @@ class FullscreenControl extends performance.Evented {
  *
  * @example
  * ```ts
- * let map = new maplibregl.Map({TerrainControl: false})
- *     .addControl(new maplibregl.TerrainControl({
+ * let map = new Map({TerrainControl: false})
+ *     .addControl(new TerrainControl({
  *         source: "terrain"
  *     }));
  * ```
@@ -57256,11 +58167,11 @@ class TerrainControl {
             this._terrainButton.classList.remove('maplibregl-ctrl-terrain-enabled');
             if (this._map.terrain) {
                 this._terrainButton.classList.add('maplibregl-ctrl-terrain-enabled');
-                this._terrainButton.title = this._map._getUIString('TerrainControl.disableTerrain');
+                this._terrainButton.title = this._map._getUIString('TerrainControl.Disable');
             }
             else {
                 this._terrainButton.classList.add('maplibregl-ctrl-terrain');
-                this._terrainButton.title = this._map._getUIString('TerrainControl.enableTerrain');
+                this._terrainButton.title = this._map._getUIString('TerrainControl.Enable');
             }
         };
         this.options = options;
@@ -57290,7 +58201,8 @@ const defaultOptions = {
     closeOnClick: true,
     focusAfterOpen: true,
     className: '',
-    maxWidth: '240px'
+    maxWidth: '240px',
+    subpixelPositioning: false
 };
 const focusQuerySelector = [
     'a[href]',
@@ -57310,7 +58222,7 @@ const focusQuerySelector = [
  * @example
  * Create a popup
  * ```ts
- * let popup = new maplibregl.Popup();
+ * let popup = new Popup();
  * // Set an event listener that will fire
  * // any time the popup is opened
  * popup.on('open', function(){
@@ -57321,7 +58233,7 @@ const focusQuerySelector = [
  * @example
  * Create a popup
  * ```ts
- * let popup = new maplibregl.Popup();
+ * let popup = new Popup();
  * // Set an event listener that will fire
  * // any time the popup is closed
  * popup.on('close', function(){
@@ -57342,7 +58254,7 @@ const focusQuerySelector = [
  *  'left': [markerRadius, (markerHeight - markerRadius) * -1],
  *  'right': [-markerRadius, (markerHeight - markerRadius) * -1]
  *  };
- * let popup = new maplibregl.Popup({offset: popupOffsets, className: 'my-class'})
+ * let popup = new Popup({offset: popupOffsets, className: 'my-class'})
  *   .setLngLat(e.lngLat)
  *   .setHTML("<h1>Hello World!</h1>")
  *   .setMaxWidth("300px")
@@ -57359,7 +58271,7 @@ const focusQuerySelector = [
  *
  * @event `close` Fired when the popup is closed manually or programmatically. `popup` object that was closed
  */
-class Popup extends performance.Evented {
+class Popup extends performance$1.Evented {
     constructor(options) {
         super();
         /**
@@ -57367,7 +58279,7 @@ class Popup extends performance.Evented {
          *
          * @example
          * ```ts
-         * let popup = new maplibregl.Popup().addTo(map);
+         * let popup = new Popup().addTo(map);
          * popup.remove();
          * ```
          * @returns `this`
@@ -57388,9 +58300,10 @@ class Popup extends performance.Evented {
                 this._map.off('mousemove', this._onMouseMove);
                 this._map.off('mouseup', this._onMouseUp);
                 this._map.off('drag', this._onDrag);
+                this._map._canvasContainer.classList.remove('maplibregl-track-pointer');
                 delete this._map;
+                this.fire(new performance$1.Event('close'));
             }
-            this.fire(new performance.Event('close'));
             return this;
         };
         this._onMouseUp = (event) => {
@@ -57403,6 +58316,7 @@ class Popup extends performance.Evented {
             this._update(event.point);
         };
         this._update = (cursor) => {
+            var _a;
             const hasPosition = this._lngLat || this._trackPointer;
             if (!this._map || !hasPosition || !this._content) {
                 return;
@@ -57424,11 +58338,18 @@ class Popup extends performance.Evented {
                 this._container.style.maxWidth = this.options.maxWidth;
             }
             if (this._map.transform.renderWorldCopies && !this._trackPointer) {
-                this._lngLat = smartWrap(this._lngLat, this._pos, this._map.transform);
+                this._lngLat = smartWrap(this._lngLat, this._flatPos, this._map.transform);
+            }
+            else {
+                this._lngLat = (_a = this._lngLat) === null || _a === void 0 ? void 0 : _a.wrap();
             }
             if (this._trackPointer && !cursor)
                 return;
-            const pos = this._pos = this._trackPointer && cursor ? cursor : this._map.project(this._lngLat);
+            const pos = this._flatPos = this._pos = this._trackPointer && cursor ? cursor : this._map.project(this._lngLat);
+            if (this._map.terrain) {
+                // flat position is saved because smartWrap needs non-elevated points
+                this._flatPos = this._trackPointer && cursor ? cursor : this._map.transform.locationPoint(this._lngLat);
+            }
             let anchor = this.options.anchor;
             const offset = normalizeOffset(this.options.offset);
             if (!anchor) {
@@ -57457,14 +58378,17 @@ class Popup extends performance.Evented {
                     anchor = anchorComponents.join('-');
                 }
             }
-            const offsetedPos = pos.add(offset[anchor]).round();
+            let offsetedPos = pos.add(offset[anchor]);
+            if (!this.options.subpixelPositioning) {
+                offsetedPos = offsetedPos.round();
+            }
             DOM.setTransform(this._container, `${anchorTranslate[anchor]} translate(${offsetedPos.x}px,${offsetedPos.y}px)`);
             applyAnchorClass(this._container, anchor, 'popup');
         };
         this._onClose = () => {
             this.remove();
         };
-        this.options = performance.extend(Object.create(defaultOptions), options);
+        this.options = performance$1.extend(Object.create(defaultOptions), options);
     }
     /**
      * Adds the popup to a map.
@@ -57473,7 +58397,7 @@ class Popup extends performance.Evented {
      * @returns `this`
      * @example
      * ```ts
-     * new maplibregl.Popup()
+     * new Popup()
      *   .setLngLat([0, 0])
      *   .setHTML("<h1>Null Island</h1>")
      *   .addTo(map);
@@ -57507,7 +58431,7 @@ class Popup extends performance.Evented {
         else {
             this._map.on('move', this._update);
         }
-        this.fire(new performance.Event('open'));
+        this.fire(new performance$1.Event('open'));
         return this;
     }
     /**
@@ -57535,8 +58459,9 @@ class Popup extends performance.Evented {
      * @returns `this`
      */
     setLngLat(lnglat) {
-        this._lngLat = performance.LngLat.convert(lnglat);
+        this._lngLat = performance$1.LngLat.convert(lnglat);
         this._pos = null;
+        this._flatPos = null;
         this._trackPointer = false;
         this._update();
         if (this._map) {
@@ -57554,7 +58479,7 @@ class Popup extends performance.Evented {
      * For most use cases, set `closeOnClick` and `closeButton` to `false`.
      * @example
      * ```ts
-     * let popup = new maplibregl.Popup({ closeOnClick: false, closeButton: false })
+     * let popup = new Popup({ closeOnClick: false, closeButton: false })
      *   .setHTML("<h1>Hello World!</h1>")
      *   .trackPointer()
      *   .addTo(map);
@@ -57564,6 +58489,7 @@ class Popup extends performance.Evented {
     trackPointer() {
         this._trackPointer = true;
         this._pos = null;
+        this._flatPos = null;
         this._update();
         if (this._map) {
             this._map.off('move', this._update);
@@ -57581,7 +58507,7 @@ class Popup extends performance.Evented {
      * @example
      * Change the `Popup` element's font size
      * ```ts
-     * let popup = new maplibregl.Popup()
+     * let popup = new Popup()
      *   .setLngLat([-96, 37.8])
      *   .setHTML("<p>Hello World!</p>")
      *   .addTo(map);
@@ -57604,7 +58530,7 @@ class Popup extends performance.Evented {
      * @returns `this`
      * @example
      * ```ts
-     * let popup = new maplibregl.Popup()
+     * let popup = new Popup()
      *   .setLngLat(e.lngLat)
      *   .setText('Hello, world!')
      *   .addTo(map);
@@ -57624,7 +58550,7 @@ class Popup extends performance.Evented {
      * @returns `this`
      * @example
      * ```ts
-     * let popup = new maplibregl.Popup()
+     * let popup = new Popup()
      *   .setLngLat(e.lngLat)
      *   .setHTML("<h1>Hello World!</h1>")
      *   .addTo(map);
@@ -57678,7 +58604,7 @@ class Popup extends performance.Evented {
      * ```ts
      * let div = document.createElement('div');
      * div.innerHTML = 'Hello, world!';
-     * let popup = new maplibregl.Popup()
+     * let popup = new Popup()
      *   .setLngLat(e.lngLat)
      *   .setDOMContent(div)
      *   .addTo(map);
@@ -57710,7 +58636,7 @@ class Popup extends performance.Evented {
      *
      * @example
      * ```ts
-     * let popup = new maplibregl.Popup()
+     * let popup = new Popup()
      * popup.addClassName('some-class')
      * ```
      */
@@ -57726,7 +58652,7 @@ class Popup extends performance.Evented {
      *
      * @example
      * ```ts
-     * let popup = new maplibregl.Popup()
+     * let popup = new Popup()
      * popup.removeClassName('some-class')
      * ```
      */
@@ -57755,7 +58681,7 @@ class Popup extends performance.Evented {
      *
      * @example
      * ```ts
-     * let popup = new maplibregl.Popup()
+     * let popup = new Popup()
      * popup.toggleClassName('toggleClass')
      * ```
      */
@@ -57763,6 +58689,20 @@ class Popup extends performance.Evented {
         if (this._container) {
             return this._container.classList.toggle(className);
         }
+    }
+    /**
+     * Set the option to allow subpixel positioning of the popup by passing a boolean
+     *
+     * @param value - When boolean is true, subpixel positioning is enabled for the popup.
+     *
+     * @example
+     * ```ts
+     * let popup = new Popup()
+     * popup.setSubpixelPositioning(true);
+     * ```
+     */
+    setSubpixelPositioning(value) {
+        this.options.subpixelPositioning = value;
     }
     _createCloseButton() {
         if (this.options.closeButton) {
@@ -57783,26 +58723,26 @@ class Popup extends performance.Evented {
 }
 function normalizeOffset(offset) {
     if (!offset) {
-        return normalizeOffset(new performance.Point(0, 0));
+        return normalizeOffset(new performance$1.Point(0, 0));
     }
     else if (typeof offset === 'number') {
         // input specifies a radius from which to calculate offsets at all positions
         const cornerOffset = Math.round(Math.abs(offset) / Math.SQRT2);
         return {
-            'center': new performance.Point(0, 0),
-            'top': new performance.Point(0, offset),
-            'top-left': new performance.Point(cornerOffset, cornerOffset),
-            'top-right': new performance.Point(-cornerOffset, cornerOffset),
-            'bottom': new performance.Point(0, -offset),
-            'bottom-left': new performance.Point(cornerOffset, -cornerOffset),
-            'bottom-right': new performance.Point(-cornerOffset, -cornerOffset),
-            'left': new performance.Point(offset, 0),
-            'right': new performance.Point(-offset, 0)
+            'center': new performance$1.Point(0, 0),
+            'top': new performance$1.Point(0, offset),
+            'top-left': new performance$1.Point(cornerOffset, cornerOffset),
+            'top-right': new performance$1.Point(-cornerOffset, cornerOffset),
+            'bottom': new performance$1.Point(0, -offset),
+            'bottom-left': new performance$1.Point(cornerOffset, -cornerOffset),
+            'bottom-right': new performance$1.Point(-cornerOffset, -cornerOffset),
+            'left': new performance$1.Point(offset, 0),
+            'right': new performance$1.Point(-offset, 0)
         };
     }
-    else if (offset instanceof performance.Point || Array.isArray(offset)) {
+    else if (offset instanceof performance$1.Point || Array.isArray(offset)) {
         // input specifies a single offset to be applied to all positions
-        const convertedOffset = performance.Point.convert(offset);
+        const convertedOffset = performance$1.Point.convert(offset);
         return {
             'center': convertedOffset,
             'top': convertedOffset,
@@ -57818,183 +58758,36 @@ function normalizeOffset(offset) {
     else {
         // input specifies an offset per position
         return {
-            'center': performance.Point.convert(offset['center'] || [0, 0]),
-            'top': performance.Point.convert(offset['top'] || [0, 0]),
-            'top-left': performance.Point.convert(offset['top-left'] || [0, 0]),
-            'top-right': performance.Point.convert(offset['top-right'] || [0, 0]),
-            'bottom': performance.Point.convert(offset['bottom'] || [0, 0]),
-            'bottom-left': performance.Point.convert(offset['bottom-left'] || [0, 0]),
-            'bottom-right': performance.Point.convert(offset['bottom-right'] || [0, 0]),
-            'left': performance.Point.convert(offset['left'] || [0, 0]),
-            'right': performance.Point.convert(offset['right'] || [0, 0])
+            'center': performance$1.Point.convert(offset['center'] || [0, 0]),
+            'top': performance$1.Point.convert(offset['top'] || [0, 0]),
+            'top-left': performance$1.Point.convert(offset['top-left'] || [0, 0]),
+            'top-right': performance$1.Point.convert(offset['top-right'] || [0, 0]),
+            'bottom': performance$1.Point.convert(offset['bottom'] || [0, 0]),
+            'bottom-left': performance$1.Point.convert(offset['bottom-left'] || [0, 0]),
+            'bottom-right': performance$1.Point.convert(offset['bottom-right'] || [0, 0]),
+            'left': performance$1.Point.convert(offset['left'] || [0, 0]),
+            'right': performance$1.Point.convert(offset['right'] || [0, 0])
         };
     }
 }
 
-/**
- * This is a private namespace for utility functions that will get automatically stripped
- * out in production builds.
- */
-const Debug = {
-    extend(dest, ...sources) {
-        return performance.extend(dest, ...sources);
-    },
-    run(fn) {
-        fn();
-    },
-    logToElement(message, overwrite = false, id = 'log') {
-        const el = window.document.getElementById(id);
-        if (el) {
-            if (overwrite)
-                el.innerHTML = '';
-            el.innerHTML += `<br>${message}`;
-        }
-    }
-};
-
 const version = packageJSON.version;
-/**
- * `maplibregl` is the global object that allows configurations that are not specific to a map instance
- *
- * @group Main
- */
-class MapLibreGL {
-    /**
-     * Returns the package version of the library
-     * @returns Package version of the library
-     */
-    static get version() {
-        return version;
-    }
-    /**
-     * Gets and sets the number of web workers instantiated on a page with GL JS maps.
-     * By default, workerCount is 1 except for Safari browser where it is set to half the number of CPU cores (capped at 3).
-     * Make sure to set this property before creating any map instances for it to have effect.
-     *
-     * @returns Number of workers currently configured.
-     * @example
-     * ```ts
-     * maplibregl.workerCount = 2;
-     * ```
-     */
-    static get workerCount() {
-        return WorkerPool.workerCount;
-    }
-    static set workerCount(count) {
-        WorkerPool.workerCount = count;
-    }
-    /**
-     * Gets and sets the maximum number of images (raster tiles, sprites, icons) to load in parallel,
-     * which affects performance in raster-heavy maps. 16 by default.
-     *
-     * @returns Number of parallel requests currently configured.
-     * @example
-     * ```ts
-     * maplibregl.maxParallelImageRequests = 10;
-     * ```
-     */
-    static get maxParallelImageRequests() {
-        return performance.config.MAX_PARALLEL_IMAGE_REQUESTS;
-    }
-    static set maxParallelImageRequests(numRequests) {
-        performance.config.MAX_PARALLEL_IMAGE_REQUESTS = numRequests;
-    }
-    static get workerUrl() {
-        return performance.config.WORKER_URL;
-    }
-    static set workerUrl(value) {
-        performance.config.WORKER_URL = value;
-    }
-    /**
-     * Sets a custom load tile function that will be called when using a source that starts with a custom url schema.
-     * The example below will be triggered for custom:// urls defined in the sources list in the style definitions.
-     * The function passed will receive the request parameters and should call the callback with the resulting request,
-     * for example a pbf vector tile, non-compressed, represented as ArrayBuffer.
-     *
-     * @param customProtocol - the protocol to hook, for example 'custom'
-     * @param loadFn - the function to use when trying to fetch a tile specified by the customProtocol
-     * @example
-     * This will fetch a file using the fetch API (this is obviously a non interesting example...)
-     * ```ts
-     * maplibregl.addProtocol('custom', (params, callback) => {
-            fetch(`https://${params.url.split("://")[1]}`)
-                .then(t => {
-                    if (t.status == 200) {
-                        t.arrayBuffer().then(arr => {
-                            callback(null, arr, null, null);
-                        });
-                    } else {
-                        callback(new Error(`Tile fetch error: ${t.statusText}`));
-                    }
-                })
-                .catch(e => {
-                    callback(new Error(e));
-                });
-            return { cancel: () => { } };
-        });
-     * // the following is an example of a way to return an error when trying to load a tile
-     * maplibregl.addProtocol('custom2', (params, callback) => {
-     *      callback(new Error('someErrorMessage'));
-     *      return { cancel: () => { } };
-     * });
-     * ```
-     */
-    static addProtocol(customProtocol, loadFn) {
-        performance.config.REGISTERED_PROTOCOLS[customProtocol] = loadFn;
-    }
-    /**
-     * Removes a previously added protocol
-     *
-     * @param customProtocol - the custom protocol to remove registration for
-     * @example
-     * ```ts
-     * maplibregl.removeProtocol('custom');
-     * ```
-     */
-    static removeProtocol(customProtocol) {
-        delete performance.config.REGISTERED_PROTOCOLS[customProtocol];
-    }
-}
-MapLibreGL.Map = Map$1;
-MapLibreGL.NavigationControl = NavigationControl;
-MapLibreGL.GeolocateControl = GeolocateControl;
-MapLibreGL.AttributionControl = AttributionControl;
-MapLibreGL.LogoControl = LogoControl;
-MapLibreGL.ScaleControl = ScaleControl;
-MapLibreGL.FullscreenControl = FullscreenControl;
-MapLibreGL.TerrainControl = TerrainControl;
-MapLibreGL.Popup = Popup;
-MapLibreGL.Marker = Marker;
-MapLibreGL.Style = Style;
-MapLibreGL.LngLat = performance.LngLat;
-MapLibreGL.LngLatBounds = LngLatBounds;
-MapLibreGL.Point = performance.Point;
-MapLibreGL.MercatorCoordinate = performance.MercatorCoordinate;
-MapLibreGL.Evented = performance.Evented;
-MapLibreGL.AJAXError = performance.AJAXError;
-MapLibreGL.config = performance.config;
-MapLibreGL.CanvasSource = CanvasSource;
-MapLibreGL.GeoJSONSource = GeoJSONSource;
-MapLibreGL.ImageSource = ImageSource;
-MapLibreGL.RasterDEMTileSource = RasterDEMTileSource;
-MapLibreGL.RasterTileSource = RasterTileSource;
-MapLibreGL.VectorTileSource = VectorTileSource;
-MapLibreGL.VideoSource = VideoSource;
 /**
  * Sets the map's [RTL text plugin](https://www.mapbox.com/mapbox-gl-js/plugins/#mapbox-gl-rtl-text).
  * Necessary for supporting the Arabic and Hebrew languages, which are written right-to-left.
  *
  * @param pluginURL - URL pointing to the Mapbox RTL text plugin source.
- * @param callback - Called with an error argument if there is an error.
  * @param lazy - If set to `true`, mapboxgl will defer loading the plugin until rtl text is encountered,
  * rtl text will then be rendered only after the plugin finishes loading.
  * @example
  * ```ts
- * maplibregl.setRTLTextPlugin('https://unpkg.com/@mapbox/mapbox-gl-rtl-text@0.2.3/mapbox-gl-rtl-text.js');
+ * setRTLTextPlugin('https://unpkg.com/@mapbox/mapbox-gl-rtl-text@0.2.3/mapbox-gl-rtl-text.js', false);
  * ```
  * @see [Add support for right-to-left scripts](https://maplibre.org/maplibre-gl-js/docs/examples/mapbox-gl-rtl-text/)
  */
-MapLibreGL.setRTLTextPlugin = performance.setRTLTextPlugin;
+function setRTLTextPlugin(pluginURL, lazy) {
+    return rtlMainThreadPluginFactory().setRTLTextPlugin(pluginURL, lazy);
+}
 /**
  * Gets the map's [RTL text plugin](https://www.mapbox.com/mapbox-gl-js/plugins/#mapbox-gl-rtl-text) status.
  * The status can be `unavailable` (i.e. not requested or removed), `loading`, `loaded` or `error`.
@@ -58002,49 +58795,159 @@ MapLibreGL.setRTLTextPlugin = performance.setRTLTextPlugin;
  *
  * @example
  * ```ts
- * const pluginStatus = maplibregl.getRTLTextPluginStatus();
+ * const pluginStatus = getRTLTextPluginStatus();
  * ```
  */
-MapLibreGL.getRTLTextPluginStatus = performance.getRTLTextPluginStatus;
+function getRTLTextPluginStatus() {
+    return rtlMainThreadPluginFactory().getRTLTextPluginStatus();
+}
 /**
- * Initializes resources like WebWorkers that can be shared across maps to lower load
- * times in some situations. `maplibregl.workerUrl` and `maplibregl.workerCount`, if being
- * used, must be set before `prewarm()` is called to have an effect.
+ * Returns the package version of the library
+ * @returns Package version of the library
+ */
+function getVersion() { return version; }
+/**
+ * Gets the number of web workers instantiated on a page with GL JS maps.
+ * By default, workerCount is 1 except for Safari browser where it is set to half the number of CPU cores (capped at 3).
+ * Make sure to set this property before creating any map instances for it to have effect.
  *
- * By default, the lifecycle of these resources is managed automatically, and they are
- * lazily initialized when a Map is first created. By invoking `prewarm()`, these
- * resources will be created ahead of time, and will not be cleared when the last Map
- * is removed from the page. This allows them to be re-used by new Map instances that
- * are created later. They can be manually cleared by calling
- * `maplibregl.clearPrewarmedResources()`. This is only necessary if your web page remains
- * active but stops using maps altogether.
- *
- * This is primarily useful when using GL-JS maps in a single page app, wherein a user
- * would navigate between various views that can cause Map instances to constantly be
- * created and destroyed.
+ * @returns Number of workers currently configured.
+ * @example
+ * ```ts
+ * const workerCount = getWorkerCount()
+ * ```
+ */
+function getWorkerCount() { return WorkerPool.workerCount; }
+/**
+ * Sets the number of web workers instantiated on a page with GL JS maps.
+ * By default, workerCount is 1 except for Safari browser where it is set to half the number of CPU cores (capped at 3).
+ * Make sure to set this property before creating any map instances for it to have effect.
  *
  * @example
  * ```ts
- * maplibregl.prewarm()
+ * setWorkerCount(2);
  * ```
  */
-MapLibreGL.prewarm = prewarm;
+function setWorkerCount(count) { WorkerPool.workerCount = count; }
 /**
- * Clears up resources that have previously been created by `maplibregl.prewarm()`.
- * Note that this is typically not necessary. You should only call this function
- * if you expect the user of your app to not return to a Map view at any point
- * in your application.
+ * Gets and sets the maximum number of images (raster tiles, sprites, icons) to load in parallel,
+ * which affects performance in raster-heavy maps. 16 by default.
+ *
+ * @returns Number of parallel requests currently configured.
+ * @example
+ * ```ts
+ * getMaxParallelImageRequests();
+ * ```
+ */
+function getMaxParallelImageRequests() { return performance$1.config.MAX_PARALLEL_IMAGE_REQUESTS; }
+/**
+ * Sets the maximum number of images (raster tiles, sprites, icons) to load in parallel,
+ * which affects performance in raster-heavy maps. 16 by default.
  *
  * @example
  * ```ts
- * maplibregl.clearPrewarmedResources()
+ * setMaxParallelImageRequests(10);
  * ```
  */
-MapLibreGL.clearPrewarmedResources = clearPrewarmedResources;
-//This gets automatically stripped out in production builds.
-Debug.extend(MapLibreGL, { isSafari: performance.isSafari, getPerformanceMetrics: performance.PerformanceUtils.getPerformanceMetrics });
+function setMaxParallelImageRequests(numRequests) { performance$1.config.MAX_PARALLEL_IMAGE_REQUESTS = numRequests; }
+/**
+ * Gets the worker url
+ * @returns The worker url
+ */
+function getWorkerUrl() { return performance$1.config.WORKER_URL; }
+/**
+ * Sets the worker url
+ */
+function setWorkerUrl(value) { performance$1.config.WORKER_URL = value; }
+/**
+ * Allows loading javascript code in the worker thread.
+ * *Note* that since this is using some very internal classes and flows it is considered experimental and can break at any point.
+ *
+ * It can be useful for the following examples:
+ * 1. Using `self.addProtocol` in the worker thread - note that you might need to also register the protocol on the main thread.
+ * 2. Using `self.registerWorkerSource(workerSource: WorkerSource)` to register a worker source, which sould come with `addSourceType` usually.
+ * 3. using `self.actor.registerMessageHandler` to override some internal worker operations
+ * @param workerUrl - the worker url e.g. a url of a javascript file to load in the worker
+ * @returns
+ *
+ * @example
+ * ```ts
+ * // below is an example of sending a js file to the worker to load the method there
+ * // Note that you'll need to call the global function `addProtocol` in the worker to register the protocol there.
+ * // add-protocol-worker.js
+ * async function loadFn(params, abortController) {
+ *     const t = await fetch(`https://${params.url.split("://")[1]}`);
+ *     if (t.status == 200) {
+ *         const buffer = await t.arrayBuffer();
+ *         return {data: buffer}
+ *     } else {
+ *         throw new Error(`Tile fetch error: ${t.statusText}`);
+ *     }
+ * }
+ * self.addPRotocol('custom', loadFn);
+ *
+ * // main.js
+ * importScriptInWorkers('add-protocol-worker.js');
+ * ```
+ */
+function importScriptInWorkers(workerUrl) { return getGlobalDispatcher().broadcast("IS" /* MessageType.importScript */, workerUrl); }
 
-return MapLibreGL;
+exports.AJAXError = performance$1.AJAXError;
+exports.Evented = performance$1.Evented;
+exports.LngLat = performance$1.LngLat;
+exports.MercatorCoordinate = performance$1.MercatorCoordinate;
+exports.Point = performance$1.Point;
+exports.addProtocol = performance$1.addProtocol;
+exports.config = performance$1.config;
+exports.removeProtocol = performance$1.removeProtocol;
+exports.AttributionControl = AttributionControl;
+exports.BoxZoomHandler = BoxZoomHandler;
+exports.CanvasSource = CanvasSource;
+exports.CooperativeGesturesHandler = CooperativeGesturesHandler;
+exports.DoubleClickZoomHandler = DoubleClickZoomHandler;
+exports.DragPanHandler = DragPanHandler;
+exports.DragRotateHandler = DragRotateHandler;
+exports.EdgeInsets = EdgeInsets;
+exports.FullscreenControl = FullscreenControl;
+exports.GeoJSONSource = GeoJSONSource;
+exports.GeolocateControl = GeolocateControl;
+exports.Hash = Hash;
+exports.ImageSource = ImageSource;
+exports.KeyboardHandler = KeyboardHandler;
+exports.LngLatBounds = LngLatBounds;
+exports.LogoControl = LogoControl;
+exports.Map = Map$1;
+exports.MapMouseEvent = MapMouseEvent;
+exports.MapTouchEvent = MapTouchEvent;
+exports.MapWheelEvent = MapWheelEvent;
+exports.Marker = Marker;
+exports.NavigationControl = NavigationControl;
+exports.Popup = Popup;
+exports.RasterDEMTileSource = RasterDEMTileSource;
+exports.RasterTileSource = RasterTileSource;
+exports.ScaleControl = ScaleControl;
+exports.ScrollZoomHandler = ScrollZoomHandler;
+exports.Style = Style;
+exports.TerrainControl = TerrainControl;
+exports.TwoFingersTouchPitchHandler = TwoFingersTouchPitchHandler;
+exports.TwoFingersTouchRotateHandler = TwoFingersTouchRotateHandler;
+exports.TwoFingersTouchZoomHandler = TwoFingersTouchZoomHandler;
+exports.TwoFingersTouchZoomRotateHandler = TwoFingersTouchZoomRotateHandler;
+exports.VectorTileSource = VectorTileSource;
+exports.VideoSource = VideoSource;
+exports.addSourceType = addSourceType;
+exports.clearPrewarmedResources = clearPrewarmedResources;
+exports.getMaxParallelImageRequests = getMaxParallelImageRequests;
+exports.getRTLTextPluginStatus = getRTLTextPluginStatus;
+exports.getVersion = getVersion;
+exports.getWorkerCount = getWorkerCount;
+exports.getWorkerUrl = getWorkerUrl;
+exports.importScriptInWorkers = importScriptInWorkers;
+exports.prewarm = prewarm;
+exports.setMaxParallelImageRequests = setMaxParallelImageRequests;
+exports.setRTLTextPlugin = setRTLTextPlugin;
+exports.setWorkerCount = setWorkerCount;
+exports.setWorkerUrl = setWorkerUrl;
 
 }));
 

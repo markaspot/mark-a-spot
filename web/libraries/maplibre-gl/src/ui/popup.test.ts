@@ -132,6 +132,18 @@ describe('popup', () => {
         expect(onClose).toHaveBeenCalled();
     });
 
+    test('Popup does not fire close event when removed if it is not on the map', () => {
+        const onClose = jest.fn();
+
+        new Popup()
+            .setText('Test')
+            .setLngLat([0, 0])
+            .on('close', onClose)
+            .remove();
+
+        expect(onClose).not.toHaveBeenCalled();
+    });
+
     test('Popup fires open event when added', () => {
         const map = createMap();
         const onOpen = jest.fn();
@@ -334,9 +346,11 @@ describe('popup', () => {
 
     test('Popup is repositioned at the specified LngLat', () => {
         const map = createMap({width: 1024}); // longitude bounds: [-360, 360]
-
+        map.terrain = {
+            getElevationForLngLatZoom: () => 0
+        } as any;
         const popup = new Popup()
-            .setLngLat([270, 0])
+            .setLngLat([70, 0])
             .setText('Test')
             .addTo(map)
             .setLngLat([0, 0]);
@@ -602,6 +616,22 @@ describe('popup', () => {
         expect(
             popup._container.classList.value
         ).not.toContain('maplibregl-popup-track-pointer');
+        expect(
+            map._canvasContainer.classList.value
+        ).not.toContain('maplibregl-track-pointer');
+    });
+
+    test('Pointer-tracked popup calling Popup#remove removes track-pointer class from map (#3434)', () => {
+        const map = createMap();
+        new Popup()
+            .setText('Test')
+            .trackPointer()
+            .addTo(map)
+            .remove();
+
+        expect(
+            map._canvasContainer.classList.value
+        ).not.toContain('maplibregl-track-pointer');
     });
 
     test('Positioned popup lacks pointer-tracking class', () => {
@@ -734,5 +764,58 @@ describe('popup', () => {
             .addTo(createMap());
 
         expect(window.document.activeElement).toBe(dummyFocusedEl);
+    });
+
+    test('Popup is positioned on rounded whole-number pixel coordinates by default when offset is a decimal', () => {
+        const map = createMap();
+        jest.spyOn(map, 'project').mockReturnValue(new Point(0, 0));
+
+        const popup = new Popup({offset: [-0.1, 0.9]})
+            .setLngLat([0, 0])
+            .setText('foobar')
+            .addTo(map);
+
+        expect(popup.getElement().style.transform).toBe('translate(-50%,-100%) translate(0px,1px)');
+    });
+
+    test('Popup position is not rounded when subpixel positioning is enabled', () => {
+        const map = createMap();
+        jest.spyOn(map, 'project').mockReturnValue(new Point(0, 0));
+
+        const popup = new Popup({offset: [-0.1, 0.9], subpixelPositioning: true})
+            .setLngLat([0, 0])
+            .setText('foobar')
+            .addTo(map);
+
+        expect(popup.getElement().style.transform).toBe('translate(-50%,-100%) translate(-0.1px,0.9px)');
+    });
+
+    test('Popup subpixel positioning can be enabled with Popup#setSubpixelPositioning', () => {
+        const map = createMap();
+        jest.spyOn(map, 'project').mockReturnValue(new Point(0, 0));
+
+        const popup = new Popup({offset: [0, 0]})
+            .setLngLat([0, 0])
+            .setText('foobar')
+            .addTo(map);
+
+        popup.setSubpixelPositioning(true);
+        popup.setOffset([-0.1, 0.9]);
+
+        expect(popup.getElement().style.transform).toBe('translate(-50%,-100%) translate(-0.1px,0.9px)');
+    });
+    test('Popup subpixel positioning can be disabled with Popup#setSubpixelPositioning', () => {
+        const map = createMap();
+        jest.spyOn(map, 'project').mockReturnValue(new Point(0, 0));
+
+        const popup = new Popup({offset: [0, 0], subpixelPositioning: true})
+            .setLngLat([0, 0])
+            .setText('foobar')
+            .addTo(map);
+
+        popup.setSubpixelPositioning(false);
+        popup.setOffset([-0.1, 0.9]);
+
+        expect(popup.getElement().style.transform).toBe('translate(-50%,-100%) translate(0px,1px)');
     });
 });
