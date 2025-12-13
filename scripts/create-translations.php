@@ -144,10 +144,8 @@ function create_page_translations($source_dir, $lang_code) {
   drush_print("Processing page translations...");
   $storage = \Drupal::entityTypeManager()->getStorage('node');
 
-  // Load all page nodes
-  $all_pages = $storage->loadByProperties(['type' => 'page']);
-
   foreach ($rows as $row) {
+    $uuid = trim($row['uuid'] ?? '');
     $title = trim($row['title'] ?? '');
     $body = $row['body'] ?? '';
 
@@ -155,28 +153,26 @@ function create_page_translations($source_dir, $lang_code) {
       continue;
     }
 
-    // Find matching node - try by position/order since titles might differ
+    // Find node by UUID (reliable matching)
     $node = NULL;
-    foreach ($all_pages as $page) {
-      // Match by checking if this is the base language version
-      if ($page->get('default_langcode')->value) {
-        // For now, match by title pattern (first word or similar structure)
-        $page_title = $page->label();
-        // Simple matching - could be improved
-        if (similar_text(strtolower($title), strtolower($page_title)) > 3) {
-          $node = $page;
-          break;
-        }
-      }
+    if (!empty($uuid)) {
+      $nodes = $storage->loadByProperties(['uuid' => $uuid]);
+      $node = reset($nodes);
     }
 
-    // If no fuzzy match, just process in order
+    // Fallback: try to find by title in base language
     if (!$node) {
-      static $page_index = 0;
-      $pages_array = array_values($all_pages);
-      if (isset($pages_array[$page_index])) {
-        $node = $pages_array[$page_index];
-        $page_index++;
+      $default_langcode = \Drupal::languageManager()->getDefaultLanguage()->getId();
+      $nodes = $storage->loadByProperties(['type' => 'page']);
+      foreach ($nodes as $candidate) {
+        // Get the base language version's title
+        if ($candidate->hasTranslation($default_langcode)) {
+          $base_title = $candidate->getTranslation($default_langcode)->label();
+          if ($base_title === $title) {
+            $node = $candidate;
+            break;
+          }
+        }
       }
     }
 
@@ -209,7 +205,7 @@ function create_page_translations($source_dir, $lang_code) {
       }
     }
     else {
-      drush_print("  No matching node found for: $title");
+      drush_print("  No matching node found for: $title (UUID: $uuid)");
     }
   }
 }
@@ -368,11 +364,8 @@ function create_boilerplate_translations($source_dir, $lang_code) {
   drush_print("\nProcessing boilerplate translations...");
   $storage = \Drupal::entityTypeManager()->getStorage('node');
 
-  // Load all boilerplate nodes
-  $all_boilerplates = $storage->loadByProperties(['type' => 'boilerplate']);
-  $boilerplates_array = array_values($all_boilerplates);
-
-  foreach ($rows as $index => $row) {
+  foreach ($rows as $row) {
+    $uuid = trim($row['uuid'] ?? '');
     $title = trim($row['title'] ?? '');
     $body = $row['body'] ?? '';
 
@@ -380,39 +373,43 @@ function create_boilerplate_translations($source_dir, $lang_code) {
       continue;
     }
 
-    // Match by index position since titles differ between languages
-    $node = $boilerplates_array[$index] ?? NULL;
+    // Find node by UUID (reliable matching)
+    $node = NULL;
+    if (!empty($uuid)) {
+      $nodes = $storage->loadByProperties(['uuid' => $uuid]);
+      $node = reset($nodes);
+    }
 
-    if ($node) {
-      try {
-        if (!$node->hasTranslation($lang_code)) {
-          $translation = $node->addTranslation($lang_code, [
-            'title' => $title,
-            'body' => [
-              'value' => $body,
-              'format' => 'full_html',
-            ],
-          ]);
-          $translation->save();
-          drush_print("  Created $lang_code translation: $title");
-        }
-        else {
-          $translation = $node->getTranslation($lang_code);
-          $translation->set('title', $title);
-          $translation->set('body', [
+    if (!$node) {
+      drush_print("  No matching boilerplate found for UUID: $uuid ($title)");
+      continue;
+    }
+
+    try {
+      if (!$node->hasTranslation($lang_code)) {
+        $translation = $node->addTranslation($lang_code, [
+          'title' => $title,
+          'body' => [
             'value' => $body,
             'format' => 'full_html',
-          ]);
-          $translation->save();
-          drush_print("  Updated $lang_code translation: $title");
-        }
+          ],
+        ]);
+        $translation->save();
+        drush_print("  Created $lang_code translation: $title");
       }
-      catch (\Exception $e) {
-        drush_print("  Error processing boilerplate '$title': " . $e->getMessage());
+      else {
+        $translation = $node->getTranslation($lang_code);
+        $translation->set('title', $title);
+        $translation->set('body', [
+          'value' => $body,
+          'format' => 'full_html',
+        ]);
+        $translation->save();
+        drush_print("  Updated $lang_code translation: $title");
       }
     }
-    else {
-      drush_print("  No matching boilerplate found for index $index: $title");
+    catch (\Exception $e) {
+      drush_print("  Error processing boilerplate '$title': " . $e->getMessage());
     }
   }
 }

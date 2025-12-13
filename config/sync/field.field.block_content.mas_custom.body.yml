@@ -16,7 +16,7 @@ bundle: mas_custom
 label: Body
 description: ''
 required: false
-translatable: false
+translatable: true
 default_value:
   -
     value: ''

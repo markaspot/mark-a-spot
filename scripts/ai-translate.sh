@@ -90,24 +90,26 @@ for csv_file in "$ARTIFACTS_DIR"/*.csv; do
         echo "Translate this CSV data from English to $LANG_CODE. Translate ONLY the text in column 4 (name) and column 5 (description). Change langcode in column 3 from \"en\" to \"$LANG_CODE\". All other columns MUST remain EXACTLY the same, without any changes to numbers, formatting, quotes or values. This is critically important for all fields, especially hex color codes and icon names. Return ONLY the translated CSV rows without the header." > "$prompt_file"
         ;;
       "page.csv")
-        echo "IMPORTANT: Translate this CSV data from English to $LANG_CODE. The CSV has only two columns: 'title' and 'body'. BOTH COLUMNS MUST BE TRANSLATED TO $LANG_CODE. The title column (first column) MUST be translated. Each output row must begin with the translated title. Maintain all HTML formatting in the body column. Return ONLY the translated CSV rows without the header. Format each row exactly like the original with all commas, quotes and HTML tags preserved." > "$prompt_file"
+        echo "IMPORTANT: Translate this CSV data from English to $LANG_CODE. The CSV has THREE columns: 'uuid', 'title', and 'body'. Translate ONLY the 'title' and 'body' columns. The 'uuid' column MUST remain EXACTLY the same. Maintain all HTML formatting in the body column. Return ONLY the translated CSV rows without the header. Format each row exactly like the original with all commas, quotes and HTML tags preserved." > "$prompt_file"
         echo "" >> "$prompt_file"
         echo "IMPORTANT TRANSLATION REQUIREMENTS:" >> "$prompt_file"
-        echo "1. Each row has format: \"TITLE\",\"BODY HTML CONTENT\"" >> "$prompt_file"
-        echo "2. You MUST translate both the TITLE and the BODY" >> "$prompt_file"
-        echo "3. Example input: \"Imprint\",\"<h2>Lorem ipsum...\"" >> "$prompt_file"
-        echo "4. Example output for German: \"Impressum\",\"<h2>Lorem ipsum (translated)...\"" >> "$prompt_file"
-        echo "5. All titles MUST be translated to $LANG_CODE" >> "$prompt_file"
+        echo "1. Each row has format: \"UUID\",\"TITLE\",\"BODY HTML CONTENT\"" >> "$prompt_file"
+        echo "2. You MUST translate ONLY the TITLE and BODY columns" >> "$prompt_file"
+        echo "3. Do NOT change the UUID - it must be preserved exactly" >> "$prompt_file"
+        echo "4. Example input: \"a1b2c3d4-1111-4000-8000-000000000001\",\"Imprint\",\"<h2>Lorem ipsum...\"" >> "$prompt_file"
+        echo "5. Example output for German: \"a1b2c3d4-1111-4000-8000-000000000001\",\"Impressum\",\"<h2>Lorem ipsum (translated)...\"" >> "$prompt_file"
+        echo "6. All titles MUST be translated to $LANG_CODE" >> "$prompt_file"
         ;;
       "boilerplate.csv")
-        echo "IMPORTANT: Translate this CSV data from English to $LANG_CODE. The CSV has only two columns: 'title' and 'body'. BOTH COLUMNS MUST BE TRANSLATED TO $LANG_CODE. The title column (first column) MUST be translated. Each output row must begin with the translated title. Maintain all HTML formatting in the body column. Return ONLY the translated CSV rows without the header. Format each row exactly like the original with all commas, quotes and HTML tags preserved." > "$prompt_file"
+        echo "IMPORTANT: Translate this CSV data from English to $LANG_CODE. The CSV has THREE columns: 'uuid', 'title', and 'body'. Translate ONLY the 'title' and 'body' columns. The 'uuid' column MUST remain EXACTLY the same. Maintain all HTML formatting in the body column. Return ONLY the translated CSV rows without the header. Format each row exactly like the original with all commas, quotes and HTML tags preserved." > "$prompt_file"
         echo "" >> "$prompt_file"
         echo "IMPORTANT TRANSLATION REQUIREMENTS:" >> "$prompt_file"
-        echo "1. Each row has format: \"TITLE\",\"BODY HTML CONTENT\"" >> "$prompt_file"
-        echo "2. You MUST translate both the TITLE and the BODY" >> "$prompt_file"
-        echo "3. Example input: \"001 Thank you\",\"Lorem ipsum...\"" >> "$prompt_file"
-        echo "4. Example output for German: \"001 Danke\",\"Lorem ipsum (translated)...\"" >> "$prompt_file"
-        echo "5. All titles MUST be translated to $LANG_CODE" >> "$prompt_file"
+        echo "1. Each row has format: \"UUID\",\"TITLE\",\"BODY CONTENT\"" >> "$prompt_file"
+        echo "2. You MUST translate ONLY the TITLE and BODY columns" >> "$prompt_file"
+        echo "3. Do NOT change the UUID - it must be preserved exactly" >> "$prompt_file"
+        echo "4. Example input: \"b1b2c3d4-0001-4000-8000-000000000001\",\"001 Thank you\",\"Lorem ipsum...\"" >> "$prompt_file"
+        echo "5. Example output for German: \"b1b2c3d4-0001-4000-8000-000000000001\",\"001 Danke\",\"Lorem ipsum (translated)...\"" >> "$prompt_file"
+        echo "6. All titles MUST be translated to $LANG_CODE" >> "$prompt_file"
         ;;
       "block.csv")
         echo "IMPORTANT: Translate this CSV data from English to $LANG_CODE. The CSV has four columns: 'title', 'uuid', 'body', and 'body_format'. Translate ONLY the 'title' and 'body' columns. DO NOT translate the 'uuid' and 'body_format' columns. Maintain all HTML formatting in the body column. Return ONLY the translated CSV rows without the header. Format each row exactly like the original with all commas, quotes and HTML tags preserved." > "$prompt_file"
