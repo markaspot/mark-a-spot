@@ -1,0 +1,61 @@
+uuid: 83ba1cbe-1309-47d7-8410-911021b2273d
+langcode: it
+status: true
+dependencies:
+  config:
+    - field.field.group.jur.field_boundary
+    - field.field.group.jur.field_custom_css
+    - field.field.group.jur.field_logo_dark
+    - field.field.group.jur.field_logo_light
+    - field.field.group.jur.field_nuxt_config
+    - group.type.jur
+  module:
+    - path
+    - text
+id: group.jur.default
+targetEntityType: group
+bundle: jur
+mode: default
+content:
+  field_boundary:
+    type: text_textarea
+    weight: 10
+    region: content
+    settings:
+      rows: 5
+      placeholder: 'GeoJSON FeatureCollection'
+    third_party_settings: {  }
+  label:
+    type: string_textfield
+    weight: -5
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  langcode:
+    type: language_select
+    weight: 2
+    region: content
+    settings:
+      include_locked: true
+    third_party_settings: {  }
+  path:
+    type: path
+    weight: 30
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  status:
+    type: boolean_checkbox
+    weight: 120
+    region: content
+    settings:
+      display_label: true
+    third_party_settings: {  }
+hidden:
+  field_custom_css: true
+  field_logo_dark: true
+  field_logo_light: true
+  field_nuxt_config: true
+  uid: true

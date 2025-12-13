@@ -1,0 +1,19 @@
+uuid: 89ead96a-24bf-47fd-a557-a86fd891fd58
+langcode: en
+status: true
+dependencies:
+  module:
+    - group
+    - text
+id: group.field_boundary
+field_name: field_boundary
+entity_type: group
+type: text_long
+settings: {  }
+module: text
+locked: false
+cardinality: 1
+translatable: false
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

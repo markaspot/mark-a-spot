@@ -1,0 +1,22 @@
+uuid: 97bf820e-de60-4836-9d4a-fd4b60082d2b
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.group.field_boundary
+    - group.type.jur
+  module:
+    - text
+id: group.jur.field_boundary
+field_name: field_boundary
+entity_type: group
+bundle: jur
+label: Boundary
+description: 'GeoJSON boundary polygon for this jurisdiction. Used for map display and validation.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  allowed_formats: {  }
+field_type: text_long
