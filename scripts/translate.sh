@@ -99,34 +99,32 @@ cd "$(dirname "$0")/.."
 
 # Set configuration for the language
 printf "\e[36mConfiguring language settings...\e[0m\n"
-if [ -n "$full_locale" ]; then
-    printf "\e[36mSetting language configuration for locale: $full_locale\e[0m\n"
-    # Some configurations might benefit from full locale information
-    drush config:set language.negotiation.selected_langcode $language -y 2>/dev/null || true
-fi
 
-drush config:set language.types negotiation.language_interface.enabled.$language 1 -y
-drush config:set language.types negotiation.language_interface.method_id language-browser -y
+# Set the target language as the "selected" interface language
+# This makes the target language the default UI language while English stays the content base
+printf "\e[36mSetting $language as the selected interface language...\e[0m\n"
 
-# Check if language.administration config exists before trying to set it
-if drush config:status language.administration >/dev/null 2>&1; then
-  drush config:set language.administration negotiation.language_administration_language $language -y
-else
-  printf "\e[33mNote: language.administration config does not exist, skipping this setting\e[0m\n"
-fi
+# Enable language negotiation with "selected language" method having highest priority
+# This ensures the target language is shown by default
+drush config:set language.negotiation url.source path_prefix -y 2>/dev/null || true
+drush config:set language.negotiation selected_langcode "$language" -y 2>/dev/null || true
 
-# Use user:update instead of user:modify (both syntaxes for compatibility)
-drush user:update 1 --langcode=$language 2>/dev/null || drush user-edit 1 --langcode=$language 2>/dev/null || printf "\e[33mCouldn't set user language preference, continuing...\e[0m\n"
+# Set language weights - target language should have lower weight (higher priority)
+drush sql:query "UPDATE config SET data = REPLACE(data, 'weight\";i:0', 'weight\";i:1') WHERE name = 'language.entity.en'" 2>/dev/null || true
+drush sql:query "UPDATE config SET data = REPLACE(data, 'weight\";i:1', 'weight\";i:0') WHERE name = 'language.entity.$language'" 2>/dev/null || true
 
-# Set site default language
-printf "\e[36mSetting site default language to $language\e[0m\n"
-drush config:set system.site default_langcode $language -y
+# Configure language detection methods - selected language first, then URL, then browser
+drush config:set language.types negotiation.language_interface.enabled.language-selected 0 -y 2>/dev/null || true
+drush config:set language.types negotiation.language_interface.enabled.language-url 1 -y 2>/dev/null || true
+drush config:set language.types negotiation.language_interface.enabled.language-browser 2 -y 2>/dev/null || true
 
-# Enable multilingual support
-printf "\e[36mEnabling translatable Taxonomy Terms for multilingual Georeport Services...\e[0m\n"
-drush en markaspot_language
-drush cr
+# Set the target language for administration interface as well
+drush config:set language.negotiation selected_langcode "$language" -y 2>/dev/null || true
+
+# Note: Default language stays English - translations are added as secondary language
+# markaspot_language is enabled by start.sh
 
 # Import additional translations if available
 printf "\e[36mChecking for contributed module translations...\e[0m\n"
 drush locale:update
+drush cr

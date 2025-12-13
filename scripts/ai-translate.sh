@@ -146,8 +146,8 @@ for csv_file in "$ARTIFACTS_DIR"/*.csv; do
     # Create the JSON request file
     request_file="${TRANSLATED_DIR}/request_${filename}.json"
 
-    # Choose the model - gpt-4o is preferred for better translation quality
-    MODEL=${OPENAI_MODEL:-"gpt-4o"}
+    # Choose the model - gpt-4o-mini is fast and cost-effective for translation
+    MODEL=${OPENAI_MODEL:-"gpt-4o-mini"}
     echo "  Using model: $MODEL"
 
     jq -n --arg system "You are a CSV translator. You will translate specified columns in CSV data while preserving all formatting, quotes, commas, and other data exactly. Your output must be valid CSV format with the same structure as the input. Do not include CSV header in the output. Do not add markdown code fences like \`\`\`csv or \`\`\` around the output." \
@@ -234,54 +234,14 @@ for csv_file in "$ARTIFACTS_DIR"/*.csv; do
   fi
 done # End of file loop
 
-# --- Copying back and final langcode update (Should be okay, but added checks) ---
+# Translated files stay in $TRANSLATED_DIR - do NOT copy back to main artifacts
+# The original English CSVs remain untouched for base content import
+# Translations will be added via create-translations.php from $TRANSLATED_DIR
 
-# Copy the translated files to the main artifacts directory for migration
-echo "Copying processed files to the main artifacts directory..."
-copied_count=0
-skipped_count=0
-for processed_file in "$TRANSLATED_DIR"/*.csv; do
-  if [ -f "$processed_file" ]; then
-    p_filename=$(basename "$processed_file")
-    target_file="$ARTIFACTS_DIR/$p_filename"
+echo "Translated CSVs created in: $TRANSLATED_DIR"
+echo "Original English CSVs in $ARTIFACTS_DIR remain unchanged."
 
-    # Check if the processed file is newer than the backup (if exists) or target
-    # This prevents overwriting newer manual changes if the script is re-run
-    # Note: Simple check, might need refinement based on exact workflow
-    proceed_copy=1
-    if [ -f "$target_file.bak" ] && [ "$processed_file" -ot "$target_file.bak" ]; then
-        echo "  Skipping copy for $p_filename: Backup file ($target_file.bak) is newer."
-        proceed_copy=0
-        skipped_count=$((skipped_count + 1))
-    # elif [ -f "$target_file" ] && [ "$processed_file" -ot "$target_file" ]; then
-    #     echo "  Skipping copy for $p_filename: Target file ($target_file) is newer."
-    #     proceed_copy=0
-    #     skipped_count=$((skipped_count + 1))
-    fi
-
-    if [ "$proceed_copy" -eq 1 ]; then
-        # Back up the original file if it exists and isn't already a backup
-        if [ -f "$target_file" ] && [ ! -f "$target_file.bak" ]; then
-          cp "$target_file" "$target_file.bak"
-          echo "  Backed up original $p_filename to $p_filename.bak"
-        fi
-        # Copy the processed file (translated or fallback) to the main directory
-        cp "$processed_file" "$target_file"
-        echo "  Copied processed $p_filename for migration"
-        copied_count=$((copied_count + 1))
-    fi
-  fi
-done
-echo "Finished copying: $copied_count files copied, $skipped_count files skipped."
-
-
-# Note: We keep the translated langcode ($LANG_CODE) in the CSVs
-# The migration will create content with the correct target language langcode
-# English translations are added later via create-translations.php
-echo "Translated CSVs ready with langcode: $LANG_CODE"
-
-
-# Clean up the language-specific temporary files (keep the final outputs)
+# Clean up the language-specific temporary files (keep the final CSVs)
 echo "Cleaning up temporary translation files..."
 rm -f "$TRANSLATED_DIR"/prompt_*.txt
 rm -f "$TRANSLATED_DIR"/content_*.txt
@@ -293,6 +253,5 @@ rm -f "$TRANSLATED_DIR"/translated_cleaned_*.csv
 
 echo ""
 echo "--- Translation Script Finished ---"
-echo "Processed files ready for migration in: $ARTIFACTS_DIR"
-echo "Copies of processed files (before final langcode update) are in: $TRANSLATED_DIR"
-echo "Original English files backed up as *.bak in $ARTIFACTS_DIR (if they existed)"
+echo "Translated CSVs ready in: $TRANSLATED_DIR"
+echo "Use 'drush php:script scripts/create-translations.php -- $LANG_CODE' to add translations"

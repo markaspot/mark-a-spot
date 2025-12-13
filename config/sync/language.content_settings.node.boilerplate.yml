@@ -8,7 +8,7 @@ dependencies:
     - content_translation
 third_party_settings:
   content_translation:
-    enabled: false
+    enabled: true
     bundle_settings:
       untranslatable_fields_hide: '0'
 _core:
@@ -16,5 +16,5 @@ _core:
 id: node.boilerplate
 target_entity_type_id: node
 target_bundle: boilerplate
-default_langcode: site_default
-language_alterable: false
+default_langcode: current_interface
+language_alterable: true

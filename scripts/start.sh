@@ -345,6 +345,35 @@ EOF
 
   printf "\e[32mMap coordinates set to: %s, %s\e[0m\n" "$latitude" "$longitude"
 
+  # Fetch city boundary from Nominatim
+  printf "\e[36mFetching city boundary from Nominatim...\e[0m\n"
+  if drush markaspot:fetch-boundary --city="$city" --group=1 2>/dev/null; then
+    printf "\e[32mCity boundary stored successfully!\e[0m\n"
+  else
+    printf "\e[33mWarning: Could not fetch boundary (command may not be available).\e[0m\n"
+  fi
+
+  # Update markaspot_validation.settings with WKT bounding box
+  printf "\e[36mUpdating validation settings for location...\e[0m\n"
+
+  # Create a bounding box WKT polygon (~15km radius around center)
+  RADIUS_DEG="0.15"
+  MIN_LAT=$(awk "BEGIN {printf \"%.6f\", $latitude - $RADIUS_DEG}")
+  MAX_LAT=$(awk "BEGIN {printf \"%.6f\", $latitude + $RADIUS_DEG}")
+  MIN_LNG=$(awk "BEGIN {printf \"%.6f\", $longitude - $RADIUS_DEG}")
+  MAX_LNG=$(awk "BEGIN {printf \"%.6f\", $longitude + $RADIUS_DEG}")
+
+  WKT="POLYGON(($MIN_LNG $MIN_LAT,$MAX_LNG $MIN_LAT,$MAX_LNG $MAX_LAT,$MIN_LNG $MAX_LAT,$MIN_LNG $MIN_LAT))"
+
+  # Extract simple city name (first part before comma)
+  SIMPLE_CITY=$(echo "$city" | cut -d',' -f1)
+
+  drush config:set markaspot_validation.settings wkt "$WKT" -y >/dev/null 2>&1
+  drush config:set markaspot_validation.settings location.0 "$SIMPLE_CITY" -y >/dev/null 2>&1
+  drush config:set markaspot_validation.settings locality.0 "$SIMPLE_CITY" -y >/dev/null 2>&1
+
+  printf "\e[32mValidation WKT set for: %s\e[0m\n" "$SIMPLE_CITY"
+
   # Fix GeoReport status configuration
   # status_closed should be 5,6 (Closed, Archived) not 3,4
   printf "\e[36mConfiguring GeoReport status mappings...\e[0m\n"
@@ -366,119 +395,57 @@ EOF
 
   # Process language settings
   language=$(echo "$locale" | cut -d '_' -f1)
-  
-  # Handle translations
-  if [ "$translation" = true ] && [ "$ai_translate" = true ]; then
-    printf "\e[36mImporting language and using AI translation...\e[0m\n"
-    # Pass the full locale to translate.sh which will handle extraction if needed
-    $SCRIPT_DIR/translate.sh "$locale"
-    
-    # Check if OPENAI_API_KEY is set
-    if [ -z "$OPENAI_API_KEY" ]; then
-      printf "\e[33mWarning: OPENAI_API_KEY environment variable not set.\e[0m\n"
-      printf "\e[33mPlease enter your OpenAI API key: \e[0m"
-      read api_key
-      export OPENAI_API_KEY=$api_key
-    fi
-    
-    # Run AI translation
-    printf "\e[36mRunning AI translation for content artifacts...\e[0m\n"
-    
-    # Ensure the script is executable
-    chmod +x "$SCRIPT_DIR/ai-translate.sh"
-    
-    
-    # Execute with explicit shell to ensure it runs in any environment
-    sh "$SCRIPT_DIR/ai-translate.sh" $language 2>&1 || printf "\e[31mAI translation failed. Check if the script exists and is properly set up.\e[0m\n"
-    
-    # Set the site default language to match the chosen language
-    printf "\e[36mSetting up site default language to $language\e[0m\n"
-    drush config:set system.site default_langcode $language -y
-    
-    printf "\e[33mNote: Translation is being performed in the container using the available shell.\e[0m\n"
-    printf "\e[33mFor more extensive translation capabilities, you can also run the script on your host system:\e[0m\n"
-    printf "\e[33m  OPENAI_API_KEY=your_key ./scripts/ai-translate.sh $language\e[0m\n"
-  elif [ "$translation" = true ]; then
-    printf "\e[36mImporting language...\e[0m\n"
-    # Pass the full locale to translate.sh which will handle extraction if needed
-    $SCRIPT_DIR/translate.sh "$locale"
-  elif [ "$ai_translate" = true ]; then
-    printf "\e[36mSetting up language and using AI translation...\e[0m\n"
-    
-    # Pass the full locale for language setup
-    language=$(echo "$locale" | cut -d '_' -f1)
-    drush language-add "$language"
-    
-    # Check if OPENAI_API_KEY is set
-    if [ -z "$OPENAI_API_KEY" ]; then
-      printf "\e[33mWarning: OPENAI_API_KEY environment variable not set.\e[0m\n"
-      printf "\e[33mPlease enter your OpenAI API key: \e[0m"
-      read api_key
-      export OPENAI_API_KEY=$api_key
-    fi
-    
-    # Run AI translation
-    printf "\e[36mRunning AI translation for content artifacts...\e[0m\n"
-    
-    # Ensure the script is executable
-    chmod +x "$SCRIPT_DIR/ai-translate.sh"
-    
-    
-    # Execute with explicit shell to ensure it runs in any environment
-    sh "$SCRIPT_DIR/ai-translate.sh" $language 2>&1 || printf "\e[31mAI translation failed. Check if the script exists and is properly set up.\e[0m\n"
-    
-    # Set the site default language to match the chosen language
-    printf "\e[36mSetting up site default language to $language\e[0m\n"
-    drush config:set system.site default_langcode $language -y
-    
-    printf "\e[33mNote: Translation is being performed in the container using the available shell.\e[0m\n"
-    printf "\e[33mFor more extensive translation capabilities, you can also run the script on your host system:\e[0m\n"
-    printf "\e[33m  OPENAI_API_KEY=your_key ./scripts/ai-translate.sh $language\e[0m\n"
-  else
-    printf "\e[33mHint: For a multilingual site, use the -t option to import a Drupal translation file\e[0m\n"
-    printf "\e[33mor use the -a option to use AI translation for content artifacts.\e[0m\n"
-  fi
 
-  printf "\e[36mImporting ..\e[0m\n"
+  # Import English content FIRST (base language)
+  printf "\e[36mImporting English base content...\e[0m\n"
   $SCRIPT_DIR/import.sh
 
-  # If we used AI translation, create English translations from original CSVs
-  if [ "$ai_translate" = true ]; then
-    printf "\e[36mCreating English translations from original CSV files...\e[0m\n"
-    ARTIFACTS_DIR="$PWD/web/profiles/contrib/markaspot/modules/markaspot_default_content/artifacts"
+  # Handle translations - English is always base, other languages are translations
+  if [ "$translation" = true ] || [ "$ai_translate" = true ]; then
+    # Add target language
+    printf "\e[36mAdding language: %s...\e[0m\n" "$language"
+    drush language-add "$language" 2>/dev/null || true
 
-    # The .bak files contain the original English content
-    # The create-translations.php script can read .bak files directly
-    if [ -f "$SCRIPT_DIR/create-translations.php" ]; then
-      printf "\e[36mAdding English translations via Entity API...\e[0m\n"
-      drush php:script "$SCRIPT_DIR/create-translations.php" -- en 2>&1 || printf "\e[33mWarning: Could not create English translations\e[0m\n"
-    else
-      printf "\e[33mWarning: create-translations.php not found, skipping English translations\e[0m\n"
-    fi
+    # Enable multilingual support for entities
+    printf "\e[36mEnabling multilingual support for entities...\e[0m\n"
+    drush en markaspot_language -y
 
-    printf "\e[36mRestoring original artifact files...\e[0m\n"
+    # Always import Drupal UI translations and set language negotiation
+    # This ensures the target language becomes the "selected" interface language
+    printf "\e[36mImporting Drupal translations and configuring language settings...\e[0m\n"
+    $SCRIPT_DIR/translate.sh "$locale"
 
-    # Restore original files from backups
-    for backup_file in "$ARTIFACTS_DIR"/*.bak; do
-      if [ -f "$backup_file" ]; then
-        original_file=$(echo "$backup_file" | sed 's/\.bak$//')
-        mv "$backup_file" "$original_file"
-        printf "  Restored %s\n" "$(basename "$original_file")"
+    # AI translate content artifacts if -a flag
+    if [ "$ai_translate" = true ]; then
+      # Check if OPENAI_API_KEY is set
+      if [ -z "$OPENAI_API_KEY" ]; then
+        printf "\e[33mWarning: OPENAI_API_KEY environment variable not set.\e[0m\n"
+        printf "\e[33mPlease enter your OpenAI API key: \e[0m"
+        read api_key
+        export OPENAI_API_KEY=$api_key
       fi
-    done
 
-    # Clean up language directories
-    printf "\e[36mCleaning up language-specific directories...\e[0m\n"
-    LANG_DIR="$ARTIFACTS_DIR/$language"
-    if [ -d "$LANG_DIR" ]; then
-      # Remove temporary files but keep translated CSVs
-      rm -f "$LANG_DIR"/prompt_*.txt
-      rm -f "$LANG_DIR"/content_*.txt
-      rm -f "$LANG_DIR"/request_*.json
-      rm -f "$LANG_DIR"/response_*.json
-      rm -f "$LANG_DIR"/translated_*.csv
-      printf "  Cleaned up temporary files in %s\n" "$LANG_DIR"
+      # Run AI translation (creates CSVs in artifacts/<lang>/, does NOT modify originals)
+      printf "\e[36mRunning AI translation for content artifacts...\e[0m\n"
+      chmod +x "$SCRIPT_DIR/ai-translate.sh"
+      sh "$SCRIPT_DIR/ai-translate.sh" $language 2>&1 || printf "\e[31mAI translation failed.\e[0m\n"
+
+      # Add translations from the translated CSVs
+      if [ -f "$SCRIPT_DIR/create-translations.php" ]; then
+        printf "\e[36mAdding %s translations via Entity API...\e[0m\n" "$language"
+        drush php:script "$SCRIPT_DIR/create-translations.php" -- "$language" 2>&1 || printf "\e[33mWarning: Could not create translations\e[0m\n"
+      fi
+
+      # Clean up language directory
+      ARTIFACTS_DIR="$PWD/web/profiles/contrib/markaspot/modules/markaspot_default_content/artifacts"
+      LANG_DIR="$ARTIFACTS_DIR/$language"
+      if [ -d "$LANG_DIR" ]; then
+        printf "\e[36mCleaning up temporary files...\e[0m\n"
+        rm -rf "$LANG_DIR"
+      fi
     fi
+  else
+    printf "\e[33mHint: For a multilingual site, use -t (Drupal translations) and/or -a (AI content translation)\e[0m\n"
   fi
 
   printf "\e[36mExecuting georeport client to import initial service requests...\e[0m\n"
@@ -513,12 +480,7 @@ EOF
   export GEOREPORT_API_KEY
   printf "GeoReport API key: %s\n" "$GEOREPORT_API_KEY"
 
-  # Restart DDEV to apply API key to UI container
-  if [ -n "$DDEV_HOSTNAME" ]; then
-    printf "\e[36mRestarting DDEV to apply API key to UI container...\e[0m\n"
-    ddev restart
-  fi
-
+  # Run georeport client to create users and test data
   $SCRIPT_DIR/georeport-client.sh
 
   # Configure groups and memberships
