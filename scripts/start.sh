@@ -486,13 +486,47 @@ EOF
   # Configure groups and memberships
   printf "\e[36mConfiguring groups and user memberships...\e[0m\n"
 
-  # Update jurisdiction group label with city name
+  # Determine language configuration for frontend
+  if [ "$translation" = true ] || [ "$ai_translate" = true ]; then
+    # Multilingual: target language is default, English as fallback
+    NUXT_DEFAULT_LANG="$language"
+    NUXT_AVAILABLE_LANGS="[\"$language\", \"en\"]"
+  else
+    # English only
+    NUXT_DEFAULT_LANG="en"
+    NUXT_AVAILABLE_LANGS="[\"en\"]"
+  fi
+
+  # Update jurisdiction group: label and nuxt config with language
+  printf "\e[36mConfiguring jurisdiction with language: %s...\e[0m\n" "$NUXT_DEFAULT_LANG"
   drush php:eval "
     \$group = \Drupal::entityTypeManager()->getStorage('group')->load(1);
     if (\$group && \$group->getGroupType()->id() === 'jur') {
+      // Set city name as label
       \$group->set('label', '$city');
+
+      // Get existing nuxt config or create new
+      \$existing_config = [];
+      if (\$group->hasField('field_nuxt_config') && !\$group->get('field_nuxt_config')->isEmpty()) {
+        \$existing_json = \$group->get('field_nuxt_config')->value;
+        \$existing_config = json_decode(\$existing_json, true) ?: [];
+      }
+
+      // Merge language configuration
+      \$existing_config['languages'] = [
+        'default' => '$NUXT_DEFAULT_LANG',
+        'available' => json_decode('$NUXT_AVAILABLE_LANGS', true)
+      ];
+
+      // Also set client name from city
+      \$existing_config['client'] = \$existing_config['client'] ?? [];
+      \$existing_config['client']['name'] = '$city';
+
+      // Save updated config
+      \$group->set('field_nuxt_config', json_encode(\$existing_config, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
       \$group->save();
-      echo 'Jurisdiction renamed to: $city' . PHP_EOL;
+
+      echo 'Jurisdiction configured: $city (language: $NUXT_DEFAULT_LANG)' . PHP_EOL;
     }
   " 2>/dev/null || true
 
