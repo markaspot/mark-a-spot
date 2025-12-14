@@ -17,9 +17,19 @@ usage() {
   echo "Usage: start.sh [-y] [-t] [-a]"
   echo
   echo "Options:"
-  echo "    -y    Install automatically with predefined values (latitude: 40.73, longitude: -73.93, city: New York, locale: en_US)"
+  echo "    -y    Install automatically (default: Köln, Germany, de_DE locale)"
   echo "    -t    Import translation file from the /translations directory and enable translations for terms"
   echo "    -a    Use AI translation (OpenAI) for content artifacts instead of standard translation files"
+  echo
+  echo "Environment variables for -y mode:"
+  echo "    CITY=...             City name (default: Köln)"
+  echo "    COUNTRY=...          Country name (default: Germany)"
+  echo "    LOCALE=...           Locale code (default: de_DE)"
+  echo "    OPENAI_API_KEY=...   Required for -a flag"
+  echo
+  echo "Examples:"
+  echo "    ddev exec scripts/start.sh -y -a                      # Köln with AI translation"
+  echo "    CITY=Bonn LOCALE=de_DE ddev exec scripts/start.sh -y  # Bonn without translation"
   exit 1
 }
 
@@ -201,10 +211,21 @@ EOF
     esac
   done
   if [ "$automatic" = true ]; then
-      latitude="40.73"
-      longitude="-73.93"
-      city="New York"
-      locale="en_US"
+      # Use environment variables or default to Köln (dev environment)
+      auto_city="${CITY:-Köln}"
+      auto_country="${COUNTRY:-Germany}"
+      locale="${LOCALE:-de_DE}"
+
+      # Query Nominatim for coordinates
+      printf "\e[36mLooking up coordinates for %s, %s...\e[0m\n" "$auto_city" "$auto_country"
+      get_city_info "$auto_city" "$auto_country"
+      if [ $? -ne 0 ]; then
+        # Fallback to hardcoded Köln coordinates
+        printf "\e[33mNominatim lookup failed, using default Köln coordinates\e[0m\n"
+        latitude="50.9375"
+        longitude="6.9603"
+        city="Köln, Nordrhein-Westfalen, Deutschland"
+      fi
   else
       echo "Please enter the city name (or leave blank to enter latitude and longitude manually):"
       read city_name
@@ -345,12 +366,20 @@ EOF
 
   printf "\e[32mMap coordinates set to: %s, %s\e[0m\n" "$latitude" "$longitude"
 
-  # Fetch city boundary from Nominatim
+  # Process language settings
+  language=$(echo "$locale" | cut -d '_' -f1)
+
+  # Import English content FIRST (base language) - creates groups, categories, etc.
+  printf "\e[36mImporting English base content (creates groups, categories, etc.)...\e[0m\n"
+  $SCRIPT_DIR/import.sh
+
+  # Fetch city boundary from Nominatim (requires group to exist from import.sh)
   printf "\e[36mFetching city boundary from Nominatim...\e[0m\n"
-  if drush markaspot:fetch-boundary --city="$city" --group=1 2>/dev/null; then
+  if drush markaspot:fetch-boundary --city="$city" --group=1 -y 2>&1; then
     printf "\e[32mCity boundary stored successfully!\e[0m\n"
   else
-    printf "\e[33mWarning: Could not fetch boundary (command may not be available).\e[0m\n"
+    printf "\e[33mWarning: Could not fetch boundary. Run manually:\e[0m\n"
+    printf "\e[33m  ddev drush markaspot:fetch-boundary --city=\"%s\" --group=1 -y\e[0m\n" "$city"
   fi
 
   # Update markaspot_validation.settings with WKT bounding box
@@ -392,13 +421,6 @@ EOF
       $config->set("permissions", $perms)->save();
     }
   ' 2>/dev/null || true
-
-  # Process language settings
-  language=$(echo "$locale" | cut -d '_' -f1)
-
-  # Import English content FIRST (base language)
-  printf "\e[36mImporting English base content...\e[0m\n"
-  $SCRIPT_DIR/import.sh
 
   # Handle translations - English is always base, other languages are translations
   if [ "$translation" = true ] || [ "$ai_translate" = true ]; then
