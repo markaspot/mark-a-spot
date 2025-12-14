@@ -39,6 +39,7 @@
         "drupal/iconify_field": "^1.2",
         "drupal/jquery_ui": "^1.6",
         "drupal/jquery_ui_draggable": "^1.2",
+        "drupal/json_form_widget": "^1.0@alpha",
         "drupal/jsonapi_extras": "^3",
         "drupal/layout_library": "^1.0@beta",
         "drupal/mailsystem": "^4.4",
