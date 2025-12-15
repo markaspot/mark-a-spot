@@ -412,13 +412,27 @@ EOF
   drush $DRUSH_URI config:set core.entity_form_display.node.service_request.default third_party_settings.geolocation.centre.lat -y -- "$latitude" >/dev/null 2>&1 || true
   drush $DRUSH_URI config:set core.entity_form_display.node.service_request.default third_party_settings.geolocation.centre.lng -y -- "$longitude" >/dev/null 2>&1 || true
 
-  # Update widget center_lat/center_lng settings
+  # Update widget center_lat/center_lng settings and geocoding bbox
+  # Calculate bounding box for geocoding (Nominatim viewbox format: minLng,minLat,maxLng,maxLat)
+  BBOX_RADIUS="0.20"  # ~22km radius for geocoding search area
+  BBOX_MIN_LAT=$(awk "BEGIN {printf \"%.6f\", $latitude - $BBOX_RADIUS}")
+  BBOX_MAX_LAT=$(awk "BEGIN {printf \"%.6f\", $latitude + $BBOX_RADIUS}")
+  BBOX_MIN_LNG=$(awk "BEGIN {printf \"%.6f\", $longitude - $BBOX_RADIUS}")
+  BBOX_MAX_LNG=$(awk "BEGIN {printf \"%.6f\", $longitude + $BBOX_RADIUS}")
+  LIMIT_VIEWBOX="$BBOX_MIN_LNG,$BBOX_MIN_LAT,$BBOX_MAX_LNG,$BBOX_MAX_LAT"
+
+  # Extract simple city name (first part before comma)
+  SIMPLE_CITY_NAME=$(echo "$city" | cut -d',' -f1)
+
   for form_mode in default management nuxt; do
     drush $DRUSH_URI config:set "core.entity_form_display.node.service_request.$form_mode" content.field_geolocation.settings.center_lat -y -- "$latitude" >/dev/null 2>&1 || true
     drush $DRUSH_URI config:set "core.entity_form_display.node.service_request.$form_mode" content.field_geolocation.settings.center_lng -y -- "$longitude" >/dev/null 2>&1 || true
+    drush $DRUSH_URI config:set "core.entity_form_display.node.service_request.$form_mode" content.field_geolocation.settings.limit_viewbox -y -- "$LIMIT_VIEWBOX" >/dev/null 2>&1 || true
+    drush $DRUSH_URI config:set "core.entity_form_display.node.service_request.$form_mode" content.field_geolocation.settings.city -y -- "$SIMPLE_CITY_NAME" >/dev/null 2>&1 || true
   done
 
   success "Map center: $latitude, $longitude"
+  info "Geocoding bbox: $LIMIT_VIEWBOX"
 
   language=$(echo "$locale" | cut -d '_' -f1)
 
