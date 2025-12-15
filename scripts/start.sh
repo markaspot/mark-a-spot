@@ -441,11 +441,16 @@ EOF
   success "Groups, categories, and terms created"
 
   step "Fetching city boundary..."
-  if drush $DRUSH_URI markaspot:fetch-boundary --city="$city" --group=1 -y >/dev/null 2>&1; then
+  boundary_output=$(drush $DRUSH_URI markaspot:fetch-boundary --city="$city" --group=1 -y 2>&1)
+  boundary_exit=$?
+  if [ $boundary_exit -eq 0 ]; then
     success "City boundary stored"
   else
-    warn "Could not fetch boundary"
-    info "Run manually: ddev drush markaspot:fetch-boundary --city=\"$city\" --group=1 -y"
+    warn "Could not fetch boundary for '$city'"
+    echo -e "${RED}$boundary_output${NC}"
+    echo ""
+    info "This may cause frontend errors. Try manually:"
+    info "  ddev drush markaspot:fetch-boundary --city=\"$city, Germany\" --group=1 -y"
   fi
 
   step "Configuring validation settings..."
