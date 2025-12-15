@@ -3,11 +3,14 @@
 # Set the working directory to the script's parent directory
 cd "$(dirname "$0")/.."
 
+# DRUSH_URI can be passed as environment variable for multisite support
+# e.g., DRUSH_URI="--uri=aachen.ddev.site" ./import.sh
+
 # Install and enable required modules
 composer require drupal/migrate_tools drupal/migrate_plus drupal/migrate_source_csv --update-no-dev --quiet
 
-drush en markaspot_default_content -y
-drush en migrate_tools migrate_plus migrate_source_csv -y
+drush $DRUSH_URI en markaspot_default_content -y
+drush $DRUSH_URI en migrate_tools migrate_plus migrate_source_csv -y
 
 # Enable custom module
 
@@ -29,7 +32,7 @@ MIGRATIONS="
 # Loop over migration IDs
 for MIGRATION_ID in $MIGRATIONS; do
   # Import data
-  drush migrate-import "$MIGRATION_ID"
+  drush $DRUSH_URI migrate-import "$MIGRATION_ID"
 done
 
 printf "\e[36mChecking for optional block configs...\e[0m\n"
@@ -41,7 +44,7 @@ source_path="$PWD/web/profiles/contrib/markaspot/modules/markaspot_default_conte
 if [ -d "$source_path" ]; then
   printf "\e[36mImporting the config for blocks...\e[0m\n"
   # Run the drush command with the dynamic source path
-  drush cim --source "$source_path" --partial -y
+  drush $DRUSH_URI cim --source "$source_path" --partial -y
 else
   printf "\e[33mOptional config directory not found at: $source_path\e[0m\n"
   printf "\e[33mSkipping optional config import...\e[0m\n"
@@ -49,5 +52,5 @@ fi
 
 
 # Disable and uninstall the modules
-drush pmu migrate_source_csv migrate_plus migrate_tools markaspot_default_content -y
+drush $DRUSH_URI pmu migrate_source_csv migrate_plus migrate_tools markaspot_default_content -y
 composer remove drupal/migrate_tools drupal/migrate_plus drupal/migrate_source_csv --quiet

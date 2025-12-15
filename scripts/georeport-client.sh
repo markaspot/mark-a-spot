@@ -16,8 +16,16 @@ else
   exit 1
 fi
 
+# Add DRUSH_URI for multisite support (passed from start.sh)
+if [ -n "$DRUSH_URI" ]; then
+  DRUSH="$DRUSH $DRUSH_URI"
+fi
+
 # Determine API endpoint (DDEV uses 'web', legacy Docker uses VIRTUAL_HOST)
-if [ -n "$DDEV_HOSTNAME" ] || [ -f "/.dockerenv" ]; then
+# For multisite, SITE_URI is passed from start.sh
+if [ -n "$SITE_URI" ]; then
+  API_HOST="http://$SITE_URI"
+elif [ -n "$DDEV_HOSTNAME" ] || [ -f "/.dockerenv" ]; then
   API_HOST="http://web"
 elif [ -n "$VIRTUAL_HOST" ]; then
   API_HOST="http://$VIRTUAL_HOST"
@@ -57,27 +65,11 @@ fi
 API_KEY=${GEOREPORT_API_KEY:-$($DRUSH config-get services_api_key_auth.api_key.nuxt key --format=string 2>/dev/null || echo "*")}
 printf "  Using API key: %s\n" "$API_KEY"
 
-# Try to get bbox from jurisdiction boundary (group ID 1)
-BOUNDARY_JSON=$($DRUSH sql:query "SELECT field_boundary_value FROM group__field_boundary WHERE entity_id = 1 LIMIT 1" 2>/dev/null || echo "")
-
-if [ -n "$BOUNDARY_JSON" ] && echo "$BOUNDARY_JSON" | grep -q '"bbox"'; then
-  # Extract bbox from boundary GeoJSON: [west, south, east, north]
-  BBOX_WEST=$(echo "$BOUNDARY_JSON" | grep -o '"bbox":\[[^]]*\]' | grep -o '\[.*\]' | cut -d',' -f1 | tr -d '[]')
-  BBOX_SOUTH=$(echo "$BOUNDARY_JSON" | grep -o '"bbox":\[[^]]*\]' | grep -o '\[.*\]' | cut -d',' -f2)
-  BBOX_EAST=$(echo "$BOUNDARY_JSON" | grep -o '"bbox":\[[^]]*\]' | grep -o '\[.*\]' | cut -d',' -f3)
-  BBOX_NORTH=$(echo "$BOUNDARY_JSON" | grep -o '"bbox":\[[^]]*\]' | grep -o '\[.*\]' | cut -d',' -f4 | tr -d '[]')
-  USE_BBOX=true
-  printf "\e[36mUsing boundary bbox for distribution: [%.4f, %.4f, %.4f, %.4f]\e[0m\n" "$BBOX_WEST" "$BBOX_SOUTH" "$BBOX_EAST" "$BBOX_NORTH"
-else
-  USE_BBOX=false
-  printf "\e[33mNo boundary found, using radius-based distribution\e[0m\n"
-fi
-
-# Set the center latitude and longitude (fallback for radius mode)
+# Set the center latitude and longitude
 CENTER_LAT=$($DRUSH cget markaspot_nuxt.settings center_lat --format=string 2>/dev/null || echo "50.0")
 CENTER_LNG=$($DRUSH cget markaspot_nuxt.settings center_lng --format=string 2>/dev/null || echo "7.0")
 
-# Set the radius in kilometers (fallback)
+# Set the radius in kilometers
 RADIUS=15
 
 # Calculate the radius in degrees using the approximation that 1 degree is equal to 111.32 kilometers
@@ -102,19 +94,19 @@ echo "--------------------------------------------------------------------------
 
 
 for i in $(seq 1 50); do
-  if [ "$USE_BBOX" = "true" ]; then
-    # Distribute uniformly within bbox
-    LATITUDE=$(awk -v s="$BBOX_SOUTH" -v n="$BBOX_NORTH" -v seed="$RANDOM$((i * 13))" 'BEGIN {srand(seed); print s + rand() * (n - s)}')
-    LONGITUDE=$(awk -v w="$BBOX_WEST" -v e="$BBOX_EAST" -v seed="$RANDOM$((i * 17))" 'BEGIN {srand(seed); print w + rand() * (e - w)}')
-  else
-    # Fallback: Generate using radius from center
-    RANDOM_ANGLE=$(awk -v seed="$RANDOM$((i * 10))" 'BEGIN {srand(seed); print rand() * 2 * 3.141592653589793;}')
-    RANDOM_RADIUS=$(awk -v seed="$RANDOM$((i * 10))" -v max="$RADIUS_IN_DEGREES" 'BEGIN {srand(seed); print sqrt(rand()) * max;}')
-    LATITUDE_OFFSET=$(awk -v radius="$RANDOM_RADIUS" -v angle="$RANDOM_ANGLE" 'BEGIN {print radius * sin(angle);}')
-    LONGITUDE_OFFSET=$(awk -v radius="$RANDOM_RADIUS" -v angle="$RANDOM_ANGLE" 'BEGIN {print radius * cos(angle);}')
-    LATITUDE=$(awk -v center_lat="$CENTER_LAT" -v offset="$LATITUDE_OFFSET" 'BEGIN {print center_lat + offset;}')
-    LONGITUDE=$(awk -v center_lng="$CENTER_LNG" -v offset="$LONGITUDE_OFFSET" 'BEGIN {print center_lng + offset;}')
-  fi
+  # Generate a random angle in radians between 0 and 2*pi
+  RANDOM_ANGLE=$(awk -v seed="$RANDOM$((i * 10))" 'BEGIN {srand(seed); print rand() * 2 * 3.141592653589793;}')
+
+  # Generate a random radius within the circle
+  RANDOM_RADIUS=$(awk -v seed="$RANDOM$((i * 10))" -v max="$RADIUS_IN_DEGREES" 'BEGIN {srand(seed); print sqrt(rand()) * max;}')
+
+  # Calculate the latitude and longitude offsets
+  LATITUDE_OFFSET=$(awk -v radius="$RANDOM_RADIUS" -v angle="$RANDOM_ANGLE" 'BEGIN {print radius * sin(angle);}')
+  LONGITUDE_OFFSET=$(awk -v radius="$RANDOM_RADIUS" -v angle="$RANDOM_ANGLE" 'BEGIN {print radius * cos(angle);}')
+
+  # Calculate the actual latitude and longitude
+  LATITUDE=$(awk -v center_lat="$CENTER_LAT" -v offset="$LATITUDE_OFFSET" 'BEGIN {print center_lat + offset;}')
+  LONGITUDE=$(awk -v center_lng="$CENTER_LNG" -v offset="$LONGITUDE_OFFSET" 'BEGIN {print center_lng + offset;}')
 
   RANDOM_SERVICE_CODE=$(printf "%s\n" "$SERVICES" | awk 'BEGIN {srand();}{a[NR]=$0}END{print a[int(rand()*NR)+1]}')
   EMAIL="test_$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c10)@example.com"

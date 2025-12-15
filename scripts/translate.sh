@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# DRUSH_URI can be passed as environment variable for multisite support
+# e.g., DRUSH_URI="--uri=aachen.ddev.site" ./translate.sh de_DE
+
 # Check if input might be a full locale and extract language code
 if [ -z "$1" ]; then
     echo "No language supplied, defaulting to english (en)"
@@ -24,10 +27,10 @@ mkdir -p "$translations_dir"
 
 # Determine the Drupal version using the correct drush command
 drupal_version=""
-if drush core:status drupal-version --format=string >/dev/null 2>&1; then
-    drupal_version=$(drush core:status drupal-version --format=string | cut -d. -f1-2)
-elif drush status --field=drupal-version >/dev/null 2>&1; then
-    drupal_version=$(drush status --field=drupal-version | cut -d. -f1-2)
+if drush $DRUSH_URI core:status drupal-version --format=string >/dev/null 2>&1; then
+    drupal_version=$(drush $DRUSH_URI core:status drupal-version --format=string | cut -d. -f1-2)
+elif drush $DRUSH_URI status --field=drupal-version >/dev/null 2>&1; then
+    drupal_version=$(drush $DRUSH_URI status --field=drupal-version | cut -d. -f1-2)
 else
     # Fallback to hardcoded version if commands fail
     printf "\e[33mWarning: Unable to determine Drupal version automatically. Assuming Drupal 11.0.\e[0m\n"
@@ -35,7 +38,7 @@ else
 fi
 
 printf "\e[36mImporting translation for $language (Drupal $drupal_version)...\e[0m\n"
-drush language-add $language
+drush $DRUSH_URI language-add $language
 
 # Check if we have a translation file
 printf "\e[36mLooking for translation file in $translations_dir\e[0m\n"
@@ -72,20 +75,20 @@ download_translation() {
 # Check for translation file in different formats
 if [ -f "$translations_dir/$language.po" ]; then
     printf "\e[36mFound translation file: $language.po\e[0m\n"
-    drush locale:import $language "$translations_dir/$language.po" --override=all
+    drush $DRUSH_URI locale:import $language "$translations_dir/$language.po" --override=all
 elif [ -f "$translations_dir/drupal-$drupal_version.$language.po" ]; then
     printf "\e[36mFound translation file: drupal-$drupal_version.$language.po\e[0m\n"
-    drush locale:import $language "$translations_dir/drupal-$drupal_version.$language.po" --override=all
+    drush $DRUSH_URI locale:import $language "$translations_dir/drupal-$drupal_version.$language.po" --override=all
 else
     printf "\e[33mNo local translation file found for $language, attempting to download...\e[0m\n"
-    
+
     # Try to download the translation
     if download_translation "$language" "$drupal_version" "$translations_dir"; then
-        drush locale:import $language "$translations_dir/drupal-$drupal_version.$language.po" --override=all
+        drush $DRUSH_URI locale:import $language "$translations_dir/drupal-$drupal_version.$language.po" --override=all
     else
         # Try direct import without downloading
         printf "\e[36mTrying to import translation directly via Drush...\e[0m\n"
-        if drush locale:check && drush locale:update; then
+        if drush $DRUSH_URI locale:check && drush $DRUSH_URI locale:update; then
             printf "\e[32mTranslations updated via Drush\e[0m\n"
         else
             printf "\e[33mWarning: Could not obtain translation for '$language'.\e[0m\n"
@@ -106,25 +109,25 @@ printf "\e[36mSetting $language as the selected interface language...\e[0m\n"
 
 # Enable language negotiation with "selected language" method having highest priority
 # This ensures the target language is shown by default
-drush config:set language.negotiation url.source path_prefix -y 2>/dev/null || true
-drush config:set language.negotiation selected_langcode "$language" -y 2>/dev/null || true
+drush $DRUSH_URI config:set language.negotiation url.source path_prefix -y 2>/dev/null || true
+drush $DRUSH_URI config:set language.negotiation selected_langcode "$language" -y 2>/dev/null || true
 
 # Set language weights - target language should have lower weight (higher priority)
-drush sql:query "UPDATE config SET data = REPLACE(data, 'weight\";i:0', 'weight\";i:1') WHERE name = 'language.entity.en'" 2>/dev/null || true
-drush sql:query "UPDATE config SET data = REPLACE(data, 'weight\";i:1', 'weight\";i:0') WHERE name = 'language.entity.$language'" 2>/dev/null || true
+drush $DRUSH_URI sql:query "UPDATE config SET data = REPLACE(data, 'weight\";i:0', 'weight\";i:1') WHERE name = 'language.entity.en'" 2>/dev/null || true
+drush $DRUSH_URI sql:query "UPDATE config SET data = REPLACE(data, 'weight\";i:1', 'weight\";i:0') WHERE name = 'language.entity.$language'" 2>/dev/null || true
 
 # Configure language detection methods - selected language first, then URL, then browser
-drush config:set language.types negotiation.language_interface.enabled.language-selected 0 -y 2>/dev/null || true
-drush config:set language.types negotiation.language_interface.enabled.language-url 1 -y 2>/dev/null || true
-drush config:set language.types negotiation.language_interface.enabled.language-browser 2 -y 2>/dev/null || true
+drush $DRUSH_URI config:set language.types negotiation.language_interface.enabled.language-selected 0 -y 2>/dev/null || true
+drush $DRUSH_URI config:set language.types negotiation.language_interface.enabled.language-url 1 -y 2>/dev/null || true
+drush $DRUSH_URI config:set language.types negotiation.language_interface.enabled.language-browser 2 -y 2>/dev/null || true
 
 # Set the target language for administration interface as well
-drush config:set language.negotiation selected_langcode "$language" -y 2>/dev/null || true
+drush $DRUSH_URI config:set language.negotiation selected_langcode "$language" -y 2>/dev/null || true
 
 # Note: Default language stays English - translations are added as secondary language
 # markaspot_language is enabled by start.sh
 
 # Import additional translations if available
 printf "\e[36mChecking for contributed module translations...\e[0m\n"
-drush locale:update
-drush cr
+drush $DRUSH_URI locale:update
+drush $DRUSH_URI cr

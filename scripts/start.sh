@@ -13,13 +13,19 @@ else
   exit 1
 fi
 
+# Multisite support: default to "default" for single-site installs
+SITE_NAME="default"
+SITE_URI=""
+DRUSH_URI=""
+
 usage() {
-  echo "Usage: start.sh [-y] [-t] [-a]"
+  echo "Usage: start.sh [--site=SITENAME] [-y] [-t] [-a]"
   echo
   echo "Options:"
-  echo "    -y    Install automatically (default: Köln, Germany, de_DE locale)"
-  echo "    -t    Import translation file from the /translations directory and enable translations for terms"
-  echo "    -a    Use AI translation (OpenAI) for content artifacts instead of standard translation files"
+  echo "    --site=NAME  Site name for multisite (e.g., aachen, bonn). Uses sites/NAME/"
+  echo "    -y           Install automatically (default: Köln, Germany, de_DE locale)"
+  echo "    -t           Import translation file from the /translations directory and enable translations for terms"
+  echo "    -a           Use AI translation (OpenAI) for content artifacts instead of standard translation files"
   echo
   echo "Environment variables for -y mode:"
   echo "    CITY=...             City name (default: Köln)"
@@ -28,13 +34,57 @@ usage() {
   echo "    OPENAI_API_KEY=...   Required for -a flag"
   echo
   echo "Examples:"
-  echo "    ddev exec scripts/start.sh -y -a                      # Köln with AI translation"
-  echo "    CITY=Bonn LOCALE=de_DE ddev exec scripts/start.sh -y  # Bonn without translation"
+  echo "    ddev exec scripts/start.sh -y -a                            # Single site: Köln with AI translation"
+  echo "    ddev exec scripts/start.sh --site=aachen -y                 # Multisite: Aachen"
+  echo "    CITY=Bonn ddev exec scripts/start.sh --site=bonn -y         # Multisite: Bonn"
   exit 1
 }
 
 if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
   usage
+fi
+
+# Parse --site parameter first (before other args)
+for arg in "$@"; do
+  case $arg in
+    --site=*)
+      SITE_NAME="${arg#*=}"
+      shift
+      ;;
+  esac
+done
+
+# Set up multisite paths and URIs
+if [ "$SITE_NAME" != "default" ]; then
+  SITE_DIR="$WEB_ROOT/sites/$SITE_NAME"
+  SITE_URI="$SITE_NAME.ddev.site"
+  DRUSH_URI="--uri=$SITE_URI"
+  CONFIG_SYNC_DIR="../config/$SITE_NAME"
+  CONFIG_SYNC_ABS="$PROJECT_ROOT/config/$SITE_NAME"
+
+  # For multisite, check if site directory exists
+  if [ ! -d "$SITE_DIR" ]; then
+    echo "ERROR: Site directory not found: $SITE_DIR"
+    echo "Run install-multisite.sh first to create the site structure."
+    exit 1
+  fi
+
+  # For multisite, we need to handle config specially:
+  # - Fresh install: install without --existing-config, then import config
+  # - The config/SITE_NAME directory will be populated after install
+  CONFIG_NEEDS_COPY="false"
+  if [ ! -d "$CONFIG_SYNC_ABS" ] || [ -z "$(ls -A "$CONFIG_SYNC_ABS" 2>/dev/null)" ]; then
+    CONFIG_NEEDS_COPY="true"
+    mkdir -p "$CONFIG_SYNC_ABS"
+    printf "\e[36mConfig directory %s is empty, will copy after install\e[0m\n" "$CONFIG_SYNC_ABS"
+  fi
+
+  printf "\e[36mMultisite mode: %s (%s)\e[0m\n" "$SITE_NAME" "$SITE_URI"
+else
+  SITE_DIR="$WEB_ROOT/sites/default"
+  CONFIG_SYNC_DIR="../config/sync"
+  CONFIG_NEEDS_COPY="false"
+  printf "\e[36mSingle-site mode\e[0m\n"
 fi
 
 printf "\e[32mInstall all libraries with composer..\e[0m\n"
@@ -45,17 +95,26 @@ if [ "$ENVIRONMENT" != "prod" ]; then
   printf "\e[32mNo Prod deployment. Installing Drupal with the Mark-a-Spot Distribution...\e[0m\n"
 
   # Define the path to the Drupal settings file
-  SETTINGS_FILE="$WEB_ROOT/sites/default/settings.php"
+  SETTINGS_FILE="$SITE_DIR/settings.php"
   DEFAULT_SETTINGS_FILE="$WEB_ROOT/sites/default/default.settings.php"
 
-  if [ ! -f "$DEFAULT_SETTINGS_FILE" ]; then
-    echo "ERROR: Cannot find default settings file at $DEFAULT_SETTINGS_FILE"
-    exit 1
+  # For multisite, settings.php may already exist from install-multisite.sh
+  if [ "$SITE_NAME" != "default" ] && [ -f "$SETTINGS_FILE" ]; then
+    printf "\e[33mUsing existing settings.php for multisite %s\e[0m\n" "$SITE_NAME"
+  else
+    if [ ! -f "$DEFAULT_SETTINGS_FILE" ]; then
+      echo "ERROR: Cannot find default settings file at $DEFAULT_SETTINGS_FILE"
+      exit 1
+    fi
+    cp "$DEFAULT_SETTINGS_FILE" "$SETTINGS_FILE"
   fi
 
-  cp "$DEFAULT_SETTINGS_FILE" "$SETTINGS_FILE"
-
-  DB_NAME=${DRUPAL_DATABASE_NAME:-${DB_NAME:-db}}
+  # Database name: use site name for multisite, 'db' for single site
+  if [ "$SITE_NAME" != "default" ]; then
+    DB_NAME="$SITE_NAME"
+  else
+    DB_NAME=${DRUPAL_DATABASE_NAME:-${DB_NAME:-db}}
+  fi
   DB_USER=${DRUPAL_DATABASE_USERNAME:-${DB_USER:-db}}
   DB_PASS=${DRUPAL_DATABASE_PASSWORD:-${DB_PASSWORD:-db}}
   DB_HOST=${MARKASPOT_MARIADB_SERVICE_HOST:-${DB_HOST:-db}}
@@ -84,8 +143,8 @@ if [ "$ENVIRONMENT" != "prod" ]; then
   # Replace the existing hash salt configuration with the custom one
   sed -i "s/\$settings\['hash_salt'\] = '';$/$CUSTOM_HASH_SALT/" "$SETTINGS_FILE"
 
-  # Update the config_sync_directory setting
-  sed -i "s|# \$settings\['config_sync_directory'\] = '/directory/outside/webroot';|\$settings['config_sync_directory'] = '../config/sync';|" "$SETTINGS_FILE"
+  # Update the config_sync_directory setting (uses CONFIG_SYNC_DIR for multisite support)
+  sed -i "s|# \$settings\['config_sync_directory'\] = '/directory/outside/webroot';|\$settings['config_sync_directory'] = '$CONFIG_SYNC_DIR';|" "$SETTINGS_FILE"
 
   cat <<'EOF' >> "$SETTINGS_FILE"
 
@@ -101,7 +160,7 @@ EOF
   printf "\e[32mCustom configuration added to $SETTINGS_FILE\e[0m\n"
 
   printf "\e[36mDropping all tables in the database...\e[0m\n"
-  drush sql-drop -y
+  drush $DRUSH_URI sql-drop -y
   printf "\e[36mExecuting the Markaspot:install command...\e[0m\n"
 
 
@@ -161,14 +220,20 @@ EOF
       elif [ "$count" -eq 1 ]; then
           selected="$locations"
       else
-          echo "Multiple locations found. Please select one by entering the corresponding number:"
-          printf "%s" "$locations" | nl -ba
-          read -p "Choice: " choice
-          if ! printf "%s" "$choice" | grep -Eq '^[0-9]+$' || [ "$choice" -lt 1 ] || [ "$choice" -gt "$count" ]; then
-              echo "ERROR: Invalid selection."
-              return 1
+          # In automatic mode (-y), select the first result
+          if [ "$automatic" = "true" ]; then
+              printf "\e[33mMultiple locations found, auto-selecting first result (-y mode)\e[0m\n"
+              selected=$(printf "%s" "$locations" | head -1)
+          else
+              echo "Multiple locations found. Please select one by entering the corresponding number:"
+              printf "%s" "$locations" | nl -ba
+              read -p "Choice: " choice
+              if ! printf "%s" "$choice" | grep -Eq '^[0-9]+$' || [ "$choice" -lt 1 ] || [ "$choice" -gt "$count" ]; then
+                  echo "ERROR: Invalid selection."
+                  return 1
+              fi
+              selected=$(printf "%s" "$locations" | sed -n "${choice}p")
           fi
-          selected=$(printf "%s" "$locations" | sed -n "${choice}p")
       fi
 
       # Set global variables directly using tab-delimited values
@@ -313,55 +378,82 @@ EOF
     echo "Installation complete!"
   }
 
-  # Run the markaspot:install command in the background and capture its PID
-  php -d memory_limit=-1 $(which drush) markaspot:install --lat="$latitude" --lng="$longitude" --city="$city" --locale="$locale" --skip-confirmation > markaspot_install.log 2>&1 &
+  # For multisite with empty config, use site:install directly (no --existing-config)
+  # For single-site or sites with config, use markaspot:install
+  if [ "$SITE_NAME" != "default" ] && [ "$CONFIG_NEEDS_COPY" = "true" ]; then
+    printf "\e[36mMultisite fresh install: using site:install (no --existing-config)...\e[0m\n"
+    # Install in English first (translations are added later via -t or -a flags)
+    php -d memory_limit=-1 $(which drush) $DRUSH_URI site:install markaspot \
+      --account-name=admin --account-pass=admin --account-mail=admin@example.com \
+      --site-name="$city" --locale=en -y > markaspot_install.log 2>&1 &
+  else
+    # Run the markaspot:install command in the background and capture its PID
+    php -d memory_limit=-1 $(which drush) $DRUSH_URI markaspot:install --lat="$latitude" --lng="$longitude" --city="$city" --locale="$locale" --skip-confirmation > markaspot_install.log 2>&1 &
+  fi
   install_pid=$!
-  
+
   # Show progress while the installation is running
   show_progress $install_pid
-  
+
   # Wait for the installation to complete
   wait $install_pid
   install_exit_code=$?
 
   # Check if Drupal was actually installed (more reliable than exit code)
-  if drush status --field=bootstrap 2>/dev/null | grep -q "Successful"; then
+  if drush $DRUSH_URI status --field=bootstrap 2>/dev/null | grep -q "Successful"; then
     echo -e "\e[32mDrupal bootstrap verified successfully.\e[0m"
   elif [ $install_exit_code -ne 0 ]; then
     echo -e "\e[31mInstallation failed! Check markaspot_install.log for details.\e[0m"
     exit 1
   fi
-  
+
   echo -e "\e[32mMarkaspot installation completed successfully!\e[0m"
-  
+
   # Display the log file if needed
   echo "Installation log saved to markaspot_install.log"
-  printf "\e[36mAdd Admin Role...\e[0m\n"
-  drush user:role:add "administrator" --uid=1
 
-  # Import config from config/sync (group types, roles, etc.)
-  printf "\e[36mImporting configuration from config/sync...\e[0m\n"
-  drush config:import -y
+  # Note: For fresh multisite installs, config will be exported after install
+  # (not copied from config/sync) to ensure matching UUIDs
+  printf "\e[36mAdd Admin Role...\e[0m\n"
+  drush $DRUSH_URI user:role:add "administrator" --uid=1
+
+  # For fresh multisite installs, export config to establish baseline
+  # For existing sites, import config as usual
+  if [ "$SITE_NAME" != "default" ] && [ "$CONFIG_NEEDS_COPY" = "true" ]; then
+    printf "\e[36mFresh multisite install - exporting config to %s...\e[0m\n" "$CONFIG_SYNC_DIR"
+    drush $DRUSH_URI config:export -y
+    printf "\e[32m✓ Config exported (fresh install baseline)\e[0m\n"
+  else
+    printf "\e[36mImporting configuration from %s...\e[0m\n" "$CONFIG_SYNC_DIR"
+    drush $DRUSH_URI config:import -y
+  fi
+
+  # Configure themes (site:install doesn't set these properly)
+  printf "\e[36mConfiguring themes...\e[0m\n"
+  drush $DRUSH_URI config:set system.theme admin gin -y >/dev/null
+  drush $DRUSH_URI config:set system.theme default gin -y >/dev/null
+  drush $DRUSH_URI cr >/dev/null
+  printf "\e[32m✓ Themes configured (admin: gin, default: gin)\e[0m\n"
 
   # Set coordinates in all config locations
   printf "\e[36mConfiguring map coordinates...\e[0m\n"
 
   # markaspot_nuxt.settings - main frontend map center
-  drush config:set markaspot_nuxt.settings center_lat -y -- "$latitude" >/dev/null
-  drush config:set markaspot_nuxt.settings center_lng -y -- "$longitude" >/dev/null
+  drush $DRUSH_URI config:set markaspot_nuxt.settings center_lat -y -- "$latitude" >/dev/null
+  drush $DRUSH_URI config:set markaspot_nuxt.settings center_lng -y -- "$longitude" >/dev/null
 
   # Field default value for geolocation field
-  drush config:set field.field.node.service_request.field_geolocation default_value.0.lat -y -- "$latitude" >/dev/null
-  drush config:set field.field.node.service_request.field_geolocation default_value.0.lng -y -- "$longitude" >/dev/null
+  drush $DRUSH_URI config:set field.field.node.service_request.field_geolocation default_value.0.lat -y -- "$latitude" >/dev/null
+  drush $DRUSH_URI config:set field.field.node.service_request.field_geolocation default_value.0.lng -y -- "$longitude" >/dev/null
 
   # Widget settings for form displays (map center in edit forms)
-  drush config:set core.entity_form_display.node.service_request.default third_party_settings.geolocation.centre.lat -y -- "$latitude" >/dev/null 2>&1 || true
-  drush config:set core.entity_form_display.node.service_request.default third_party_settings.geolocation.centre.lng -y -- "$longitude" >/dev/null 2>&1 || true
+  drush $DRUSH_URI config:set core.entity_form_display.node.service_request.default third_party_settings.geolocation.centre.lat -y -- "$latitude" >/dev/null 2>&1 || true
+  drush $DRUSH_URI config:set core.entity_form_display.node.service_request.default third_party_settings.geolocation.centre.lng -y -- "$longitude" >/dev/null 2>&1 || true
 
   # Update widget center_lat/center_lng settings
   for form_mode in default management nuxt; do
-    drush config:set "core.entity_form_display.node.service_request.$form_mode" content.field_geolocation.settings.center_lat -y -- "$latitude" >/dev/null 2>&1 || true
-    drush config:set "core.entity_form_display.node.service_request.$form_mode" content.field_geolocation.settings.center_lng -y -- "$longitude" >/dev/null 2>&1 || true
+    drush $DRUSH_URI config:set "core.entity_form_display.node.service_request.$form_mode" content.field_geolocation.settings.center_lat -y -- "$latitude" >/dev/null 2>&1 || true
+    drush $DRUSH_URI config:set "core.entity_form_display.node.service_request.$form_mode" content.field_geolocation.settings.center_lng -y -- "$longitude" >/dev/null 2>&1 || true
   done
 
   printf "\e[32mMap coordinates set to: %s, %s\e[0m\n" "$latitude" "$longitude"
@@ -371,11 +463,11 @@ EOF
 
   # Import English content FIRST (base language) - creates groups, categories, etc.
   printf "\e[36mImporting English base content (creates groups, categories, etc.)...\e[0m\n"
-  $SCRIPT_DIR/import.sh
+  DRUSH_URI="$DRUSH_URI" $SCRIPT_DIR/import.sh
 
   # Fetch city boundary from Nominatim (requires group to exist from import.sh)
   printf "\e[36mFetching city boundary from Nominatim...\e[0m\n"
-  if drush markaspot:fetch-boundary --city="$city" --group=1 -y 2>&1; then
+  if drush $DRUSH_URI markaspot:fetch-boundary --city="$city" --group=1 -y 2>&1; then
     printf "\e[32mCity boundary stored successfully!\e[0m\n"
   else
     printf "\e[33mWarning: Could not fetch boundary. Run manually:\e[0m\n"
@@ -397,23 +489,23 @@ EOF
   # Extract simple city name (first part before comma)
   SIMPLE_CITY=$(echo "$city" | cut -d',' -f1)
 
-  drush config:set markaspot_validation.settings wkt "$WKT" -y >/dev/null 2>&1
-  drush config:set markaspot_validation.settings location.0 "$SIMPLE_CITY" -y >/dev/null 2>&1
-  drush config:set markaspot_validation.settings locality.0 "$SIMPLE_CITY" -y >/dev/null 2>&1
+  drush $DRUSH_URI config:set markaspot_validation.settings wkt "$WKT" -y >/dev/null 2>&1
+  drush $DRUSH_URI config:set markaspot_validation.settings location.0 "$SIMPLE_CITY" -y >/dev/null 2>&1
+  drush $DRUSH_URI config:set markaspot_validation.settings locality.0 "$SIMPLE_CITY" -y >/dev/null 2>&1
 
   printf "\e[32mValidation WKT set for: %s\e[0m\n" "$SIMPLE_CITY"
 
   # Fix GeoReport status configuration
   # status_closed should be 5,6 (Closed, Archived) not 3,4
   printf "\e[36mConfiguring GeoReport status mappings...\e[0m\n"
-  drush config:delete markaspot_open311.settings status_closed.3 -y >/dev/null 2>&1 || true
-  drush config:delete markaspot_open311.settings status_closed.4 -y >/dev/null 2>&1 || true
-  drush config:set markaspot_open311.settings status_closed.5 5 -y >/dev/null 2>&1
-  drush config:set markaspot_open311.settings status_closed.6 6 -y >/dev/null 2>&1
+  drush $DRUSH_URI config:delete markaspot_open311.settings status_closed.3 -y >/dev/null 2>&1 || true
+  drush $DRUSH_URI config:delete markaspot_open311.settings status_closed.4 -y >/dev/null 2>&1 || true
+  drush $DRUSH_URI config:set markaspot_open311.settings status_closed.5 5 -y >/dev/null 2>&1
+  drush $DRUSH_URI config:set markaspot_open311.settings status_closed.6 6 -y >/dev/null 2>&1
 
   # Add view permission to org-anonymous group role for API access
   printf "\e[36mConfiguring Group permissions for anonymous API access...\e[0m\n"
-  drush php:eval '
+  drush $DRUSH_URI php:eval '
     $config = \Drupal::service("config.factory")->getEditable("group.role.org-anonymous");
     $perms = $config->get("permissions") ?: [];
     if (!in_array("view group_node:service_request entity", $perms)) {
@@ -426,16 +518,16 @@ EOF
   if [ "$translation" = true ] || [ "$ai_translate" = true ]; then
     # Add target language
     printf "\e[36mAdding language: %s...\e[0m\n" "$language"
-    drush language-add "$language" 2>/dev/null || true
+    drush $DRUSH_URI language-add "$language" 2>/dev/null || true
 
     # Enable multilingual support for entities
     printf "\e[36mEnabling multilingual support for entities...\e[0m\n"
-    drush en markaspot_language -y
+    drush $DRUSH_URI en markaspot_language -y
 
     # Always import Drupal UI translations and set language negotiation
     # This ensures the target language becomes the "selected" interface language
     printf "\e[36mImporting Drupal translations and configuring language settings...\e[0m\n"
-    $SCRIPT_DIR/translate.sh "$locale"
+    DRUSH_URI="$DRUSH_URI" $SCRIPT_DIR/translate.sh "$locale"
 
     # AI translate content artifacts if -a flag
     if [ "$ai_translate" = true ]; then
@@ -455,7 +547,7 @@ EOF
       # Add translations from the translated CSVs
       if [ -f "$SCRIPT_DIR/create-translations.php" ]; then
         printf "\e[36mAdding %s translations via Entity API...\e[0m\n" "$language"
-        drush php:script "$SCRIPT_DIR/create-translations.php" -- "$language" 2>&1 || printf "\e[33mWarning: Could not create translations\e[0m\n"
+        drush $DRUSH_URI php:script "$SCRIPT_DIR/create-translations.php" -- "$language" 2>&1 || printf "\e[33mWarning: Could not create translations\e[0m\n"
       fi
 
       # Clean up language directory
@@ -483,7 +575,7 @@ EOF
   fi
 
   # Set the key in Drupal config for immediate use during installation
-  drush config-set services_api_key_auth.api_key.nuxt key "$GEOREPORT_API_KEY" -y >/dev/null
+  drush $DRUSH_URI config-set services_api_key_auth.api_key.nuxt key "$GEOREPORT_API_KEY" -y >/dev/null
   printf "\e[32mAPI key set in Drupal config\e[0m\n"
 
   # Write to .ddev/.env for DDEV environments (persists across restarts)
@@ -503,7 +595,7 @@ EOF
   printf "GeoReport API key: %s\n" "$GEOREPORT_API_KEY"
 
   # Run georeport client to create users and test data
-  $SCRIPT_DIR/georeport-client.sh
+  DRUSH_URI="$DRUSH_URI" SITE_URI="$SITE_URI" $SCRIPT_DIR/georeport-client.sh
 
   # Configure groups and memberships
   printf "\e[36mConfiguring groups and user memberships...\e[0m\n"
@@ -521,7 +613,7 @@ EOF
 
   # Update jurisdiction group: label and nuxt config with language
   printf "\e[36mConfiguring jurisdiction with language: %s...\e[0m\n" "$NUXT_DEFAULT_LANG"
-  drush php:eval "
+  drush $DRUSH_URI php:eval "
     \$group = \Drupal::entityTypeManager()->getStorage('group')->load(1);
     if (\$group && \$group->getGroupType()->id() === 'jur') {
       // Set city name as label
@@ -553,7 +645,7 @@ EOF
   " 2>/dev/null || true
 
   # Add admin to all groups (admin roles are auto-assigned via global_role config)
-  drush php:eval "
+  drush $DRUSH_URI php:eval "
     \$user = \Drupal\user\Entity\User::load(1);
     \$groups = \Drupal::entityTypeManager()->getStorage('group')->loadMultiple();
     foreach (\$groups as \$group) {
@@ -565,7 +657,7 @@ EOF
   " 2>/dev/null || true
 
   # Add users to jurisdiction group and departments
-  drush php:eval "
+  drush $DRUSH_URI php:eval "
     \$group_storage = \Drupal::entityTypeManager()->getStorage('group');
     \$user_storage = \Drupal::entityTypeManager()->getStorage('user');
 
@@ -619,7 +711,10 @@ EOF
   printf "\e[32m╚════════════════════════════════════════════════════════════════════════╝\e[0m\n"
 
   printf "\n\e[36mOne-Time Login:\e[0m\n"
-  if [ -n "$DDEV_HOSTNAME" ]; then
+  if [ -n "$SITE_URI" ]; then
+    # Multisite: use site-specific URI
+    drush $DRUSH_URI uli --uri="https://$SITE_URI"
+  elif [ -n "$DDEV_HOSTNAME" ]; then
     drush uli --uri="https://$DDEV_HOSTNAME"
   else
     drush uli --uri=http://localhost
@@ -627,7 +722,9 @@ EOF
 
   printf "\n\e[33mNext steps:\e[0m\n"
   printf "  1. Run 'ddev restart' to apply API key to frontend\n"
-  if [ -n "$DDEV_HOSTNAME" ]; then
+  if [ -n "$SITE_URI" ]; then
+    printf "  2. Access site at: https://%s\n\n" "$SITE_URI"
+  elif [ -n "$DDEV_HOSTNAME" ]; then
     printf "  2. Access frontend at: https://%s:8040\n\n" "$DDEV_HOSTNAME"
   else
     printf "  2. Access frontend at: http://localhost:3000\n\n"
