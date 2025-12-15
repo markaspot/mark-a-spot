@@ -118,5 +118,8 @@
             "phpstan/extension-installer": true,
             "dealerdirect/phpcodesniffer-composer-installer": true
         }
+    },
+    "require-dev": {
+        "drupal/coder": "^8.3"
     }
 }
