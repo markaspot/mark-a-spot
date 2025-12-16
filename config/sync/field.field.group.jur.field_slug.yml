@@ -1,0 +1,20 @@
+uuid: a8cc4aaa-b184-4fbe-9435-9498c786ce2d
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.group.field_slug
+    - group.type.jur
+id: group.jur.field_slug
+field_name: field_slug
+entity_type: group
+bundle: jur
+label: 'URL Slug'
+description: 'URL-friendly identifier (e.g., stadt-osnabrueck). Used for routing.'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string
+

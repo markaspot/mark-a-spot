@@ -1,0 +1,27 @@
+uuid: 15adc1d9-f854-410f-861f-72b537278e50
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.group.field_font_heading
+    - group.type.jur
+  module:
+    - file
+id: group.jur.field_font_heading
+field_name: field_font_heading
+entity_type: group
+bundle: jur
+label: 'Heading Font'
+description: 'Upload a .woff2 font file for headings (h1-h6)'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:file'
+  handler_settings: {  }
+  file_directory: fonts
+  file_extensions: 'woff2 woff ttf otf'
+  max_filesize: ''
+  description_field: false
+field_type: file

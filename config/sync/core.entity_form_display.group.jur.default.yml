@@ -5,9 +5,12 @@ dependencies:
   config:
     - field.field.group.jur.field_boundary
     - field.field.group.jur.field_custom_css
+    - field.field.group.jur.field_font_body
+    - field.field.group.jur.field_font_heading
     - field.field.group.jur.field_logo_dark
     - field.field.group.jur.field_logo_light
     - field.field.group.jur.field_nuxt_config
+    - field.field.group.jur.field_slug
     - group.type.jur
   module:
     - file
@@ -35,6 +38,20 @@ content:
       rows: 5
       placeholder: ''
     third_party_settings: {  }
+  field_font_body:
+    type: file_generic
+    weight: 11
+    region: content
+    settings:
+      progress_indicator: throbber
+    third_party_settings: {  }
+  field_font_heading:
+    type: file_generic
+    weight: 10
+    region: content
+    settings:
+      progress_indicator: throbber
+    third_party_settings: {  }
   field_logo_dark:
     type: file_generic
     weight: 4
@@ -54,6 +71,14 @@ content:
     weight: 6
     region: content
     settings: {  }
+    third_party_settings: {  }
+  field_slug:
+    type: string_textfield
+    weight: 1
+    region: content
+    settings:
+      size: 60
+      placeholder: stadt-osnabrueck
     third_party_settings: {  }
   label:
     type: string_textfield

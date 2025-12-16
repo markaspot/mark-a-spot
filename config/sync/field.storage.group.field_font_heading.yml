@@ -1,0 +1,23 @@
+uuid: aee36e6a-483f-46c6-ad09-a7bc5e6b0389
+langcode: de
+status: true
+dependencies:
+  module:
+    - file
+    - group
+id: group.field_font_heading
+field_name: field_font_heading
+entity_type: group
+type: file
+settings:
+  target_type: file
+  display_field: false
+  display_default: false
+  uri_scheme: public
+module: file
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

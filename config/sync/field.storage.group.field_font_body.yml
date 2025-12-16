@@ -1,0 +1,23 @@
+uuid: 8d0c3ac7-92a1-41a9-a5b7-e4b054fedbc4
+langcode: de
+status: true
+dependencies:
+  module:
+    - file
+    - group
+id: group.field_font_body
+field_name: field_font_body
+entity_type: group
+type: file
+settings:
+  target_type: file
+  display_field: false
+  display_default: false
+  uri_scheme: public
+module: file
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

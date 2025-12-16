@@ -1,0 +1,27 @@
+uuid: 8eddd623-6885-409a-b583-5ed0831f64ab
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.group.field_font_body
+    - group.type.jur
+  module:
+    - file
+id: group.jur.field_font_body
+field_name: field_font_body
+entity_type: group
+bundle: jur
+label: 'Body Font'
+description: 'Upload a .woff2 font file for body text'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:file'
+  handler_settings: {  }
+  file_directory: fonts
+  file_extensions: 'woff2 woff ttf otf'
+  max_filesize: ''
+  description_field: false
+field_type: file
