@@ -3,4 +3,4 @@ _core:
 path_prefix: jsonapi
 include_count: false
 default_disabled: true
-validate_configuration_integrity: false
+validate_configuration_integrity: true

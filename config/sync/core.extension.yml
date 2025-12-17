@@ -82,7 +82,6 @@ module:
   markaspot_media: 0
   markaspot_nuxt: 0
   markaspot_open311: 0
-  markaspot_privacy: 0
   markaspot_request_id: 0
   markaspot_token: 0
   markaspot_ui: 0
