@@ -1,0 +1,21 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.user.field_all_groups_member
+  module:
+    - user
+id: user.user.field_all_groups_member
+field_name: field_all_groups_member
+entity_type: user
+bundle: user
+label: 'All Groups Member'
+description: 'When enabled, this user will automatically become a member of all existing and future groups with admin role.'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean

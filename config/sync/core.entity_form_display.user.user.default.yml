@@ -3,6 +3,7 @@ langcode: en
 status: true
 dependencies:
   config:
+    - field.field.user.user.field_all_groups_member
     - field.field.user.user.field_internal_orga
     - field.field.user.user.field_internal_phone
   module:
@@ -19,6 +20,13 @@ content:
     weight: 0
     region: content
     settings: {  }
+    third_party_settings: {  }
+  field_all_groups_member:
+    type: boolean_checkbox
+    weight: 5
+    region: content
+    settings:
+      display_label: true
     third_party_settings: {  }
   field_internal_orga:
     type: string_textfield
