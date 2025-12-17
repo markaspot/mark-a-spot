@@ -39,7 +39,7 @@
         "drupal/iconify_field": "^1.2",
         "drupal/jquery_ui": "^1.6",
         "drupal/jquery_ui_draggable": "^1.2",
-        "drupal/json_form_widget": "^1.0@alpha",
+        "drupal/json_form_widget": "1.x-dev",
         "drupal/jsonapi_extras": "^3",
         "drupal/layout_library": "^1.0@beta",
         "drupal/mailsystem": "^4.4",
@@ -105,7 +105,12 @@
                 "type:drupal-drush"
             ]
         },
-        "enable-patching": false
+        "enable-patching": true,
+        "patches": {
+            "drupal/json_form_widget": {
+                "#3563296 Fix undefined array key warning": "https://git.drupalcode.org/project/json_form_widget/-/merge_requests/1.diff"
+            }
+        }
     },
     "config": {
         "sort-packages": true,

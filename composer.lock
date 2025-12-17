@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "718abdbdedec3cb8a0ae2c0d7b8f3159",
+    "content-hash": "a13c7d135e6149d7da2ce687a84c4c8b",
     "packages": [
         {
             "name": "anthonymartin/geo-location",
@@ -4188,17 +4188,11 @@
         },
         {
             "name": "drupal/json_form_widget",
-            "version": "1.0.0-alpha1",
+            "version": "dev-1.x",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/json_form_widget.git",
-                "reference": "1.0.0-alpha1"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/json_form_widget-1.0.0-alpha1.zip",
-                "reference": "1.0.0-alpha1",
-                "shasum": "b1a14f5782a2109bff39af04b51dfa58367cd43a"
+                "reference": "8daa320cc8043bbf5f2a427bbb4b3d66655dda8a"
             },
             "require": {
                 "drupal/core": "^10.4 || ^11",
@@ -4212,9 +4206,12 @@
             },
             "type": "drupal-module",
             "extra": {
+                "branch-alias": {
+                    "dev-1.x": "1.x-dev"
+                },
                 "drupal": {
-                    "version": "1.0.0-alpha1",
-                    "datestamp": "1765465388",
+                    "version": "1.x-dev",
+                    "datestamp": "1765464864",
                     "security-coverage": {
                         "status": "not-covered",
                         "message": "Project has not opted into security advisory coverage!"
@@ -13157,7 +13154,7 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "drupal/json_form_widget": 15,
+        "drupal/json_form_widget": 20,
         "drupal/layout_library": 10,
         "markaspot/markaspot": 20
     },
