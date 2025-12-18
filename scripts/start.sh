@@ -560,12 +560,39 @@ EOF
 
   step "Configuring groups..."
 
-  if [ "$translation" = true ] || [ "$ai_translate" = true ]; then
-    NUXT_DEFAULT_LANG="$language"
-    NUXT_AVAILABLE_LANGS="[\"$language\", \"en\"]"
+  # Get actually enabled languages from Drupal
+  ENABLED_LANGS=$(drush $DRUSH_URI php:eval "
+    \$languages = \Drupal::languageManager()->getLanguages();
+    echo implode(',', array_keys(\$languages));
+  " 2>/dev/null)
+
+  if [ -n "$ENABLED_LANGS" ]; then
+    # Convert comma-separated list to JSON array
+    NUXT_AVAILABLE_LANGS=$(echo "$ENABLED_LANGS" | awk -F',' '{
+      printf "[";
+      for(i=1; i<=NF; i++) {
+        printf "\"%s\"", $i;
+        if(i<NF) printf ", ";
+      }
+      printf "]"
+    }')
+    # Use site default language
+    NUXT_DEFAULT_LANG=$(drush $DRUSH_URI php:eval "echo \Drupal::languageManager()->getDefaultLanguage()->getId();" 2>/dev/null)
+    [ -z "$NUXT_DEFAULT_LANG" ] && NUXT_DEFAULT_LANG="en"
   else
-    NUXT_DEFAULT_LANG="en"
-    NUXT_AVAILABLE_LANGS="[\"en\"]"
+    # Fallback to original logic
+    if [ "$translation" = true ] || [ "$ai_translate" = true ]; then
+      NUXT_DEFAULT_LANG="$language"
+      # Avoid duplicating "en" if language is already English
+      if [ "$language" = "en" ]; then
+        NUXT_AVAILABLE_LANGS="[\"en\"]"
+      else
+        NUXT_AVAILABLE_LANGS="[\"en\", \"$language\"]"
+      fi
+    else
+      NUXT_DEFAULT_LANG="en"
+      NUXT_AVAILABLE_LANGS="[\"en\"]"
+    fi
   fi
 
   drush $DRUSH_URI php:eval "
