@@ -436,6 +436,13 @@ EOF
 
   language=$(echo "$locale" | cut -d '_' -f1)
 
+  # Always add the language from locale (en is default, others are additional)
+  if [ "$language" != "en" ]; then
+    step "Adding language: $language..."
+    drush $DRUSH_URI language-add "$language" >/dev/null 2>&1 || true
+    success "Language $language added"
+  fi
+
   step "Importing base content..."
   DRUSH_URI="$DRUSH_URI" $SCRIPT_DIR/import.sh >/dev/null 2>&1
   success "Groups, categories, and terms created"
