@@ -110,6 +110,15 @@ class MarkaspotCommands extends DrushCommands implements CustomEventAwareInterfa
 
     // Clear cache before configuration updates
     $this->processManager()->shell("drush cr")->run();
+
+    // Fix admin user credentials (--existing-config may leave placeholder values)
+    $this->logger()->notice(dt('Configuring admin user...'));
+    $this->processManager()->shell("drush sqlq \"UPDATE users_field_data SET name='$account_name', mail='$account_mail' WHERE uid=1\"")->run();
+    $php_code = sprintf(
+      '$user = \Drupal\user\Entity\User::load(1); $user->setPassword(%s); $user->save();',
+      var_export($account_pass, true)
+    );
+    $this->processManager()->shell('drush php:eval ' . escapeshellarg($php_code))->run();
     
     // Now that Drupal is installed, we can update the configuration
     // We'll do this directly since we can bootstrap Drupal now
