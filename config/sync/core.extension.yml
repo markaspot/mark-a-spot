@@ -78,6 +78,7 @@ module:
   markaspot_blocks: 0
   markaspot_boilerplate: 0
   markaspot_group: 0
+  modeler_api: 0
   markaspot_icons: 0
   markaspot_media: 0
   markaspot_nuxt: 0
@@ -106,7 +107,6 @@ module:
   serialization: 0
   service_request: 0
   services_api_key_auth: 0
-  shortcut: 0
   shs: 0
   system: 0
   taxonomy: 0
