@@ -27,12 +27,12 @@
         "composer/installers": "^2",
         "cweagans/composer-patches": "^1.7.0",
         "drupal/backup_migrate": "^5",
-        "drupal/bpmn_io": "^2",
-        "drupal/core": "^11",
-        "drupal/core-composer-scaffold": "^11",
-        "drupal/core-recommended": "^11.1",
+        "drupal/bpmn_io": "^3",
+        "drupal/core": "^11.3",
+        "drupal/core-composer-scaffold": "^11.3",
+        "drupal/core-recommended": "^11.3",
         "drupal/devel": "^5",
-        "drupal/eca": "^2",
+        "drupal/eca": "^3",
         "drupal/gin_login": "^2",
         "drupal/group": "^3",
         "drupal/group_action": "^1.1",
@@ -44,7 +44,6 @@
         "drupal/layout_library": "^1.0@beta",
         "drupal/mailsystem": "^4.4",
         "drupal/phpmailer_smtp": "^2.1",
-        "drupal/s3fs": "^3.1",
         "drush/drush": "13",
         "kevinquillen/recipe-generator": "^2.0",
         "markaspot/markaspot": "dev-11.8.x-dev",
@@ -108,7 +107,8 @@
         "enable-patching": true,
         "patches": {
             "drupal/json_form_widget": {
-                "#3563296 Fix undefined array key warning": "https://git.drupalcode.org/project/json_form_widget/-/merge_requests/1.diff"
+                "#3563296 Fix undefined array key warning": "https://git.drupalcode.org/project/json_form_widget/-/merge_requests/1.diff",
+                "#3564474 Drupal 11.3 void return type": "https://git.drupalcode.org/project/json_form_widget/-/merge_requests/2.diff"
             }
         }
     },
