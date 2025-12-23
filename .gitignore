@@ -37,3 +37,4 @@ web/sites/*/settings.php
 /web.config
 *.log
 web/modules/custom/markaspot_vision/
+translations/*.po
