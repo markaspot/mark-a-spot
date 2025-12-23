@@ -561,6 +561,23 @@ EOF
   export GEOREPORT_API_KEY
   success "API key configured"
 
+  step "Generating test session cookie..."
+  if [ -f "$SCRIPT_DIR/get-drupal-session.sh" ]; then
+    chmod +x "$SCRIPT_DIR/get-drupal-session.sh"
+    SESSION_COOKIE=$("$SCRIPT_DIR/get-drupal-session.sh" 1 cookie 2>/dev/null) || true
+    if [ -n "$SESSION_COOKIE" ] && [ -d "$PROJECT_ROOT/.ddev" ]; then
+      # Remove old session cookie line if exists
+      if [ -f "$DDEV_ENV_FILE" ]; then
+        grep -v "^DRUPAL_TEST_SESSION_COOKIE=" "$DDEV_ENV_FILE" > "${DDEV_ENV_FILE}.tmp" 2>/dev/null || true
+        mv "${DDEV_ENV_FILE}.tmp" "$DDEV_ENV_FILE"
+      fi
+      echo "DRUPAL_TEST_SESSION_COOKIE=$SESSION_COOKIE" >> "$DDEV_ENV_FILE"
+      success "Session cookie configured"
+    else
+      warn "Could not generate session cookie"
+    fi
+  fi
+
   step "Creating test data..."
   DRUSH_URI="$DRUSH_URI" SITE_URI="$SITE_URI" $SCRIPT_DIR/georeport-client.sh >/dev/null 2>&1
   success "Test users and service requests created"
