@@ -30,8 +30,9 @@ settings:
         - heading5
         - heading6
     ckeditor5_list:
-      reversed: false
-      startIndex: true
+      properties:
+        reversed: false
+        startIndex: true
     ckeditor5_sourceEditing:
       allowed_tags:
         - '<cite>'
