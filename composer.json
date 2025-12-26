@@ -106,6 +106,9 @@
         },
         "enable-patching": true,
         "patches": {
+            "drupal/gin_login": {
+                "#3517414 Fix undefined array key brand_image warning": "https://git.drupalcode.org/project/gin_login/-/merge_requests/43.diff"
+            },
             "drupal/json_form_widget": {
                 "#3563296 Fix undefined array key warning": "https://git.drupalcode.org/project/json_form_widget/-/merge_requests/1.diff",
                 "#3564474 Drupal 11.3 void return type": "https://git.drupalcode.org/project/json_form_widget/-/merge_requests/2.diff"
