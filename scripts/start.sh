@@ -390,7 +390,9 @@ EOF
 
   step "Configuring admin user..."
   drush $DRUSH_URI user:role:add "administrator" --uid=1 >/dev/null 2>&1
-  success "Admin role assigned"
+  # Fix admin username (may be "placeholder-for-uid-1" after --existing-config install)
+  drush $DRUSH_URI php:eval "\$user = \Drupal\user\Entity\User::load(1); if (\$user && \$user->getAccountName() !== 'admin') { \$user->setUsername('admin'); \$user->save(); }" 2>/dev/null || true
+  success "Admin user configured"
 
   step "Configuring themes..."
   drush $DRUSH_URI config:set system.theme admin gin -y >/dev/null 2>&1
