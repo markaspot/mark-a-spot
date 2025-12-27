@@ -1,25 +1,28 @@
-uuid: ab9119a9-ce31-469a-80ae-d93c19d26ae8
+uuid: 28dde88c-6023-487b-8820-5106f36b42ce
 langcode: en
 status: true
 dependencies:
   module:
     - field_permissions
-    - media
     - node
+    - taxonomy
+  enforced:
+    module:
+      - service_request
 third_party_settings:
   field_permissions:
-    permission_type: custom
+    permission_type: public
 _core:
   default_config_hash: null
-id: node.field_request_media
-field_name: field_request_media
+id: node.field_district
+field_name: field_district
 entity_type: node
 type: entity_reference
 settings:
-  target_type: media
+  target_type: taxonomy_term
 module: core
 locked: false
-cardinality: 3
+cardinality: 1
 translatable: true
 indexes: {  }
 persist_with_no_fields: false

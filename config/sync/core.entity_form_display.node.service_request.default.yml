@@ -8,6 +8,7 @@ dependencies:
     - field.field.node.service_request.field_approved
     - field.field.node.service_request.field_attachment
     - field.field.node.service_request.field_category
+    - field.field.node.service_request.field_district
     - field.field.node.service_request.field_e_mail
     - field.field.node.service_request.field_feedback
     - field.field.node.service_request.field_first_name
@@ -124,6 +125,7 @@ hidden:
   created: true
   entitygroupfield: true
   field_address: true
+  field_district: true
   field_approved: true
   field_attachment: true
   field_feedback: true

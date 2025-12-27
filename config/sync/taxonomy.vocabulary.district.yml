@@ -1,0 +1,14 @@
+uuid: fba92976-0ca6-44fa-9845-0d206f55625a
+langcode: en
+status: true
+dependencies:
+  enforced:
+    module:
+      - service_request
+_core:
+  default_config_hash: null
+name: District
+vid: district
+description: 'Districts for service requests'
+weight: 0
+new_revision: false

@@ -1,0 +1,33 @@
+uuid: 5c0ac2ac-467e-4aeb-9636-8233da5edef1
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_district
+    - node.type.service_request
+    - taxonomy.vocabulary.district
+  enforced:
+    module:
+      - service_request
+_core:
+  default_config_hash: null
+id: node.service_request.field_district
+field_name: field_district
+entity_type: node
+bundle: service_request
+label: District
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:taxonomy_term'
+  handler_settings:
+    target_bundles:
+      district: district
+    sort:
+      field: _none
+    auto_create: false
+    auto_create_bundle: ''
+field_type: entity_reference
