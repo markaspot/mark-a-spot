@@ -26,7 +26,7 @@ import {
 } from '../util/actor_messages';
 
 /**
- * The Worker class responsidble for background thread related execution
+ * The Worker class responsible for background thread related execution
  */
 export default class Worker {
     self: WorkerGlobalScopeInterface & ActorTarget;
@@ -111,6 +111,10 @@ export default class Worker {
 
         this.actor.registerMessageHandler(MessageType.loadData, (mapId: string, params: LoadGeoJSONParameters) => {
             return (this._getWorkerSource(mapId, params.type, params.source) as GeoJSONWorkerSource).loadData(params);
+        });
+
+        this.actor.registerMessageHandler(MessageType.getData, (mapId: string, params: LoadGeoJSONParameters) => {
+            return (this._getWorkerSource(mapId, params.type, params.source) as GeoJSONWorkerSource).getData();
         });
 
         this.actor.registerMessageHandler(MessageType.loadTile, (mapId: string, params: WorkerTileParameters) => {

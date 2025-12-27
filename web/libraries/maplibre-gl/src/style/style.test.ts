@@ -12,7 +12,7 @@ import {OverscaledTileID} from '../source/tile_id';
 import {fakeServer, type FakeServer} from 'nise';
 
 import {EvaluationParameters} from './evaluation_parameters';
-import {LayerSpecification, GeoJSONSourceSpecification, FilterSpecification, SourceSpecification, StyleSpecification, SymbolLayerSpecification, TerrainSpecification} from '@maplibre/maplibre-gl-style-spec';
+import {LayerSpecification, GeoJSONSourceSpecification, FilterSpecification, SourceSpecification, StyleSpecification, SymbolLayerSpecification, TerrainSpecification, SkySpecification} from '@maplibre/maplibre-gl-style-spec';
 import {GeoJSONSource} from '../source/geojson_source';
 import {sleep} from '../util/test/util';
 import {RTLPluginLoadedEventName} from '../source/rtl_text_plugin_status';
@@ -616,7 +616,7 @@ describe('Style#update', () => {
             style.addLayer({id: 'third', source: 'source', type: 'fill', 'source-layer': 'source-layer'});
             style.removeLayer('second');
 
-            style.dispatcher.broadcast = function(key, value) {
+            style.dispatcher.broadcast = (key, value) => {
                 expect(key).toBe(MessageType.updateLayers);
                 expect(value['layers'].map((layer) => { return layer.id; })).toEqual(['first', 'third']);
                 expect(value['removedIds']).toEqual(['second']);
@@ -695,6 +695,7 @@ describe('Style#setState', () => {
         spys.push(jest.spyOn(style, 'setGeoJSONSourceData').mockImplementation((() => {}) as any));
         spys.push(jest.spyOn(style, 'setGlyphs').mockImplementation((() => {}) as any));
         spys.push(jest.spyOn(style, 'setSprite').mockImplementation((() => {}) as any));
+        spys.push(jest.spyOn(style, 'setSky').mockImplementation((() => {}) as any));
         spys.push(jest.spyOn(style.map, 'setTerrain').mockImplementation((() => {}) as any));
 
         const newStyle = JSON.parse(JSON.stringify(styleJson)) as StyleSpecification;
@@ -715,14 +716,19 @@ describe('Style#setState', () => {
         });
         ((newStyle.sources.sourceId0 as GeoJSONSourceSpecification).data as GeoJSON.FeatureCollection).features.push({} as any);
 
-        newStyle.glyphs = 'http://example.com/{fontstack}/{range}.pbf';
-        newStyle.sprite = 'http://example.com';
+        newStyle.glyphs = 'https://example.com/{fontstack}/{range}.pbf';
+        newStyle.sprite = 'https://example.com';
 
         newStyle.terrain = {
             source: 'foo',
             exaggeration: 0.5
         };
         newStyle.zoom = 2;
+        newStyle.sky = {
+            'fog-color': '#000001',
+            'sky-color': '#000002',
+            'horizon-fog-blend': 0.5,
+        };
         const didChange = style.setState(newStyle);
         expect(didChange).toBeTruthy();
         for (const spy of spys) {
@@ -730,7 +736,7 @@ describe('Style#setState', () => {
         }
     });
 
-    test('change transition doesnt change the style, but is considered a change', async () => {
+    test('change transition doesn\'t change the style, but is considered a change', async () => {
         const style = createStyle();
         const styleJson = createStyleJSON();
         style.loadJSON(styleJson);
@@ -1319,7 +1325,7 @@ describe('Style#addLayer', () => {
 
         style.on('data', (e) => {
             if (e.dataType === 'source' && e.sourceDataType === 'content') {
-                style.sourceCaches['mapLibre'].reload = function() { done(); };
+                style.sourceCaches['mapLibre'].reload = () => { done(); };
                 style.addLayer(layer);
                 style.update({} as EvaluationParameters);
             }
@@ -1353,8 +1359,8 @@ describe('Style#addLayer', () => {
 
         style.on('data', (e) => {
             if (e.dataType === 'source' && e.sourceDataType === 'content') {
-                style.sourceCaches['mapLibre'].reload = function() { done(); };
-                style.sourceCaches['mapLibre'].clearTiles =  function() { done('test failed'); };
+                style.sourceCaches['mapLibre'].reload = () => { done(); };
+                style.sourceCaches['mapLibre'].clearTiles =  () => { done('test failed'); };
                 style.removeLayer('my-layer');
                 style.addLayer(layer);
                 style.update({} as EvaluationParameters);
@@ -1389,8 +1395,8 @@ describe('Style#addLayer', () => {
         }as LayerSpecification;
         style.on('data', (e) => {
             if (e.dataType === 'source' && e.sourceDataType === 'content') {
-                style.sourceCaches['mapLibre'].reload =  function() { done('test failed'); };
-                style.sourceCaches['mapLibre'].clearTiles = function() { done(); };
+                style.sourceCaches['mapLibre'].reload =  () => { done('test failed'); };
+                style.sourceCaches['mapLibre'].clearTiles = () => { done(); };
                 style.removeLayer('my-layer');
                 style.addLayer(layer);
                 style.update({} as EvaluationParameters);
@@ -1945,7 +1951,7 @@ describe('Style#setFilter', () => {
         const style = createStyle();
 
         style.on('style.load', () => {
-            style.dispatcher.broadcast = function(key, value) {
+            style.dispatcher.broadcast = (key, value) => {
                 expect(key).toBe(MessageType.updateLayers);
                 expect(value['layers'][0].id).toBe('symbol');
                 expect(value['layers'][0].filter).toEqual(['==', 'id', 1]);
@@ -1981,7 +1987,7 @@ describe('Style#setFilter', () => {
             style.setFilter('symbol', filter);
             style.update({} as EvaluationParameters); // flush pending operations
 
-            style.dispatcher.broadcast = function(key, value) {
+            style.dispatcher.broadcast = (key, value) => {
                 expect(key).toBe(MessageType.updateLayers);
                 expect(value['layers'][0].id).toBe('symbol');
                 expect(value['layers'][0].filter).toEqual(['==', 'id', 2]);
@@ -2033,7 +2039,7 @@ describe('Style#setFilter', () => {
         const style = createStyle();
 
         style.on('style.load', () => {
-            style.dispatcher.broadcast = function(key, value) {
+            style.dispatcher.broadcast = (key, value) => {
                 expect(key).toBe(MessageType.updateLayers);
                 expect(value['layers'][0].id).toBe('symbol');
                 expect(value['layers'][0].filter).toBe('notafilter');
@@ -2074,7 +2080,7 @@ describe('Style#setLayerZoomRange', () => {
         const style = createStyle();
 
         style.on('style.load', () => {
-            style.dispatcher.broadcast = function(key, value) {
+            style.dispatcher.broadcast = (key, value) => {
                 expect(key).toBe(MessageType.updateLayers);
                 expect(value['layers'].map((layer) => { return layer.id; })).toEqual(['symbol']);
                 done();
@@ -2322,7 +2328,7 @@ describe('Style#queryRenderedFeatures', () => {
     });
 
     test('does not query sources not implicated by `layers` parameter', () => {
-        style.sourceCaches.mapLibre.queryRenderedFeatures = function() { expect(true).toBe(false); };
+        style.sourceCaches.mapLibre.queryRenderedFeatures = () => { expect(true).toBe(false); };
         style.queryRenderedFeatures([{x: 0, y: 0}], {layers: ['land--other']}, transform);
     });
 
@@ -2529,5 +2535,76 @@ describe('Style#serialize', () => {
 
         await style.once('style.load');
         expect(style.serialize().terrain).toBeUndefined();
+    });
+
+    test('include sky property when map has sky', async () => {
+        const sky: SkySpecification = {
+            'horizon-fog-blend': 0.5,
+            'fog-color': '#fff'
+        };
+        const styleJson = createStyleJSON({sky});
+        const style = new Style(getStubMap());
+        style.loadJSON(styleJson);
+
+        await style.once('style.load');
+        expect(style.serialize().sky).toStrictEqual(sky);
+    });
+
+    test('do not include sky property when map does not have sky', async () => {
+        const style = new Style(getStubMap());
+        style.loadJSON(createStyleJSON());
+
+        await style.once('style.load');
+        expect(style.serialize().sky).toBeUndefined();
+    });
+
+    test('sky should be undefined when map does not have sky', async () => {
+        const style = new Style(getStubMap());
+        style.loadJSON(createStyleJSON());
+
+        await style.once('style.load');
+        expect(style.getSky()).toBeUndefined();
+    });
+
+    test('do not include sky property after removing sky from the map', async () => {
+        const sky: SkySpecification = {
+            'horizon-fog-blend': 0.5,
+            'fog-color': '#fff'
+        };
+        const styleJson = createStyleJSON({sky});
+        const style = new Style(getStubMap());
+        style.loadJSON(styleJson);
+
+        await style.once('style.load');
+        style.setSky(undefined);
+        expect(style.serialize().sky).toBeUndefined();
+    });
+
+    test('include sky property when setting it after map loads', async () => {
+        const style = new Style(getStubMap());
+        style.loadJSON(createStyleJSON());
+
+        await style.once('style.load');
+        style.setSky({
+            'horizon-fog-blend': 0.5,
+            'fog-color': '#fff'
+        });
+        expect(style.serialize().sky).toBeDefined();
+    });
+
+    test('update sky properties after setting the sky on initial load', async () => {
+        const sky: SkySpecification = {
+            'fog-color': '#FF0000'
+        };
+        const style = new Style(getStubMap());
+        style.loadJSON(createStyleJSON({sky, transition: {duration: 0, delay: 0}}));
+
+        await style.once('style.load');
+        style.setSky({
+            'fog-color': '#00FF00'
+        });
+        style.update({transition: {duration: 0, delay: 0}} as EvaluationParameters);
+        expect(style.sky.properties.get('fog-color').g).toBe(1);
+        expect(style.sky.properties.get('fog-color').r).toBe(0);
     });
 });
