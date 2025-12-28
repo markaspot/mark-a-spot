@@ -22,9 +22,12 @@ if [ -n "$DRUSH_URI" ]; then
 fi
 
 # Determine API endpoint (DDEV uses 'web', legacy Docker uses VIRTUAL_HOST)
-# For multisite, SITE_URI is passed from start.sh
+# For multisite, SITE_URI is passed from start.sh - use http://web with Host header
+CURL_HOST_HEADER=""
 if [ -n "$SITE_URI" ]; then
-  API_HOST="http://$SITE_URI"
+  # Multisite: use internal 'web' hostname with Host header for routing
+  API_HOST="http://web"
+  CURL_HOST_HEADER="-H Host:$SITE_URI"
 elif [ -n "$DDEV_HOSTNAME" ] || [ -f "/.dockerenv" ]; then
   API_HOST="http://web"
 elif [ -n "$VIRTUAL_HOST" ]; then
@@ -77,7 +80,7 @@ RADIUS_IN_DEGREES=$(awk "BEGIN {print ($RADIUS / 111.32)}")
 
 # Retrieve the services list from the server
 printf "\e[36mRetrieving services from %s...\e[0m\n" "$API_HOST"
-services_json=$(curl -s -w '\n%{http_code}\n' "${API_HOST}/georeport/v2/services.json?api_key=${API_KEY}")
+services_json=$(curl -s -w '\n%{http_code}\n' $CURL_HOST_HEADER "${API_HOST}/georeport/v2/services.json?api_key=${API_KEY}")
 # Check for errors in the response
 response_code=$(echo "$services_json" | tail -n 1)
 if [ "$response_code" != "200" ]; then
@@ -127,7 +130,7 @@ for i in $(seq 1 50); do
   MEDIA_URL="https://markaspot.de/demo-images/image_${RANDOM_NUMBER}.jpg"
 
   REQUEST_START=$(date +%s.%N)
-  RESPONSE=$(curl -s --location "${API_HOST}/georeport/v2/requests.json?api_key=${API_KEY}" \
+  RESPONSE=$(curl -s --location $CURL_HOST_HEADER "${API_HOST}/georeport/v2/requests.json?api_key=${API_KEY}" \
     --header 'Content-Type: application/x-www-form-urlencoded' \
     --data-urlencode 'service_code='"$RANDOM_SERVICE_CODE"'' \
     --data-urlencode 'description='"$DESCRIPTION"'' \
