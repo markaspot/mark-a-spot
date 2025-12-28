@@ -108,7 +108,19 @@ else
 fi
 
 step "Installing composer dependencies..."
-composer install --no-dev
+# Find composer (may be at different locations)
+COMPOSER_CMD=""
+if command -v composer &>/dev/null; then
+  COMPOSER_CMD="composer"
+elif [[ -x /usr/local/bin/composer ]]; then
+  COMPOSER_CMD="/usr/local/bin/composer"
+elif [[ -f composer.phar ]]; then
+  COMPOSER_CMD="php composer.phar"
+else
+  error "composer not found. Run this script inside DDEV: ddev exec scripts/start.sh"
+  exit 1
+fi
+$COMPOSER_CMD install --no-dev
 
 
 if [ "$ENVIRONMENT" != "prod" ]; then
@@ -415,6 +427,14 @@ EOF
   drush $DRUSH_URI config:set system.theme default gin -y >/dev/null 2>&1
   drush $DRUSH_URI cr >/dev/null 2>&1
   success "Themes configured (gin)"
+
+  # Disable CSS/JS aggregation for multisite (prevents redirect loops on aggregated files)
+  if [ "$SITE_NAME" != "default" ]; then
+    step "Disabling CSS/JS aggregation for multisite..."
+    drush $DRUSH_URI config:set system.performance css.preprocess 0 -y >/dev/null 2>&1
+    drush $DRUSH_URI config:set system.performance js.preprocess 0 -y >/dev/null 2>&1
+    success "CSS/JS aggregation disabled"
+  fi
 
   step "Configuring map coordinates..."
 

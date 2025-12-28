@@ -1,0 +1,18 @@
+uuid: 73ad7db6-73a3-4f11-a6a1-db68d5c1ea45
+langcode: en
+status: true
+dependencies:
+  config:
+    - taxonomy.vocabulary.district
+  module:
+    - content_translation
+third_party_settings:
+  content_translation:
+    enabled: true
+    bundle_settings:
+      untranslatable_fields_hide: '0'
+id: taxonomy_term.district
+target_entity_type_id: taxonomy_term
+target_bundle: district
+default_langcode: current_interface
+language_alterable: true
