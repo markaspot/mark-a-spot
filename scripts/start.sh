@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
@@ -37,12 +37,14 @@ fi
 SITE_NAME="default"
 SITE_URI=""
 DRUSH_URI=""
+MULTISITE_MODE="false"
 
 usage() {
-  echo "Usage: start.sh [--site=SITENAME] [-y] [-t] [-a]"
+  echo "Usage: start.sh [--site=SITENAME] [--multisite] [-y] [-t] [-a]"
   echo
   echo "Options:"
   echo "    --site=NAME  Site name for multisite (e.g., aachen, bonn). Uses sites/NAME/"
+  echo "    --multisite  Use existing-config mode (copies config/sync, uses --existing-config)"
   echo "    -y           Install automatically (default: Köln, Germany, de_DE locale)"
   echo "    -t           Import translation file from the /translations directory and enable translations for terms"
   echo "    -a           Use AI translation (OpenAI) for content artifacts instead of standard translation files"
@@ -55,7 +57,8 @@ usage() {
   echo
   echo "Examples:"
   echo "    ddev exec scripts/start.sh -y -a                            # Single site: Köln with AI translation"
-  echo "    ddev exec scripts/start.sh --site=aachen -y                 # Multisite: Aachen"
+  echo "    ddev exec scripts/start.sh --site=aachen -y                 # Multisite: Aachen (fresh)"
+  echo "    ddev exec scripts/start.sh --site=aachen --multisite -y     # Multisite: Aachen (existing-config)"
   echo "    CITY=Bonn ddev exec scripts/start.sh --site=bonn -y         # Multisite: Bonn"
   exit 1
 }
@@ -64,15 +67,25 @@ if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
   usage
 fi
 
-# Parse --site parameter first (before other args)
+# Parse --site and --multisite parameters first (before other args)
 for arg in "$@"; do
   case $arg in
     --site=*)
       SITE_NAME="${arg#*=}"
       shift
       ;;
+    --multisite)
+      MULTISITE_MODE="true"
+      shift
+      ;;
   esac
 done
+
+# Validate --multisite requires --site
+if [ "$MULTISITE_MODE" = "true" ] && [ "$SITE_NAME" = "default" ]; then
+  error "--multisite requires --site=NAME"
+  exit 1
+fi
 
 # Set up multisite paths and URIs
 if [ "$SITE_NAME" != "default" ]; then
@@ -89,14 +102,25 @@ if [ "$SITE_NAME" != "default" ]; then
     exit 1
   fi
 
-  # For multisite, we need to handle config specially:
-  # - Fresh install: install without --existing-config, then import config
-  # - The config/SITE_NAME directory will be populated after install
+  # For multisite, handle config based on mode:
+  # - MULTISITE_MODE=true: copy config/sync, use --existing-config, then config:import
+  # - MULTISITE_MODE=false: fresh install, then config:export
   CONFIG_NEEDS_COPY="false"
   if [ ! -d "$CONFIG_SYNC_ABS" ] || [ -z "$(ls -A "$CONFIG_SYNC_ABS" 2>/dev/null)" ]; then
-    CONFIG_NEEDS_COPY="true"
     mkdir -p "$CONFIG_SYNC_ABS"
-    info "Config directory empty, will export after install"
+    if [ "$MULTISITE_MODE" = "true" ]; then
+      BASE_CONFIG="$PROJECT_ROOT/config/sync"
+      if [ -d "$BASE_CONFIG" ] && [ -n "$(ls -A "$BASE_CONFIG" 2>/dev/null)" ]; then
+        info "Copying base config to config/$SITE_NAME"
+        cp -r "$BASE_CONFIG/"* "$CONFIG_SYNC_ABS/"
+      else
+        error "No base config in config/sync - cannot install with --multisite"
+        exit 1
+      fi
+    else
+      CONFIG_NEEDS_COPY="true"
+      info "Config directory empty, will export after install"
+    fi
   fi
 
   step "Multisite mode: $SITE_NAME ($SITE_URI)"
@@ -364,13 +388,20 @@ EOF
     printf "\b \n"
   }
 
-  # For multisite with empty config, use site:install directly (no --existing-config)
-  # For single-site or sites with config, use markaspot:install
-  if [ "$SITE_NAME" != "default" ] && [ "$CONFIG_NEEDS_COPY" = "true" ]; then
+  # Install based on mode:
+  # - MULTISITE_MODE=true: site:install with --existing-config
+  # - MULTISITE_MODE=false + CONFIG_NEEDS_COPY: fresh site:install
+  # - Single-site: markaspot:install
+  if [ "$SITE_NAME" != "default" ] && [ "$MULTISITE_MODE" = "true" ]; then
+    info "Multisite install with --existing-config"
+    php -d memory_limit=-1 $(which drush) $DRUSH_URI site:install markaspot \
+      --account-name=admin --account-pass=admin --account-mail=admin@example.com \
+      --existing-config --locale="$locale" -y > markaspot_install.log 2>&1 &
+  elif [ "$SITE_NAME" != "default" ] && [ "$CONFIG_NEEDS_COPY" = "true" ]; then
     info "Fresh multisite install (no --existing-config)"
     php -d memory_limit=-1 $(which drush) $DRUSH_URI site:install markaspot \
       --account-name=admin --account-pass=admin --account-mail=admin@example.com \
-      --site-name="$city" --locale=en -y > markaspot_install.log 2>&1 &
+      --site-name="$city" --locale="$locale" -y > markaspot_install.log 2>&1 &
   else
     php -d memory_limit=-1 $(which drush) $DRUSH_URI markaspot:install --lat="$latitude" --lng="$longitude" --city="$city" --locale="$locale" --skip-confirmation > markaspot_install.log 2>&1 &
   fi
@@ -388,9 +419,15 @@ EOF
     exit 1
   fi
 
-  # For fresh multisite installs, export config to establish baseline
-  # For existing sites, import config as usual
-  if [ "$SITE_NAME" != "default" ] && [ "$CONFIG_NEEDS_COPY" = "true" ]; then
+  # Config handling based on mode:
+  # - MULTISITE_MODE=true: always config:import (config was copied before install)
+  # - CONFIG_NEEDS_COPY=true: config:export to establish baseline
+  # - Otherwise: config:import as usual
+  if [ "$MULTISITE_MODE" = "true" ]; then
+    step "Importing configuration..."
+    drush $DRUSH_URI config:import -y >/dev/null 2>&1 || true
+    success "Config imported"
+  elif [ "$SITE_NAME" != "default" ] && [ "$CONFIG_NEEDS_COPY" = "true" ]; then
     step "Exporting config (fresh multisite baseline)..."
     drush $DRUSH_URI config:export -y >/dev/null 2>&1
     success "Config exported"
@@ -399,6 +436,9 @@ EOF
     drush $DRUSH_URI config:import -y
     success "Config imported"
   fi
+
+  # Rebuild cache to ensure all classes are available for php:eval
+  drush $DRUSH_URI cr >/dev/null 2>&1
 
   step "Configuring admin user..."
   drush $DRUSH_URI user:role:add "administrator" --uid=1 >/dev/null 2>&1
@@ -482,8 +522,14 @@ EOF
   fi
 
   step "Importing base content..."
-  DRUSH_URI="$DRUSH_URI" $SCRIPT_DIR/import.sh >/dev/null 2>&1
-  success "Groups, categories, and terms created"
+  import_output=$(DRUSH_URI="$DRUSH_URI" $SCRIPT_DIR/import.sh 2>&1)
+  import_exit=$?
+  if [ $import_exit -eq 0 ]; then
+    success "Groups, categories, and terms created"
+  else
+    warn "Content import had issues"
+    echo -e "${YELLOW}$import_output${NC}"
+  fi
 
   step "Fetching city boundary..."
   boundary_output=$(drush $DRUSH_URI markaspot:fetch-boundary --city="$city" --group=1 -y 2>&1)
@@ -495,7 +541,7 @@ EOF
     echo -e "${RED}$boundary_output${NC}"
     echo ""
     info "This may cause frontend errors. Try manually:"
-    info "  ddev drush markaspot:fetch-boundary --city=\"$city, Germany\" --group=1 -y"
+    info "  ddev drush markaspot:fetch-boundary --city=\"$city, $country\" --group=1 -y"
   fi
 
   step "Configuring validation settings..."

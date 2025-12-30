@@ -414,6 +414,62 @@ function create_boilerplate_translations($source_dir, $lang_code) {
   }
 }
 
+/**
+ * Create group entity translations.
+ */
+function create_group_translations($source_dir, $filename, $group_type, $lang_code) {
+  $csv_file = $source_dir . '/' . $filename;
+
+  if (!file_exists($csv_file) && file_exists($source_dir . '/' . $filename . '.bak')) {
+    $csv_file = $source_dir . '/' . $filename . '.bak';
+  }
+
+  $rows = parse_csv_file($csv_file);
+
+  if (empty($rows)) {
+    drush_print("Skipping $group_type group translations: No data found");
+    return;
+  }
+
+  drush_print("\nProcessing $group_type group translations...");
+  $storage = \Drupal::entityTypeManager()->getStorage('group');
+
+  foreach ($rows as $row) {
+    $uuid = trim($row['uuid'] ?? '');
+    $label = trim($row['label'] ?? '');
+
+    if (empty($uuid) || empty($label)) {
+      continue;
+    }
+
+    $groups = $storage->loadByProperties(['uuid' => $uuid]);
+
+    if ($group = reset($groups)) {
+      try {
+        if (!$group->hasTranslation($lang_code)) {
+          $translation = $group->addTranslation($lang_code, [
+            'label' => $label,
+          ]);
+          $translation->save();
+          drush_print("  Created $lang_code translation: $label");
+        }
+        else {
+          $translation = $group->getTranslation($lang_code);
+          $translation->set('label', $label);
+          $translation->save();
+          drush_print("  Updated $lang_code translation: $label");
+        }
+      }
+      catch (\Exception $e) {
+        drush_print("  Error processing group '$label': " . $e->getMessage());
+      }
+    }
+    else {
+      drush_print("  Group not found with UUID: $uuid");
+    }
+  }
+}
+
 // Execute translations
 create_page_translations($source_dir, $lang_code);
 create_boilerplate_translations($source_dir, $lang_code);
@@ -421,6 +477,8 @@ create_block_translations($source_dir, $lang_code);
 create_taxonomy_translations($source_dir, 'taxonomy_service_categories.csv', 'service_category', $lang_code);
 create_taxonomy_translations($source_dir, 'taxonomy_service_status.csv', 'service_status', $lang_code);
 create_taxonomy_translations($source_dir, 'taxonomy_service_provider.csv', 'service_provider', $lang_code);
+create_group_translations($source_dir, 'group_jurisdiction.csv', 'jurisdiction', $lang_code);
+create_group_translations($source_dir, 'group_organisation.csv', 'organisation', $lang_code);
 
 // Clear caches
 drush_print("\nClearing caches...");
