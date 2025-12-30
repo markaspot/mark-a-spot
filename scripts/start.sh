@@ -106,11 +106,17 @@ if [ "$SITE_NAME" != "default" ]; then
   # - MULTISITE_MODE=true: copy config/sync, use --existing-config, then config:import
   # - MULTISITE_MODE=false: fresh install, then config:export
   CONFIG_NEEDS_COPY="false"
-  if [ ! -d "$CONFIG_SYNC_ABS" ] || [ -z "$(ls -A "$CONFIG_SYNC_ABS" 2>/dev/null)" ]; then
+  # Check for actual yml config files (not just .env/.htaccess created by add-site.sh)
+  HAS_CONFIG_FILES="false"
+  if [ -d "$CONFIG_SYNC_ABS" ] && ls "$CONFIG_SYNC_ABS"/*.yml >/dev/null 2>&1; then
+    HAS_CONFIG_FILES="true"
+  fi
+
+  if [ "$HAS_CONFIG_FILES" = "false" ]; then
     mkdir -p "$CONFIG_SYNC_ABS"
     if [ "$MULTISITE_MODE" = "true" ]; then
       BASE_CONFIG="$PROJECT_ROOT/config/sync"
-      if [ -d "$BASE_CONFIG" ] && [ -n "$(ls -A "$BASE_CONFIG" 2>/dev/null)" ]; then
+      if [ -d "$BASE_CONFIG" ] && ls "$BASE_CONFIG"/*.yml >/dev/null 2>&1; then
         info "Copying base config to config/$SITE_NAME"
         cp -r "$BASE_CONFIG/"* "$CONFIG_SYNC_ABS/"
       else
