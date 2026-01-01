@@ -192,7 +192,7 @@ if [ "$ENVIRONMENT" != "prod" ]; then
       'prefix' => '',\\
       'host' => '$DB_HOST',\\
       'port' => $DB_PORT,\\
-      'namespace' => 'Drupal\\\\\\\\Core\\\\\\\\Database\\\\\\\\Driver\\\\\\\\mysql',\\
+      'namespace' => 'Drupal\\\\\\\\mysql\\\\\\\\Driver\\\\\\\\Database\\\\\\\\mysql',\\
       'driver' => 'mysql',\\
   ];"
 
@@ -530,24 +530,33 @@ EOF
   step "Importing base content..."
   import_output=$(DRUSH_URI="$DRUSH_URI" $SCRIPT_DIR/import.sh 2>&1)
   import_exit=$?
-  if [ $import_exit -eq 0 ]; then
-    success "Groups, categories, and terms created"
+
+  # Verify groups were created
+  group_count=$(drush $DRUSH_URI sql:query "SELECT COUNT(*) FROM groups" 2>/dev/null || echo "0")
+  if [ "$group_count" -gt 0 ] 2>/dev/null; then
+    success "Groups, categories, and terms created ($group_count groups)"
   else
-    warn "Content import had issues"
-    echo -e "${YELLOW}$import_output${NC}"
+    warn "Import may have failed - no groups found"
+    echo -e "${YELLOW}$import_output${NC}" | tail -20
   fi
 
   step "Fetching city boundary..."
-  boundary_output=$(drush $DRUSH_URI markaspot:fetch-boundary --city="$city" --group=1 -y 2>&1)
-  boundary_exit=$?
-  if [ $boundary_exit -eq 0 ]; then
-    success "City boundary stored"
+  # Only attempt boundary fetch if groups exist
+  if [ "$group_count" -gt 0 ] 2>/dev/null; then
+    boundary_output=$(drush $DRUSH_URI markaspot:fetch-boundary --city="$city" --group=1 -y 2>&1)
+    boundary_exit=$?
+    if [ $boundary_exit -eq 0 ]; then
+      success "City boundary stored"
+    else
+      warn "Could not fetch boundary for '$city'"
+      echo -e "${RED}$boundary_output${NC}"
+      echo ""
+      info "This may cause frontend errors. Try manually:"
+      info "  ddev drush markaspot:fetch-boundary --city=\"$city, $country\" --group=1 -y"
+    fi
   else
-    warn "Could not fetch boundary for '$city'"
-    echo -e "${RED}$boundary_output${NC}"
-    echo ""
-    info "This may cause frontend errors. Try manually:"
-    info "  ddev drush markaspot:fetch-boundary --city=\"$city, $country\" --group=1 -y"
+    warn "Skipping boundary fetch - no groups exist"
+    info "Run import.sh manually after fixing group migration"
   fi
 
   step "Configuring validation settings..."
