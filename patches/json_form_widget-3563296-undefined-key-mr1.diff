@@ -1,0 +1,15 @@
+diff --git a/src/ValueHandler.php b/src/ValueHandler.php
+index fbe0bcd6ff0c08209af22de404180447e20cc8eb..1b67e21c256c4dc7259b7cb37507b21348c696c3 100644
+--- a/src/ValueHandler.php
++++ b/src/ValueHandler.php
+@@ -24,7 +24,9 @@ public function flattenValues($formValues, $property, $schema) {
+         break;
+ 
+       case 'object':
+-        $data = $this->handleObjectValues($formValues[$property][$property], $property, $schema);
++        if (isset($formValues[$property][$property])) {
++          $data = $this->handleObjectValues($formValues[$property][$property], $property, $schema);
++        }
+         break;
+ 
+       case 'array':
