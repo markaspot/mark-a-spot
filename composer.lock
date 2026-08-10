@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "277b06102e2570e79c2a40ccb70a2179",
+    "content-hash": "b403e2a3eedd5712108de3f85ea3f750",
     "packages": [
         {
             "name": "anthonymartin/geo-location",
@@ -8691,16 +8691,11 @@
                 "npm-asset/types--geojson": ">=7946.0.14,<7947.0.0",
                 "npm-asset/types--geojson-vt": "3.2.5",
                 "npm-asset/types--junit-report-builder": ">=3.0.2,<4.0.0",
-                "npm-asset/types--mapbox__point-geometry": ">=0.1.4,<0.2.0",
-                "npm-asset/types--mapbox__vector-tile": ">=1.3.4,<2.0.0",
                 "npm-asset/types--pbf": ">=3.0.5,<4.0.0",
                 "npm-asset/types--supercluster": ">=7.1.3,<8.0.0",
                 "npm-asset/vt-pbf": ">=3.1.3,<4.0.0"
             },
-            "type": "npm-asset",
-            "license": [
-                "BSD-3-Clause"
-            ]
+            "type": "npm-asset"
         },
         {
             "name": "npm-asset/minimist",
@@ -8942,35 +8937,6 @@
             "dist": {
                 "type": "tar",
                 "url": "https://registry.npmjs.org/@types/junit-report-builder/-/junit-report-builder-3.0.2.tgz"
-            },
-            "type": "npm-asset",
-            "license": [
-                "MIT"
-            ]
-        },
-        {
-            "name": "npm-asset/types--mapbox__point-geometry",
-            "version": "0.1.4",
-            "dist": {
-                "type": "tar",
-                "url": "https://registry.npmjs.org/@types/mapbox__point-geometry/-/mapbox__point-geometry-0.1.4.tgz"
-            },
-            "type": "npm-asset",
-            "license": [
-                "MIT"
-            ]
-        },
-        {
-            "name": "npm-asset/types--mapbox__vector-tile",
-            "version": "1.3.4",
-            "dist": {
-                "type": "tar",
-                "url": "https://registry.npmjs.org/@types/mapbox__vector-tile/-/mapbox__vector-tile-1.3.4.tgz"
-            },
-            "require": {
-                "npm-asset/types--geojson": "*",
-                "npm-asset/types--mapbox__point-geometry": "*",
-                "npm-asset/types--pbf": "*"
             },
             "type": "npm-asset",
             "license": [
