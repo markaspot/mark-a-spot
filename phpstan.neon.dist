@@ -1,10 +1,15 @@
 # PHPStan + Drupal static analysis for Mark-a-Spot dev/
 #
-# Activation: requires `composer require --dev mglaman/phpstan-drupal phpstan/extension-installer phpstan/phpstan-deprecation-rules`
-# See LSP-NOTES.md for the full setup including drupal-stubs.
+# The required packages (mglaman/phpstan-drupal, phpstan/extension-installer,
+# phpstan/phpstan-deprecation-rules) ship in require-dev; `composer install` is enough.
 #
 # Run: ddev exec vendor/bin/phpstan analyse
 # IDE integration: VS Code "PHP Sniffer & Beautifier" or "PHPStan" extension picks this up automatically.
+
+includes:
+  # Frozen legacy findings — only NEW findings surface. Fix or explicitly
+  # acknowledge new ones; never regenerate the baseline to make errors vanish.
+  - phpstan-baseline.neon
 
 parameters:
   # Level 0 = catch syntax errors and undefined symbols only.
