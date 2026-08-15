@@ -167,6 +167,7 @@
             "oomphinc/composer-installers-extender": true,
             "php-http/discovery": true,
             "phpstan/extension-installer": true,
+            "symfony/runtime": true,
             "zaporylie/composer-drupal-optimizations": true
         }
     },
