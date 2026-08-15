@@ -1,0 +1,160 @@
+name: Mark-a-Spot runtime images
+
+on:
+  pull_request:
+    paths:
+      - .dockerignore
+      - Dockerfile.runtime
+      - Dockerfile.runtime-nginx
+      - composer.json
+      - composer.lock
+      - config/**
+      - docker/runtime/**
+      - patches/**
+      - web/**
+      - scripts/check-runtime-images.sh
+      - .github/workflows/runtime-image.yml
+      - docs/runtime-images.md
+  push:
+    branches:
+      - 11.9.x-dev
+    tags:
+      - "*.*.*"
+    paths:
+      - .dockerignore
+      - Dockerfile.runtime
+      - Dockerfile.runtime-nginx
+      - composer.json
+      - composer.lock
+      - config/**
+      - docker/runtime/**
+      - patches/**
+      - web/**
+      - scripts/check-runtime-images.sh
+      - .github/workflows/runtime-image.yml
+      - docs/runtime-images.md
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: markaspot-runtime-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  DRUPAL_IMAGE: markaspot/markaspot
+  NGINX_IMAGE: markaspot/markaspot-nginx
+
+jobs:
+  contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Check PHP syntax
+        run: docker run --rm -i php:8.4-fpm-alpine@sha256:5992f8b7433fe7fa96dfbf67746c86d6c41bc91e686eac38fe531c72a02e40e4 php -l /dev/stdin < docker/runtime/settings.php
+      - name: Check Mark-a-Spot runtime contract
+        run: SKIP_PHP_LINT=1 ./scripts/check-runtime-images.sh
+
+  pr_images:
+    if: github.event_name == 'pull_request'
+    needs: contract
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Build Drupal image
+        run: docker build --platform linux/amd64 --tag markaspot/markaspot:runtime-pr --file Dockerfile.runtime .
+      - name: Smoke Drupal runtime
+        run: docker run --rm --env DRUPAL_HASH_SALT=0123456789abcdef0123456789abcdef markaspot/markaspot:runtime-pr php-fpm -t
+      - name: Build nginx image
+        run: docker build --platform linux/amd64 --build-arg DRUPAL_IMAGE=markaspot/markaspot:runtime-pr --tag markaspot/markaspot-nginx:runtime-pr --file Dockerfile.runtime-nginx .
+      - name: Check nginx configuration
+        run: docker run --rm --add-host drupal:127.0.0.1 markaspot/markaspot-nginx:runtime-pr nginx -t
+
+  drupal:
+    if: github.event_name != 'pull_request'
+    needs: contract
+    runs-on: ubuntu-latest
+    outputs:
+      digest: ${{ steps.build.outputs.digest }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: docker/setup-qemu-action@c7c53464625b32c7a7e944ae62b3e17d2b600130 # v3
+      - uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
+      - name: Log in to Docker Hub
+        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+      - name: Build and push immutable Drupal image
+        id: build
+        uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6
+        with:
+          context: .
+          file: Dockerfile.runtime
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ env.DRUPAL_IMAGE }}:sha-${{ github.sha }}-run-${{ github.run_id }}-${{ github.run_attempt }}
+          cache-from: type=gha,scope=markaspot-drupal
+          cache-to: type=gha,mode=max,scope=markaspot-drupal
+          provenance: true
+          sbom: true
+
+  nginx:
+    if: github.event_name != 'pull_request'
+    needs:
+      - contract
+      - drupal
+    runs-on: ubuntu-latest
+    outputs:
+      digest: ${{ steps.build.outputs.digest }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: docker/setup-qemu-action@c7c53464625b32c7a7e944ae62b3e17d2b600130 # v3
+      - uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
+      - name: Log in to Docker Hub
+        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+      - name: Build and push immutable nginx image
+        id: build
+        uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6
+        with:
+          context: .
+          file: Dockerfile.runtime-nginx
+          build-args: |
+            DRUPAL_IMAGE=${{ env.DRUPAL_IMAGE }}@${{ needs.drupal.outputs.digest }}
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ env.NGINX_IMAGE }}:sha-${{ github.sha }}-run-${{ github.run_id }}-${{ github.run_attempt }}
+          cache-from: type=gha,scope=markaspot-nginx
+          cache-to: type=gha,mode=max,scope=markaspot-nginx
+          provenance: true
+          sbom: true
+
+  pair:
+    if: github.event_name != 'pull_request'
+    needs:
+      - drupal
+      - nginx
+    runs-on: ubuntu-latest
+    steps:
+      - name: Record the verified immutable image pair
+        env:
+          DRUPAL_DIGEST: ${{ needs.drupal.outputs.digest }}
+          NGINX_DIGEST: ${{ needs.nginx.outputs.digest }}
+        run: |
+          {
+            printf '### Mark-a-Spot runtime pair: %s\n\n' "$GITHUB_REF_NAME"
+            printf -- '- Drupal: `%s@%s`\n' "$DRUPAL_IMAGE" "$DRUPAL_DIGEST"
+            printf -- '- nginx: `%s@%s`\n' "$NGINX_IMAGE" "$NGINX_DIGEST"
+          } >> "$GITHUB_STEP_SUMMARY"
