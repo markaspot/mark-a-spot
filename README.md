@@ -109,7 +109,10 @@ ddev composer install
 ddev ssh
 ./scripts/start.sh -y
 exit
+ddev restart
 ```
+
+The final `ddev restart` lets the frontend container pick up the API key that the installer generates.
 
 After installation, access:
 - **Backend (Drupal):** https://mark-a-spot.ddev.site
