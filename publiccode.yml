@@ -2,8 +2,8 @@ publiccodeYmlVersion: 0.4.0
 name: Mark-a-Spot
 url: https://github.com/markaspot/mark-a-spot
 landingURL: https://mark-a-spot.com
-softwareVersion: "11.9.0"
-releaseDate: 2026-06-06
+softwareVersion: "11.9.1"
+releaseDate: 2026-08-20
 logo: docs/assets/logo.svg
 platforms:
   - web
@@ -100,12 +100,20 @@ maintenance:
 localisation:
   localisationReady: true
   availableLanguages:
+    - ar
+    - cs
+    - da
     - de
     - en
-    - fr
-    - tr
     - es
-    - pl
-    - da
+    - fi
+    - fr
+    - hu
+    - it
+    - nb
     - nl
+    - pl
     - pt
+    - sv
+    - tr
+    - uk
