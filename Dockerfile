@@ -1,4 +1,4 @@
-ARG BASE_IMAGE=php:8.3-fpm-alpine
+ARG BASE_IMAGE=php:8.4-fpm-alpine
 
 # =========================
 #  Builder stage
