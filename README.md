@@ -105,6 +105,7 @@ Install one (or both) of the following toolchains before you begin:
 git clone https://github.com/markaspot/mark-a-spot.git
 cd mark-a-spot
 ddev start
+ddev composer install
 ddev ssh
 ./scripts/start.sh -y
 exit
