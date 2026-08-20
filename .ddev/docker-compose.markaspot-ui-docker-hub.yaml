@@ -2,9 +2,6 @@ services:
   markaspot-ui-docker-hub:
     container_name: "ddev-${DDEV_SITENAME}-markaspot-ui-docker-hub"
     image: ${MARKASPOT_UI_BASE_IMAGE:-markaspot/markaspot-ui-base:v2.0.0}
-    # The published image is amd64-only; pin the platform so Apple Silicon /
-    # arm64 hosts run it via emulation instead of failing the pull.
-    platform: linux/amd64
     working_dir: /app
     restart: unless-stopped
     # Adding external_links allows connections to `https://example.ddev.site`,
