@@ -105,10 +105,14 @@ Install one (or both) of the following toolchains before you begin:
 git clone https://github.com/markaspot/mark-a-spot.git
 cd mark-a-spot
 ddev start
+ddev composer install
 ddev ssh
 ./scripts/start.sh -y
 exit
+ddev restart
 ```
+
+The final `ddev restart` lets the frontend container pick up the API key that the installer generates.
 
 After installation, access:
 - **Backend (Drupal):** https://mark-a-spot.ddev.site

@@ -1,0 +1,127 @@
+# syntax=docker/dockerfile:1.7
+
+ARG PHP_IMAGE=php:8.4-fpm-alpine@sha256:5992f8b7433fe7fa96dfbf67746c86d6c41bc91e686eac38fe531c72a02e40e4
+ARG COMPOSER_IMAGE=composer:2.10.1@sha256:7725eb4545c438629ae8bde3ef0bb9a5038ef566126ad878442a69007242d267
+ARG REDIS_VERSION=6.3.0
+
+FROM ${COMPOSER_IMAGE} AS composer
+
+FROM ${PHP_IMAGE} AS builder
+
+ARG REDIS_VERSION
+
+COPY --from=composer /usr/bin/composer /usr/local/bin/composer
+RUN apk add --no-cache \
+        $PHPIZE_DEPS \
+        freetype-dev \
+        git \
+        icu-dev \
+        libjpeg-turbo-dev \
+        libpng-dev \
+        libzip-dev \
+        linux-headers \
+        unzip \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install -j"$(getconf _NPROCESSORS_ONLN)" \
+        exif \
+        gd \
+        intl \
+        pdo_mysql \
+        zip \
+    && pecl install redis-${REDIS_VERSION} \
+    && docker-php-ext-enable redis
+
+WORKDIR /app/data
+
+COPY composer.json composer.lock ./
+COPY patches ./patches
+RUN composer install \
+    --no-dev \
+    --no-interaction \
+    --no-progress \
+    --no-scripts \
+    --prefer-dist
+
+COPY . .
+RUN composer install \
+    --no-dev \
+    --no-interaction \
+    --no-progress \
+    --optimize-autoloader \
+    --prefer-dist \
+    && find web/modules/custom web/profiles -type f -name '*.php' -print0 \
+        | xargs -0 -r -n1 php -l \
+    && for runtime_path in private web/sites/default/files; do \
+        test ! -e "$runtime_path" \
+          || { echo "Runtime data path baked into image: $runtime_path" >&2; exit 1; }; \
+    done
+
+FROM ${PHP_IMAGE} AS runtime
+
+LABEL org.opencontainers.image.title="Mark-a-Spot Drupal runtime" \
+      org.opencontainers.image.description="Public Drupal runtime for self-hosted Mark-a-Spot deployments" \
+      org.opencontainers.image.licenses="GPL-2.0-or-later" \
+      org.opencontainers.image.source="https://github.com/markaspot/mark-a-spot"
+
+RUN apk add --no-cache \
+        bash \
+        freetype \
+        icu-libs \
+        libjpeg-turbo \
+        libpng \
+        libxml2 \
+        libzip \
+        mariadb-client \
+        msmtp \
+        oniguruma \
+        su-exec \
+    && ln -sf /usr/bin/msmtp /usr/sbin/sendmail \
+    && addgroup -g 1000 app \
+    && adduser -D -H -u 1000 -G app app
+
+COPY --from=builder /usr/local/lib/php/extensions/ /usr/local/lib/php/extensions/
+COPY --from=builder /usr/local/etc/php/conf.d/ /usr/local/etc/php/conf.d/
+COPY --from=builder /usr/local/bin/composer /usr/local/bin/composer
+COPY --from=builder /app/data /app/data
+
+COPY docker/runtime/settings.php /app/data/web/sites/default/settings.php
+COPY docker/runtime/docker-entrypoint.sh /usr/local/bin/markaspot-entrypoint
+
+RUN chmod 0755 /usr/local/bin/markaspot-entrypoint \
+    && mkdir -p \
+        /app/data/private \
+        /app/data/tmp \
+        /app/data/web/sites/default/files \
+    && chown -R app:app \
+        /app/data/private \
+        /app/data/tmp \
+        /app/data/web/sites/default/files \
+    && sed -ri \
+        -e 's!^user = .*!user = app!' \
+        -e 's!^group = .*!group = app!' \
+        /usr/local/etc/php-fpm.d/www.conf \
+    && { \
+        echo 'memory_limit=256M'; \
+        echo 'max_execution_time=600'; \
+        echo 'upload_max_filesize=64M'; \
+        echo 'post_max_size=64M'; \
+        echo 'opcache.enable=1'; \
+        echo 'opcache.enable_cli=1'; \
+        echo 'opcache.memory_consumption=128'; \
+        echo 'sendmail_path=/usr/bin/msmtp -t -C /tmp/msmtprc'; \
+    } > /usr/local/etc/php/conf.d/zz-markaspot-runtime.ini
+
+WORKDIR /app/data
+
+ENV APP_ROOT=/app/data \
+    COMPOSER_ALLOW_SUPERUSER=1 \
+    MARKASPOT_MAIL_MODE=mailpit \
+    PATH="/app/data/vendor/bin:${PATH}"
+
+EXPOSE 9000
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
+    CMD php-fpm -t || exit 1
+
+ENTRYPOINT ["markaspot-entrypoint"]
+CMD ["php-fpm", "-F"]
