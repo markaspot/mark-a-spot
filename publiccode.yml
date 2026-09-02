@@ -93,8 +93,11 @@ description:
 legal:
   license: GPL-2.0-or-later
 maintenance:
-  type: community
+  type: internal
   contacts:
+    - name: Holger Kreis
+      email: holger.kreis@civicpatches.de
+      affiliation: Civic Patches GmbH
     - name: Mark-a-Spot
       email: info@markaspot.org
 localisation:
