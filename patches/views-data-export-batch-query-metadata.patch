@@ -1,0 +1,137 @@
+Upstream: https://www.drupal.org/project/views_data_export/issues/3173296
+Source: https://www.drupal.org/files/issues/2026-08-07/3173296-48.patch
+Consolidated patch 48 for views_data_export 8.x-1.10, including upstream regression test.
+Only upstream docblock indentation corrected for Drupal coding standards.
+
+--- a/src/Plugin/views/display/DataExport.php
++++ b/src/Plugin/views/display/DataExport.php
+@@ -19,7 +19,6 @@
+ use Drupal\facets\FacetSource\FacetSourcePluginManager;
+ use Drupal\file\FileInterface;
+ use Drupal\rest\Plugin\views\display\RestExport;
+-use Drupal\search_api\Plugin\views\query\SearchApiQuery;
+ use Drupal\views\ViewExecutable;
+ use Drupal\views\Views;
+ use Drupal\views_data_export\BatchProcessingAdapterDrupal;
+@@ -111,15 +110,26 @@
+     // Get total number of items.
+     $view->get_total_rows = TRUE;
+     $export_limit = $view->getDisplay()->getOption('export_limit');
++
++    // Swap out the pager, so we can get our count.
++    $defaults = $view->display_handler->options['defaults'];
++    $pager = $view->display_handler->options['pager'] ?? NULL;
++    $view->display_handler->options['defaults']['pager'] = FALSE;
++    $view->display_handler->options['pager'] = [
++      'type' => 'full',
++      'options' => ['items_per_page' => 1],
++    ];
++
++    // Execute the view and get the total rows from it.
+     $view->preExecute($args);
+     $view->build();
+-
+-    if ($view->getQuery() instanceof SearchApiQuery) {
+-      $total_rows = $view->query->getSearchApiQuery()->range(NULL, 1)->execute()->getResultCount();
+-    }
+-    else {
+-      $count_query_results = $view->query->query()->countQuery()->execute();
+-      $total_rows = (int) $count_query_results->fetchField();
++    $view->execute();
++    $total_rows = (int) $view->total_rows;
++
++    // Restore original defaults and pager.
++    $view->display_handler->options['defaults'] = $defaults;
++    if (!is_null($pager)) {
++      $view->display_handler->options['pager'] = $pager;
+     }
+
+     // If export limit is set and the number of rows is greater than the
+--- /dev/null
++++ b/tests/modules/views_data_export_test/views_data_export_test.module
+@@ -0,0 +1,55 @@
++<?php
++
++/**
++ * @file
++ * Helper module for the Views Data Export tests.
++ */
++
++use Drupal\Core\Database\Query\AlterableInterface;
++use Drupal\views\Plugin\views\query\QueryPluginBase;
++use Drupal\views\ViewExecutable;
++
++/**
++ * Implements hook_views_query_alter().
++ *
++ * To check that metadata is not lost by VDE we tag a query and add metadata to
++ * it. This metadata can then later be interrogated via a hook_query_TAG_alter
++ * using that tag.
++ *
++ * @see views_data_export_test_query_views_data_export_test_add_metadata_alter
++ * @see \Drupal\Tests\views_data_export\Functional\ViewsDataExportBatchTest::testBatchQueryMetadata
++ */
++function views_data_export_test_views_query_alter(ViewExecutable $view, QueryPluginBase $query): void {
++  // Only add metadata when we opt in.
++  if (!\Drupal::state()->get('views_data_export_test.add_metadata', FALSE)) {
++    return;
++  }
++
++  // Use this query tag to retrieve metadata from later in the test.
++  $query->addTag('views_data_export_test_add_metadata');
++
++  // Build the Views query already so we can access the DB query.
++  $query->build($view);
++  $view->built = TRUE;
++
++  // Add metadata.
++  $query = $view->build_info['query'];
++  $query->addMetaData('views_data_export_test.metadata', 'foo');
++  $countQuery = $view->build_info['count_query'];
++  $countQuery->addMetaData('views_data_export_test.metadata', 'foo');
++}
++
++/**
++ * Implements hook_query_TAG_alter().
++ *
++ * The tag views_data_export_test_add_metadata is added in conjunction with
++ * metadata in views_data_export_test_views_query_alter. In order to assert on
++ * the available metadata in a test we persist it in state.
++ *
++ * @see \Drupal\Tests\views_data_export\Functional\ViewsDataExportBatchTest::testBatchQueryMetadata
++ */
++function views_data_export_test_query_views_data_export_test_add_metadata_alter(AlterableInterface $query): void {
++  $observedMetadata = \Drupal::state()->get('views_data_export_test.observed_metadata', []);
++  $observedMetadata[] = $query->getMetaData('views_data_export_test.metadata');
++  \Drupal::state()->set('views_data_export_test.observed_metadata', $observedMetadata);
++}
+--- a/tests/src/Functional/ViewsDataExportBatchTest.php
++++ b/tests/src/Functional/ViewsDataExportBatchTest.php
+@@ -144,6 +144,27 @@
+   }
+
+   /**
++   * Test VDE SQL views with batch do not result on metadata being lost.
++   */
++  public function testBatchQueryMetadata() {
++    $observedMetadata = \Drupal::state()->get('views_data_export_test.observed_metadata');
++    $this->assertNull($observedMetadata);
++
++    // Opt in to collecting metadata.
++    // @see views_data_export_test_views_query_alter.
++    \Drupal::state()->set('views_data_export_test.add_metadata', TRUE);
++
++    // Access the view that will trigger the batch process.
++    $this->drupalGet('views_data_export/test_1');
++
++    // Check the metadata that was found on the query.
++    // @see views_data_export_test_query_views_data_export_test_add_metadata_alter.
++    $observedMetadata = \Drupal::state()->get('views_data_export_test.observed_metadata');
++    $this->assertNotContains(NULL, $observedMetadata, 'Metadata was missing during query alter');
++    $this->assertContains('foo', $observedMetadata, 'Expected metadata was not found during query alter');
++  }
++
++  /**
+    * Reading CSV content.
+    *
+    * @param string $content
