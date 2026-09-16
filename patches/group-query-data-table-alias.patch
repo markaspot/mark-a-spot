@@ -1,0 +1,12 @@
+diff --git a/src/QueryAccess/QueryAlterBase.php b/src/QueryAccess/QueryAlterBase.php
+--- a/src/QueryAccess/QueryAlterBase.php
++++ b/src/QueryAccess/QueryAlterBase.php
+@@ -270,7 +270,7 @@ abstract class QueryAlterBase implements ContainerInjectionInterface {
+       // If the data table wasn't added to the query yet, add it here.
+       if (!$data_table_found) {
+         $id_key = $this->entityType->getKey('id');
+-        $this->dataTableAlias = $this->query->join($data_table, $data_table, "$base_table.$id_key=$data_table.$id_key");
++        $this->dataTableAlias = $this->query->join($data_table, $data_table, "$base_table.$id_key=%alias.$id_key");
+       }
+       else {
+         $this->dataTableAlias = $data_table;

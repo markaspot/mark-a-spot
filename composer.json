@@ -159,7 +159,11 @@
             ]
         },
         "enable-patching": true,
+        "composer-exit-on-patch-failure": true,
         "patches": {
+            "drupal/group": {
+                "Fix data-table join alias collision in Group query access": "patches/group-query-data-table-alias.patch"
+            },
             "drupal/json_form_widget": {
                 "#3563296 Fix undefined array key warning (pinned local copy of MR!1)": "patches/json_form_widget-3563296-undefined-key-mr1.diff"
             }
