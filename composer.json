@@ -165,9 +165,6 @@
             "drupal/group": {
                 "Fix data-table join alias collision in Group query access": "patches/group-query-data-table-alias.patch"
             },
-            "drupal/json_form_widget": {
-                "#3563296 Fix undefined array key warning (pinned local copy of MR!1)": "patches/json_form_widget-3563296-undefined-key-mr1.diff"
-            },
             "drupal/views_data_export": {
                 "#3173296 Preserve query metadata and access checks during batch export (upstream patch 48)": "patches/views-data-export-batch-query-metadata.patch"
             }
