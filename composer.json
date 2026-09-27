@@ -100,6 +100,7 @@
         "markaspot/markaspot": "dev-11.9.x-dev",
         "php-http/guzzle7-adapter": "^1.1",
         "vlucas/phpdotenv": "^5.5",
+        "web-token/jwt-library": "^4.2",
         "webflo/drupal-finder": "^1.0.0",
         "webklex/php-imap": "^6.2",
         "webmozart/assert": "1.11.0",
