@@ -68,7 +68,7 @@
         "drupal/views_bulk_edit": "^3.0",
         "drupal/views_bulk_operations": "^4.4",
         "drupal/views_data_export": "^1.10",
-        "drush/drush": "13",
+        "drush/drush": "^13",
         "enshrined/svg-sanitize": "^0.22",
         "geocoder-php/mapbox-provider": "^1.5",
         "geocoder-php/nominatim-provider": "^5.8",
