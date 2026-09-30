@@ -20,6 +20,7 @@ RUN apk add --no-cache \
         libpng-dev \
         libzip-dev \
         linux-headers \
+        patch \
         unzip \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install -j"$(getconf _NPROCESSORS_ONLN)" \
