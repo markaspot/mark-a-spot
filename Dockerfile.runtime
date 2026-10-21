@@ -1,14 +1,18 @@
 # syntax=docker/dockerfile:1.7
 
-ARG PHP_IMAGE=php:8.4-fpm-alpine@sha256:5992f8b7433fe7fa96dfbf67746c86d6c41bc91e686eac38fe531c72a02e40e4
+ARG PHP_IMAGE=php:8.4.27-fpm-alpine@sha256:8193f7c711715c88452ebe51d4ee7769172a3fa917446a8820cf84192da2c555
 ARG COMPOSER_IMAGE=composer:2.10.1@sha256:7725eb4545c438629ae8bde3ef0bb9a5038ef566126ad878442a69007242d267
 ARG REDIS_VERSION=6.3.0
+# phpredis comes from the GitHub release tarball with a pinned checksum:
+# pecl.php.net answered HTTP 500 under load on 2026-10-21.
+ARG REDIS_SHA256=cb8f81df1a275599e4f8ddcfec7e1f65ed1953e6f5673649149fd680ebff4cad
 
 FROM ${COMPOSER_IMAGE} AS composer
 
 FROM ${PHP_IMAGE} AS builder
 
 ARG REDIS_VERSION
+ARG REDIS_SHA256
 
 COPY --from=composer /usr/bin/composer /usr/local/bin/composer
 RUN apk add --no-cache \
@@ -22,6 +26,11 @@ RUN apk add --no-cache \
         linux-headers \
         patch \
         unzip \
+    && mkdir -p /usr/src/php/ext/redis \
+    && curl -fsSL -o /tmp/phpredis.tar.gz https://github.com/phpredis/phpredis/archive/refs/tags/${REDIS_VERSION}.tar.gz \
+    && echo "${REDIS_SHA256}  /tmp/phpredis.tar.gz" | sha256sum -c - \
+    && tar -xzf /tmp/phpredis.tar.gz --strip-components=1 -C /usr/src/php/ext/redis \
+    && rm /tmp/phpredis.tar.gz \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install -j"$(getconf _NPROCESSORS_ONLN)" \
         exif \
@@ -29,8 +38,8 @@ RUN apk add --no-cache \
         intl \
         pdo_mysql \
         zip \
-    && pecl install redis-${REDIS_VERSION} \
-    && docker-php-ext-enable redis
+        redis \
+    && docker-php-source delete
 
 WORKDIR /app/data
 
