@@ -5925,7 +5925,7 @@
                     "homepage": "https://www.drupal.org/user/3668491"
                 },
                 {
-                    "name": "Honza Pobořil",
+                    "name": "honza pobořil",
                     "homepage": "https://www.drupal.org/user/123612"
                 },
                 {
@@ -6215,16 +6215,16 @@
         },
         {
             "name": "enshrined/svg-sanitize",
-            "version": "0.22.0",
+            "version": "1.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/darylldoyle/svg-sanitizer.git",
-                "reference": "0afa95ea74be155a7bcd6c6fb60c276c39984500"
+                "reference": "1976ff93c8d8a234cdd3ff99626bd43ecf11bf49"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/darylldoyle/svg-sanitizer/zipball/0afa95ea74be155a7bcd6c6fb60c276c39984500",
-                "reference": "0afa95ea74be155a7bcd6c6fb60c276c39984500",
+                "url": "https://api.github.com/repos/darylldoyle/svg-sanitizer/zipball/1976ff93c8d8a234cdd3ff99626bd43ecf11bf49",
+                "reference": "1976ff93c8d8a234cdd3ff99626bd43ecf11bf49",
                 "shasum": ""
             },
             "require": {
@@ -6254,9 +6254,9 @@
             "description": "An SVG sanitizer for PHP",
             "support": {
                 "issues": "https://github.com/darylldoyle/svg-sanitizer/issues",
-                "source": "https://github.com/darylldoyle/svg-sanitizer/tree/0.22.0"
+                "source": "https://github.com/darylldoyle/svg-sanitizer/tree/1.1.1"
             },
-            "time": "2025-08-12T10:13:48+00:00"
+            "time": "2026-10-20T09:45:10+00:00"
         },
         {
             "name": "ezyang/htmlpurifier",
@@ -7851,12 +7851,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/markaspot/markaspot.git",
-                "reference": "c13e65c62829f188e61eebcc2dd93c6bfbea8f37"
+                "reference": "c649e02d14f218fb07cc65d8d6a3e1778c1f5d27"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/markaspot/markaspot/zipball/c13e65c62829f188e61eebcc2dd93c6bfbea8f37",
-                "reference": "c13e65c62829f188e61eebcc2dd93c6bfbea8f37",
+                "url": "https://api.github.com/repos/markaspot/markaspot/zipball/c649e02d14f218fb07cc65d8d6a3e1778c1f5d27",
+                "reference": "c649e02d14f218fb07cc65d8d6a3e1778c1f5d27",
                 "shasum": ""
             },
             "require": {
@@ -7898,7 +7898,7 @@
                 "drupal/views_bulk_operations": "^4.4",
                 "drupal/views_data_export": "^1.10",
                 "drupal/views_infinite_scroll": "^2",
-                "enshrined/svg-sanitize": "^0.22",
+                "enshrined/svg-sanitize": "^1.0",
                 "npm-asset/furcan--iconpicker": "^1.5.0",
                 "npm-asset/leaflet": "^1.9.4",
                 "npm-asset/leaflet-fullscreen": "^1",
@@ -7958,9 +7958,9 @@
             "homepage": "https://github.com/markaspot/markaspot.git",
             "support": {
                 "issues": "https://github.com/markaspot/markaspot/issues",
-                "source": "https://github.com/markaspot/markaspot/tree/11.9.x-dev"
+                "source": "https://github.com/markaspot/markaspot/tree/11.9.227"
             },
-            "time": "2026-09-30T12:37:38+00:00"
+            "time": "2026-10-22T15:54:00+00:00"
         },
         {
             "name": "masterminds/html5",
